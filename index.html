@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Sistema Integrado</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -11,147 +11,130 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
+        /* --- COMPONENTES GLOBAIS (ANÚNCIOS E QUADRO) --- */
+        .honor-widget { text-align: center; padding: 15px; border: 1px solid var(--gold); border-radius: 15px; background: rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .honor-img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
+        
+        .global-ad { background: linear-gradient(135deg, #1a1a1a, #080808); border: 1px solid var(--gold); border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 4px solid var(--gold); }
+        .bank-details { font-size: 0.75rem; margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
         /* --- AUTH SCREEN --- */
-        .auth-screen { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); padding: 35px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #222; text-align: center; }
-        .logo-box img { width: 140px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--gold); }
-        
-        .input-group { position: relative; margin-bottom: 12px; }
-        input { width: 100%; padding: 14px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; font-family: inherit; }
-        .btn-gold { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        
+        .auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; flex-direction: column; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 480px; border: 1px solid #222; }
+        .logo-img { width: 140px; display: block; margin: 0 auto 20px; border-radius: 10px; }
+
+        input, select { width: 100%; padding: 12px; background: var(--input); border: 1px solid #222; color: white; border-radius: 8px; margin-bottom: 10px; font-family: inherit; }
+        .btn-gold { background: var(--gold); color: #000; padding: 12px; border: none; border-radius: 8px; font-weight: 700; width: 100%; cursor: pointer; text-transform: uppercase; }
+        .btn-google { background: #fff; color: #000; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
         /* --- DASHBOARD STRUCTURE --- */
         .wrapper { display: flex; min-height: 100vh; }
-        
-        .sidebar { width: 260px; background: #050505; border-right: 1px solid #111; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
-        .ceo-frame { text-align: center; padding: 30px 15px; border-bottom: 1px solid #111; }
-        .ceo-img { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; }
-        .ceo-name { font-size: 0.8rem; color: var(--gold); font-weight: 700; text-transform: uppercase; }
-
-        .nav-link { padding: 15px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { background: rgba(212,175,55,0.1); color: var(--gold); }
-
+        .sidebar { width: 260px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; padding: 20px; overflow-y: auto; }
         .main { flex: 1; margin-left: 260px; padding: 30px; }
 
-        /* --- NOTA DE BOAS-VINDAS --- */
-        .welcome-note { background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.2); border-left: 5px solid var(--gold); padding: 25px; border-radius: 15px; margin-bottom: 30px; line-height: 1.8; }
-        .welcome-note h2 { color: var(--gold); margin-bottom: 10px; font-size: 1.4rem; }
-        .welcome-note p { font-size: 0.9rem; color: #efefef; }
+        .nav-link { padding: 12px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 10px; border-radius: 8px; margin-bottom: 5px; }
+        .nav-link:hover, .nav-link.active { background: rgba(212,175,55,0.1); color: var(--gold); }
 
-        /* --- ANÚNCIO DE APOIO --- */
-        .support-banner { background: linear-gradient(135deg, #1a1a1a, #080808); border: 1px solid var(--gold); border-radius: 15px; padding: 20px; margin-bottom: 30px; }
-        .bank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 15px; }
-        .bank-tag { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid #333; font-size: 0.75rem; }
-        .bank-tag span { color: var(--gold); display: block; font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
-
-        /* --- PERFIL VIP & GANHOS --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-        .stat-card { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #222; position: relative; }
-        .vip-badge { position: absolute; top: 15px; right: 15px; background: var(--vip); color: #000; font-size: 0.6rem; font-weight: 900; padding: 3px 8px; border-radius: 4px; }
+        /* --- PASTA DE ARQUIVOS --- */
+        .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .file-card { background: var(--card); border: 1px solid #222; border-radius: 10px; padding: 15px; text-align: center; }
+        .comment-box { margin-top: 10px; font-size: 0.7rem; border-top: 1px solid #333; padding-top: 5px; text-align: left; }
 
         .hidden { display: none !important; }
-
-        @media (max-width: 900px) {
-            .sidebar { display: none; }
-            .main { margin-left: 0; padding: 15px; }
-        }
+        @media (max-width: 800px) { .sidebar { display: none; } .main { margin-left: 0; } }
     </style>
 </head>
 <body>
 
 <div id="auth-page" class="auth-screen">
+    <div class="honor-widget" style="max-width: 480px; width:100%;">
+        <img src="https://i.ibb.co/vYmS6Z9/unnamed-3.jpg" class="honor-img" alt="C.E.O">
+        <p style="color:var(--gold); font-weight:bold; font-size:0.8rem; margin-top:5px;">Matias Arsénio Manuel - C.E.O</p>
+    </div>
+
+    <div class="global-ad" style="max-width: 480px; width:100%;">
+        <p style="font-size:0.75rem; color:#fff;"><strong>Precisamos de Apoio:</strong> Invista no projeto pelo bem de uma nova geração. <br>BFA: 0006.0000.8631.6866.3015.2</p>
+    </div>
+
     <div class="auth-card">
-        <div class="logo-box"><img src="https://i.ibb.co/L9Y0pGZ/unnamed-6.jpg" alt="MAM Logo"></div>
+        <img src="https://i.ibb.co/L9Y0pGZ/unnamed-6.jpg" class="logo-img" alt="MAM Logo">
+        
         <div id="login-form">
-            <h3 style="margin-bottom:20px; color:var(--gold);">Painel do Artista</h3>
-            <input type="email" placeholder="Seu E-mail" style="margin-bottom:10px;">
-            <input type="password" placeholder="Sua Senha" style="margin-bottom:15px;">
-            <button class="btn-gold" onclick="showDash()">ENTRAR NO SISTEMA</button>
-            <p style="margin-top:20px; font-size:0.8rem; color:var(--dim);">Ainda não tem conta? <a href="#" onclick="toggleAuth(true)" style="color:var(--gold); font-weight:bold;">Criar Conta</a></p>
+            <button class="btn-gold btn-google" onclick="enterDash('Admin')">
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Entrar com o Google
+            </button>
+            <input type="email" placeholder="E-mail">
+            <input type="password" placeholder="Palavra-passe">
+            <button class="btn-gold" onclick="enterDash('Artista Normal')">Iniciar Sessão</button>
+            <p style="text-align:center; font-size:0.8rem; margin-top:15px;">Novo aqui? <a href="#" onclick="toggleAuth(true)" style="color:var(--gold);">Criar Conta</a></p>
         </div>
+
         <div id="reg-form" class="hidden">
-            <h3 style="margin-bottom:20px; color:var(--gold);">Criar Nova Conta</h3>
-            <input type="text" placeholder="Nome Artístico / Produtora" style="margin-bottom:10px;">
-            <input type="email" placeholder="E-mail" style="margin-bottom:10px;">
-            <input type="password" placeholder="Senha" style="margin-bottom:10px;">
-            <input type="password" placeholder="Confirmar Senha" style="margin-bottom:15px;">
-            <button class="btn-gold" onclick="showDash()">CADASTRAR</button>
-            <p style="margin-top:20px; font-size:0.8rem;"><a href="#" onclick="toggleAuth(false)" style="color:var(--gold);">Voltar ao Login</a></p>
+            <input type="text" placeholder="Nome Artístico">
+            <input type="email" placeholder="E-mail de Configuração">
+            <input type="tel" placeholder="Número de Telefone">
+            <input type="password" placeholder="Criar Senha">
+            <button class="btn-gold" onclick="enterDash('Novo VIP')">Registrar Conta</button>
+            <p style="text-align:center; font-size:0.8rem; margin-top:15px;"><a href="#" onclick="toggleAuth(false)" style="color:var(--gold);">Voltar ao Login</a></p>
         </div>
     </div>
 </div>
 
 <div id="dashboard" class="wrapper hidden">
     <aside class="sidebar">
-        <div class="ceo-frame">
-            <img src="https://i.ibb.co/vYmS6Z9/unnamed-3.jpg" class="ceo-img" alt="Matias Arsénio">
+        <div class="honor-widget">
+            <img src="https://i.ibb.co/vYmS6Z9/unnamed-3.jpg" class="honor-img" alt="C.E.O">
             <p class="ceo-name">Matias Arsénio Manuel</p>
-            <p style="font-size: 0.6rem; color: #555; margin-top: 5px;">C.E.O & FUNDADOR</p>
         </div>
-        <nav style="flex: 1; margin-top: 15px;">
+
+        <nav>
             <a href="#" class="nav-link active" onclick="nav('home')"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="#" class="nav-link" onclick="nav('earnings')"><i class="fa-solid fa-chart-line"></i> Meus Ganhos</a>
-            <a href="#" class="nav-link" onclick="nav('profile')"><i class="fa-solid fa-user-gear"></i> Perfil & IBAN</a>
+            <a href="#" class="nav-link" onclick="nav('files')"><i class="fa-solid fa-folder-open"></i> Meus Arquivos</a>
+            <a href="#" class="nav-link" onclick="nav('profile')"><i class="fa-solid fa-user-edit"></i> Edição de Perfil</a>
+            <a href="#" class="nav-link" style="color:#ff4444; margin-top:30px;"><i class="fa-solid fa-sign-out"></i> Sair</a>
         </nav>
-        <div style="padding: 20px; font-size: 0.65rem; color: #444; border-top: 1px solid #111;">
-            E-mail Oficial:<br><strong>mamfilhos29@gmail.com</strong>
-        </div>
     </aside>
 
     <main class="main">
-        
-        <section class="support-banner">
-            <h4 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-circle-dollar-to-slot"></i> APOIA O NOSSO PROJECTO</h4>
-            <p style="font-size: 0.8rem; color: #ccc;">Precisamos de Apoio para melhor e investir no projeto pelo bem melhor de uma nova geração. Apoia através dos dados oficiais do C.E.O:</p>
-            <div class="bank-grid">
-                <div class="bank-tag"><span>Titular (C.E.O)</span>Matias Arsénio Manuel</div>
-                <div class="bank-tag"><span>Banco BFA (IBAN)</span>0006.0000.8631.6866.3015.2</div>
-                <div class="bank-tag"><span>Multicaixa Express</span>937 881 307</div>
-            </div>
-        </section>
-
-        <div id="page-home">
-            <div class="welcome-note">
-                <h2>Olá, Artista! 👋</h2>
-                <p>
-                    Seja Bem-vindo ao <strong>MAM Distribuidora musical Angolana</strong>, feito por Angolanos para facilitar os Angolanos a vender suas músicas em mais de 150 países e sacar em Kz com conta Bancária Angolana. 
-                    <br><br>
-                    Trabalhamos para que o teu talento chegue ao mundo inteiro sem barreiras. Sugerimos que sigas o perfil oficial <strong>MAM Distributor</strong> para todas as novidades e relatórios de vendas.
-                </p>
+        <div class="global-ad">
+            <p style="font-size:0.85rem; color:var(--gold);"><strong>Apoia o Projeto MAM</strong></p>
+            <p style="font-size:0.75rem;">Apoie o nosso projeto e ajude a nova geração de artistas.</p>
+            <div class="bank-details">
+                <div><span>TITULAR:</span> Matias Arsénio Manuel</div>
+                <div><span>IBAN BFA:</span> 0006.0000.8631.6866.3015.2</div>
             </div>
         </div>
 
-        <div id="page-earnings" class="hidden">
-            <h2 style="margin-bottom: 25px;">Ganhos & Estatuto VIP</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <p style="color:var(--dim); font-size: 0.8rem;">Saldo Acumulado</p>
-                    <h1 style="color: var(--gold);">0,00 Kz</h1>
-                </div>
-                <div class="stat-card">
-                    <span class="vip-badge">RECOMENDADO</span>
-                    <p style="color:var(--dim); font-size: 0.8rem;">Perfil VIP (100% Ganhos)</p>
-                    <button class="btn-gold" style="padding: 8px; font-size: 0.7rem;">Ativar VIP agora</button>
-                </div>
+        <div id="page-home">
+            <h2 style="color:var(--gold);">Bem-vindo, <span id="user-name">Artista</span>!</h2>
+            <div class="global-ad" style="margin-top:20px;">
+                <p>A MAM Distribuidora foi feita por Angolanos para facilitar a venda de músicas em mais de 150 países.</p>
             </div>
-            <div class="stat-card" style="margin-top: 30px;">
-                <h4 style="color: var(--gold); margin-bottom: 15px;">Diferença de Ganhos</h4>
-                <p style="font-size: 0.85rem; line-height: 1.6;">
-                    • <strong>Perfil Normal:</strong> Recebe 80% das vendas. Suporte via e-mail.<br>
-                    • <strong>Perfil VIP:</strong> Recebe 100% das vendas. Suporte prioritário e levantamentos rápidos.
-                </p>
+        </div>
+
+        <div id="page-files" class="hidden">
+            <h3>Minhas Músicas & Arquivos</h3>
+            <div class="file-grid">
+                <div class="file-card">
+                    <i class="fa-solid fa-file-audio fa-3x" style="color:var(--gold);"></i>
+                    <p style="margin-top:10px;">Musica_01.mp3</p>
+                    <div class="comment-box">
+                        <strong>Comentários:</strong>
+                        <p style="font-style:italic;">"Excelente produção!"</p>
+                        <input type="text" placeholder="Comentar..." style="font-size:0.6rem; padding:5px; margin-top:5px;">
+                    </div>
+                </div>
             </div>
         </div>
 
         <div id="page-profile" class="hidden">
-            <h2>Configurações de Conta</h2>
-            <div class="stat-card" style="margin-top: 20px;">
-                <div class="input-group"><label style="font-size:0.7rem; color:var(--gold);">IBAN PARA RECEBER VENDAS</label><input type="text" placeholder="AO06 0000..."></div>
-                <div class="input-group"><label style="font-size:0.7rem; color:var(--gold);">NOME DO TITULAR</label><input type="text" placeholder="Nome Completo"></div>
-                <button class="btn-gold" style="width: 200px;">ATUALIZAR DADOS</button>
+            <h3>Edição de Perfil</h3>
+            <div class="global-ad">
+                <p>Aqui podes configurar o teu IBAN e e-mail de suporte (mamfilhos29@gmail.com).</p>
+                <input type="text" placeholder="Atualizar IBAN Pessoal">
+                <button class="btn-gold" style="width:150px; margin-top:10px;">Salvar</button>
             </div>
         </div>
-
     </main>
 </div>
 
@@ -160,18 +143,23 @@
         document.getElementById('login-form').classList.toggle('hidden', isReg);
         document.getElementById('reg-form').classList.toggle('hidden', !isReg);
     }
-    function showDash() {
+
+    function enterDash(name) {
         document.getElementById('auth-page').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('user-name').innerText = name;
     }
+
     function nav(page) {
         document.getElementById('page-home').classList.add('hidden');
-        document.getElementById('page-earnings').classList.add('hidden');
+        document.getElementById('page-files').classList.add('hidden');
         document.getElementById('page-profile').classList.add('hidden');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         document.getElementById('page-' + page).classList.remove('hidden');
+        
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         event.currentTarget.classList.add('active');
     }
 </script>
+
 </body>
 </html>

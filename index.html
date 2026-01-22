@@ -8,53 +8,53 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --bg: #0b0b0b; --card: #151515; --input: #1e1e1e; --text: #ffffff; --dim: #aaa; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; }
         
         /* Auth Screen */
         .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #222; text-align: center; }
-        
-        .logo-area { color: var(--gold); font-size: 2.2rem; font-weight: 700; letter-spacing: 4px; margin-bottom: 5px; }
-        .crown { font-size: 1.3rem; margin-bottom: 8px; filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #222; text-align: center; position: relative; }
         
         .welcome-msg { font-size: 0.8rem; color: var(--dim); line-height: 1.5; margin-bottom: 20px; padding: 12px; background: rgba(212, 175, 55, 0.05); border-radius: 10px; border-left: 3px solid var(--gold); text-align: left; }
-        
+        .logo-area { color: var(--gold); font-size: 2.2rem; font-weight: 700; letter-spacing: 4px; margin-bottom: 15px; }
+        .crown { font-size: 1.3rem; margin-bottom: 8px; filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
+
         /* Google UI */
-        .btn-google { background: #fff; color: #1f1f1f; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; font-size: 0.85rem; border: none; }
-        .google-picker { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; display: flex; align-items: center; justify-content: center; }
+        .btn-google { background: #fff; color: #1f1f1f; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; font-size: 0.9rem; transition: 0.3s; }
+        .google-picker { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; display: none; align-items: center; justify-content: center; }
         .picker-card { background: #fff; color: #333; width: 320px; border-radius: 12px; padding: 20px; text-align: left; }
         .account-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .account-item:hover { background: #f5f5f5; }
 
-        .divider { display: flex; align-items: center; margin: 15px 0; color: #444; font-size: 0.7rem; font-weight: bold; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #222; margin: 0 10px; }
-        
-        .input-group { position: relative; width: 100%; margin: 8px 0; }
-        input, select { width: 100%; padding: 12px 15px; background: var(--input); border: 1px solid #222; color: white; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; }
-        
+        /* Form Elements */
+        .input-group { position: relative; width: 100%; margin: 10px 0; }
+        input, select { width: 100%; padding: 14px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; box-sizing: border-box; font-family: inherit; }
         .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; cursor: pointer; z-index: 10; }
-
-        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-gold { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; font-family: inherit; }
         
-        .hidden { display: none !important; }
+        .divider { display: flex; align-items: center; margin: 20px 0; color: #444; font-size: 0.75rem; font-weight: bold; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #222; margin: 0 10px; }
 
-        /* Dashboard */
+        .hidden { display: none !important; }
+        
+        /* Sidebar & Content */
         .sidebar { width: 260px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; z-index: 100; }
-        .main { margin-left: 260px; padding: 40px; width: 100%; }
+        .main { margin-left: 260px; padding: 40px; }
     </style>
 </head>
 <body>
 
-<div id="google-picker" class="google-picker hidden">
+<div id="google-picker" class="google-picker">
     <div class="picker-card">
-        <p style="font-weight: bold; margin-bottom: 15px; font-size: 0.95rem;">Escolha uma conta</p>
-        <div class="account-item" onclick="selectAccount('Matias Arsénio', 'matias@gmail.com')">
+        <p style="font-weight: bold; margin-bottom: 15px; font-size: 0.95rem;">Escolha uma conta para MAM</p>
+        <div class="account-item" onclick="selectGoogleAccount('Matias Arsénio')">
             <div style="width:32px; height:32px; background:#d4af37; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">M</div>
             <div><div style="font-size:0.85rem; font-weight:600;">Matias Arsénio</div><div style="font-size:0.7rem; color:#666;">matias@gmail.com</div></div>
         </div>
-        <div class="account-item" onclick="selectAccount('Play Sean', 'playseana@gmail.com')">
+        <div class="account-item" onclick="selectGoogleAccount('Play Sean')">
             <div style="width:32px; height:32px; background:#4285F4; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">P</div>
             <div><div style="font-size:0.85rem; font-weight:600;">Play Sean</div><div style="font-size:0.7rem; color:#666;">playseana@gmail.com</div></div>
         </div>
+        <p style="font-size: 0.7rem; color: #4285F4; margin-top: 15px; cursor: pointer;" onclick="closeGoogle()">Usar outra conta</p>
     </div>
 </div>
 
@@ -66,49 +66,50 @@
             Seja Bem-vindo ao <strong>MAM Distribuidora musical Angolana</strong>, feito por Angolanos para facilitar os Angolanos a vender suas músicas em mais de 150 países e sacar em Kz com conta Bancária Angolana.
         </div>
 
-        <div id="login-container">
+        <div id="login-form">
             <button class="btn-google" onclick="openGoogle()"> 
-                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Iniciar sessão com Google 
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Entrar com o Google 
             </button>
-            <div class="divider">OU USAR EMAIL E SENHA</div>
+            <div class="divider">OU EMAIL E SENHA</div>
             <input type="email" id="l-email" placeholder="E-mail">
             <div class="input-group">
                 <input type="password" id="l-pass" placeholder="Palavra-passe">
                 <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('l-pass', this)"></i>
             </div>
-            <button class="btn-gold" onclick="login()">ENTRAR</button>
-            <p style="font-size: 0.8rem; margin-top:20px; color:var(--dim);">Não tem conta? <a href="javascript:void(0)" onclick="showRegister()" style="color:var(--gold); font-weight:bold; text-decoration:none;">Criar Conta</a></p>
+            <button class="btn-gold" onclick="login()">ENTRAR NO PAINEL</button>
+            <p style="font-size: 0.8rem; margin-top:20px; color:var(--dim);">Não tem conta? <a href="javascript:void(0)" onclick="toggleAuth('register')" style="color:var(--gold); font-weight:bold; text-decoration:none;">Criar Conta</a></p>
         </div>
 
-        <div id="register-container" class="hidden">
+        <div id="register-form" class="hidden">
             <button class="btn-google" onclick="openGoogle()"> 
                 <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Criar conta com Google 
             </button>
-            <div class="divider">DADOS DO ARTISTA / PRODUTORA</div>
+            <div class="divider">DADOS DA PRODUTORA / ARTISTA</div>
+            <input type="text" id="r-name" placeholder="Nome Artístico / Produtora">
             
-            <input type="text" id="r-name" placeholder="Nome do Artista ou Produtora">
-            
-            <div style="display: flex; gap: 5px; margin: 8px 0;">
-                <select id="r-country" style="flex: 0.4;">
+            <div style="display: flex; gap: 5px; margin: 10px 0;">
+                <select id="r-code" style="flex: 0.4;">
                     <option value="+244">AO (+244)</option>
                     <option value="+351">PT (+351)</option>
-                    <option value="+258">MZ (+258)</option>
+                    <option value="+55">BR (+55)</option>
                 </select>
-                <input type="text" id="r-phone" placeholder="Número de Telemóvel" style="flex: 1;">
+                <input type="text" id="r-phone" placeholder="9xx xxx xxx" style="flex: 1;">
+            </div>
+
+            <input type="email" id="r-email" placeholder="Seu E-mail">
+            
+            <div class="input-group">
+                <input type="password" id="r-pass" placeholder="Escolher Senha">
+                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('r-pass', this)"></i>
             </div>
 
             <div class="input-group">
-                <input type="password" id="r-pass" placeholder="Escolher Palavra-passe">
-                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('r-pass', this)"></i>
-            </div>
-            
-            <div class="input-group">
-                <input type="password" id="r-confirm" placeholder="Confirmar Palavra-passe">
+                <input type="password" id="r-confirm" placeholder="Confirmar Senha">
                 <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('r-confirm', this)"></i>
             </div>
 
             <button class="btn-gold" onclick="register()">CADASTRAR E VALIDAR</button>
-            <p style="font-size: 0.8rem; margin-top:15px;"><a href="javascript:void(0)" onclick="showLogin()" style="color:var(--gold); text-decoration:none;">Já tenho conta</a></p>
+            <p style="font-size: 0.8rem; margin-top:20px;"><a href="javascript:void(0)" onclick="toggleAuth('login')" style="color:var(--gold); text-decoration:none;">Já tenho conta</a></p>
         </div>
     </div>
 </div>
@@ -117,29 +118,81 @@
     <div style="padding:40px 20px; text-align:center;" class="logo-area"><i class="fa-solid fa-crown crown"></i><br>MAM</div>
     <div style="padding:20px; font-size:0.85rem;">
         <p style="color:var(--gold);"><i class="fa-solid fa-house"></i> Início</p>
-        <p style="color:var(--dim);"><i class="fa-solid fa-wallet"></i> Carteira em Kz</p>
-        <p style="font-size:0.7rem; margin-top:30px; color:#555;">SUPORTE: playseana@gmail.com</p>
+        <p><i class="fa-solid fa-wallet"></i> Carteira em Kz</p>
+        <div style="margin-top:50px; font-size:0.65rem; color:#444;">
+            SUPORTE: playseana@gmail.com<br>
+            WHATSAPP: 937 881 307
+        </div>
     </div>
 </nav>
 
 <main id="main-content" class="main hidden">
     <div style="background:var(--card); padding:30px; border-radius:15px; border-left:5px solid var(--gold);">
         <h2>Olá, <span id="display-name">Artista</span>! 👋</h2>
-        <p>A tua conta está ativa. Sugerimos que sigas o perfil oficial da <strong>MAM Distributor</strong> para todas as atualizações.</p>
+        <p>Bem-vindo à maior distribuidora musical angolana.</p>
+        <p style="color:var(--gold); font-size:0.8rem;">Siga o perfil MAM Distributor para novidades.</p>
     </div>
 </main>
 
 <script>
-    function showRegister() {
-        document.getElementById('login-container').classList.add('hidden');
-        document.getElementById('register-container').classList.remove('hidden');
+    // NAVEGAÇÃO ENTRE TELAS
+    function toggleAuth(mode) {
+        if(mode === 'register') {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+            document.getElementById('register-form').classList.remove('hidden');
+        } else {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+        }
     }
 
-    function showLogin() {
-        document.getElementById('login-container').classList.remove('hidden');
-        document.getElementById('register-container').classList.add('hidden');
+    // SISTEMA GOOGLE
+    function openGoogle() { document.getElementById('google-picker').style.display = 'flex'; }
+    function closeGoogle() { document.getElementById('google-picker').style.display = 'none'; }
+    function selectGoogleAccount(name) {
+        closeGoogle();
+        setupDashboard(name);
     }
 
+    // VER/OCULTAR SENHA
     function togglePass(id, icon) {
         const input = document.getElementById(id);
         if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = "password";
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    // LOGIN E CADASTRO
+    function login() { 
+        const email = document.getElementById('l-email').value;
+        setupDashboard(email ? email.split('@')[0] : "Artista"); 
+    }
+
+    function register() {
+        const name = document.getElementById('r-name').value;
+        const p1 = document.getElementById('r-pass').value;
+        const p2 = document.getElementById('r-confirm').value;
+
+        if(!name) return alert("Por favor, coloque o nome do Artista ou Produtora.");
+        if(p1 !== p2) return alert("As senhas não coincidem!");
+        if(p1.length < 6) return alert("A senha deve ter pelo menos 6 dígitos.");
+
+        setupDashboard(name);
+    }
+
+    // ENTRAR NO PAINEL
+    function setupDashboard(name) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('sidebar').classList.remove('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('display-name').innerText = name;
+        alert("Siga o perfil oficial do MAM Distributor!");
+    }
+</script>
+</body>
+</html>

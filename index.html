@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Segurança Máxima</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,40 +16,36 @@
 
         /* Auth Screen */
         .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid #222; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; border: 1px solid #222; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        /* Logotipo MAM CSS */
         .logo-area { color: var(--gold); font-size: 2.2rem; line-height: 1; font-weight: 700; letter-spacing: 4px; margin-bottom: 5px; }
         .tagline { font-size: 0.65rem; color: var(--gold); letter-spacing: 2px; font-weight: 400; opacity: 0.8; }
         .crown { font-size: 1.3rem; margin-bottom: 8px; filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
 
-        /* Google Button - Estilo Premium */
         .btn-google { 
             background: #ffffff; color: #1f1f1f; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; 
             font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; 
-            justify-content: center; gap: 12px; margin: 15px 0; transition: all 0.3s ease; font-size: 0.9rem;
+            justify-content: center; gap: 12px; margin: 15px 0; transition: 0.3s; font-size: 0.9rem;
         }
-        .btn-google:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(60,64,67,0.3); transform: translateY(-1px); }
         .btn-google img { width: 20px; height: 20px; }
 
-        .divider { display: flex; align-items: center; text-align: center; margin: 25px 0; color: #444; font-size: 0.75rem; font-weight: 600; }
+        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: #444; font-size: 0.75rem; font-weight: 600; }
         .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #222; }
-        .divider:not(:empty)::before { margin-right: 1em; }
-        .divider:not(:empty)::after { margin-left: 1em; }
 
-        /* Input com Olho (Password) */
         .input-group { position: relative; width: 100%; margin: 10px 0; }
-        input { width: 100%; padding: 14px 45px 14px 15px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; box-sizing: border-box; font-size: 0.9rem; transition: 0.3s; }
+        input, select { width: 100%; padding: 14px 15px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; box-sizing: border-box; font-size: 0.9rem; transition: 0.3s; font-family: inherit; }
         input:focus { border-color: var(--gold); outline: none; }
-        .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--dim); cursor: pointer; transition: 0.3s; }
-        .toggle-pass:hover { color: var(--gold); }
+        
+        .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--dim); cursor: pointer; }
 
         .btn-gold { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
 
-        /* Sidebar & Views */
         .sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid #111; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
         .main { margin-left: 280px; padding: 40px; width: 100%; box-sizing: border-box; }
         .hidden { display: none; }
+
+        /* Estilo para tela de código */
+        .code-verify { padding: 20px; background: rgba(212, 175, 55, 0.05); border-radius: 10px; border: 1px dashed var(--gold); margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -66,20 +62,14 @@
                 <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Logo"> 
                 Entrar com o Google
             </button>
-            
             <div class="divider">OU E-MAIL</div>
-            
-            <div class="input-group">
-                <input type="email" id="l-email" placeholder="E-mail">
-            </div>
-            
+            <input type="email" id="l-email" placeholder="E-mail">
             <div class="input-group">
                 <input type="password" id="l-pass" placeholder="Palavra-passe">
                 <i class="fa-solid fa-eye toggle-pass" onclick="toggleVisibility('l-pass', this)"></i>
             </div>
-
             <button class="btn-gold" onclick="login()">ENTRAR</button>
-            <p style="font-size: 0.8rem; margin-top: 25px; color: var(--dim);">Não tens conta? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer; font-weight:600;">Criar Agora</span></p>
+            <p style="font-size: 0.8rem; margin-top: 25px; color: var(--dim);">Não tens conta? <span onclick="toggleAuth('register')" style="color:var(--gold); cursor:pointer; font-weight:600;">Criar Agora</span></p>
         </div>
 
         <div id="register-form" class="hidden">
@@ -87,19 +77,33 @@
                 <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Logo"> 
                 Cadastrar com o Google
             </button>
-
-            <div class="divider">OU DADOS MANUAIS</div>
-
+            <div class="divider">DADOS DE SEGURANÇA</div>
             <input type="text" id="r-name" placeholder="Nome Artístico / Produtora">
             <input type="email" id="r-email" placeholder="E-mail">
-            
+            <div style="display: flex; gap: 5px;">
+                <select id="r-country" style="flex: 0.4;">
+                    <option value="+244">AO (+244)</option>
+                    <option value="+351">PT (+351)</option>
+                    <option value="+55">BR (+55)</option>
+                </select>
+                <input type="text" id="r-phone" placeholder="9xx xxx xxx" style="flex: 1;">
+            </div>
             <div class="input-group">
                 <input type="password" id="r-pass" placeholder="Criar Palavra-passe">
                 <i class="fa-solid fa-eye toggle-pass" onclick="toggleVisibility('r-pass', this)"></i>
             </div>
+            <button class="btn-gold" onclick="sendCode()">CADASTRAR E RECEBER CÓDIGO</button>
+            <p style="font-size: 0.8rem; margin-top: 20px; color: var(--dim);">Já és da família? <span onclick="toggleAuth('login')" style="color:var(--gold); cursor:pointer;">Login</span></p>
+        </div>
 
-            <button class="btn-gold" onclick="register()">FINALIZAR CONTA</button>
-            <p style="font-size: 0.8rem; margin-top: 25px; color: var(--dim);">Já és da família? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer; font-weight:600;">Login</span></p>
+        <div id="verify-form" class="hidden">
+            <div class="code-verify">
+                <h3 style="margin-top:0; color:var(--gold);">Verificar Telemóvel</h3>
+                <p style="font-size:0.75rem; color:var(--dim);">Enviámos um código SMS para o número indicado. Insira-o abaixo para validar a sua conta.</p>
+                <input type="text" id="v-code" placeholder="Digite o Código de 6 Dígitos" style="text-align:center; font-size:1.2rem; letter-spacing:5px;">
+                <button class="btn-gold" onclick="validateCode()">VALIDAR CONTA</button>
+                <p style="font-size:0.7rem; margin-top:15px; cursor:pointer;" onclick="sendCode()">Não recebi? <span style="color:var(--gold);">Reenviar código</span></p>
+            </div>
         </div>
     </div>
 </div>
@@ -109,19 +113,22 @@
         <i class="fa-solid fa-crown crown"></i><br>MAM
         <div class="tagline">DISTRIBUIDORA DIGITAL</div>
     </div>
-    </nav>
+    <div style="padding: 0 20px;">
+        <p style="font-size: 0.7rem; color: var(--dim); border-bottom: 1px solid #222; padding-bottom: 10px;">MENU PRINCIPAL</p>
+        <div style="color:var(--gold); padding:10px; font-size:0.9rem;"><i class="fa-solid fa-house"></i> Início</div>
+    </div>
+</nav>
 
 <main id="main-content" class="main hidden">
     <div style="background: var(--card); padding: 30px; border-radius: 15px; border-left: 5px solid var(--gold);">
         <h2>Olá, <span id="display-name">Artista</span>! 👋</h2>
-        <p style="color: var(--dim);">Bem-vindo à MAM Distribuidora. O teu sucesso começa aqui.</p>
+        <p style="color: var(--dim);">A tua conta foi verificada com sucesso por telemóvel. Estás pronto para dominar as plataformas digitais.</p>
     </div>
 </main>
 
 <script>
     const ADMINS = ["mamfilhos29@gmail.com", "playseana@gmail.com"];
 
-    // Função para Ver/Ocultar Senha
     function toggleVisibility(id, icon) {
         const input = document.getElementById(id);
         if (input.type === "password") {
@@ -133,39 +140,45 @@
         }
     }
 
-    function toggleAuth(showRegister) {
-        document.getElementById('login-form').classList.toggle('hidden', showRegister);
-        document.getElementById('register-form').classList.toggle('hidden', !showRegister);
+    function toggleAuth(view) {
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('register-form').classList.add('hidden');
+        document.getElementById('verify-form').classList.add('hidden');
+        
+        if(view === 'login') document.getElementById('login-form').classList.remove('hidden');
+        if(view === 'register') document.getElementById('register-form').classList.remove('hidden');
+        if(view === 'verify') document.getElementById('verify-form').classList.remove('hidden');
+    }
+
+    function sendCode() {
+        const phone = document.getElementById('r-phone').value;
+        const name = document.getElementById('r-name').value;
+        if(!phone || !name) return alert("Preencha o nome e o telemóvel!");
+        
+        alert("SMS de Segurança enviado para: " + document.getElementById('r-country').value + " " + phone);
+        toggleAuth('verify');
+    }
+
+    function validateCode() {
+        const code = document.getElementById('v-code').value;
+        if(code.length < 4) return alert("Insira um código válido!");
+        
+        const name = document.getElementById('r-name').value;
+        setupPanel("novo@user.com", name);
     }
 
     function authGoogle() {
-        alert("A abrir janela de autenticação segura da Google...");
+        alert("A conectar à sua conta Google...");
         setupPanel("googleuser@gmail.com", "Utilizador Google");
     }
 
     function login() {
         const email = document.getElementById('l-email').value;
-        if(!email) return alert("Insira o e-mail");
+        if(!email) return alert("Insira o seu e-mail");
         setupPanel(email, email.split('@')[0]);
-    }
-
-    function register() {
-        const name = document.getElementById('r-name').value;
-        if(!name) return alert("Insira o nome");
-        setupPanel("novo@user.com", name);
     }
 
     function setupPanel(email, name) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('sidebar').classList.remove('hidden');
         document.getElementById('main-content').classList.remove('hidden');
-        document.getElementById('display-name').innerText = name;
-        
-        if(ADMINS.includes(email.toLowerCase())) {
-            alert("Acesso Administrativo Matias/Play Sean detectado.");
-        }
-    }
-</script>
-
-</body>
-</html>

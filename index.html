@@ -3,159 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Painel de Controlo</title>
+    <title>MAM Distribuidora | Sistema de Lançamentos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --bg: #0b0b0b; --card: #141414; --text: #fff; --dim: #888; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
         
-        .overlay { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-        .hidden { display: none; }
+        .sidebar { width: 280px; background: #000; position: fixed; height: 100vh; border-right: 1px solid #222; display: flex; flex-direction: column; z-index: 100; }
+        .nav-link { padding: 15px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); }
         
-        /* Sidebar */
-        .sidebar { width: 280px; background: #000; position: fixed; height: 100vh; border-right: 1px solid #222; display: flex; flex-direction: column; }
-        .nav-link { padding: 15px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; border-left: 3px solid transparent; }
-        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); border-left-color: var(--gold); }
-        .upload-item { background: var(--gold) !important; color: black !important; font-weight: bold; margin: 10px; border-radius: 8px; justify-content: center; }
+        /* Botão Enviar Música no Menu */
+        .upload-item { background: var(--gold) !important; color: #000 !important; font-weight: bold; margin: 15px; border-radius: 8px; justify-content: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
 
-        /* Main Content */
         .content { margin-left: 280px; padding: 40px; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
+        .view { display: none; animation: fadeIn 0.3s; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Estilo do Formulário de Envio */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
+        label { font-size: 0.85rem; color: var(--gold); font-weight: 600; }
+        .drop-zone { border: 2px dashed #333; padding: 30px; text-align: center; border-radius: 10px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .drop-zone:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.02); }
+
+        .card { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #222; }
+        .btn-send { background: var(--gold); color: #000; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; font-size: 1rem; }
         
-        /* Botões e Inputs */
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
-        .btn-gold { background: var(--gold); color: #000; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px; border-radius: 6px; cursor: pointer; }
-
-        /* Lista de Músicas */
-        .music-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #222; }
-        .music-actions button { background: none; border: none; color: var(--dim); cursor: pointer; margin-left: 10px; }
-        .music-actions button:hover { color: var(--gold); }
-
-        @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; } }
+        @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; padding: 20px; } }
     </style>
 </head>
 <body>
-
-<div id="auth-check" class="overlay hidden">
-    </div>
 
 <nav class="sidebar">
     <div style="padding: 30px; text-align: center;"><h1 style="color: var(--gold); margin: 0; letter-spacing: 5px;">MAM</h1></div>
     <div style="flex-grow: 1;">
         <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
-        <a class="nav-link" onclick="nav('my-music', this)"><i class="fa-solid fa-compact-disc"></i> Minhas Distribuições</a>
-        <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Limites de Saque</a>
-        <a class="nav-link" onclick="nav('profile', this)"><i class="fa-solid fa-user-gear"></i> Perfil e Configurações</a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform" target="_blank" class="nav-link upload-item">
+        <a class="nav-link" onclick="nav('upload', this)" id="btn-upload-menu" class="nav-link upload-item">
             <i class="fa-solid fa-cloud-arrow-up"></i> ENVIAR MÚSICA
         </a>
-    </div>
-    <a onclick="logout()" class="nav-link" style="color: #ff4d4d;"><i class="fa-solid fa-power-off"></i> Sair da Conta</a>
-</nav>
-
-<main class="content">
-    
-    <section id="dash" class="view">
-        <div class="card">
-            <h2>Bem-vindo à MAM Distribuidora</h2>
-            <p>A sua plataforma angolana de vendas globais. Distribua as suas músicas para mais de 150 lojas.</p>
-        </div>
-    </section>
-
-    <section id="my-music" class="view hidden">
-        <h2>Minhas Distribuições</h2>
-        <div class="card">
-            <p style="color: var(--dim);">Acompanhe, edite ou remova os seus lançamentos.</p>
-            <div id="music-list">
-                <div class="music-item">
-                    <span><i class="fa-solid fa-music"></i> Exemplo de Hit - Single (2026)</span>
-                    <div class="music-actions">
-                        <button title="Monitorizar"><i class="fa-solid fa-chart-simple"></i></button>
-                        <button title="Editar"><i class="fa-solid fa-pen"></i></button>
-                        <button title="Eliminar" onclick="confirm('Deseja eliminar este lançamento?')"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-                <p style="font-size: 0.8rem; margin-top: 15px; color: var(--gold);">* Monitorização e edição disponíveis após validação da loja.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="profile" class="view hidden">
-        <h2>Perfil e Configurações</h2>
-        
-        <div class="card">
-            <h3><i class="fa-solid fa-user-pen"></i> Editar Perfil</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div>
-                    <label style="font-size: 0.8rem;">Foto de Perfil</label>
-                    <input type="file">
-                    <input type="text" placeholder="Nome Completo / Produtora">
-                    <input type="email" placeholder="Novo E-mail">
-                </div>
-                <div>
-                    <input type="text" placeholder="Número de Telefone">
-                    <input type="password" placeholder="Nova Senha">
-                    <select>
-                        <option>Angola</option>
-                        <option>Portugal</option>
-                        <option>Brasil</option>
-                    </select>
-                </div>
-            </div>
-            <button class="btn-gold" style="margin-top: 10px;">GUARDAR ALTERAÇÕES</button>
-        </div>
-
-        <div class="card" style="border-top: 3px solid var(--gold);">
-            <h3><i class="fa-solid fa-microphone-lines"></i> Gerir Artistas</h3>
-            <p style="font-size: 0.8rem; color: var(--dim);">O seu plano permite gerir os nomes artísticos da sua conta.</p>
-            
-            <div id="artist-slots">
-                <div style="background: #000; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                    <i class="fa-solid fa-check-circle" style="color: var(--gold);"></i> Artista 1 (Grátis)
-                </div>
-            </div>
-
-            <div style="background: rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 8px;">
-                <p><strong>Deseja adicionar mais artistas?</strong></p>
-                <p style="font-size: 0.8rem;">O Plano Grátis permite apenas 1 artista. Para adicionar mais, faça o upgrade do seu plano.</p>
-                <button class="btn-outline" onclick="alert('Contacte o suporte MAM para upgrade de slots de artista.')">ADICIONAR ARTISTA (Pago)</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="finance" class="view hidden">
-        <h2>Limites de Saque</h2>
-        <div class="card">
-            <h3>Regras de Pagamento (AOA)</h3>
-            <p>Mínimo Artista: 10.000 Kz</p>
-            <p>Mínimo VIP/Admin: 5.000 Kz</p>
-        </div>
-    </section>
-
-</main>
-
-<script>
-    function nav(id, el) {
-        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function logout() {
-        localStorage.clear();
-        location.reload();
-    }
-
-    // Lógica simples para verificar se o utilizador está logado (pode ser expandida)
-    window.onload = function() {
-        if(!localStorage.getItem('mam_session')) {
-            // Se não houver sessão, você pode chamar a sua tela de boas vindas aqui
-        }
-    }
-</script>
-
-</body>
-</html>
+        <a class="nav-link" onclick="nav('my-music', this)"><i class="fa-solid

@@ -3,77 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Gestão e Pagamentos</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --gold: #d4af37; --black: #050505; --gray: #121212; --text: #e0e0e0; }
-        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); margin: 0; }
-        .header { padding: 30px; <!DOCTYPE html>
-<html lang="pt-pt">
-<head>
-    <meta charset="UTF-8">
-    <meta <!DOCTYPE html>
-<html lang="pt-pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Dashboard | Distribuição Profissional</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #161616; --text: #f0f0f0; --green: #2ecc71; }
+        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #161616; --text: #f0f0f0; --green: #2ecc71; --gray: #1a1a1a; }
+        
+        /* O teu CSS agora está protegido aqui dentro e não aparecerá como texto */
         body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
         
-        /* Sidebar Estilo ONErpm */
-        .sidebar { width: 250px; height: 100vh; background: #000; position: fixed; left: 0; top: 0; border-right: 1px solid #222; display: flex; flex-direction: column; transition: 0.3s; }
-        .logo-area { padding: 30px; text-align: center; border-bottom: 1px solid #111; }
+        .sidebar { width: 250px; height: 100vh; background: #000; position: fixed; left: 0; top: 0; border-right: 1px solid #222; display: flex; flex-direction: column; }
+        .logo-area { padding: 30px; text-align: center; border-bottom: 2px solid var(--gold); background: #000; }
         .logo-area h1 { color: var(--gold); margin: 0; letter-spacing: 5px; font-size: 1.8rem; }
         
+        .container { max-width: 550px; margin: 20px auto; padding: 20px; }
+        .card { background: var(--gray); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
+        
         .nav-links { flex-grow: 1; padding: 20px 0; }
-        .nav-item { padding: 15px 30px; display: flex; align-items: center; color: #888; text-decoration: none; cursor: pointer; transition: 0.2s; }
-        .nav-item i { margin-right: 15px; width: 20px; }
+        .nav-item { padding: 15px 30px; display: flex; align-items: center; color: #888; text-decoration: none; cursor: pointer; }
         .nav-item:hover, .nav-item.active { color: var(--gold); background: rgba(212,175,55,0.05); border-left: 4px solid var(--gold); }
 
-        /* Conteúdo Principal */
         .main-content { margin-left: 250px; padding: 40px; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         
-        /* Grid de Estatísticas (Estilo FreshTunes) */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .stat-card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #222; }
-        .stat-card h4 { color: #666; margin: 0 0 10px 0; font-size: 0.8rem; text-transform: uppercase; }
-        .stat-card h2 { margin: 0; font-size: 1.8rem; color: var(--text); }
-        .stat-card i { color: var(--gold); float: right; font-size: 1.2rem; }
+        .btn-gold { display: block; width: 100%; background: var(--gold); color: black; padding: 18px; border-radius: 8px; font-weight: bold; text-decoration: none; border: none; cursor: pointer; text-align: center; }
+        .btn-gold.disabled { background: #333 !important; color: #777 !important; cursor: not-allowed; }
+        
+        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        
+        .admin-badge { background: var(--gold); color: black; padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; }
+        
+        .kwanza-info { background: #002200; border: 1px solid #28a745; padding: 15px; border-radius: 10px; text-align: left; margin-top: 15px; }
 
-        /* Botão de Envio Destacado */
-        .btn-upload { background: var(--gold); color: #000; padding: 15px 30px; border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .btn-upload:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212,175,55,0.2); }
-
-        /* Responsividade para Telemóvel */
         @media (max-width: 768px) {
-            .sidebar { width: 0; left: -250px; }
+            .sidebar { display: none; }
             .main-content { margin-left: 0; padding: 20px; }
-            .bottom-mobile-nav { display: flex !important; }
         }
 
-        .bottom-mobile-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: none; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; }
-        
-        .page-section { display: none; }
-        .active-section { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Login Screen */
         #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .page-section { display: none; }
+        .active-section { display: block; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div style="width: 100%; max-width: 350px; text-align: center; padding: 20px;">
-        <h1 style="color: var(--gold); letter-spacing: 10px; margin-bottom: 10px;">MAM</h1>
-        <p style="color: #666; margin-bottom: 30px;">Digital Distribution System</p>
-        <input type="email" id="email-input" placeholder="E-mail do Artista" style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; color: white; border-radius: 8px; margin-bottom: 15px;">
-        <button onclick="autenticar()" style="width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">ACESSAR PAINEL</button>
+        <h1 style="color: var(--gold); letter-spacing: 10px;">MAM</h1>
+        <p style="color: #666; margin-bottom: 30px;">Digital Distribution</p>
+        <input type="email" id="email-input" placeholder="E-mail do Artista">
+        <button onclick="autenticar()" class="btn-gold">ENTRAR NO PAINEL</button>
     </div>
 </div>
 
@@ -83,83 +61,41 @@
     </div>
     <div class="nav-links">
         <a class="nav-item active" onclick="showPage('home', this)"><i class="fas fa-th-large"></i> Dashboard</a>
-        <a class="nav-item" onclick="showPage('catalog', this)"><i class="fas fa-compact-disc"></i> Catálogo</a>
         <a class="nav-item" onclick="showPage('finance', this)"><i class="fas fa-wallet"></i> Financeiro</a>
         <a class="nav-item" onclick="showPage('profile', this)"><i class="fas fa-user-circle"></i> Perfil</a>
     </div>
     <div style="padding: 20px;">
-        <button onclick="logout()" style="background:none; border:none; color: #ff4444; cursor: pointer; font-size: 0.8rem;"><i class="fas fa-sign-out-alt"></i> Sair da Conta</button>
+        <button onclick="logout()" style="background:none; border:none; color: #ff4444; cursor: pointer;"><i class="fas fa-sign-out-alt"></i> Sair</button>
     </div>
 </nav>
 
 <main class="main-content">
-    
-    <div class="header-top">
-        <div>
-            <h2 id="welcome-text">Olá, Artista!</h2>
-            <p style="color: #666; font-size: 0.9rem;">Bem-vindo à MAM Distribuidora.</p>
-        </div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform" target="_blank" class="btn-upload">
-            <i class="fas fa-plus"></i> NOVO LANÇAMENTO
-        </a>
-    </div>
-
     <div id="home" class="page-section active-section">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <i class="fas fa-eye"></i>
-                <h4>Visualizações</h4>
-                <h2>0</h2>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-play"></i>
-                <h4>Streams Totais</h4>
-                <h2>0</h2>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-money-bill-wave"></i>
-                <h4>Saldo (AOA)</h4>
-                <h2 style="color: var(--green);">0.00 Kz</h2>
-            </div>
-        </div>
-
-        <div class="card" style="background: #111; padding: 30px; border-radius: 12px; border: 1px dashed var(--gold);">
-            <h3>Matias Arsénio Manuel diz:</h3>
-            <p style="font-style: italic; color: #aaa;">"O nosso objetivo é colocar a música angolana no mapa mundial. Começa agora o teu plano gratuito."</p>
+        <div class="card">
+            <h2 style="color: var(--gold);">Bem-vindo à MAM</h2>
+            <p>A tua música nas maiores plataformas mundiais.</p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform" target="_blank" class="btn-gold">NOVO LANÇAMENTO</a>
         </div>
     </div>
 
     <div id="finance" class="page-section">
-        <h3>Meus Rendimentos</h3>
-        <div class="stat-card" style="max-width: 400px; margin-bottom: 20px;">
-            <h4>Disponível para Levantamento</h4>
-            <h1 style="color: var(--green);">0.00 Kz</h1>
-            <p style="font-size: 0.7rem; color: #666;">Os pagamentos são processados via BFA ou Express.</p>
-        </div>
         <div class="card">
-            <h4>Solicitar Levantamento</h4>
-            <p>Os ganhos internacionais são convertidos automaticamente para Kwanzas.</p>
-            <button class="btn-upload" style="background: #222; color: var(--gold); border: 1px solid var(--gold);">PEDIR PAGAMENTO</button>
+            <h3><i class="fas fa-money-bill-wave"></i> Meus Ganhos</h3>
+            <h1 style="color: var(--green);">0.00 Kz</h1>
+            <div class="kwanza-info">
+                <p>Levantamentos disponíveis para contas em Angola via BFA.</p>
+            </div>
         </div>
     </div>
 
     <div id="profile" class="page-section">
-        <h3>Meu Perfil</h3>
         <div class="card">
-            <p><strong>E-mail:</strong> <span id="user-email"></span></p>
-            <p><strong>Plano:</strong> <span id="user-plan" class="admin-badge" style="background: #333; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem;">1 Artista Grátis</span></p>
-            <hr style="border: 0; border-top: 1px solid #222; margin: 20px 0;">
-            <p><strong>Configuração de Levantamento:</strong> Conta Bancária Angolana</p>
+            <h3>Perfil do Artista</h3>
+            <p id="user-display-email"></p>
+            <div id="admin-badge-area"></div>
         </div>
     </div>
-
 </main>
-
-<nav class="bottom-mobile-nav">
-    <a onclick="showPage('home', this)" style="color: var(--gold);"><i class="fas fa-home"></i></a>
-    <a onclick="showPage('finance', this)" style="color: #888;"><i class="fas fa-wallet"></i></a>
-    <a onclick="showPage('profile', this)" style="color: #888;"><i class="fas fa-user"></i></a>
-</nav>
 
 <script>
     const admins = ["playseana@gmail.com", "produtorap6production@gmail.com"];
@@ -176,13 +112,10 @@
         const user = localStorage.getItem('mam_user');
         if(user) {
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('user-email').innerText = user;
-            document.getElementById('welcome-text').innerText = "Olá, " + user.split('@')[0] + "!";
+            document.getElementById('user-display-email').innerText = user;
             
             if(admins.includes(user)) {
-                document.getElementById('user-plan').innerText = "C.E.O. - ILIMITADO";
-                document.getElementById('user-plan').style.background = "#d4af37";
-                document.getElementById('user-plan').style.color = "#000";
+                document.getElementById('admin-badge-area').innerHTML = '<span class="admin-badge">C.E.O. MATIAS MANUEL</span>';
             }
         }
     }
@@ -190,254 +123,8 @@
     function showPage(pageId, element) {
         document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-section'));
         document.getElementById(pageId).classList.add('active-section');
-        
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(element.classList.contains('nav-item')) element.classList.add('active');
-    }
-
-    function logout() { localStorage.clear(); location.reload(); }
-    window.onload = checkStatus;
-</script>
-
-</body>
-</html>" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Painel do Artista</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --gold: #d4af37; --black: #050505; --gray: #121212; --text: #e0e0e0; }
-        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); margin: 0; padding-bottom: 70px; }
-        
-        /* Header CEO */
-        .header-ceo { background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&w=800&q=80'); padding: 20px; text-align: center; border-bottom: 2px solid var(--gold); }
-        .ceo-img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
-
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        .card { background: var(--gray); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
-        
-        /* Menu de Navegação Inferior (Estilo App) */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 1px solid var(--gold); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
-        .nav-item { color: #888; text-decoration: none; text-align: center; font-size: 0.7rem; cursor: pointer; }
-        .nav-item i { font-size: 1.2rem; display: block; margin-bottom: 3px; }
-        .nav-item.active { color: var(--gold); }
-
-        /* Esconder Seções */
-        .page-section { display: none; }
-        .active-section { display: block; }
-
-        /* Estilo Perfil */
-        .profile-header { text-align: center; margin-bottom: 20px; }
-        .user-pic { width: 100px; height: 100px; border-radius: 50%; background: #333; margin: auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 2px solid var(--gold); }
-        
-        .btn-gold { display: block; width: 100%; background: var(--gold); color: black; padding: 15px; border-radius: 8px; font-weight: bold; text-decoration: none; border: none; text-align: center; margin-top: 10px; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-<div id="login-screen" class="container" style="margin-top: 50px;">
-    <div class="card" style="text-align: center;">
-        <h1 style="color: var(--gold); letter-spacing: 5px;">MAM</h1>
-        <p>Inicie sessão no Portal do Artista</p>
-        <input type="email" id="email-input" style="width:100%; padding:15px; margin-bottom:10px; background:#000; border:1px solid #333; color:white; border-radius:8px;" placeholder="Seu e-mail">
-        <button onclick="autenticar()" class="btn-gold">ENTRAR</button>
-    </div>
-</div>
-
-<div id="main-portal" style="display: none;">
-    
-    <section id="home" class="page-section active-section">
-        <div class="header-ceo">
-            <img src="https://via.placeholder.com/80" class="ceo-img">
-            <h2 style="color: var(--gold); margin: 10px 0 5px 0;">MAM Distribuidora</h2>
-            <p style="font-size: 0.8rem; font-style: italic;">"Venda sua música e ganhe em Kwanzas." - Matias Manuel</p>
-        </div>
-        <div class="container">
-            <div class="card">
-                <h3>Distribuição Rápida</h3>
-                <p style="font-size: 0.85rem; color: #888;">Envie sua música hoje para Spotify, Apple Music e TikTok.</p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform" target="_blank" class="btn-gold">DISTRIBUIR AGORA</a>
-            </div>
-            <div class="card">
-                <h4 style="color: var(--gold); margin: 0;">Promoção em Angola</h4>
-                <p style="font-size: 0.8rem;">Aumente seus plays em Luanda e pelo mundo com o nosso suporte de marketing.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="profile" class="page-section">
-        <div class="container">
-            <div class="card">
-                <div class="profile-header">
-                    <div class="user-pic"><i class="fas fa-user"></i></div>
-                    <h3 id="display-email">artista@email.com</h3>
-                    <span id="admin-badge"></span>
-                </div>
-                <hr style="border: 0; border-top: 1px solid #333;">
-                <p><b>Links Sociais:</b> <span style="color: #666;">(Não configurado)</span></p>
-                <button class="btn-gold" style="background: #333; color: white;">EDITAR PERFIL</button>
-                <button onclick="logout()" class="btn-gold" style="background: #ff4444; color: white; margin-top: 30px;">TERMINAR SESSÃO</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="finance" class="page-section">
-        <div class="container">
-            <div class="card">
-                <h2 style="color: #28a745;"><i class="fas fa-money-bill-wave"></i> Carteira MAM</h2>
-                <p style="font-size: 0.9rem;">Saldo disponível para levantamento:</p>
-                <h1 style="color: white; margin: 10px 0;">0.00 Kz</h1>
-                <div style="background: #000; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: #888;">
-                    Os royalties são processados a cada 45 dias após o lançamento.
-                </div>
-                <button class="btn-gold" style="background: #28a745; color: white;">PEDIR LEVANTAMENTO (BFA/EXPRESS)</button>
-            </div>
-        </div>
-    </section>
-
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="showPage('home', this)"><i class="fas fa-home"></i>Início</div>
-        <div id="nav-finance" class="nav-item" onclick="showPage('finance', this)"><i class="fas fa-wallet"></i>Ganhos</div>
-        <div class="nav-item" onclick="showPage('profile', this)"><i class="fas fa-user-circle"></i>Perfil</div>
-    </nav>
-</div>
-
-<script>
-    const admins = ["playseana@gmail.com", "produtorap6production@gmail.com"];
-
-    function autenticar() {
-        const email = document.getElementById('email-input').value.toLowerCase();
-        if(email.includes('@')) {
-            localStorage.setItem('mam_user', email);
-            checkStatus();
-        }
-    }
-
-    function checkStatus() {
-        const user = localStorage.getItem('mam_user');
-        if(user) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-portal').style.display = 'block';
-            document.getElementById('display-email').innerText = user;
-
-            if(admins.includes(user)) {
-                document.getElementById('admin-badge').innerHTML = '<span style="color:var(--gold); font-size:0.7rem;">C.E.O. MATIAS MANUEL</span>';
-            }
-        }
-    }
-
-    function showPage(pageId, element) {
-        // Esconder todas as seções
-        document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-section'));
-        // Mostrar a selecionada
-        document.getElementById(pageId).classList.add('active-section');
-        // Mudar cor do menu
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        element.classList.add('active');
-    }
-
-    function logout() { localStorage.clear(); location.reload(); }
-    window.onload = checkStatus;
-</script>
-
-</body>
-</html>: center; border-bottom: 2px solid var(--gold); background: #000; }
-        .container { max-width: 550px; margin: 20px auto; padding: 20px; }
-        .card { background: var(--gray); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
-        .btn-gold { display: block; width: 100%; background: var(--gold); color: black; padding: 18px; border-radius: 8px; font-weight: bold; text-decoration: none; border: none; cursor: pointer; text-align: center; }
-        .btn-gold.disabled { background: #333 !important; color: #777 !important; cursor: not-allowed; }
-        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
-        .admin-badge { background: var(--gold); color: black; padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; }
-        .kwanza-info { background: #002200; border: 1px solid #28a745; padding: 15px; border-radius: 10px; text-align: left; margin-top: 15px; }
-    </style>
-</head>
-<body>
-
-<section class="header">
-    <h1 style="color: var(--gold); letter-spacing: 5px; margin: 0;">MAM</h1>
-    <p style="color: #888;">MATIAS ARSÉNIO MANUEL | PORTAL OFICIAL</p>
-</section>
-
-<div class="container">
-    <div id="login-screen" class="card">
-        <h2 style="color: var(--gold);">ACESSO AO PORTAL</h2>
-        <input type="email" id="email-input" placeholder="Seu e-mail de artista">
-        <button onclick="autenticar()" class="btn-gold">ENTRAR</button>
-    </div>
-
-    <div id="portal-artista" style="display:none;">
-        <div class="card" style="text-align:center;">
-            <h3>Olá, <span id="user-display"></span></h3>
-            <div id="admin-tag"></div>
-        </div>
-
-        <div class="card">
-            <h3 style="color: #28a745;"><i class="fas fa-wallet"></i> Levantamento em Kwanzas</h3>
-            <p style="font-size: 0.85rem;">Músicos em Angola podem converter os seus ganhos internacionais (USD/EUR) diretamente para a conta bancária local.</p>
-            <div class="kwanza-info">
-                <p style="font-size: 0.8rem; margin: 0;"><b>Taxa de Câmbio:</b> Atualizada conforme o mercado angolano.</p>
-                <p style="font-size: 0.8rem; margin: 5px 0 0 0;"><b>Prazo:</b> 24h a 72h úteis após solicitação.</p>
-            </div>
-            <button onclick="alert('Funcionalidade de pedido de levantamento disponível após o primeiro relatório de royalties.')" class="btn-gold" style="background: #28a745; margin-top: 15px; color: white;">SOLICITAR PAGAMENTO (AOA)</button>
-        </div>
-
-        <div id="pagamento-card" class="card" style="text-align:center;">
-            <h3 style="color: var(--gold);">Plano Ilimitado</h3>
-            <p style="font-size: 0.8rem;">IBAN BFA: AO06.0006.0000.8631.6866.3015.2</p>
-            <p style="font-size: 0.75rem; color: #777;">Beneficiário: Matias Arsénio Manuel</p>
-        </div>
-
-        <div class="card" style="text-align:center;">
-            <i class="fas fa-upload" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;"></i>
-            <h3>Envio de Música</h3>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform?usp=dialog" 
-               id="btn-envio" target="_blank" onclick="validarUso()" class="btn-gold">DISTRIBUIR AGORA</a>
-        </div>
-        
-        <center><button onclick="logout()" style="color: #666; background: none; border: none; cursor: pointer; text-decoration: underline;">Sair do Portal</button></center>
-    </div>
-</div>
-
-<script>
-    // Configuração de Administradores Mestres
-    const admins = ["playseana@gmail.com", "produtorap6production@gmail.com"];
-    const adminPhone = "937881307";
-
-    function autenticar() {
-        const email = document.getElementById('email-input').value.toLowerCase();
-        if(email.includes('@')) {
-            localStorage.setItem('mam_email', email);
-            checkStatus();
-        }
-    }
-
-    function checkStatus() {
-        const email = localStorage.getItem('mam_email');
-        if(email) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('portal-artista').style.display = 'block';
-            document.getElementById('user-display').innerText = email;
-
-            // Se for ADMIN (Matias)
-            if(admins.includes(email)) {
-                document.getElementById('admin-tag').innerHTML = '<span class="admin-badge">PROPRIETÁRIO - MODO ILIMITADO</span>';
-                document.getElementById('pagamento-card').style.display = 'none';
-            } else {
-                // Se for Artista Comum
-                if(localStorage.getItem('limit_' + email) === 'bloqueado') {
-                    const btn = document.getElementById('btn-envio');
-                    btn.classList.add('disabled');
-                    btn.innerHTML = "LIMITE GRÁTIS ATINGIDO";
-                    btn.onclick = (e) => { e.preventDefault(); alert('Limite gratuito atingido. Faça o upgrade via BFA.'); };
-                }
-            }
-        }
-    }
-
-    function validarUso() {
-        const email = localStorage.getItem('mam_email');
-        if(!admins.includes(email)) {
-            localStorage.setItem('limit_' + email, 'bloqueado');
-            setTimeout(() => { checkStatus(); }, 2000);
-        }
+        if(element) element.classList.add('active');
     }
 
     function logout() { localStorage.clear(); location.reload(); }

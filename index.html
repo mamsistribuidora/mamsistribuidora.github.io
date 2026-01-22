@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Segurança Máxima</title>
+    <title>MAM Distribuidora | Oficial</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -14,9 +14,8 @@
         
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
 
-        /* Auth Screen */
         .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; border: 1px solid #222; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; border: 1px solid #222; text-align: center; }
         
         .logo-area { color: var(--gold); font-size: 2.2rem; line-height: 1; font-weight: 700; letter-spacing: 4px; margin-bottom: 5px; }
         .tagline { font-size: 0.65rem; color: var(--gold); letter-spacing: 2px; font-weight: 400; opacity: 0.8; }
@@ -36,16 +35,16 @@
         input, select { width: 100%; padding: 14px 15px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; box-sizing: border-box; font-size: 0.9rem; transition: 0.3s; font-family: inherit; }
         input:focus { border-color: var(--gold); outline: none; }
         
-        .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--dim); cursor: pointer; }
+        .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--dim); cursor: pointer; z-index: 10; }
 
         .btn-gold { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
 
         .sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid #111; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
         .main { margin-left: 280px; padding: 40px; width: 100%; box-sizing: border-box; }
-        .hidden { display: none; }
+        
+        .hidden { display: none !important; }
 
-        /* Estilo para tela de código */
-        .code-verify { padding: 20px; background: rgba(212, 175, 55, 0.05); border-radius: 10px; border: 1px dashed var(--gold); margin-top: 15px; }
+        .code-verify-box { padding: 20px; background: rgba(212, 175, 55, 0.05); border-radius: 10px; border: 1px dashed var(--gold); margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -57,7 +56,7 @@
             <div class="tagline">DISTRIBUIDORA DIGITAL</div>
         </div>
 
-        <div id="login-form">
+        <div id="login-container">
             <button class="btn-google" onclick="authGoogle()">
                 <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Logo"> 
                 Entrar com o Google
@@ -69,10 +68,10 @@
                 <i class="fa-solid fa-eye toggle-pass" onclick="toggleVisibility('l-pass', this)"></i>
             </div>
             <button class="btn-gold" onclick="login()">ENTRAR</button>
-            <p style="font-size: 0.8rem; margin-top: 25px; color: var(--dim);">Não tens conta? <span onclick="toggleAuth('register')" style="color:var(--gold); cursor:pointer; font-weight:600;">Criar Agora</span></p>
+            <p style="font-size: 0.8rem; margin-top: 25px; color: var(--dim);">Não tens conta? <a href="#" onclick="showRegister()" style="color:var(--gold); font-weight:600; text-decoration:none;">Criar Agora</a></p>
         </div>
 
-        <div id="register-form" class="hidden">
+        <div id="register-container" class="hidden">
             <button class="btn-google" onclick="authGoogle()">
                 <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Logo"> 
                 Cadastrar com o Google
@@ -86,23 +85,23 @@
                     <option value="+351">PT (+351)</option>
                     <option value="+55">BR (+55)</option>
                 </select>
-                <input type="text" id="r-phone" placeholder="9xx xxx xxx" style="flex: 1;">
+                <input type="text" id="r-phone" placeholder="Telemóvel">
             </div>
             <div class="input-group">
                 <input type="password" id="r-pass" placeholder="Criar Palavra-passe">
                 <i class="fa-solid fa-eye toggle-pass" onclick="toggleVisibility('r-pass', this)"></i>
             </div>
-            <button class="btn-gold" onclick="sendCode()">CADASTRAR E RECEBER CÓDIGO</button>
-            <p style="font-size: 0.8rem; margin-top: 20px; color: var(--dim);">Já és da família? <span onclick="toggleAuth('login')" style="color:var(--gold); cursor:pointer;">Login</span></p>
+            <button class="btn-gold" onclick="goToVerify()">CADASTRAR E RECEBER CÓDIGO</button>
+            <p style="font-size: 0.8rem; margin-top: 20px; color: var(--dim);">Já és da família? <a href="#" onclick="showLogin()" style="color:var(--gold); font-weight:600; text-decoration:none;">Fazer Login</a></p>
         </div>
 
-        <div id="verify-form" class="hidden">
-            <div class="code-verify">
-                <h3 style="margin-top:0; color:var(--gold);">Verificar Telemóvel</h3>
-                <p style="font-size:0.75rem; color:var(--dim);">Enviámos um código SMS para o número indicado. Insira-o abaixo para validar a sua conta.</p>
-                <input type="text" id="v-code" placeholder="Digite o Código de 6 Dígitos" style="text-align:center; font-size:1.2rem; letter-spacing:5px;">
-                <button class="btn-gold" onclick="validateCode()">VALIDAR CONTA</button>
-                <p style="font-size:0.7rem; margin-top:15px; cursor:pointer;" onclick="sendCode()">Não recebi? <span style="color:var(--gold);">Reenviar código</span></p>
+        <div id="verify-container" class="hidden">
+            <div class="code-verify-box">
+                <h3 style="margin-top:0; color:var(--gold);">Verificar Conta</h3>
+                <p style="font-size:0.75rem; color:var(--dim);">Insira o código de 6 dígitos enviado para o seu telemóvel para ativar a sua conta.</p>
+                <input type="text" id="v-code" placeholder="0 0 0 0 0 0" style="text-align:center; font-size:1.5rem; letter-spacing:8px;">
+                <button class="btn-gold" onclick="finalizeRegistration()">ATIVAR MINHA CONTA</button>
+                <p style="font-size:0.7rem; margin-top:15px; cursor:pointer;" onclick="goToVerify()">Reenviar código</p>
             </div>
         </div>
     </div>
@@ -113,21 +112,72 @@
         <i class="fa-solid fa-crown crown"></i><br>MAM
         <div class="tagline">DISTRIBUIDORA DIGITAL</div>
     </div>
-    <div style="padding: 0 20px;">
-        <p style="font-size: 0.7rem; color: var(--dim); border-bottom: 1px solid #222; padding-bottom: 10px;">MENU PRINCIPAL</p>
-        <div style="color:var(--gold); padding:10px; font-size:0.9rem;"><i class="fa-solid fa-house"></i> Início</div>
-    </div>
 </nav>
 
 <main id="main-content" class="main hidden">
     <div style="background: var(--card); padding: 30px; border-radius: 15px; border-left: 5px solid var(--gold);">
         <h2>Olá, <span id="display-name">Artista</span>! 👋</h2>
-        <p style="color: var(--dim);">A tua conta foi verificada com sucesso por telemóvel. Estás pronto para dominar as plataformas digitais.</p>
+        <p style="color: var(--dim);">Sua conta foi verificada com sucesso. Bem-vindo à MAM Distribuidora.</p>
     </div>
 </main>
 
 <script>
     const ADMINS = ["mamfilhos29@gmail.com", "playseana@gmail.com"];
+
+    // FUNÇÕES DE NAVEGAÇÃO ENTRE TELAS (CORRIGIDAS)
+    function showRegister() {
+        document.getElementById('login-container').classList.add('hidden');
+        document.getElementById('register-container').classList.remove('hidden');
+        document.getElementById('verify-container').classList.add('hidden');
+    }
+
+    function showLogin() {
+        document.getElementById('login-container').classList.remove('hidden');
+        document.getElementById('register-container').classList.add('hidden');
+        document.getElementById('verify-container').classList.add('hidden');
+    }
+
+    function goToVerify() {
+        const name = document.getElementById('r-name').value;
+        const phone = document.getElementById('r-phone').value;
+        
+        if(!name || !phone) {
+            alert("Por favor, preencha o nome e o número de telemóvel para segurança.");
+            return;
+        }
+
+        document.getElementById('register-container').classList.add('hidden');
+        document.getElementById('verify-container').classList.remove('hidden');
+        alert("Código de segurança enviado para o número: " + phone);
+    }
+
+    // FINALIZAÇÃO
+    function finalizeRegistration() {
+        const code = document.getElementById('v-code').value;
+        if(code.length < 4) {
+            alert("Por favor, insira o código de verificação recebido.");
+            return;
+        }
+        const name = document.getElementById('r-name').value;
+        setupPanel(name);
+    }
+
+    function login() {
+        const email = document.getElementById('l-email').value;
+        if(!email) return alert("Insira o seu e-mail");
+        setupPanel(email.split('@')[0]);
+    }
+
+    function authGoogle() {
+        setupPanel("Utilizador Google");
+    }
+
+    function setupPanel(name) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('sidebar').classList.remove('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('display-name').innerText = name;
+    }
 
     function toggleVisibility(id, icon) {
         const input = document.getElementById(id);
@@ -139,46 +189,7 @@
             icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
     }
+</script>
 
-    function toggleAuth(view) {
-        document.getElementById('login-form').classList.add('hidden');
-        document.getElementById('register-form').classList.add('hidden');
-        document.getElementById('verify-form').classList.add('hidden');
-        
-        if(view === 'login') document.getElementById('login-form').classList.remove('hidden');
-        if(view === 'register') document.getElementById('register-form').classList.remove('hidden');
-        if(view === 'verify') document.getElementById('verify-form').classList.remove('hidden');
-    }
-
-    function sendCode() {
-        const phone = document.getElementById('r-phone').value;
-        const name = document.getElementById('r-name').value;
-        if(!phone || !name) return alert("Preencha o nome e o telemóvel!");
-        
-        alert("SMS de Segurança enviado para: " + document.getElementById('r-country').value + " " + phone);
-        toggleAuth('verify');
-    }
-
-    function validateCode() {
-        const code = document.getElementById('v-code').value;
-        if(code.length < 4) return alert("Insira um código válido!");
-        
-        const name = document.getElementById('r-name').value;
-        setupPanel("novo@user.com", name);
-    }
-
-    function authGoogle() {
-        alert("A conectar à sua conta Google...");
-        setupPanel("googleuser@gmail.com", "Utilizador Google");
-    }
-
-    function login() {
-        const email = document.getElementById('l-email').value;
-        if(!email) return alert("Insira o seu e-mail");
-        setupPanel(email, email.split('@')[0]);
-    }
-
-    function setupPanel(email, name) {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('sidebar').classList.remove('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
+</body>
+</html>

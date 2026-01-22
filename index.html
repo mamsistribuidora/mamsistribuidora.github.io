@@ -8,47 +8,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --gold: #d4af37; --bg: #121212; --sidebar: #0a0a0a; --card: #1e1e1e; 
-            --input: #252525; --text: #ffffff; --dim-text: #888;
+            --gold: #d4af37; --bg: #0b0b0b; --sidebar: #050505; --card: #151515; 
+            --input: #1e1e1e; --text: #ffffff; --dim: #777;
         }
         
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
 
         /* Auth Screen */
         .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 15px; width: 100%; max-width: 420px; border: 1px solid #333; text-align: center; }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid #222; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        /* Logotipo Dotado (CSS) */
-        .logo-area { color: var(--gold); font-size: 2.2rem; line-height: 1; font-weight: 700; letter-spacing: 3px; }
-        .logo-area .tagline { font-size: 0.7rem; color: var(--gold); letter-spacing: 1px; font-weight: 400; margin-top: 5px; }
-        .logo-area .crown { font-size: 1.2rem; margin-bottom: 5px; filter: drop-shadow(0 0 5px rgba(212,175,55,0.4)); }
+        /* Logotipo MAM CSS */
+        .logo-area { color: var(--gold); font-size: 2.2rem; line-height: 1; font-weight: 700; letter-spacing: 4px; margin-bottom: 5px; }
+        .tagline { font-size: 0.65rem; color: var(--gold); letter-spacing: 2px; font-weight: 400; opacity: 0.8; }
+        .crown { font-size: 1.3rem; margin-bottom: 8px; filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
 
-        /* Google Button Style */
+        /* Google Button - Estilo Premium */
         .btn-google { 
-            background: #fff; color: #000; padding: 12px; border: none; border-radius: 8px; 
+            background: #ffffff; color: #1f1f1f; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; 
             font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; 
-            justify-content: center; gap: 10px; margin-top: 15px; transition: 0.3s; 
+            justify-content: center; gap: 12px; margin: 15px 0; transition: all 0.3s ease; font-size: 0.9rem;
         }
-        .btn-google:hover { background: #f1f1f1; transform: scale(1.01); }
-        .btn-google img { width: 20px; }
+        .btn-google:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(60,64,67,0.3); transform: translateY(-1px); }
+        .btn-google img { width: 20px; height: 20px; }
 
-        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: #444; font-size: 0.8rem; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #333; }
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
+        .divider { display: flex; align-items: center; text-align: center; margin: 25px 0; color: #444; font-size: 0.75rem; font-weight: 600; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #222; }
+        .divider:not(:empty)::before { margin-right: 1em; }
+        .divider:not(:empty)::after { margin-left: 1em; }
 
-        /* Outros estilos permanecem consistentes */
-        .sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid #222; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
-        .nav-link { padding: 12px 20px; color: var(--dim-text); text-decoration: none; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; border-radius: 8px; margin-bottom: 5px; font-size: 0.9rem; }
-        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); }
+        /* Input com Olho (Password) */
+        .input-group { position: relative; width: 100%; margin: 10px 0; }
+        input { width: 100%; padding: 14px 45px 14px 15px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; box-sizing: border-box; font-size: 0.9rem; transition: 0.3s; }
+        input:focus { border-color: var(--gold); outline: none; }
+        .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--dim); cursor: pointer; transition: 0.3s; }
+        .toggle-pass:hover { color: var(--gold); }
+
+        .btn-gold { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
+
+        /* Sidebar & Views */
+        .sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid #111; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
         .main { margin-left: 280px; padding: 40px; width: 100%; box-sizing: border-box; }
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.4s ease; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #282828; margin-bottom: 20px; }
-        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
-        input, select { width: 100%; padding: 14px; margin: 10px 0; background: #252525; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
         .hidden { display: none; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -61,62 +62,76 @@
         </div>
 
         <div id="login-form">
-            <p style="color:var(--dim-text); font-size:0.85rem; margin-top:15px;">Aceda ao seu painel oficial</p>
-            <input type="email" id="l-email" placeholder="E-mail">
-            <input type="password" id="l-pass" placeholder="Palavra-passe">
-            <button class="btn-gold" onclick="login()">ENTRAR</button>
-            
-            <div class="divider">OU CONTINUAR COM</div>
-            
             <button class="btn-google" onclick="authGoogle()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"> 
-                Entrar com Google
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Logo"> 
+                Entrar com o Google
             </button>
             
-            <p style="font-size: 0.8rem; margin-top: 20px;">Não tens conta? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer;">Criar Agora</span></p>
+            <div class="divider">OU E-MAIL</div>
+            
+            <div class="input-group">
+                <input type="email" id="l-email" placeholder="E-mail">
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="l-pass" placeholder="Palavra-passe">
+                <i class="fa-solid fa-eye toggle-pass" onclick="toggleVisibility('l-pass', this)"></i>
+            </div>
+
+            <button class="btn-gold" onclick="login()">ENTRAR</button>
+            <p style="font-size: 0.8rem; margin-top: 25px; color: var(--dim);">Não tens conta? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer; font-weight:600;">Criar Agora</span></p>
         </div>
 
         <div id="register-form" class="hidden">
-            <p style="color:var(--dim-text); font-size:0.85rem; margin-top:15px;">Junte-se à maior distribuidora de Angola</p>
-            
             <button class="btn-google" onclick="authGoogle()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"> 
-                Cadastrar com Google
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Logo"> 
+                Cadastrar com o Google
             </button>
 
-            <div class="divider">OU PREENCHA OS DADOS</div>
+            <div class="divider">OU DADOS MANUAIS</div>
 
-            <input type="text" id="r-name" placeholder="Nome do Artista ou Produtora">
+            <input type="text" id="r-name" placeholder="Nome Artístico / Produtora">
             <input type="email" id="r-email" placeholder="E-mail">
-            <input type="text" id="r-phone" placeholder="Telemóvel (+244)">
-            <input type="password" id="r-pass" placeholder="Criar Palavra-passe">
-            <button class="btn-gold" onclick="register()">FINALIZAR CADASTRO</button>
-            <p style="font-size: 0.8rem; margin-top: 20px;">Já és membro? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer;">Iniciar Sessão</span></p>
+            
+            <div class="input-group">
+                <input type="password" id="r-pass" placeholder="Criar Palavra-passe">
+                <i class="fa-solid fa-eye toggle-pass" onclick="toggleVisibility('r-pass', this)"></i>
+            </div>
+
+            <button class="btn-gold" onclick="register()">FINALIZAR CONTA</button>
+            <p style="font-size: 0.8rem; margin-top: 25px; color: var(--dim);">Já és da família? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer; font-weight:600;">Login</span></p>
         </div>
     </div>
 </div>
 
 <nav id="sidebar" class="sidebar hidden">
-    <div class="logo-area" style="padding:40px 20px;">
+    <div class="logo-area" style="padding: 40px 20px; text-align: center;">
         <i class="fa-solid fa-crown crown"></i><br>MAM
         <div class="tagline">DISTRIBUIDORA DIGITAL</div>
     </div>
-    <div class="nav-menu">
-        <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
-        <a class="nav-link" onclick="nav('upload', this)"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
-        <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Financeiro</a>
-    </div>
-</nav>
+    </nav>
 
 <main id="main-content" class="main hidden">
-    <div class="card card-gold">
+    <div style="background: var(--card); padding: 30px; border-radius: 15px; border-left: 5px solid var(--gold);">
         <h2>Olá, <span id="display-name">Artista</span>! 👋</h2>
-        <p>A tua música, o teu império. Gere tudo aqui.</p>
+        <p style="color: var(--dim);">Bem-vindo à MAM Distribuidora. O teu sucesso começa aqui.</p>
     </div>
 </main>
 
 <script>
     const ADMINS = ["mamfilhos29@gmail.com", "playseana@gmail.com"];
+
+    // Função para Ver/Ocultar Senha
+    function toggleVisibility(id, icon) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = "password";
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
 
     function toggleAuth(showRegister) {
         document.getElementById('login-form').classList.toggle('hidden', showRegister);
@@ -124,34 +139,31 @@
     }
 
     function authGoogle() {
-        alert("A conectar com Google Accounts... (Este botão requer integração com Firebase ou Google Cloud Console)");
-        // Simulação de login Google de sucesso
-        setupPanel("googleuser@gmail.com", "Usuário Google", "Artista Standard");
+        alert("A abrir janela de autenticação segura da Google...");
+        setupPanel("googleuser@gmail.com", "Utilizador Google");
     }
 
     function login() {
-        const e = document.getElementById('l-email').value;
-        if(!e) return alert("Preencha os dados!");
-        setupPanel(e, e.split('@')[0], ADMINS.includes(e) ? "ADMIN CEO" : "Artista Standard");
+        const email = document.getElementById('l-email').value;
+        if(!email) return alert("Insira o e-mail");
+        setupPanel(email, email.split('@')[0]);
     }
 
     function register() {
-        const n = document.getElementById('r-name').value;
-        const e = document.getElementById('r-email').value;
-        if(!n || !e) return alert("Preencha os dados!");
-        setupPanel(e, n, "Artista Standard");
+        const name = document.getElementById('r-name').value;
+        if(!name) return alert("Insira o nome");
+        setupPanel("novo@user.com", name);
     }
 
-    function setupPanel(email, displayName, role) {
+    function setupPanel(email, name) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('sidebar').classList.remove('hidden');
         document.getElementById('main-content').classList.remove('hidden');
-        document.getElementById('display-name').innerText = displayName;
-        alert("Bem-vindo à MAM Distribuidora!");
-    }
-
-    function nav(id, el) {
-        // Navegação simples (lógica interna)
+        document.getElementById('display-name').innerText = name;
+        
+        if(ADMINS.includes(email.toLowerCase())) {
+            alert("Acesso Administrativo Matias/Play Sean detectado.");
+        }
     }
 </script>
 

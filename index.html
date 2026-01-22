@@ -8,118 +8,140 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --bg: #0b0b0b; --card: #151515; --input: #1e1e1e; --text: #ffffff; --dim: #aaa; }
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; transition: all 0.3s ease; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; }
 
-        /* Auth Screen */
+        /* Estilo de Autenticação */
         .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
-        .auth-card { background: var(--card); padding: 25px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #222; text-align: center; }
-        .logo-main { width: 180px; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); }
-        .welcome-msg { font-size: 0.85rem; color: var(--dim); line-height: 1.6; margin-bottom: 20px; padding: 15px; background: rgba(212, 175, 55, 0.05); border-radius: 12px; border-left: 4px solid var(--gold); text-align: left; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 480px; border: 1px solid #222; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .logo-main { width: 160px; margin-bottom: 15px; border-radius: 10px; }
+        
+        .welcome-msg { font-size: 0.85rem; color: var(--dim); line-height: 1.6; margin-bottom: 25px; padding: 15px; background: rgba(212, 175, 55, 0.05); border-radius: 12px; border-left: 4px solid var(--gold); text-align: left; }
 
-        /* UI Elements */
-        .btn-google { background: #fff; color: #1f1f1f; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; border: none; }
-        input { width: 100%; padding: 14px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; font-family: inherit; margin-bottom: 10px; }
-        .btn-gold { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; transition: 0.3s; }
+        /* Google Picker */
+        .google-picker { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; display: none; align-items: center; justify-content: center; }
+        .picker-card { background: #fff; color: #333; width: 340px; border-radius: 15px; padding: 25px; }
+        .account-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; border-radius: 8px; }
+        .account-item:hover { background: #f9f9f9; }
 
-        /* Dashboard */
+        /* Botões e Inputs */
+        .btn-google { background: #fff; color: #1f1f1f; padding: 14px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; border: none; font-size: 0.9rem; }
+        .input-group { position: relative; margin-bottom: 12px; }
+        input, select { width: 100%; padding: 15px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; font-family: inherit; font-size: 0.9rem; }
+        input:focus { border-color: var(--gold); outline: none; }
+        .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; cursor: pointer; }
+        .btn-gold { background: var(--gold); color: #000; padding: 16px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .divider { display: flex; align-items: center; margin: 20px 0; color: #444; font-size: 0.75rem; font-weight: bold; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #222; margin: 0 15px; }
+
+        /* Dashboard & Sidebar */
         .wrapper { display: flex; min-height: 100vh; }
-        .sidebar { width: 280px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; z-index: 100; transition: 0.3s; }
-        .main-content { margin-left: 280px; padding: 30px; width: 100%; transition: 0.3s; }
+        .sidebar { width: 280px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; z-index: 100; padding-top: 20px; }
+        .main-content { margin-left: 280px; padding: 35px; width: 100%; }
+        
+        /* Quadro de Honra Adaptável */
+        .honor-frame { width: 85%; margin: 10px auto; border: 3px solid var(--gold); border-radius: 15px; overflow: hidden; box-shadow: 0 0 25px rgba(212,175,55,0.15); }
+        .honor-frame img { width: 100%; display: block; object-fit: cover; }
+        .honor-label { background: var(--gold); color: #000; font-size: 0.65rem; font-weight: 900; padding: 4px; text-transform: uppercase; }
 
-        /* Quadro de Honra */
-        .honor-frame { width: 100%; max-width: 200px; margin: 20px auto; border: 3px solid var(--gold); border-radius: 15px; overflow: hidden; box-shadow: 0 0 20px rgba(212,175,55,0.2); }
-        .honor-frame img { width: 100%; display: block; }
-        .honor-title { background: var(--gold); color: #000; font-size: 0.7rem; font-weight: 800; padding: 5px; text-transform: uppercase; }
-
-        /* Banner de Apoio */
-        .support-banner { background: linear-gradient(90deg, #1a1a1a, #252525); border: 1px solid var(--gold); border-radius: 15px; padding: 25px; margin-bottom: 30px; }
-        .bank-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .bank-card { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid #333; }
-        .bank-card span { color: var(--gold); font-size: 0.7rem; display: block; font-weight: bold; margin-bottom: 5px; }
+        /* Banner de Apoio Responsivo */
+        .support-banner { background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); border: 1px solid var(--gold); border-radius: 20px; padding: 30px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .bank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
+        .bank-item { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid #222; }
+        .bank-item label { color: var(--gold); font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 5px; text-transform: uppercase; }
+        .bank-item p { margin: 0; font-size: 0.85rem; word-break: break-all; }
 
         .hidden { display: none !important; }
 
-        /* Responsividade */
-        @media (max-width: 992px) {
-            .sidebar { width: 80px; }
-            .sidebar span, .sidebar p, .honor-title { display: none; }
-            .main-content { margin-left: 80px; }
-            .honor-frame { max-width: 60px; }
+        /* Responsividade para todos os dispositivos */
+        @media (max-width: 1024px) {
+            .sidebar { width: 220px; }
+            .main-content { margin-left: 220px; }
         }
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 15px; }
+            .main-content { margin-left: 0; padding: 20px; }
+            .auth-card { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-<div id="auth-screen" class="auth-overlay">
-    <div class="auth-card">
-        <img src="https://i.ibb.co/L9Y0pGZ/unnamed-6.jpg" class="logo-main" alt="MAM LOGO">
-        <div class="welcome-msg">
-            Seja Bem-vindo ao <strong>MAM Distribuidora musical Angolana</strong>, feito por Angolanos para facilitar os Angolanos a vender suas músicas em mais de 150 países e sacar em Kz com conta Bancária Angolana.
+<div id="google-picker" class="google-picker">
+    <div class="picker-card">
+        <p style="font-weight: bold; font-size: 1rem; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Escolha uma conta</p>
+        <div class="account-item" onclick="selectGoogle('Matias Arsénio')">
+            <div style="width:35px; height:35px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">M</div>
+            <div><strong style="font-size:0.9rem;">Matias Arsénio</strong><br><span style="font-size:0.75rem; color:#666;">matias@gmail.com</span></div>
         </div>
-        <button class="btn-google" onclick="setupDashboard('Artista Google')"> 
-            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Entrar com o Google 
-        </button>
-        <div style="margin:10px 0; color:#444; font-size:0.7rem;">OU</div>
-        <input type="email" placeholder="E-mail">
-        <button class="btn-gold" onclick="setupDashboard('Artista MAM')">ENTRAR</button>
+        <div class="account-item" onclick="selectGoogle('Play Sean')">
+            <div style="width:35px; height:35px; background:#4285F4; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">P</div>
+            <div><strong style="font-size:0.9rem;">Play Sean</strong><br><span style="font-size:0.75rem; color:#666;">mamfilhos29@gmail.com</span></div>
+        </div>
     </div>
 </div>
 
-<div class="wrapper">
-    <nav id="sidebar" class="sidebar hidden">
-        <div style="padding: 20px; text-align: center;">
+<div id="auth-screen" class="auth-overlay">
+    <div class="auth-card">
+        <img src="https://i.ibb.co/L9Y0pGZ/unnamed-6.jpg" class="logo-main" alt="MAM">
+        
+        <div class="welcome-msg">
+            Seja Bem-vindo ao <strong>MAM Distribuidora musical Angolana</strong>, feito por Angolanos para facilitar os Angolanos a vender suas músicas em mais de 150 países e sacar em Kz com conta Bancária Angolana.
+        </div>
+
+        <div id="login-container">
+            <button class="btn-google" onclick="openGoogle()"> 
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="20"> Iniciar Sessão com Google 
+            </button>
+            <div class="divider">OU EMAIL E SENHA</div>
+            <input type="email" id="l-email" placeholder="E-mail">
+            <div class="input-group">
+                <input type="password" id="l-pass" placeholder="Palavra-passe">
+                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('l-pass', this)"></i>
+            </div>
+            <button class="btn-gold" onclick="enterDash('Utilizador')">ENTRAR</button>
+            <p style="font-size: 0.85rem; margin-top:25px;">Ainda não é parceiro? <a href="javascript:void(0)" onclick="switchForm('reg')" style="color:var(--gold); font-weight:bold; text-decoration:none;">Criar Conta Agora</a></p>
+        </div>
+
+        <div id="reg-container" class="hidden">
+            <div class="divider">DADOS DO NOVO ARTISTA</div>
+            <input type="text" id="r-name" placeholder="Nome Artístico ou Produtora">
+            <div style="display: flex; gap: 8px; margin: 10px 0;">
+                <select style="flex: 0.4;"><option>AO (+244)</option></select>
+                <input type="text" placeholder="9xx xxx xxx" style="flex: 1;">
+            </div>
+            <input type="email" placeholder="E-mail Principal">
+            <div class="input-group">
+                <input type="password" id="r-pass" placeholder="Criar Senha">
+                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('r-pass', this)"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="r-confirm" placeholder="Confirmar Senha">
+                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('r-confirm', this)"></i>
+            </div>
+            <button class="btn-gold" onclick="validateReg()">CADASTRAR E VALIDAR</button>
+            <p style="font-size: 0.85rem; margin-top:20px;"><a href="javascript:void(0)" onclick="switchForm('log')" style="color:var(--gold); text-decoration:none;">Voltar para o Login</a></p>
+        </div>
+    </div>
+</div>
+
+<div id="dashboard" class="wrapper hidden">
+    <nav class="sidebar">
+        <div style="text-align: center;">
             <div class="honor-frame">
-                <div class="honor-title">Quadro de Honra</div>
+                <div class="honor-label">Quadro de Honra</div>
                 <img src="https://i.ibb.co/vYmS6Z9/unnamed-3.jpg" alt="Fundador">
             </div>
-            <p style="font-size: 0.75rem; color: var(--gold); font-weight: bold;">MAM DISTRIBUTOR</p>
+            <p style="color: var(--gold); font-weight: 700; font-size: 0.8rem; margin-top: 10px; letter-spacing: 1px;">MAM DISTRIBUTOR</p>
         </div>
-        <div style="padding: 20px;">
-            <p style="color:var(--gold);"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></p>
-            <p><i class="fa-solid fa-wallet"></i> <span>Carteira Kz</span></p>
+        <div style="padding: 25px;">
+            <p style="color:var(--gold); font-weight:bold; margin-bottom:20px; cursor:pointer;"><i class="fa-solid fa-house"></i> Início</p>
+            <p style="cursor:pointer;"><i class="fa-solid fa-music"></i> Minhas Músicas</p>
+            <p style="cursor:pointer;"><i class="fa-solid fa-wallet"></i> Carteira em Kz</p>
         </div>
     </nav>
 
-    <main id="main-content" class="main-content hidden">
+    <main class="main-content">
         <section class="support-banner">
-            <h3 style="margin-top:0; color:var(--gold);">Precisamos do seu Apoio</h3>
-            <p style="font-size:0.9rem;">Invista no projeto pelo bem de uma nova geração. Apoie a MAM Distribuidora!</p>
-            
-            <div class="bank-details">
-                <div class="bank-card">
-                    <span>E-MAIL OFICIAL</span>
-                    mamfilhos29@gmail.com
-                </div>
-                <div class="bank-card">
-                    <span>E-MAIL SECUNDÁRIO</span>
-                    produtorap6production@gmail.com
-                </div>
-                <div class="bank-card">
-                    <span>MULTICAIXA EXPRESS</span>
-                    937 881 307
-                </div>
-            </div>
-        </section>
-
-        <div style="background:var(--card); padding:30px; border-radius:15px; border:1px solid #222;">
-            <h2>Olá, <span id="display-name">Artista</span>!</h2>
-            <p style="color:var(--dim);">Siga o perfil oficial <strong>MAM Distributor</strong> para atualizações.</p>
-        </div>
-    </main>
-</div>
-
-<script>
-    function setupDashboard(name) {
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('sidebar').classList.remove('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
-        document.getElementById('display-name').innerText = name;
-    }
-</script>
-</body>
-</html>
+            <h3 style="margin-top:0; color:var(--gold); letter-spacing: 1px;"><i class="fa-solid fa-heart"></i> Precisamos de

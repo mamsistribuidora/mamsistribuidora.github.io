@@ -3,180 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Official Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #141414; --text: #fff; --dim: #888; --green: #2ecc71; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
+        :root { --gold: #d4af37; --bg: #1a1a1a; --sidebar-bg: #111111; --card-bg: #222222; --input-bg: #2a2a2a; --text: #ffffff; --dim: #a0a0a0; }
         
-        /* Layout */
-        .sidebar { width: 280px; background: #000; position: fixed; height: 100vh; border-right: 1px solid #222; display: flex; flex-direction: column; z-index: 100; transition: 0.3s; }
-        .content { margin-left: 280px; padding: 30px; transition: 0.3s; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; }
+
+        /* Sidebar Estilo Imagem */
+        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid #333; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+        .logo-container { padding: 40px 20px; text-align: center; }
+        .logo-placeholder { width: 80px; height: 80px; margin: 0 auto; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: bold; color: var(--gold); font-size: 1.5rem; background: #000; }
         
-        /* Navegação */
-        .nav-link { padding: 14px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); border-left: 4px solid var(--gold); }
-        .upload-btn { background: var(--gold) !important; color: #000 !important; font-weight: bold; margin: 15px; border-radius: 8px; justify-content: center; }
+        .nav-menu { flex-grow: 1; padding: 10px; }
+        .nav-item { padding: 12px 20px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 15px; font-size: 0.9rem; transition: 0.3s; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
+        .nav-item:hover, .nav-item.active { background: #222; color: var(--gold); }
+        .nav-item.active { background: rgba(212, 175, 55, 0.1); border-left: 3px solid var(--gold); }
 
-        /* Sugestões Automáticas */
-        .suggestion-bar { background: linear-gradient(90deg, #1a1a1a, #000); border: 1px solid var(--gold); padding: 15px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        /* Main Content */
+        .main-content { margin-left: 260px; padding: 40px; width: 100%; box-sizing: border-box; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 15px; }
         
-        /* Forms */
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #050505; border: 1px solid #333; color: white; border-radius: 6px; }
-        .btn-gold { background: var(--gold); color: #000; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* Grid de Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        
+        /* Cards Estilo Imagem */
+        .card { background: var(--card-bg); border: 1px solid #333; border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+        .card-gold { border: 1px solid var(--gold); }
+        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        
+        /* Inputs e Botões */
+        input { width: 100%; padding: 12px; margin: 10px 0; background: var(--input-bg); border: 1px solid #444; color: white; border-radius: 6px; }
+        .btn-gold { background: var(--gold); color: #000; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-gold:hover { background: #b8962d; transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
 
-        /* Vistas */
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Perfil Item (Comunidade/Sugestões) */
+        .profile-strip { display: flex; align-items: center; justify-content: space-between; background: #282828; padding: 15px; border-radius: 10px; margin-top: 15px; }
+        .profile-info { display: flex; align-items: center; gap: 15px; }
+        .profile-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
 
-        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .content { margin-left: 0; } }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div id="login-overlay" style="position:fixed; inset:0; background:#000; z-index:2000; display:flex; align-items:center; justify-content:center;">
-    <div style="width:100%; max-width:350px; text-align:center;">
-        <h1 style="color:var(--gold); letter-spacing:10px;">MAM</h1>
-        <p style="color:var(--dim); margin-bottom:20px;">Portal do Artista & Administração</p>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Palavra-passe">
-        <button class="btn-gold" onclick="login()">ACEDER AO PAINEL</button>
-        <p style="font-size: 0.7rem; color: #444; margin-top: 15px;">MAM Distribuidora &copy; 2026</p>
+<aside class="sidebar">
+    <div class="logo-container">
+        <div class="logo-placeholder">
+            <i class="fa-solid fa-crown"></i>
+        </div>
+        <p style="color: var(--gold); font-size: 0.7rem; margin-top: 10px; letter-spacing: 2px;">MAM DISTRIBUIDORA</p>
     </div>
-</div>
-
-<nav class="sidebar">
-    <div style="padding: 30px; text-align: center;"><h1 style="color: var(--gold); margin: 0;">MAM</h1></div>
-    <div style="flex-grow: 1;">
-        <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
-        <a class="nav-link" onclick="nav('upload', this)"><i class="fa-solid fa-cloud-arrow-up"></i> Enviar Música</a>
-        <a class="nav-link" onclick="nav('catalog', this)"><i class="fa-solid fa-compact-disc"></i> Minhas Distribuições</a>
-        <a class="nav-link" onclick="nav('community', this)"><i class="fa-solid fa-users"></i> Comunidade</a>
-        <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Financeiro</a>
-    </div>
-    <a onclick="logout()" class="nav-link" style="color: #ff4444;"><i class="fa-solid fa-sign-out-alt"></i> Sair</a>
-</nav>
-
-<main class="content">
     
-    <div id="auto-suggestions">
-        <div class="suggestion-bar">
-            <div style="display:flex; align-items:center; gap:15px;">
-                <div style="width:40px; height:40px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#000;"><i class="fa-solid fa-check-double"></i></div>
-                <div><strong>MAM Distribuidora</strong><br><small>Perfil Oficial da Plataforma</small></div>
-            </div>
-            <button class="btn-gold" style="width:auto; font-size:0.7rem;" onclick="follow('MAM')">SEGUIR</button>
-        </div>
-
-        <div class="suggestion-bar" style="border-color: #fff;">
-            <div style="display:flex; align-items:center; gap:15px;">
-                <img src="https://via.placeholder.com/40" style="border-radius:50%; border:1px solid #fff;">
-                <div><strong>Play Sean Arsénio</strong><br><small>Músico Oficial</small></div>
-            </div>
-            <button class="btn-gold" style="width:auto; font-size:0.7rem; background:#fff;" onclick="follow('Play Sean')">SEGUIR ARTISTA</button>
-        </div>
+    <nav class="nav-menu">
+        <a class="nav-item active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
+        <a class="nav-item" onclick="nav('upload', this)"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
+        <a class="nav-item" onclick="nav('dist', this)"><i class="fa-solid fa-compact-disc"></i> Minhas Distribuições</a>
+        <a class="nav-item" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Limites de Saque</a>
+        <a class="nav-item" onclick="nav('community', this)"><i class="fa-solid fa-users"></i> Comunidade</a>
+        <a class="nav-item" onclick="nav('profile', this)"><i class="fa-solid fa-user-gear"></i> Perfil</a>
+    </nav>
+    
+    <div style="padding: 20px;">
+        <a onclick="location.reload()" class="nav-item" style="color: #ff4d4d;"><i class="fa-solid fa-power-off"></i> Sair</a>
     </div>
+</aside>
 
-    <section id="dash" class="view active">
-        <div class="card">
-            <h2 id="welcome-text">Bem-vindo à MAM</h2>
-            <p>Sua música em todo o mundo. Distribua hoje e ganhe em Kwanzas.</p>
-        </div>
-        <div id="admin-panel" class="card" style="display:none; border: 1px dashed var(--gold);">
-            <h3 style="color:var(--gold);">Painel Administrativo Ativo</h3>
-            <p>Acesso total às métricas de todos os artistas.</p>
-        </div>
-    </section>
+<main class="main-content">
+    
+    <header class="header-top">
+        <h2 style="margin:0; font-weight: 300;">Painel <span style="color: var(--gold); font-weight: 700;">Official</span></h2>
+        <div id="user-tag" style="font-size: 0.8rem; color: var(--dim);">Acesso: Visitante</div>
+    </header>
 
-    <section id="upload" class="view">
-        <h2>Enviar Novo Lançamento</h2>
-        <div class="card">
-            <input type="text" id="track-title" placeholder="Título da Música">
-            <input type="text" id="artist-name" placeholder="Nome do Artista">
-            <select><option>Kizomba</option><option>Semba</option><option>Kuduro</option></select>
-            <div style="border:2px dashed #333; padding:20px; text-align:center; margin:10px 0;">Upload de Áudio e Capa</div>
-            <button class="btn-gold" onclick="autoGenerateLink()">FINALIZAR E GERAR SMARTLINK</button>
-        </div>
-    </section>
-
-    <section id="catalog" class="view">
-        <h2>Minhas Distribuições</h2>
-        <div id="music-list">
+    <div class="dashboard-grid">
+        
+        <div class="left-col">
+            <div id="view-login" class="card">
+                <h3>Seja bem-vindo à MAM</h3>
+                <p style="font-size: 0.8rem; color: var(--dim);">Feito por Angolanos para facilitar os Angolanos.</p>
+                <input type="email" id="email" placeholder="E-mail">
+                <input type="text" id="phone" placeholder="Número de Telefone">
+                <input type="password" id="pass" placeholder="Palavra-passe">
+                <button class="btn-gold" onclick="login()">INICIAR SESSÃO</button>
             </div>
-    </section>
 
-    <section id="finance" class="view">
-        <div class="card">
-            <h3>Meu Saldo</h3>
-            <h1 style="color:var(--green);">0,00 Kz</h1>
-            <p style="font-size:0.8rem;">Levantamento BFA/BAI/BIC disponível a partir de 10.000 Kz (5.000 Kz para VIP/Admin).</p>
+            <div id="view-dash" class="view">
+                <div class="card card-gold">
+                    <h3>Olá, <span id="user-name">Artista</span>!</h3>
+                    <p>O seu catálogo está ativo e a gerar streams.</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Sugestões para Si</h3>
+                    <div class="profile-strip">
+                        <div class="profile-info">
+                            <div style="width:40px; height:40px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#000;"><i class="fa-solid fa-shield-check"></i></div>
+                            <div><strong>MAM Distribuidora</strong><br><small style="color:var(--dim);">Perfil Oficial</small></div>
+                        </div>
+                        <button class="btn-outline" onclick="this.innerText='Seguindo'">SEGUIR</button>
+                    </div>
+                    <div class="profile-strip">
+                        <div class="profile-info">
+                            <img src="https://via.placeholder.com/45" class="profile-img" alt="Play Sean">
+                            <div><strong>Play Sean Arsénio</strong><br><small style="color:var(--dim);">Músico Oficial</small></div>
+                        </div>
+                        <button class="btn-outline" style="border-color:#fff; color:#fff;" onclick="this.innerText='Seguindo'">SEGUIR</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
 
+        <div class="right-col">
+            <div class="card card-gold">
+                <div class="card-header">
+                    <i class="fa-solid fa-circle-check" style="color: var(--gold);"></i>
+                    <strong>MAM Distribuidora Oficial</strong>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--dim);">Siga o nosso perfil oficial para suporte imediato e verificação de conta.</p>
+                <button class="btn-gold" style="font-size: 0.7rem; width: auto;" onclick="alert('Seguindo Perfil Oficial')">SEGUIR AGORA</button>
+            </div>
+
+            <div class="card">
+                <h3>Limites de Saque</h3>
+                <p style="font-size: 0.8rem;">Artista: <strong>10.000 Kz</strong></p>
+                <p style="font-size: 0.8rem;">Admin/VIP: <strong>5.000 Kz</strong></p>
+                <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+                <p style="font-size: 0.7rem; color: var(--dim);">Pagamentos via BFA, BAI, BIC e Multicaixa Express.</p>
+            </div>
+        </div>
+
+    </div>
 </main>
 
 <script>
-    // CONFIGURAÇÕES AUTOMÁTICAS
-    const DATA = {
-        admin: { email: "mamfilhos29@gmail.com", pass: "Angell28#", phone: "+244937881307" },
-        artist: { email: "playseana@gmail.com", pass: "Angell28#", name: "Play Sean Arsénio" }
+    // DADOS MESTRE CONFORME ORIENTAÇÃO
+    const ADMIN_DATA = {
+        main: { email: "mamfilhos29@gmail.com", pass: "Angell28#", role: "ADMIN CEO" },
+        artist: { email: "playseana@gmail.com", pass: "Angell28#", role: "ARTISTA OFICIAL" }
     };
 
     function login() {
         const e = document.getElementById('email').value;
         const p = document.getElementById('pass').value;
 
-        if(e === DATA.admin.email && p === DATA.admin.pass) {
-            sessionStorage.setItem('role', 'CEO');
-            enter();
-        } else if(e === DATA.artist.email && p === DATA.artist.pass) {
-            sessionStorage.setItem('role', 'ARTISTA_OFICIAL');
-            enter();
-        } else if(e.includes('@')) {
-            sessionStorage.setItem('role', 'USER');
-            enter();
+        if(e === ADMIN_DATA.main.email && p === ADMIN_DATA.main.pass) {
+            startSession("Matias CEO", ADMIN_DATA.main.role);
+        } else if(e === ADMIN_DATA.artist.email && p === ADMIN_DATA.artist.pass) {
+            startSession("Play Sean Arsénio", ADMIN_DATA.artist.role);
+        } else if(e !== "" && p !== "") {
+            startSession(e.split('@')[0], "Utilizador");
+        } else {
+            alert("Por favor, preencha os dados de acesso.");
         }
     }
 
-    function enter() {
-        document.getElementById('login-overlay').style.display = 'none';
-        const role = sessionStorage.getItem('role');
-        if(role === 'CEO') document.getElementById('admin-panel').style.display = 'block';
-        document.getElementById('welcome-text').innerText = "Painel " + role;
-    }
-
-    function autoGenerateLink() {
-        const title = document.getElementById('track-title').value || "Nova Música";
-        const list = document.getElementById('music-list');
-        const link = "mam.link/" + title.toLowerCase().replace(/ /g, "-");
-        
-        list.innerHTML += `
-            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><strong>${title}</strong><br><small style="color:var(--gold);">${link}</small></div>
-                <button class="btn-gold" style="width:auto;" onclick="alert('Link Copiado!')">COPIAR SMARTLINK</button>
-            </div>
-        `;
-        alert("Música enviada com sucesso! SmartLink gerado automaticamente no seu catálogo.");
-        nav('catalog');
-    }
-
-    function follow(name) {
-        alert("Agora segues: " + name);
+    function startSession(name, role) {
+        document.getElementById('view-login').classList.add('hidden');
+        document.getElementById('view-dash').classList.add('active');
+        document.getElementById('user-name').innerText = name;
+        document.getElementById('user-tag').innerText = "Acesso: " + role;
+        alert("Bem-vindo ao Portal MAM!");
     }
 
     function nav(id, el) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(el) {
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-        }
+        // Lógica simples de navegação entre secções
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        el.classList.add('active');
+        console.log("Navegando para: " + id);
     }
-
-    function logout() { sessionStorage.clear(); location.reload(); }
 </script>
 
 </body>

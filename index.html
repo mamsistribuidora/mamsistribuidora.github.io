@@ -3,132 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Dashboard | Distribuição Profissional</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>MAM Distribuidora | Painel de Controlo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #161616; --text: #f0f0f0; --green: #2ecc71; --gray: #1a1a1a; }
+        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #141414; --text: #fff; --dim: #888; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
         
-        /* O teu CSS agora está protegido aqui dentro e não aparecerá como texto */
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
+        .overlay { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .hidden { display: none; }
         
-        .sidebar { width: 250px; height: 100vh; background: #000; position: fixed; left: 0; top: 0; border-right: 1px solid #222; display: flex; flex-direction: column; }
-        .logo-area { padding: 30px; text-align: center; border-bottom: 2px solid var(--gold); background: #000; }
-        .logo-area h1 { color: var(--gold); margin: 0; letter-spacing: 5px; font-size: 1.8rem; }
-        
-        .container { max-width: 550px; margin: 20px auto; padding: 20px; }
-        .card { background: var(--gray); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
-        
-        .nav-links { flex-grow: 1; padding: 20px 0; }
-        .nav-item { padding: 15px 30px; display: flex; align-items: center; color: #888; text-decoration: none; cursor: pointer; }
-        .nav-item:hover, .nav-item.active { color: var(--gold); background: rgba(212,175,55,0.05); border-left: 4px solid var(--gold); }
+        /* Sidebar */
+        .sidebar { width: 280px; background: #000; position: fixed; height: 100vh; border-right: 1px solid #222; display: flex; flex-direction: column; }
+        .nav-link { padding: 15px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; border-left: 3px solid transparent; }
+        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); border-left-color: var(--gold); }
+        .upload-item { background: var(--gold) !important; color: black !important; font-weight: bold; margin: 10px; border-radius: 8px; justify-content: center; }
 
-        .main-content { margin-left: 250px; padding: 40px; }
+        /* Main Content */
+        .content { margin-left: 280px; padding: 40px; }
+        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
         
-        .btn-gold { display: block; width: 100%; background: var(--gold); color: black; padding: 18px; border-radius: 8px; font-weight: bold; text-decoration: none; border: none; cursor: pointer; text-align: center; }
-        .btn-gold.disabled { background: #333 !important; color: #777 !important; cursor: not-allowed; }
-        
-        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
-        
-        .admin-badge { background: var(--gold); color: black; padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; }
-        
-        .kwanza-info { background: #002200; border: 1px solid #28a745; padding: 15px; border-radius: 10px; text-align: left; margin-top: 15px; }
+        /* Botões e Inputs */
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
+        .btn-gold { background: var(--gold); color: #000; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px; border-radius: 6px; cursor: pointer; }
 
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 20px; }
-        }
+        /* Lista de Músicas */
+        .music-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #222; }
+        .music-actions button { background: none; border: none; color: var(--dim); cursor: pointer; margin-left: 10px; }
+        .music-actions button:hover { color: var(--gold); }
 
-        #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .page-section { display: none; }
-        .active-section { display: block; }
+        @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; } }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div style="width: 100%; max-width: 350px; text-align: center; padding: 20px;">
-        <h1 style="color: var(--gold); letter-spacing: 10px;">MAM</h1>
-        <p style="color: #666; margin-bottom: 30px;">Digital Distribution</p>
-        <input type="email" id="email-input" placeholder="E-mail do Artista">
-        <button onclick="autenticar()" class="btn-gold">ENTRAR NO PAINEL</button>
+<div id="auth-check" class="overlay hidden">
     </div>
-</div>
 
 <nav class="sidebar">
-    <div class="logo-area">
-        <h1>MAM</h1>
+    <div style="padding: 30px; text-align: center;"><h1 style="color: var(--gold); margin: 0; letter-spacing: 5px;">MAM</h1></div>
+    <div style="flex-grow: 1;">
+        <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
+        <a class="nav-link" onclick="nav('my-music', this)"><i class="fa-solid fa-compact-disc"></i> Minhas Distribuições</a>
+        <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Limites de Saque</a>
+        <a class="nav-link" onclick="nav('profile', this)"><i class="fa-solid fa-user-gear"></i> Perfil e Configurações</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform" target="_blank" class="nav-link upload-item">
+            <i class="fa-solid fa-cloud-arrow-up"></i> ENVIAR MÚSICA
+        </a>
     </div>
-    <div class="nav-links">
-        <a class="nav-item active" onclick="showPage('home', this)"><i class="fas fa-th-large"></i> Dashboard</a>
-        <a class="nav-item" onclick="showPage('finance', this)"><i class="fas fa-wallet"></i> Financeiro</a>
-        <a class="nav-item" onclick="showPage('profile', this)"><i class="fas fa-user-circle"></i> Perfil</a>
-    </div>
-    <div style="padding: 20px;">
-        <button onclick="logout()" style="background:none; border:none; color: #ff4444; cursor: pointer;"><i class="fas fa-sign-out-alt"></i> Sair</button>
-    </div>
+    <a onclick="logout()" class="nav-link" style="color: #ff4d4d;"><i class="fa-solid fa-power-off"></i> Sair da Conta</a>
 </nav>
 
-<main class="main-content">
-    <div id="home" class="page-section active-section">
+<main class="content">
+    
+    <section id="dash" class="view">
         <div class="card">
-            <h2 style="color: var(--gold);">Bem-vindo à MAM</h2>
-            <p>A tua música nas maiores plataformas mundiais.</p>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform" target="_blank" class="btn-gold">NOVO LANÇAMENTO</a>
+            <h2>Bem-vindo à MAM Distribuidora</h2>
+            <p>A sua plataforma angolana de vendas globais. Distribua as suas músicas para mais de 150 lojas.</p>
         </div>
-    </div>
+    </section>
 
-    <div id="finance" class="page-section">
+    <section id="my-music" class="view hidden">
+        <h2>Minhas Distribuições</h2>
         <div class="card">
-            <h3><i class="fas fa-money-bill-wave"></i> Meus Ganhos</h3>
-            <h1 style="color: var(--green);">0.00 Kz</h1>
-            <div class="kwanza-info">
-                <p>Levantamentos disponíveis para contas em Angola via BFA.</p>
+            <p style="color: var(--dim);">Acompanhe, edite ou remova os seus lançamentos.</p>
+            <div id="music-list">
+                <div class="music-item">
+                    <span><i class="fa-solid fa-music"></i> Exemplo de Hit - Single (2026)</span>
+                    <div class="music-actions">
+                        <button title="Monitorizar"><i class="fa-solid fa-chart-simple"></i></button>
+                        <button title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button title="Eliminar" onclick="confirm('Deseja eliminar este lançamento?')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 15px; color: var(--gold);">* Monitorização e edição disponíveis após validação da loja.</p>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="profile" class="page-section">
+    <section id="profile" class="view hidden">
+        <h2>Perfil e Configurações</h2>
+        
         <div class="card">
-            <h3>Perfil do Artista</h3>
-            <p id="user-display-email"></p>
-            <div id="admin-badge-area"></div>
+            <h3><i class="fa-solid fa-user-pen"></i> Editar Perfil</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label style="font-size: 0.8rem;">Foto de Perfil</label>
+                    <input type="file">
+                    <input type="text" placeholder="Nome Completo / Produtora">
+                    <input type="email" placeholder="Novo E-mail">
+                </div>
+                <div>
+                    <input type="text" placeholder="Número de Telefone">
+                    <input type="password" placeholder="Nova Senha">
+                    <select>
+                        <option>Angola</option>
+                        <option>Portugal</option>
+                        <option>Brasil</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-gold" style="margin-top: 10px;">GUARDAR ALTERAÇÕES</button>
         </div>
-    </div>
+
+        <div class="card" style="border-top: 3px solid var(--gold);">
+            <h3><i class="fa-solid fa-microphone-lines"></i> Gerir Artistas</h3>
+            <p style="font-size: 0.8rem; color: var(--dim);">O seu plano permite gerir os nomes artísticos da sua conta.</p>
+            
+            <div id="artist-slots">
+                <div style="background: #000; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                    <i class="fa-solid fa-check-circle" style="color: var(--gold);"></i> Artista 1 (Grátis)
+                </div>
+            </div>
+
+            <div style="background: rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 8px;">
+                <p><strong>Deseja adicionar mais artistas?</strong></p>
+                <p style="font-size: 0.8rem;">O Plano Grátis permite apenas 1 artista. Para adicionar mais, faça o upgrade do seu plano.</p>
+                <button class="btn-outline" onclick="alert('Contacte o suporte MAM para upgrade de slots de artista.')">ADICIONAR ARTISTA (Pago)</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="finance" class="view hidden">
+        <h2>Limites de Saque</h2>
+        <div class="card">
+            <h3>Regras de Pagamento (AOA)</h3>
+            <p>Mínimo Artista: 10.000 Kz</p>
+            <p>Mínimo VIP/Admin: 5.000 Kz</p>
+        </div>
+    </section>
+
 </main>
 
 <script>
-    const admins = ["playseana@gmail.com", "produtorap6production@gmail.com"];
+    function nav(id, el) {
+        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+    }
 
-    function autenticar() {
-        const email = document.getElementById('email-input').value.toLowerCase();
-        if(email.includes('@')) {
-            localStorage.setItem('mam_user', email);
-            checkStatus();
+    function logout() {
+        localStorage.clear();
+        location.reload();
+    }
+
+    // Lógica simples para verificar se o utilizador está logado (pode ser expandida)
+    window.onload = function() {
+        if(!localStorage.getItem('mam_session')) {
+            // Se não houver sessão, você pode chamar a sua tela de boas vindas aqui
         }
     }
-
-    function checkStatus() {
-        const user = localStorage.getItem('mam_user');
-        if(user) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('user-display-email').innerText = user;
-            
-            if(admins.includes(user)) {
-                document.getElementById('admin-badge-area').innerHTML = '<span class="admin-badge">C.E.O. MATIAS MANUEL</span>';
-            }
-        }
-    }
-
-    function showPage(pageId, element) {
-        document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-section'));
-        document.getElementById(pageId).classList.add('active-section');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(element) element.classList.add('active');
-    }
-
-    function logout() { localStorage.clear(); location.reload(); }
-    window.onload = checkStatus;
 </script>
 
 </body>

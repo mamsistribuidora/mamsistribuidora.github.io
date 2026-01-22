@@ -3,59 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Lançamento Gratuito</title>
+    <title>MAM Distribuidora | Gestão e Pagamentos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #d4af37; --black: #050505; --gray: #121212; --text: #e0e0e0; }
-        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); margin: 0; text-align: center; }
-        
-        .header { padding: 40px 20px; border-bottom: 2px solid var(--gold); background: #000; }
-        .container { max-width: 500px; margin: 20px auto; padding: 20px; }
-        
+        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--text); margin: 0; }
+        .header { padding: 30px; text-align: center; border-bottom: 2px solid var(--gold); background: #000; }
+        .container { max-width: 550px; margin: 20px auto; padding: 20px; }
         .card { background: var(--gray); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
-        
-        /* Espaço para Anúncios Banner */
-        .ad-slot { background: #1a1a1a; border: 1px dashed #444; margin: 15px 0; padding: 10px; min-height: 100px; color: #555; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
-
-        .btn-gold { display: block; width: 100%; background: var(--gold); color: black; padding: 18px; border-radius: 8px; font-weight: bold; text-decoration: none; border: none; cursor: pointer; font-size: 1.1rem; }
-        
-        .free-badge { background: #28a745; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+        .btn-gold { display: block; width: 100%; background: var(--gold); color: black; padding: 18px; border-radius: 8px; font-weight: bold; text-decoration: none; border: none; cursor: pointer; text-align: center; }
+        .btn-gold.disabled { background: #333 !important; color: #777 !important; cursor: not-allowed; }
+        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        .admin-badge { background: var(--gold); color: black; padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; }
+        .kwanza-info { background: #002200; border: 1px solid #28a745; padding: 15px; border-radius: 10px; text-align: left; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <section class="header">
     <h1 style="color: var(--gold); letter-spacing: 5px; margin: 0;">MAM</h1>
-    <p style="color: #888;">PROCESSO DE DISTRIBUIÇÃO SUPORTADO POR ANÚNCIOS</p>
+    <p style="color: #888;">MATIAS ARSÉNIO MANUEL | PORTAL OFICIAL</p>
 </section>
 
 <div class="container">
-    
-    <div class="ad-slot">
-        <p>Publicidade: O seu apoio mantém o serviço gratuito para artistas independentes.</p>
-        </div>
-
-    <div class="card">
-        <span class="free-badge">PLANO STARTER: 1 ARTISTA GRÁTIS</span>
-        <h2 style="color: white;">Lançar meu Hit</h2>
-        <p style="font-size: 0.9rem; color: #aaa;">Ao continuar, o seu processo será validado através de parceiros publicitários.</p>
-        
-        <div style="text-align: left; background: #000; padding: 15px; border-radius: 10px; margin: 15px 0;">
-            <p style="font-size: 0.8rem;"><i class="fas fa-check-circle" style="color: var(--gold);"></i> Spotify, Apple, TikTok e +150 lojas.</p>
-            <p style="font-size: 0.8rem;"><i class="fas fa-check-circle" style="color: var(--gold);"></i> 100% Gratuito (Patrocinado).</p>
-        </div>
-
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform?usp=dialog" class="btn-gold">
-            INICIAR ENVIO GRÁTIS
-        </a>
+    <div id="login-screen" class="card">
+        <h2 style="color: var(--gold);">ACESSO AO PORTAL</h2>
+        <input type="email" id="email-input" placeholder="Seu e-mail de artista">
+        <button onclick="autenticar()" class="btn-gold">ENTRAR</button>
     </div>
 
-    <div class="ad-slot" style="min-height: 250px;">
-        <p>Vídeo Promocional Parceiro</p>
+    <div id="portal-artista" style="display:none;">
+        <div class="card" style="text-align:center;">
+            <h3>Olá, <span id="user-display"></span></h3>
+            <div id="admin-tag"></div>
         </div>
 
-    <p style="font-size: 0.7rem; color: #444;">&copy; 2026 MAM DISTRIBUIDORA - MATIAS ARSÉNIO MANUEL<br>IBAN BFA (Doações/Upgrades): AO06.0006.0000.8631.6866.3015.2</p>
+        <div class="card">
+            <h3 style="color: #28a745;"><i class="fas fa-wallet"></i> Levantamento em Kwanzas</h3>
+            <p style="font-size: 0.85rem;">Músicos em Angola podem converter os seus ganhos internacionais (USD/EUR) diretamente para a conta bancária local.</p>
+            <div class="kwanza-info">
+                <p style="font-size: 0.8rem; margin: 0;"><b>Taxa de Câmbio:</b> Atualizada conforme o mercado angolano.</p>
+                <p style="font-size: 0.8rem; margin: 5px 0 0 0;"><b>Prazo:</b> 24h a 72h úteis após solicitação.</p>
+            </div>
+            <button onclick="alert('Funcionalidade de pedido de levantamento disponível após o primeiro relatório de royalties.')" class="btn-gold" style="background: #28a745; margin-top: 15px; color: white;">SOLICITAR PAGAMENTO (AOA)</button>
+        </div>
+
+        <div id="pagamento-card" class="card" style="text-align:center;">
+            <h3 style="color: var(--gold);">Plano Ilimitado</h3>
+            <p style="font-size: 0.8rem;">IBAN BFA: AO06.0006.0000.8631.6866.3015.2</p>
+            <p style="font-size: 0.75rem; color: #777;">Beneficiário: Matias Arsénio Manuel</p>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <i class="fas fa-upload" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;"></i>
+            <h3>Envio de Música</h3>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScZYIkU2XHLmtjPPxQn8qahvyrSRW8-KZGn_JazUnc_9_4K5g/viewform?usp=dialog" 
+               id="btn-envio" target="_blank" onclick="validarUso()" class="btn-gold">DISTRIBUIR AGORA</a>
+        </div>
+        
+        <center><button onclick="logout()" style="color: #666; background: none; border: none; cursor: pointer; text-decoration: underline;">Sair do Portal</button></center>
+    </div>
 </div>
+
+<script>
+    // Configuração de Administradores Mestres
+    const admins = ["playseana@gmail.com", "produtorap6production@gmail.com"];
+    const adminPhone = "937881307";
+
+    function autenticar() {
+        const email = document.getElementById('email-input').value.toLowerCase();
+        if(email.includes('@')) {
+            localStorage.setItem('mam_email', email);
+            checkStatus();
+        }
+    }
+
+    function checkStatus() {
+        const email = localStorage.getItem('mam_email');
+        if(email) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('portal-artista').style.display = 'block';
+            document.getElementById('user-display').innerText = email;
+
+            // Se for ADMIN (Matias)
+            if(admins.includes(email)) {
+                document.getElementById('admin-tag').innerHTML = '<span class="admin-badge">PROPRIETÁRIO - MODO ILIMITADO</span>';
+                document.getElementById('pagamento-card').style.display = 'none';
+            } else {
+                // Se for Artista Comum
+                if(localStorage.getItem('limit_' + email) === 'bloqueado') {
+                    const btn = document.getElementById('btn-envio');
+                    btn.classList.add('disabled');
+                    btn.innerHTML = "LIMITE GRÁTIS ATINGIDO";
+                    btn.onclick = (e) => { e.preventDefault(); alert('Limite gratuito atingido. Faça o upgrade via BFA.'); };
+                }
+            }
+        }
+    }
+
+    function validarUso() {
+        const email = localStorage.getItem('mam_email');
+        if(!admins.includes(email)) {
+            localStorage.setItem('limit_' + email, 'bloqueado');
+            setTimeout(() => { checkStatus(); }, 2000);
+        }
+    }
+
+    function logout() { localStorage.clear(); location.reload(); }
+    window.onload = checkStatus;
+</script>
 
 </body>
 </html>

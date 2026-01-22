@@ -46,4 +46,114 @@
         .view.active { display: block; animation: fadeIn 0.4s ease; }
         .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #282828; margin-bottom: 20px; }
         .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
-        input, select { width: 100%; padding: 14px; margin: 10px 0; background: #252
+        input, select { width: 100%; padding: 14px; margin: 10px 0; background: #252525; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="auth-screen" class="auth-overlay">
+    <div class="auth-card">
+        <div class="logo-area">
+            <i class="fa-solid fa-crown crown"></i><br>MAM
+            <div class="tagline">DISTRIBUIDORA DIGITAL</div>
+        </div>
+
+        <div id="login-form">
+            <p style="color:var(--dim-text); font-size:0.85rem; margin-top:15px;">Aceda ao seu painel oficial</p>
+            <input type="email" id="l-email" placeholder="E-mail">
+            <input type="password" id="l-pass" placeholder="Palavra-passe">
+            <button class="btn-gold" onclick="login()">ENTRAR</button>
+            
+            <div class="divider">OU CONTINUAR COM</div>
+            
+            <button class="btn-google" onclick="authGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"> 
+                Entrar com Google
+            </button>
+            
+            <p style="font-size: 0.8rem; margin-top: 20px;">Não tens conta? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer;">Criar Agora</span></p>
+        </div>
+
+        <div id="register-form" class="hidden">
+            <p style="color:var(--dim-text); font-size:0.85rem; margin-top:15px;">Junte-se à maior distribuidora de Angola</p>
+            
+            <button class="btn-google" onclick="authGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"> 
+                Cadastrar com Google
+            </button>
+
+            <div class="divider">OU PREENCHA OS DADOS</div>
+
+            <input type="text" id="r-name" placeholder="Nome do Artista ou Produtora">
+            <input type="email" id="r-email" placeholder="E-mail">
+            <input type="text" id="r-phone" placeholder="Telemóvel (+244)">
+            <input type="password" id="r-pass" placeholder="Criar Palavra-passe">
+            <button class="btn-gold" onclick="register()">FINALIZAR CADASTRO</button>
+            <p style="font-size: 0.8rem; margin-top: 20px;">Já és membro? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer;">Iniciar Sessão</span></p>
+        </div>
+    </div>
+</div>
+
+<nav id="sidebar" class="sidebar hidden">
+    <div class="logo-area" style="padding:40px 20px;">
+        <i class="fa-solid fa-crown crown"></i><br>MAM
+        <div class="tagline">DISTRIBUIDORA DIGITAL</div>
+    </div>
+    <div class="nav-menu">
+        <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
+        <a class="nav-link" onclick="nav('upload', this)"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</a>
+        <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Financeiro</a>
+    </div>
+</nav>
+
+<main id="main-content" class="main hidden">
+    <div class="card card-gold">
+        <h2>Olá, <span id="display-name">Artista</span>! 👋</h2>
+        <p>A tua música, o teu império. Gere tudo aqui.</p>
+    </div>
+</main>
+
+<script>
+    const ADMINS = ["mamfilhos29@gmail.com", "playseana@gmail.com"];
+
+    function toggleAuth(showRegister) {
+        document.getElementById('login-form').classList.toggle('hidden', showRegister);
+        document.getElementById('register-form').classList.toggle('hidden', !showRegister);
+    }
+
+    function authGoogle() {
+        alert("A conectar com Google Accounts... (Este botão requer integração com Firebase ou Google Cloud Console)");
+        // Simulação de login Google de sucesso
+        setupPanel("googleuser@gmail.com", "Usuário Google", "Artista Standard");
+    }
+
+    function login() {
+        const e = document.getElementById('l-email').value;
+        if(!e) return alert("Preencha os dados!");
+        setupPanel(e, e.split('@')[0], ADMINS.includes(e) ? "ADMIN CEO" : "Artista Standard");
+    }
+
+    function register() {
+        const n = document.getElementById('r-name').value;
+        const e = document.getElementById('r-email').value;
+        if(!n || !e) return alert("Preencha os dados!");
+        setupPanel(e, n, "Artista Standard");
+    }
+
+    function setupPanel(email, displayName, role) {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('sidebar').classList.remove('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('display-name').innerText = displayName;
+        alert("Bem-vindo à MAM Distribuidora!");
+    }
+
+    function nav(id, el) {
+        // Navegação simples (lógica interna)
+    }
+</script>
+
+</body>
+</html>

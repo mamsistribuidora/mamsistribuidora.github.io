@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Entrar ou Criar Conta</title>
+    <title>MAM Distribuidora | Acesso Oficial</title>
     <style>
         :root {
             --gold: #d4af37;
             --dark-pure: #050505;
             --card-bg: #121212;
             --text: #ffffff;
-            --cassule: #e67e22; /* Laranja para o nível Cassule */
+            --cassule: #e67e22;
         }
 
         body {
@@ -19,16 +19,30 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 450px;
             padding: 20px;
         }
+
+        /* LOGOTIPO DA MAM NO CABEÇALHO */
+        .mam-logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+            width: 100%;
+            max-width: 450px;
+        }
+        .mam-logo-header h1 { 
+            font-size: 35px; 
+            margin: 0; 
+            letter-spacing: 5px; 
+            color: var(--gold);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .login-container { width: 100%; max-width: 450px; }
 
         .auth-card {
             background: var(--card-bg);
@@ -39,9 +53,6 @@
             text-align: center;
         }
 
-        .logo-area h1 { color: var(--gold); font-size: 28px; margin-bottom: 5px; }
-        .logo-area p { font-size: 12px; color: #666; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
-
         input {
             width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box;
         }
@@ -50,70 +61,90 @@
             background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; transition: 0.3s;
         }
 
-        /* FERRAMENTA INSCRIÇÃO VIP CASSULE */
+        /* BOTÃO GOOGLE */
+        .btn-google {
+            background: #fff; color: #000; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        /* SECCÕES DE FORMULÁRIO */
+        #registerForm { display: none; } /* Escondido por padrão */
+
+        /* VIP CASSULE */
         .vip-cassule-box {
-            margin-top: 30px;
-            padding: 20px;
-            border: 2px dashed var(--cassule);
-            border-radius: 12px;
-            background: rgba(230, 126, 34, 0.05);
+            margin-top: 30px; padding: 20px; border: 2px dashed var(--cassule); border-radius: 12px; background: rgba(230, 126, 34, 0.05);
         }
-        .vip-cassule-box h3 { color: var(--cassule); margin: 0; font-size: 18px; }
-        .price-tag { font-size: 24px; font-weight: bold; margin: 10px 0; display: block; }
-        
-        .payment-form {
-            text-align: left;
-            font-size: 13px;
-            background: #000;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none; /* Escondido até clicar */
-        }
-        
-        .active-payment { display: block; }
 
         footer { margin-top: 30px; font-size: 11px; color: #444; text-align: center; }
-        .official-email { color: var(--gold); text-decoration: none; }
     </style>
 </head>
 <body>
 
+<div class="mam-logo-header">
+    <h1>MAM</h1>
+    <p style="margin: 0; font-size: 10px; color: #888; letter-spacing: 2px;">DISTRIBUIDORA DIGITAL</p>
+</div>
+
 <div class="login-container">
     <div class="auth-card">
-        <div class="logo-area">
-            <h1>MAM DISTRIBUIDORA</h1>
-            <p>Grupo P6 - CEO Play Sean Arsénio</p>
+        
+        <div id="loginSection">
+            <h2 style="margin-top: 0;">Entrar</h2>
+            <form>
+                <input type="email" placeholder="E-mail" required>
+                <input type="password" placeholder="Palavra-passe" required>
+                <button type="submit" class="btn-gold">Entrar na Conta</button>
+            </form>
+            
+            <button class="btn-google">
+                <img src="https://cdn-icons-png.flaticon.com/128/300/300221.png" width="18"> Entrar com Google
+            </button>
+            
+            <p style="font-size: 13px; margin-top: 20px;">Novo na MAM? <a href="javascript:void(0)" onclick="toggleAuth()" style="color: var(--gold);">Criar conta gratuita</a></p>
         </div>
 
-        <form id="loginForm">
-            <input type="email" placeholder="E-mail" required>
-            <input type="password" placeholder="Palavra-passe" required>
-            <button type="submit" class="btn-gold">Entrar na Conta</button>
-            <p style="font-size: 13px; color: #888;">Novo aqui? <a href="#" style="color: var(--gold);">Criar conta gratuita</a></p>
-        </form>
+        <div id="registerSection" style="display: none;">
+            <h2 style="margin-top: 0;">Criar Conta</h2>
+            <form>
+                <input type="text" placeholder="Nome Completo" required>
+                <input type="email" placeholder="E-mail" required>
+                <input type="password" placeholder="Criar Palavra-passe" required>
+                <button type="submit" class="btn-gold">Finalizar Registo</button>
+            </form>
+            <p style="font-size: 13px; margin-top: 20px;">Já tem conta? <a href="javascript:void(0)" onclick="toggleAuth()" style="color: var(--gold);">Fazer Login</a></p>
+        </div>
 
         <hr style="border: 0; border-top: 1px solid #333; margin: 30px 0;">
 
         <div class="vip-cassule-box">
-            <h3>Perfil VIP Cassule 🚀</h3>
-            <p style="font-size: 12px; color: #aaa;">Tenha acesso às ferramentas de Caça-Recompensas e Upload Prioritário.</p>
-            <span class="price-tag">3.000,00 Kz</span>
-            <button class="btn-gold" style="background: var(--cassule); color: white;" onclick="showPayment()">Inscrever-se Agora</button>
-
-            <div id="paymentArea" class="payment-form">
-                <p><strong>PAGAMENTO PARA O C.E.O:</strong></p>
-                <p>🏦 <strong>Banco:</strong> [Inserir Seu Banco]</p>
-                <p>💳 <strong>IBAN:</strong> [Inserir Seu IBAN]</p>
-                <p>📱 <strong>Express (Telemóvel):</strong> 937881307</p>
-                <hr style="border-color: #222;">
-                <p style="font-size: 11px; color: var(--cassule);">* Após o pagamento, envie o comprovativo para o WhatsApp 937881307 ou para o e-mail oficial.</p>
-                <input type="text" placeholder="Cole o código da transação aqui">
-                <button class="btn-gold" style="font-size: 12px;">Confirmar Pagamento</button>
-            </div>
+            <h3 style="color: var(--cassule); margin: 0;">VIP Cassule (3.000 Kz)</h3>
+            <p style="font-size: 11px; color: #888;">Ganha por ouvir e distribuir com prioridade.</p>
+            <button class="btn-gold" style="background: var(--cassule); color: white;" onclick="alert('Dados de Pagamento: \nIBAN: [Seu IBAN aqui] \nExpress: 937881307')">
+                Adquirir VIP agora
+            </button>
         </div>
     </div>
 
     <footer>
-        <p>E-mail Oficial: <a href="mailto:mamfilhos29@gmail.com" class="official-email">mamfilhos29@gmail.com</a></p>
-        <p>© 2026 MATIAS ARSÉNIO MANUEL |
+        <p>E-mail Oficial: <strong style="color: var(--gold);">mamfilhos29@gmail.com</strong></p>
+        <p>© 2026 MATIAS ARSÉNIO MANUEL | CEO PLAY SEAN ARSÉNIO</p>
+    </footer>
+</div>
+
+<script>
+    // Função para alternar entre Login e Criar Conta
+    function toggleAuth() {
+        const login = document.getElementById('loginSection');
+        const register = document.getElementById('registerSection');
+        
+        if (login.style.display === "none") {
+            login.style.display = "block";
+            register.style.display = "none";
+        } else {
+            login.style.display = "none";
+            register.style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

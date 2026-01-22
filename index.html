@@ -3,146 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Sistema de Lançamentos</title>
+    <title>MAM Distribuidora | Oficial</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #141414; --text: #fff; --dim: #888; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #141414; --text: #fff; --dim: #888; --green: #2ecc71; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
         
-        .sidebar { width: 280px; background: #000; position: fixed; height: 100vh; border-right: 1px solid #222; display: flex; flex-direction: column; z-index: 100; }
-        .nav-link { padding: 15px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); }
+        /* Layout */
+        .sidebar { width: 280px; background: #000; position: fixed; height: 100vh; border-right: 1px solid #222; display: flex; flex-direction: column; z-index: 100; transition: 0.3s; }
+        .content { margin-left: 280px; padding: 30px; transition: 0.3s; }
+        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
         
-        /* Botão Enviar Música no Menu */
-        .upload-item { background: var(--gold) !important; color: #000 !important; font-weight: bold; margin: 15px; border-radius: 8px; justify-content: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
+        /* Navegação */
+        .nav-link { padding: 14px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); border-left: 4px solid var(--gold); }
+        .upload-btn { background: var(--gold) !important; color: #000 !important; font-weight: bold; margin: 15px; border-radius: 8px; justify-content: center; }
 
-        .content { margin-left: 280px; padding: 40px; }
-        .view { display: none; animation: fadeIn 0.3s; }
-        .view.active { display: block; }
+        /* Sugestões Automáticas */
+        .suggestion-bar { background: linear-gradient(90deg, #1a1a1a, #000); border: 1px solid var(--gold); padding: 15px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        
+        /* Forms */
+        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #050505; border: 1px solid #333; color: white; border-radius: 6px; }
+        .btn-gold { background: var(--gold); color: #000; padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
+
+        /* Vistas */
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Estilo do Formulário de Envio */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
-        label { font-size: 0.85rem; color: var(--gold); font-weight: 600; }
-        .drop-zone { border: 2px dashed #333; padding: 30px; text-align: center; border-radius: 10px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .drop-zone:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.02); }
-
-        .card { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #222; }
-        .btn-send { background: var(--gold); color: #000; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; font-size: 1rem; }
-        
-        @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; padding: 20px; } }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .content { margin-left: 0; } }
     </style>
 </head>
 <body>
 
+<div id="login-overlay" style="position:fixed; inset:0; background:#000; z-index:2000; display:flex; align-items:center; justify-content:center;">
+    <div style="width:100%; max-width:350px; text-align:center;">
+        <h1 style="color:var(--gold); letter-spacing:10px;">MAM</h1>
+        <p style="color:var(--dim); margin-bottom:20px;">Portal do Artista & Administração</p>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Palavra-passe">
+        <button class="btn-gold" onclick="login()">ACEDER AO PAINEL</button>
+        <p style="font-size: 0.7rem; color: #444; margin-top: 15px;">MAM Distribuidora &copy; 2026</p>
+    </div>
+</div>
+
 <nav class="sidebar">
-    <div style="padding: 30px; text-align: center;"><h1 style="color: var(--gold); margin: 0; letter-spacing: 5px;">MAM</h1></div>
+    <div style="padding: 30px; text-align: center;"><h1 style="color: var(--gold); margin: 0;">MAM</h1></div>
     <div style="flex-grow: 1;">
         <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
-        <a class="nav-link" onclick="nav('upload', this)" id="btn-upload-menu" class="nav-link upload-item">
-            <i class="fa-solid fa-cloud-arrow-up"></i> ENVIAR MÚSICA
-        </a>
-        <a class="nav-link" onclick="nav('my-music', this)"><i class="fa-solid fa-compact-disc"></i> Minhas Músicas</a>
+        <a class="nav-link" onclick="nav('upload', this)"><i class="fa-solid fa-cloud-arrow-up"></i> Enviar Música</a>
+        <a class="nav-link" onclick="nav('catalog', this)"><i class="fa-solid fa-compact-disc"></i> Minhas Distribuições</a>
         <a class="nav-link" onclick="nav('community', this)"><i class="fa-solid fa-users"></i> Comunidade</a>
         <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Financeiro</a>
     </div>
-    <a onclick="logout()" class="nav-link" style="color: #ff4d4d; border: none;"><i class="fa-solid fa-power-off"></i> Sair</a>
+    <a onclick="logout()" class="nav-link" style="color: #ff4444;"><i class="fa-solid fa-sign-out-alt"></i> Sair</a>
 </nav>
 
 <main class="content">
     
+    <div id="auto-suggestions">
+        <div class="suggestion-bar">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="width:40px; height:40px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#000;"><i class="fa-solid fa-check-double"></i></div>
+                <div><strong>MAM Distribuidora</strong><br><small>Perfil Oficial da Plataforma</small></div>
+            </div>
+            <button class="btn-gold" style="width:auto; font-size:0.7rem;" onclick="follow('MAM')">SEGUIR</button>
+        </div>
+
+        <div class="suggestion-bar" style="border-color: #fff;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <img src="https://via.placeholder.com/40" style="border-radius:50%; border:1px solid #fff;">
+                <div><strong>Play Sean Arsénio</strong><br><small>Músico Oficial</small></div>
+            </div>
+            <button class="btn-gold" style="width:auto; font-size:0.7rem; background:#fff;" onclick="follow('Play Sean')">SEGUIR ARTISTA</button>
+        </div>
+    </div>
+
     <section id="dash" class="view active">
         <div class="card">
-            <h2>Olá, Matias! 👋</h2>
-            <p>Pronto para lançar o seu próximo sucesso mundial?</p>
-            <button class="btn-send" style="width: auto;" onclick="nav('upload')">COMEÇAR NOVO LANÇAMENTO</button>
+            <h2 id="welcome-text">Bem-vindo à MAM</h2>
+            <p>Sua música em todo o mundo. Distribua hoje e ganhe em Kwanzas.</p>
+        </div>
+        <div id="admin-panel" class="card" style="display:none; border: 1px dashed var(--gold);">
+            <h3 style="color:var(--gold);">Painel Administrativo Ativo</h3>
+            <p>Acesso total às métricas de todos os artistas.</p>
         </div>
     </section>
 
     <section id="upload" class="view">
-        <div style="margin-bottom: 20px;">
-            <h2>🚀 Novo Lançamento</h2>
-            <p style="color: var(--dim);">Preencha os dados abaixo para enviar a sua música para as plataformas.</p>
-        </div>
-
+        <h2>Enviar Novo Lançamento</h2>
         <div class="card">
-            <div class="form-grid">
-                <div>
-                    <label>Título da Música / Álbum</label>
-                    <input type="text" placeholder="Ex: Amor de Luanda">
-                    
-                    <label>Nome do Artista Principal</label>
-                    <input type="text" placeholder="Seu nome artístico">
-
-                    <label>Género Musical</label>
-                    <select>
-                        <option>Kizomba</option>
-                        <option>Semba</option>
-                        <option>Kuduro</option>
-                        <option>Rap / Hip-Hop</option>
-                        <option>Afro House</option>
-                        <option>Outro</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Data de Lançamento Desejada</label>
-                    <input type="date">
-
-                    <label>UPC/ISRC (Se tiver)</label>
-                    <input type="text" placeholder="Deixe em branco se for novo">
-
-                    <label>Produtor / Beatmaker</label>
-                    <input type="text" placeholder="Quem produziu a música?">
-                </div>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <label>Capa do Lançamento (Mín. 3000x3000px)</label>
-                <div class="drop-zone" onclick="alert('Escolher Imagem')">
-                    <i class="fa-solid fa-image" style="font-size: 2rem; color: var(--gold);"></i>
-                    <p>Clique ou arraste a Capa (JPG/PNG)</p>
-                </div>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <label>Ficheiro de Áudio (WAV de preferência)</label>
-                <div class="drop-zone" onclick="alert('Escolher Áudio')">
-                    <i class="fa-solid fa-file-audio" style="font-size: 2rem; color: var(--gold);"></i>
-                    <p>Clique para selecionar o ficheiro de áudio</p>
-                </div>
-            </div>
-
-            <button class="btn-send" onclick="finalizarEnvio()">FINALIZAR E ENVIAR PARA A MAM</button>
+            <input type="text" id="track-title" placeholder="Título da Música">
+            <input type="text" id="artist-name" placeholder="Nome do Artista">
+            <select><option>Kizomba</option><option>Semba</option><option>Kuduro</option></select>
+            <div style="border:2px dashed #333; padding:20px; text-align:center; margin:10px 0;">Upload de Áudio e Capa</div>
+            <button class="btn-gold" onclick="autoGenerateLink()">FINALIZAR E GERAR SMARTLINK</button>
         </div>
     </section>
 
-    <section id="my-music" class="view"><h2>Minhas Músicas</h2></section>
-    <section id="finance" class="view"><h2>Financeiro</h2></section>
-    <section id="community" class="view"><h2>Comunidade</h2></section>
+    <section id="catalog" class="view">
+        <h2>Minhas Distribuições</h2>
+        <div id="music-list">
+            </div>
+    </section>
+
+    <section id="finance" class="view">
+        <div class="card">
+            <h3>Meu Saldo</h3>
+            <h1 style="color:var(--green);">0,00 Kz</h1>
+            <p style="font-size:0.8rem;">Levantamento BFA/BAI/BIC disponível a partir de 10.000 Kz (5.000 Kz para VIP/Admin).</p>
+        </div>
+    </section>
 
 </main>
 
 <script>
+    // CONFIGURAÇÕES AUTOMÁTICAS
+    const DATA = {
+        admin: { email: "mamfilhos29@gmail.com", pass: "Angell28#", phone: "+244937881307" },
+        artist: { email: "playseana@gmail.com", pass: "Angell28#", name: "Play Sean Arsénio" }
+    };
+
+    function login() {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('pass').value;
+
+        if(e === DATA.admin.email && p === DATA.admin.pass) {
+            sessionStorage.setItem('role', 'CEO');
+            enter();
+        } else if(e === DATA.artist.email && p === DATA.artist.pass) {
+            sessionStorage.setItem('role', 'ARTISTA_OFICIAL');
+            enter();
+        } else if(e.includes('@')) {
+            sessionStorage.setItem('role', 'USER');
+            enter();
+        }
+    }
+
+    function enter() {
+        document.getElementById('login-overlay').style.display = 'none';
+        const role = sessionStorage.getItem('role');
+        if(role === 'CEO') document.getElementById('admin-panel').style.display = 'block';
+        document.getElementById('welcome-text').innerText = "Painel " + role;
+    }
+
+    function autoGenerateLink() {
+        const title = document.getElementById('track-title').value || "Nova Música";
+        const list = document.getElementById('music-list');
+        const link = "mam.link/" + title.toLowerCase().replace(/ /g, "-");
+        
+        list.innerHTML += `
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                <div><strong>${title}</strong><br><small style="color:var(--gold);">${link}</small></div>
+                <button class="btn-gold" style="width:auto;" onclick="alert('Link Copiado!')">COPIAR SMARTLINK</button>
+            </div>
+        `;
+        alert("Música enviada com sucesso! SmartLink gerado automaticamente no seu catálogo.");
+        nav('catalog');
+    }
+
+    function follow(name) {
+        alert("Agora segues: " + name);
+    }
+
     function nav(id, el) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        
-        // Atualiza o estado visual do menu lateral
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        if(el) el.classList.add('active');
+        if(el) {
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
     }
 
-    function finalizarEnvio() {
-        alert("Sucesso! A sua música foi enviada para os nossos curadores. Em breve estará disponível em todas as plataformas mundiais. Parabéns!");
-        nav('dash'); // Volta para o início após enviar
-    }
-
-    function logout() {
-        localStorage.clear();
-        location.reload();
-    }
+    function logout() { sessionStorage.clear(); location.reload(); }
 </script>
 
 </body>

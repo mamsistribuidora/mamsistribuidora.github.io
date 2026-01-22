@@ -12,48 +12,55 @@
         
         /* Auth Screen */
         .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); padding: 35px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #222; text-align: center; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #222; text-align: center; max-height: 90vh; overflow-y: auto; }
         
-        .welcome-msg { font-size: 0.82rem; color: var(--dim); line-height: 1.6; margin-bottom: 25px; padding: 15px; background: rgba(212, 175, 55, 0.05); border-radius: 10px; border-left: 3px solid var(--gold); text-align: left; }
+        .logo-area { color: var(--gold); font-size: 2.2rem; font-weight: 700; letter-spacing: 4px; margin-bottom: 5px; }
+        .crown { font-size: 1.3rem; margin-bottom: 8px; filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
         
-        .logo-area { color: var(--gold); font-size: 2.2rem; font-weight: 700; letter-spacing: 4px; margin-bottom: 10px; }
-        .crown { font-size: 1.3rem; margin-bottom: 8px; filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5)); }
+        .welcome-msg { font-size: 0.8rem; color: var(--dim); line-height: 1.5; margin-bottom: 20px; padding: 12px; background: rgba(212, 175, 55, 0.05); border-radius: 10px; border-left: 3px solid var(--gold); text-align: left; }
         
-        .btn-google { background: #fff; color: #1f1f1f; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; font-size: 0.9rem; }
-        
-        /* Simulação Escolha de Conta Google */
-        .google-picker { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; align-items: center; justify-content: center; }
-        .picker-card { background: #fff; color: #333; width: 320px; border-radius: 8px; padding: 20px; text-align: left; }
-        .account-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .account-item:hover { background: #f5f5f5; }
+        /* Google UI */
+        .btn-google { background: #fff; color: #1f1f1f; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; font-size: 0.85rem; }
+        .google-picker { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; align-items: center; justify-content: center; }
+        .picker-card { background: #fff; color: #333; width: 320px; border-radius: 12px; padding: 20px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .account-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; transition: 0.2s; }
+        .account-item:hover { background: #f8f9fa; }
 
-        .btn-gold { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
-        .input-group { position: relative; width: 100%; margin: 10px 0; }
-        input, select { width: 100%; padding: 14px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; box-sizing: border-box; }
+        /* Form Elements */
+        .divider { display: flex; align-items: center; margin: 15px 0; color: #444; font-size: 0.7rem; font-weight: bold; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #222; margin: 0 10px; }
         
-        .sidebar { width: 260px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; z-index: 100; }
-        .main { margin-left: 260px; padding: 40px; width: 100%; }
+        .input-group { position: relative; width: 100%; margin: 8px 0; }
+        input, select { width: 100%; padding: 12px 15px; background: var(--input); border: 1px solid #222; color: white; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; }
+        input:focus { border-color: var(--gold); outline: none; }
+        
+        .toggle-pass { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; cursor: pointer; z-index: 10; font-size: 1rem; }
+        .toggle-pass:hover { color: var(--gold); }
+
+        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
+        
         .hidden { display: none !important; }
 
-        /* Estilo Carteira */
+        /* Dashboard */
+        .sidebar { width: 260px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; z-index: 100; }
+        .main { margin-left: 260px; padding: 40px; width: 100%; }
         .wallet-card { background: linear-gradient(135deg, #1e1e1e 0%, #111 100%); padding: 25px; border-radius: 15px; border: 1px solid #333; margin-top: 20px; }
-        .balance { font-size: 2.5rem; font-weight: 700; color: #2ecc71; margin: 10px 0; }
     </style>
 </head>
 <body>
 
-<div id="google-account-picker" class="google-picker hidden">
+<div id="google-picker" class="google-picker hidden">
     <div class="picker-card">
-        <p style="font-weight: bold; margin-bottom: 15px; font-size: 0.9rem;">Escolha uma conta</p>
+        <p style="font-weight: bold; margin-bottom: 15px; font-size: 0.95rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Escolha uma conta</p>
         <div class="account-item" onclick="selectAccount('Matias Arsénio', 'matias@gmail.com')">
-            <div style="width:30px; height:30px; background:#d4af37; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">M</div>
-            <div><div style="font-size:0.8rem; font-weight:600;">Matias Arsénio</div><div style="font-size:0.7rem; color:#666;">matias@gmail.com</div></div>
+            <div style="width:32px; height:32px; background:#d4af37; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">M</div>
+            <div><div style="font-size:0.85rem; font-weight:600;">Matias Arsénio</div><div style="font-size:0.7rem; color:#666;">matias@gmail.com</div></div>
         </div>
         <div class="account-item" onclick="selectAccount('Play Sean', 'playseana@gmail.com')">
-            <div style="width:30px; height:30px; background:#4285F4; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">P</div>
-            <div><div style="font-size:0.8rem; font-weight:600;">Play Sean</div><div style="font-size:0.7rem; color:#666;">playseana@gmail.com</div></div>
+            <div style="width:32px; height:32px; background:#4285F4; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">P</div>
+            <div><div style="font-size:0.85rem; font-weight:600;">Play Sean</div><div style="font-size:0.7rem; color:#666;">playseana@gmail.com</div></div>
         </div>
-        <p style="font-size: 0.7rem; color: #4285F4; margin-top: 15px; cursor: pointer;">Usar outra conta</p>
+        <p style="font-size: 0.75rem; color: #4285F4; margin-top: 15px; cursor: pointer; font-weight: 500;">Usar outra conta</p>
     </div>
 </div>
 
@@ -66,69 +73,29 @@
         </div>
 
         <div id="login-container">
-            <button class="btn-google" onclick="openGooglePicker()"> 
-                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Entrar com o Google 
+            <button class="btn-google" onclick="openGoogle()"> 
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Iniciar sessão com Google 
             </button>
-            <input type="email" id="l-email" placeholder="E-mail">
-            <button class="btn-gold" onclick="login()">ENTRAR</button>
-            <p style="font-size: 0.8rem; margin-top:20px;">Novo aqui? <a href="#" onclick="showRegister()" style="color:var(--gold);">Criar Conta</a></p>
+            <div class="divider">OU USAR EMAIL</div>
+            <input type="email" id="l-email" placeholder="E-mail de acesso">
+            <div class="input-group">
+                <input type="password" id="l-pass" placeholder="Palavra-passe">
+                <i class="fa-solid fa-eye toggle-pass" onclick="togglePass('l-pass', this)"></i>
+            </div>
+            <button class="btn-gold" onclick="login()">INICIAR SESSÃO</button>
+            <p style="font-size: 0.8rem; margin-top:20px; color:var(--dim);">Não tem conta? <a href="#" onclick="showForm('register')" style="color:var(--gold); font-weight:bold; text-decoration:none;">Criar Conta</a></p>
         </div>
 
         <div id="register-container" class="hidden">
-            <input type="text" id="r-name" placeholder="Nome Artístico">
-            <select id="r-country"><option>Angola</option><option>Portugal</option></select>
-            <input type="text" id="r-phone" placeholder="9xx xxx xxx">
-            <button class="btn-gold" onclick="simulateSMS()">CADASTRAR</button>
-            <p style="font-size: 0.8rem; margin-top:20px;"><a href="#" onclick="showLogin()" style="color:var(--gold);">Voltar</a></p>
-        </div>
-    </div>
-</div>
-
-<nav id="sidebar" class="sidebar hidden">
-    <div style="padding:40px 20px; text-align:center;" class="logo-area"><i class="fa-solid fa-crown crown"></i><br>MAM</div>
-    <div style="padding:20px; font-size:0.8rem;">
-        <p onclick="showSection('dash')" style="cursor:pointer; color:var(--gold);"><i class="fa-solid fa-house"></i> Início</p>
-        <p onclick="showSection('wallet')" style="cursor:pointer;"><i class="fa-solid fa-wallet"></i> Minha Carteira</p>
-        <hr style="border:0; border-top:1px solid #222;">
-        <p style="color:var(--dim); font-size:0.7rem;">SUPORTE:</p>
-        <p style="font-size:0.65rem;">playseana@gmail.com</p>
-        <p style="font-size:0.65rem;">937 881 307</p>
-    </div>
-</nav>
-
-<main id="main-content" class="main hidden">
-    <div id="dash-section" class="view">
-        <div style="background:var(--card); padding:30px; border-radius:15px; border-left:5px solid var(--gold);">
-            <h2>Olá, <span id="display-name">Artista</span>! 👋</h2>
-            <p>O teu perfil está pronto para distribuição mundial.</p>
-        </div>
-    </div>
-
-    <div id="wallet-section" class="view hidden">
-        <h2>Minha Carteira</h2>
-        <div class="wallet-card">
-            <p style="color:var(--dim); font-size:0.8rem;">SALDO DISPONÍVEL</p>
-            <div class="balance">0,00 Kz</div>
-            <p style="font-size:0.7rem; color:var(--dim);">Próximo pagamento: Dia 15 do próximo mês.</p>
-            <button class="btn-gold" style="width:auto; padding:10px 30px; margin-top:20px;">SOLICITAR LEVANTAMENTO</button>
-        </div>
-        
-        <h3 style="margin-top:40px;">Histórico de Ganhos</h3>
-        <div style="background:var(--card); padding:20px; border-radius:10px; color:var(--dim); text-align:center;">
-            Não há transações recentes.
-        </div>
-    </div>
-</main>
-
-<script>
-    function openGooglePicker() { document.getElementById('google-account-picker').classList.remove('hidden'); }
-    
-    function selectAccount(name, email) {
-        document.getElementById('google-account-picker').classList.add('hidden');
-        setupPanel(name);
-    }
-
-    function showSection(id) {
-        document.getElementById('dash-section').classList.add('hidden');
-        document.getElementById('wallet-section').classList.add('hidden');
-        document.getElementById(id + '-section').classList.remove('hidden');
+            <button class="btn-google" onclick="openGoogle()"> 
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18"> Criar conta com Google 
+            </button>
+            <div class="divider">DADOS DO ARTISTA / PRODUTORA</div>
+            
+            <input type="text" id="r-name" placeholder="Nome do Artista ou Produtora">
+            
+            <div style="display: flex; gap: 5px; margin: 8px 0;">
+                <select id="r-country" style="flex: 0.4;">
+                    <option value="+244">AO (+244)</option>
+                    <option value="+351">PT (+351)</option>
+                    <option value="+258">MZ (+258

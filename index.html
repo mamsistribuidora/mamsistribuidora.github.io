@@ -1,45 +1,156 @@
-<div id="suggestions-container" style="margin-bottom: 30px;">
-    
-    <div class="official-suggestion" style="background: linear-gradient(90deg, #1a1a1a, #000); border: 2px solid var(--gold); padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-        <div style="display: flex; align-items: center;">
-            <div style="width: 50px; height: 50px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                <i class="fa-solid fa-shield-check" style="color: #000;"></i>
-            </div>
-            <div>
-                <strong style="color: var(--gold);">MAM Distribuidora Oficial <i class="fa-solid fa-circle-check"></i></strong>
-                <p style="margin: 0; font-size: 0.75rem; color: #ccc;">Siga para suporte e notícias.</p>
-            </div>
-        </div>
-        <button onclick="follow('MAM')" class="btn-gold" style="padding: 8px 15px; font-size: 0.8rem;">SEGUIR</button>
-    </div>
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAM Distribuidora | Painel Oficial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #141414; --text: #fff; --dim: #888; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        
+        /* Sidebar */
+        .sidebar { width: 280px; background: #000; position: fixed; height: 100vh; border-right: 1px solid #222; display: flex; flex-direction: column; z-index: 100; }
+        .nav-link { padding: 15px 25px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); }
 
-    <div class="official-suggestion" style="background: linear-gradient(90deg, #1a1a1a, #000); border: 1px solid #444; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center;">
-            <img src="https://via.placeholder.com/50" style="border-radius: 50%; border: 2px solid #fff; margin-right: 15px;" alt="Play Sean Arsénio">
-            <div>
-                <strong style="color: #fff;">Play Sean Arsénio <i class="fa-solid fa-music" style="color: var(--gold); font-size: 0.7rem;"></i></strong>
-                <p style="margin: 0; font-size: 0.75rem; color: #ccc;">Artista & Músico Oficial</p>
-            </div>
-        </div>
-        <button onclick="follow('Play Sean Arsénio')" class="btn-gold" style="padding: 8px 15px; font-size: 0.8rem; background: #fff; color: #000;">SEGUIR ARTISTA</button>
-    </div>
+        .content { margin-left: 280px; padding: 40px; }
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Banner de Sugestão Oficial */
+        .official-suggestion { background: linear-gradient(90deg, #1a1a1a, #000); border: 1px solid var(--gold); padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+        .official-profile-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); margin-right: 15px; }
+
+        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
+        .btn-gold { background: var(--gold); color: #000; padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        
+        /* Admin Badge */
+        .badge-admin { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-left: 10px; }
+
+        @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="login-screen" style="position:fixed; inset:0; background:#000; z-index:2000; display:flex; align-items:center; justify-content:center;">
+    <div style="width:100%; max-width:350px; text-align:center; padding:20px;">
+        <h1 style="color:var(--gold); letter-spacing:8px;">MAM</h1>
+        <p style="color:var(--dim);">Acesso ao Portal</p>
+        <input type="email" id="email" placeholder="E-mail" style="width:100%; padding:12px; margin:10px 0; background:#111; border:1px solid #333; color:white; border-radius:6px;">
+        <input type="password" id="pass" placeholder="Palavra-passe" style="width:100%; padding:12px; margin:10px 0; background:#111; border:1px solid #333; color:white; border-radius:6px;">
+        <button class="btn-gold" style="width:100%;" onclick="autenticar()">ENTRAR</button>
+    </div>
 </div>
 
+<nav class="sidebar">
+    <div style="padding: 30px; text-align: center;"><h1 style="color: var(--gold); margin: 0;">MAM</h1></div>
+    <div style="flex-grow: 1;">
+        <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
+        <a class="nav-link" onclick="nav('community', this)"><i class="fa-solid fa-users"></i> Comunidade</a>
+        <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Financeiro</a>
+        <a class="nav-link" onclick="nav('profile', this)"><i class="fa-solid fa-user-shield"></i> Meu Perfil</a>
+    </div>
+</nav>
+
+<main class="content">
+    
+    <div id="suggestion-banner" class="official-suggestion">
+        <div style="display: flex; align-items: center;">
+            <img src="https://via.placeholder.com/50" class="official-profile-img" alt="MAM Official">
+            <div>
+                <strong style="color: var(--gold);">MAM Distribuidora Oficial <i class="fa-solid fa-circle-check"></i></strong>
+                <p style="margin: 0; font-size: 0.8rem; color: var(--dim);">Siga o perfil oficial para notícias e suporte.</p>
+            </div>
+        </div>
+        <button class="btn-gold" id="btn-follow-official" onclick="followOfficial()">SEGUIR</button>
+    </div>
+
+    <section id="dash" class="view active">
+        <div class="card">
+            <h2 id="user-greeting">Olá, Artista!</h2>
+            <div id="admin-tools" style="display:none; margin-top:20px; border-top:1px solid #333; padding-top:15px;">
+                <h4 style="color:var(--gold);"><i class="fa-solid fa-lock"></i> Painel de Administração Ativo</h4>
+                <button class="btn-gold" style="background:#444; color:white;">Gerir Todos os Lançamentos</button>
+                <button class="btn-gold" style="background:#444; color:white;">Validar Pagamentos BFA</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="profile" class="view">
+        <div class="card">
+            <h3>Informações da Conta</h3>
+            <p><strong>E-mail:</strong> <span id="display-email"></span> <span id="admin-label"></span></p>
+            <p><strong>Telefone:</strong> <span id="display-phone"></span></p>
+        </div>
+    </section>
+
+</main>
+
 <script>
-    // Lógica de Autenticação para Play Sean Arsénio
-    const ARTIST_USER = "playseana@gmail.com";
-    const ARTIST_PASS = "Angell28#";
+    // DADOS ADMINISTRATIVOS CONFIGURADOS
+    const ADMIN_EMAIL = "mamfilhos29@gmail.com";
+    const ADMIN_PASS = "Angell28#";
+    const ADMIN_PHONE = "+244937881307";
 
-    function follow(name) {
-        alert("Agora segues: " + name);
-    }
+    function autenticar() {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('pass').value;
 
-    // O sistema reconhecerá automaticamente este acesso como o teu Perfil Artístico
-    function checkArtistLogin(email, pass) {
-        if(email === ARTIST_USER && pass === ARTIST_PASS) {
-            localStorage.setItem('mam_user_type', 'ARTIST_OWNER');
-            console.log("Acesso artístico de Play Sean Arsénio confirmado.");
+        if(e === ADMIN_EMAIL && p === ADMIN_PASS) {
+            localStorage.setItem('mam_user', e);
+            localStorage.setItem('mam_role', 'ADMIN');
+            localStorage.setItem('mam_phone', ADMIN_PHONE);
+            checkSession();
+        } else if (e.includes('@') && p.length > 4) {
+            localStorage.setItem('mam_user', e);
+            localStorage.setItem('mam_role', 'ARTISTA');
+            localStorage.setItem('mam_phone', 'Pendente');
+            checkSession();
+        } else {
+            alert("Dados incorretos!");
         }
     }
+
+    function checkSession() {
+        const user = localStorage.getItem('mam_user');
+        const role = localStorage.getItem('mam_role');
+        const phone = localStorage.getItem('mam_phone');
+
+        if(user) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('display-email').innerText = user;
+            document.getElementById('display-phone').innerText = phone;
+            document.getElementById('user-greeting').innerText = "Bem-vindo, " + user.split('@')[0] + "!";
+
+            if(role === 'ADMIN') {
+                document.getElementById('admin-tools').style.display = 'block';
+                document.getElementById('admin-label').innerHTML = '<span class="badge-admin">C.E.O. OFICIAL</span>';
+                // Ocultar sugestão de seguir se for o admin
+                document.getElementById('suggestion-banner').style.display = 'none';
+            }
+        }
+    }
+
+    function followOfficial() {
+        const btn = document.getElementById('btn-follow-official');
+        btn.innerText = "SEGUINDO";
+        btn.style.background = "#333";
+        btn.style.color = "#fff";
+        alert("Agora segues o Perfil Oficial da MAM Distribuidora!");
+    }
+
+    function nav(id, el) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    window.onload = checkSession;
 </script>
+
+</body>
+</html>

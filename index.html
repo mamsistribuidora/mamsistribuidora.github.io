@@ -3,181 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINEL GERAL | CEO PLAY SEAN ARSÉNIO</title>
+    <title>MAM Distribuidora | Entrar ou Criar Conta</title>
     <style>
         :root {
             --gold: #d4af37;
-            --dark-pure: #030303;
-            --card-bg: #111111;
+            --dark-pure: #050505;
+            --card-bg: #121212;
             --text: #ffffff;
-            --green-vip: #2ecc71;
-            --blue-admin: #3498db;
+            --cassule: #e67e22; /* Laranja para o nível Cassule */
         }
 
         body {
-            background-color: var(--dark-pure);
+            background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
             color: var(--text);
             font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 0;
             display: flex;
-        }
-
-        /* BARRA LATERAL DE COMANDO (SIDEBAR) */
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background: #000;
-            border-right: 1px solid #222;
-            padding: 20px;
-            position: fixed;
-        }
-
-        .sidebar h2 { color: var(--gold); font-size: 18px; text-transform: uppercase; letter-spacing: 2px; }
-        .nav-link { display: block; padding: 12px; color: #888; text-decoration: none; border-radius: 5px; margin-bottom: 5px; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { background: var(--gold); color: #000; font-weight: bold; }
-
-        /* ÁREA PRINCIPAL (MAIN CONTENT) */
-        .main-content {
-            margin-left: 270px;
-            padding: 30px;
-            width: calc(100% - 300px);
-        }
-
-        /* QUADRO DE HONRA NO TOPO DO PAINEL */
-        .header-honor {
-            border: 2px solid var(--gold);
-            padding: 25px;
-            border-radius: 15px;
-            background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        /* GRID DE ESTATÍSTICAS GERAIS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            border-bottom: 3px solid var(--gold);
-            text-align: center;
-        }
-        .stat-card h4 { margin: 0; color: #666; font-size: 12px; text-transform: uppercase; }
-        .stat-card p { margin: 10px 0 0; font-size: 24px; font-weight: bold; color: var(--gold); }
-
-        /* MÓDULO DE UPLOAD E CAÇA-RECOMPENSAS */
-        .action-box {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-        input, select, textarea {
-            width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px;
-        }
-        .btn-action {
-            background: var(--gold); color: #000; padding: 12px 25px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase;
-        }
-
-        .vip-hunter {
-            border: 1px solid var(--green-vip);
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            background: rgba(46, 204, 113, 0.05);
+            min-height: 100vh;
         }
 
-        footer { text-align: center; color: #444; font-size: 12px; margin-top: 40px; }
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+
+        .logo-area h1 { color: var(--gold); font-size: 28px; margin-bottom: 5px; }
+        .logo-area p { font-size: 12px; color: #666; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
+
+        input {
+            width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box;
+        }
+
+        .btn-gold {
+            background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; transition: 0.3s;
+        }
+
+        /* FERRAMENTA INSCRIÇÃO VIP CASSULE */
+        .vip-cassule-box {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed var(--cassule);
+            border-radius: 12px;
+            background: rgba(230, 126, 34, 0.05);
+        }
+        .vip-cassule-box h3 { color: var(--cassule); margin: 0; font-size: 18px; }
+        .price-tag { font-size: 24px; font-weight: bold; margin: 10px 0; display: block; }
+        
+        .payment-form {
+            text-align: left;
+            font-size: 13px;
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none; /* Escondido até clicar */
+        }
+        
+        .active-payment { display: block; }
+
+        footer { margin-top: 30px; font-size: 11px; color: #444; text-align: center; }
+        .official-email { color: var(--gold); text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>MAM GLOBAL</h2>
-        <p style="font-size: 10px; color: #555;">ID: Matias Arsénio Manuel</p>
-        <hr style="border: 0; border-top: 1px solid #222; margin: 20px 0;">
-        <a href="#" class="nav-link active">Painel Geral</a>
-        <a href="#" class="nav-link">Upload de Música</a>
-        <a href="#" class="nav-link">Caçador de Links</a>
-        <a href="#" class="nav-link">P6 Production</a>
-        <a href="#" class="nav-link">Financeiro (Kz)</a>
-        <a href="#" class="nav-link">Configurações</a>
+<div class="login-container">
+    <div class="auth-card">
+        <div class="logo-area">
+            <h1>MAM DISTRIBUIDORA</h1>
+            <p>Grupo P6 - CEO Play Sean Arsénio</p>
+        </div>
+
+        <form id="loginForm">
+            <input type="email" placeholder="E-mail" required>
+            <input type="password" placeholder="Palavra-passe" required>
+            <button type="submit" class="btn-gold">Entrar na Conta</button>
+            <p style="font-size: 13px; color: #888;">Novo aqui? <a href="#" style="color: var(--gold);">Criar conta gratuita</a></p>
+        </form>
+
+        <hr style="border: 0; border-top: 1px solid #333; margin: 30px 0;">
+
+        <div class="vip-cassule-box">
+            <h3>Perfil VIP Cassule 🚀</h3>
+            <p style="font-size: 12px; color: #aaa;">Tenha acesso às ferramentas de Caça-Recompensas e Upload Prioritário.</p>
+            <span class="price-tag">3.000,00 Kz</span>
+            <button class="btn-gold" style="background: var(--cassule); color: white;" onclick="showPayment()">Inscrever-se Agora</button>
+
+            <div id="paymentArea" class="payment-form">
+                <p><strong>PAGAMENTO PARA O C.E.O:</strong></p>
+                <p>🏦 <strong>Banco:</strong> [Inserir Seu Banco]</p>
+                <p>💳 <strong>IBAN:</strong> [Inserir Seu IBAN]</p>
+                <p>📱 <strong>Express (Telemóvel):</strong> 937881307</p>
+                <hr style="border-color: #222;">
+                <p style="font-size: 11px; color: var(--cassule);">* Após o pagamento, envie o comprovativo para o WhatsApp 937881307 ou para o e-mail oficial.</p>
+                <input type="text" placeholder="Cole o código da transação aqui">
+                <button class="btn-gold" style="font-size: 12px;">Confirmar Pagamento</button>
+            </div>
+        </div>
     </div>
 
-    <div class="main-content">
-        
-        <div class="header-honor">
-            <h3 style="margin: 0; color: var(--gold); letter-spacing: 2px; font-size: 12px;">CEO & FUNDADOR</h3>
-            <h1 style="margin: 5px 0;">Play Sean Arsénio</h1>
-            <p style="font-size: 14px; color: #888;">E-mail Administrativo: <strong>mamfilhos29@gmail.com</strong></p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h4>Total de Artistas</h4>
-                <p>1,240</p>
-            </div>
-            <div class="stat-card">
-                <h4>Streams Mensais</h4>
-                <p>2.4M</p>
-            </div>
-            <div class="stat-card" style="border-color: var(--green-vip);">
-                <h4>Ganhos VIP (Total)</h4>
-                <p>Kz 850.400</p>
-            </div>
-            <div class="stat-card">
-                <h4>Empresas Ativas</h4>
-                <p>04</p>
-            </div>
-        </div>
-
-        <div class="action-box">
-            <h3 style="color: var(--gold); margin-top: 0;">📤 Upload de Música Padrão</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <input type="text" placeholder="Nome da Obra">
-                <input type="text" value="Play Sean Arsénio">
-                <select>
-                    <option>Kizomba / Semba</option>
-                    <option>Hip Hop / Rap</option>
-                </select>
-                <input type="file">
-            </div>
-            <button class="btn-action" style="margin-top: 15px;">Distribuir Mundialmente</button>
-        </div>
-
-        <div class="action-box">
-            <h3 style="color: var(--green-vip); margin-top: 0;">💰 Módulo Caçador de Recompensas</h3>
-            <div class="vip-hunter">
-                <div>
-                    <strong>Tarefas do Perfil VIP</strong>
-                    <p style="font-size: 12px; color: #777;">Assista a vídeos e anúncios para acumular Kwanzas diretamente na carteira MAM.</p>
-                </div>
-                <div style="text-align: right;">
-                    <span style="font-size: 20px; font-weight: bold; color: var(--green-vip);">Kz 0,00</span><br>
-                    <button class="btn-action" style="background: var(--green-vip); color: #000; padding: 8px 15px; margin-top: 5px;">Caçar Agora</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="action-box">
-            <h3 style="color: var(--blue-admin); margin-top: 0;">⚙️ Gestão de Perfil e Biografia</h3>
-            <textarea style="height: 100px;">Play Sean Arsénio (Matias Arsénio Manuel), filho de Arsénio Manuel e Justina Ngueve. CEO da MAM Distribuidora, P6 Production e Nova Música. Natural de Luanda, Angola.</textarea>
-            <button class="btn-action" style="background: var(--blue-admin); color: #fff;">Sincronizar em Todas as Redes</button>
-        </div>
-
-        <footer>
-            <p><strong>MAM Distribuidora Global</strong> - Administração Central: mamfilhos29@gmail.com</p>
-            <p>937881307 | Luanda, Angola | © 2026 Grupo P6</p>
-        </footer>
-    </div>
-
-</body>
-</html>
+    <footer>
+        <p>E-mail Oficial: <a href="mailto:mamfilhos29@gmail.com" class="official-email">mamfilhos29@gmail.com</a></p>
+        <p>© 2026 MATIAS ARSÉNIO MANUEL |

@@ -7,191 +7,155 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --bg: #121212; --sidebar: #0a0a0a; --card: #1e1e1e; --input: #252525; --text: #ffffff; }
+        :root { 
+            --gold: #d4af37; 
+            --bg: #121212; 
+            --sidebar: #0a0a0a; 
+            --card: #1e1e1e; 
+            --input: #252525; 
+            --text: #ffffff;
+            --dim-text: #888;
+        }
         
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            display: flex; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
 
+        /* Auth Screen (Login / Criar Conta) */
+        .auth-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: #000; 
+            z-index: 2000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+            text-align: center; 
+        }
+        .auth-card { 
+            background: var(--card); 
+            padding: 40px; 
+            border-radius: 15px; 
+            width: 100%; 
+            max-width: 420px; 
+            border: 1px solid #333; 
+        }
+        
         /* Sidebar Profissional */
-        .sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid #222; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
-        .logo-area { padding: 40px 20px; text-align: center; }
-        .logo-img { width: 140px; filter: drop-shadow(0 0 5px rgba(212,175,55,0.3)); }
+        .sidebar { 
+            width: 280px; 
+            background: var(--sidebar); 
+            border-right: 1px solid #222; 
+            position: fixed; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 100; 
+        }
+        .logo-area { 
+            padding: 40px 20px; 
+            text-align: center; 
+            color: var(--gold);
+            font-size: 2.2rem;
+            line-height: 1;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+        .logo-area .tagline {
+            font-size: 0.7rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+        .logo-area .crown {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 5px rgba(212,175,55,0.4));
+        }
         
         .nav-menu { flex-grow: 1; padding: 10px; }
-        .nav-link { padding: 12px 20px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; border-radius: 8px; margin-bottom: 5px; font-size: 0.9rem; }
-        .nav-link:hover, .nav-link.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); }
+        .nav-link { 
+            padding: 12px 20px; 
+            color: var(--dim-text); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            border-radius: 8px; 
+            margin-bottom: 5px; 
+            font-size: 0.9rem; 
+        }
+        .nav-link:hover, .nav-link.active { 
+            color: var(--gold); 
+            background: rgba(212, 175, 55, 0.05); 
+        }
 
-        /* Conteúdo */
-        .main { margin-left: 280px; padding: 40px; width: 100%; box-sizing: border-box; }
+        /* Conteúdo Principal */
+        .main { 
+            margin-left: 280px; 
+            padding: 40px; 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
         .view { display: none; animation: fadeIn 0.4s ease; }
         .view.active { display: block; }
 
-        /* Auth Screen (Login / Criar Conta) */
-        .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 15px; width: 100%; max-width: 420px; border: 1px solid #333; }
-        
         /* Grid de Dashboard */
         .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #282828; margin-bottom: 20px; }
-        .card-gold { border: 1px solid var(--gold); background: linear-gradient(145deg, #1e1e1e, #151515); }
+        .card { 
+            background: var(--card); 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid #282828; 
+            margin-bottom: 20px; 
+        }
+        .card-gold { 
+            border: 1px solid var(--gold); 
+            background: linear-gradient(145deg, #1e1e1e, #151515); 
+        }
 
         /* Inputs e Botões */
-        input, select { width: 100%; padding: 14px; margin: 10px 0; background: var(--input); border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
-        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
-        .btn-gold:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(212,175,55,0.2); }
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 10px 0; 
+            background: var(--input); 
+            border: 1px solid #333; 
+            color: white; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-family: inherit; 
+        }
+        .btn-gold { 
+            background: var(--gold); 
+            color: #000; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+            transition: 0.3s; 
+        }
+        .btn-gold:hover { 
+            transform: scale(1.02); 
+            box-shadow: 0 5px 15px rgba(212,175,55,0.2); 
+        }
         
         /* Sugestões Automáticas */
-        .sug-item { display: flex; align-items: center; justify-content: space-between; background: #151515; padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px solid #222; }
-        .sug-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
-
-        .hidden { display: none; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-<div id="auth-screen" class="auth-overlay">
-    <div class="auth-card">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://i.ibb.co/LzdM6v0/mam-logo.png" alt="MAM Logo" style="width: 120px;">
-            <p style="color: var(--dim); font-size: 0.8rem; margin-top: 15px;">MAM Distribuidora Digital - Para Angolanos.</p>
-        </div>
-
-        <div id="login-form">
-            <input type="email" id="l-email" placeholder="E-mail">
-            <input type="password" id="l-pass" placeholder="Palavra-passe">
-            <button class="btn-gold" onclick="login()">ENTRAR NO PAINEL</button>
-            <p style="font-size: 0.8rem; margin-top: 20px; text-align: center;">Não tens conta? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer;">Criar Agora</span></p>
-        </div>
-
-        <div id="register-form" class="hidden">
-            <input type="text" id="r-name" placeholder="Nome do Artista ou Produtora">
-            <input type="email" id="r-email" placeholder="E-mail Principal">
-            <select id="r-country"><option>Angola (+244)</option><option>Portugal (+351)</option></select>
-            <input type="text" id="r-phone" placeholder="Número de Telefone">
-            <input type="password" id="r-pass" placeholder="Criar Palavra-passe (Min. 6 Caracteres)">
-            <button class="btn-gold" onclick="register()">CADASTRAR E VALIDAR</button>
-            <p style="font-size: 0.8rem; margin-top: 20px; text-align: center;">Já és membro? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer;">Iniciar Sessão</span></p>
-        </div>
-    </div>
-</div>
-
-<nav id="sidebar" class="sidebar hidden">
-    <div class="logo-area">
-        <img src="https://i.ibb.co/LzdM6v0/mam-logo.png" class="logo-img" alt="Logo">
-    </div>
-    <div class="nav-menu">
-        <a class="nav-link active" onclick="nav('dash', this)"><i class="fa-solid fa-house"></i> Início</a>
-        <a class="nav-link" onclick="nav('upload', this)"><i class="fa-solid fa-cloud-arrow-up"></i> Enviar Música</a>
-        <a class="nav-link" onclick="nav('catalog', this)"><i class="fa-solid fa-compact-disc"></i> Catálogo</a>
-        <a class="nav-link" onclick="nav('finance', this)"><i class="fa-solid fa-wallet"></i> Financeiro</a>
-        <a class="nav-link" onclick="nav('profile', this)"><i class="fa-solid fa-user-shield"></i> Perfil Oficial</a>
-    </div>
-    <div style="padding: 20px;">
-        <a onclick="location.reload()" class="nav-link" style="color: #ff4d4d;"><i class="fa-solid fa-power-off"></i> Sair</a>
-    </div>
-</nav>
-
-<main id="main-content" class="main hidden">
-    
-    <div class="grid">
-        <div class="left">
-            <div class="card card-gold">
-                <h2>Olá, <span id="display-name">Artista</span>! 👋</h2>
-                <p>O seu acesso está validado. Comece a distribuir e receba via BFA ou Express.</p>
-            </div>
-
-            <section id="dash" class="view active">
-                <h3>Comunidade & Sugestões</h3>
-                <div class="sug-item">
-                    <div class="sug-info">
-                        <div style="width:40px; height:40px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; color:black;"><i class="fa-solid fa-shield-check"></i></div>
-                        <div><strong>MAM Distribuidora</strong><br><small>Perfil Administrativo</small></div>
-                    </div>
-                    <button class="btn-gold" style="width:auto; padding: 8px 15px; font-size: 0.7rem;" onclick="this.innerText='SEGUINDO'">SEGUIR</button>
-                </div>
-                <div class="sug-item">
-                    <div class="sug-info">
-                        <img src="https://i.ibb.co/LzdM6v0/mam-logo.png" class="avatar" alt="Play Sean">
-                        <div><strong>Play Sean Arsénio</strong><br><small>Músico Oficial</small></div>
-                    </div>
-                    <button class="btn-gold" style="width:auto; padding: 8px 15px; font-size: 0.7rem; background:white;" onclick="this.innerText='SEGUINDO'">SEGUIR</button>
-                </div>
-            </section>
-
-            <section id="upload" class="view">
-                <h3>Novo Lançamento</h3>
-                <div class="card">
-                    <input type="text" placeholder="Nome da Música">
-                    <select><option>Kizomba</option><option>Kuduro</option><option>Semba</option></select>
-                    <button class="btn-gold">GERAR SMARTLINK AUTOMÁTICO</button>
-                </div>
-            </section>
-        </div>
-
-        <div class="right">
-            <div class="card">
-                <h4>Status de Conta</h4>
-                <p id="user-role" style="color:var(--gold); font-weight: bold;">Artista Standard</p>
-                <hr style="border:0; border-top:1px solid #333;">
-                <p><small>Saque Mínimo:</small><br><strong id="limit-val">10.000 Kz</strong></p>
-            </div>
-            <div class="card" style="text-align: center;">
-                <i class="fa-solid fa-headset" style="font-size: 2rem; color: var(--gold);"></i>
-                <p><small>Suporte via WhatsApp:</small><br><strong>937881307</strong></p>
-            </div>
-        </div>
-    </div>
-</main>
-
-<script>
-    // CREDENCIAIS OFICIAIS
-    const ADMINS = ["mamfilhos29@gmail.com", "playseana@gmail.com"];
-
-    function toggleAuth(showRegister) {
-        document.getElementById('login-form').classList.toggle('hidden', showRegister);
-        document.getElementById('register-form').classList.toggle('hidden', !showRegister);
-    }
-
-    function login() {
-        const e = document.getElementById('l-email').value;
-        const p = document.getElementById('l-pass').value;
-
-        if(!e || !p) return alert("Preencha os dados!");
-        
-        setup(e);
-    }
-
-    function register() {
-        const n = document.getElementById('r-name').value;
-        const e = document.getElementById('r-email').value;
-        if(!n || !e) return alert("Preencha os dados de cadastro!");
-        
-        alert("Cadastro realizado! Código enviado para o telemóvel.");
-        setup(e, n);
-    }
-
-    function setup(email, name = "") {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('sidebar').classList.remove('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
-        
-        const finalName = name || email.split('@')[0];
-        document.getElementById('display-name').innerText = finalName;
-
-        if(ADMINS.includes(email.toLowerCase())) {
-            document.getElementById('user-role').innerText = "CEO / ADMINISTRADOR";
-            document.getElementById('limit-val').innerText = "5.000 Kz (VIP)";
-        }
-    }
-
-    function nav(id, el) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        el.classList.add('active');
-    }
-</script>
-
-</body>
-</html>
+        .sug-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            background: #151515; 
+            padding:

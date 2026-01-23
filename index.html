@@ -2,206 +2,206 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
     <style>
-        :root { --gold: #d4af37; --dark: #050505; --card: #121212; --blue: #00f2ff; --vip: #e67e22; }
-        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        :root { --gold: #d4af37; --dark: #050505; --card: #111; --blue: #00e5ff; }
+        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 80px; }
         
-        /* LOGOTIPO E BOAS VINDAS */
-        .header-main { text-align: center; padding: 20px; border-bottom: 2px solid var(--gold); background: #000; }
-        .logo-box { border: 2px solid var(--gold); display: inline-block; padding: 10px 30px; box-shadow: 0 0 15px var(--gold); margin-bottom: 10px; }
-        .logo-box h1 { margin: 0; letter-spacing: 12px; color: var(--gold); }
-        .welcome-note { font-size: 11px; max-width: 600px; margin: 0 auto; color: #bbb; line-height: 1.4; }
+        /* LOGO & BOAS VINDAS */
+        .mam-gate { text-align: center; padding: 25px; border-bottom: 2px solid var(--gold); background: #000; }
+        .logo { border: 3px solid var(--gold); display: inline-block; padding: 10px 35px; box-shadow: 0 0 15px var(--gold); }
+        .welcome-msg { font-size: 11px; max-width: 500px; margin: 15px auto; color: #ccc; }
 
-        /* BANNERS FIXOS (TAMANHO PEQUENO) */
-        .status-bar { display: flex; gap: 10px; padding: 10px; background: #080808; overflow-x: auto; border-bottom: 1px solid #222; }
-        .mini-banner { min-width: 250px; background: var(--card); border: 1px solid #333; padding: 8px; border-radius: 6px; font-size: 11px; flex-shrink: 0; }
-        
-        /* QUADRO DE HONRA GOLD */
+        /* BANNERS FIXOS */
+        .sticky-ads { display: flex; gap: 10px; padding: 10px; background: #080808; overflow-x: auto; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
+        .ad-mini { min-width: 250px; background: #181818; padding: 10px; border-radius: 8px; font-size: 11px; border: 1px solid #333; }
         .honor-gold { border: 2px solid var(--gold); background: linear-gradient(45deg, #000, #1a1a1a); display: flex; align-items: center; gap: 10px; }
-        .ceo-pic { width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--gold); object-fit: cover; background: url('https://i.ibb.co/vzYpYyP/playsean.jpg') center/cover; } /* Link simulado para sua foto editada */
+        .ceo-img { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--gold); background: url('https://i.ibb.co/vzYpYyP/playsean.jpg') center/cover; }
 
-        /* LAYOUT DASHBOARD */
-        #app-layout { display: none; display: flex; min-height: 100vh; }
-        .sidebar { width: 240px; background: #000; border-right: 1px solid #222; position: fixed; height: 100%; padding: 15px; box-sizing: border-box; }
-        .nav-link { display: block; padding: 12px; color: #999; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; cursor: pointer; }
-        .nav-link:hover { color: var(--gold); background: #111; }
-        .main-content { margin-left: 240px; padding: 25px; width: 100%; }
+        /* LAYOUT */
+        #app { display: none; display: flex; }
+        .sidebar { width: 260px; background: #000; border-right: 1px solid #222; position: fixed; height: 100vh; padding: 20px; box-sizing: border-box; }
+        .nav-btn { display: block; padding: 12px; color: #999; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; cursor: pointer; }
+        .nav-btn:hover { color: var(--gold); background: #0d0d0d; }
+        .main { margin-left: 260px; padding: 25px; width: 100%; }
 
-        /* FORMULÁRIOS E BOTÕES */
-        .form-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
-        .btn-action { width: 100%; padding: 14px; background: var(--gold); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; }
+        /* FORMS */
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
+        .btn { width: 100%; padding: 14px; background: var(--gold); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; }
         
-        /* PLAYER FIXO */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 2px solid var(--gold); padding: 12px; display: none; z-index: 1000; }
+        /* PLAYER */
+        .player { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 2px solid var(--gold); padding: 15px; display: none; z-index: 2000; }
     </style>
 </head>
 <body>
 
-<div id="gatekeeper">
-    <div class="header-main">
-        <div class="logo-box"><h1>MAM</h1><small>DISTRIBUIDORA</small></div>
-        <div class="welcome-note">
-            Seja bem-vindo a MAM Distribuidora uma distribuidora criado por Angolano para facilitar os Angolanos... aqui você distribui a sua música e recebe em quanza via BFA, Bai ou Multicaixa Express.
-        </div>
+<div id="auth-screen">
+    <div class="mam-gate">
+        <div class="logo"><h1>MAM</h1><small>DISTRIBUIDORA</small></div>
+        <p class="welcome-msg">Seja bem-vindo a MAM Distribuidora... Distribui, vende e recebe em Kwanzas via BFA, Bai ou Multicaixa Express. Inscreva-se já.</p>
     </div>
-
-    <div style="max-width: 400px; margin: 30px auto; padding: 20px; text-align: center;">
-        <div id="login-section">
-            <button class="btn-action" style="background:#fff; margin-bottom:15px;" onclick="googleAccountSync()">Entrar com Google</button>
-            <input type="email" id="email-in" placeholder="Email / Artista">
-            <input type="password" id="pass-in" placeholder="Senha">
-            <button class="btn-action" onclick="processLogin()">Entrar</button>
-            <p style="font-size:12px;">Não tem conta? <a href="#" onclick="toggleAuth('reg')" style="color:var(--gold)">Criar Conta</a></p>
+    <div style="max-width:350px; margin: 30px auto;">
+        <div id="login-box">
+            <button class="btn" style="background:#fff; margin-bottom:15px;" onclick="syncGoogle()">Entrar com Google</button>
+            <input type="email" id="email" placeholder="E-mail">
+            <input type="password" id="pass" placeholder="Senha">
+            <button class="btn" onclick="login()">Iniciar Secção</button>
+            <button class="btn" style="background:transparent; color:var(--gold)" onclick="toggleAuth(true)">Criar Conta</button>
         </div>
-
-        <div id="reg-section" style="display:none;">
-            <h3>Registo de Artista/Produtora</h3>
-            <input type="text" placeholder="Nome do Artista">
+        <div id="reg-box" style="display:none;">
+            <input type="text" id="reg-name" placeholder="Nome Artista/Produtora">
             <input type="email" id="reg-email" placeholder="E-mail">
-            <input type="tel" placeholder="Telefone (+244)">
-            <input type="password" placeholder="Criar PIN Secreto de Saque">
-            <button class="btn-action" onclick="alert('E-mail de verificação enviado! Ative sua conta.')">Confirmar e Verificar</button>
-            <p><a href="#" onclick="toggleAuth('login')" style="color:var(--gold)">Já tenho conta</a></p>
+            <input type="tel" placeholder="Angola (+244)">
+            <input type="password" id="reg-pin" placeholder="Crie seu PIN de Saque">
+            <button class="btn" onclick="sendActivation()">Confirmar e Verificar Email</button>
+            <button class="btn" style="background:transparent; color:var(--gold)" onclick="toggleAuth(false)">Já tenho conta</button>
         </div>
     </div>
 </div>
 
-<div id="app-layout">
-    <aside class="sidebar">
-        <div style="text-align:center; padding-bottom:15px;">
-            <span id="rank-tag" style="background:var(--gold); color:#000; font-size:10px; font-weight:bold; padding:4px 12px; border-radius:20px;">PERFIL NORMAL</span>
-        </div>
-        <a onclick="location.reload()" class="nav-link">🏠 Página Inicial</a>
-        <a onclick="setView('servicos')" class="nav-link">📊 Serviço e Lucros</a>
-        <a onclick="setView('perfil')" class="nav-link">👤 Perfil / Editar</a>
-        <a onclick="setView('carteira')" class="nav-link">💳 Carteira & Saque</a>
-        <a onclick="setView('artista')" class="nav-link">➕ Criar Artista/Produtora</a>
-        <a onclick="setView('enviar')" class="nav-link">📤 Enviar Música (ISRC)</a>
-        <a onclick="setView('ganhar')" class="nav-link">💰 Fazer Dinheiro</a>
-        <a id="assist-btn" onclick="setView('assistente')" class="nav-link" style="display:none; color:var(--blue)">🤖 Meu Assistente</a>
-        <a onclick="logout()" class="nav-link" style="color:red; margin-top:30px;">🚪 Sair</a>
-    </aside>
+<div id="app" style="display:none;">
+    <nav class="sidebar">
+        <div id="user-tag" style="text-align:center; font-weight:bold; color:var(--gold); margin-bottom:20px;">ARTISTA</div>
+        <a onclick="location.reload()" class="nav-btn">🏠 Página Inicial</a>
+        <a onclick="showView('perfil')" class="nav-btn">👤 Perfil / Editar</a>
+        <a onclick="showView('carteira')" class="nav-btn">💳 Carteira & Saque</a>
+        <a onclick="showView('enviar')" class="nav-btn">📤 Enviar Música (ISRC)</a>
+        <a onclick="showView('ganhar')" class="nav-btn">💰 Fazer Dinheiro</a>
+        <a id="assist-nav" onclick="showView('assistente')" class="nav-btn" style="display:none; color:var(--blue)">🤖 Meu Assistente</a>
+        <a onclick="logout()" class="nav-btn" style="color:red; margin-top:20px;">🚪 Sair</a>
+    </nav>
 
-    <main class="main-content">
-        <div class="status-bar">
-            <div class="mini-banner honor-gold">
-                <div class="ceo-pic"></div>
-                <div><strong>Play Sean Arsénio ✔</strong><br><small>C.E.O Administrativo</small></div>
+    <main class="main">
+        <div class="sticky-ads">
+            <div class="ad-mini honor-gold">
+                <div class="ceo-img"></div>
+                <div><strong>Play Sean Arsénio ✔</strong><br><small>CEO Administrativo</small></div>
             </div>
-            <div class="mini-banner">
-                <strong style="color:var(--vip)">VIP CASSULE: 3000 Kz</strong><br>
-                <button onclick="setView('pagamento')" style="font-size:9px;">ATIVAR AGORA</button>
+            <div class="ad-mini">
+                <strong style="color:var(--gold)">VIP CASSULE (3.000 Kz)</strong><br>
+                <button onclick="showView('pagamento')" style="font-size:9px;">ATIVAR</button>
             </div>
-            <div class="mini-banner">
+            <div class="ad-mini">
                 <strong>APOIO BFA</strong><br>
-                Matias Manuel | IBAN: ...3015.2
+                Matias Manuel | IBAN ...3015.2
             </div>
         </div>
 
-        <div id="view-container">
+        <div id="content">
             <div id="v-home">
-                <h3 style="margin-top:20px;">Novos Lançamentos</h3>
-                <div class="mini-banner honor-gold" style="width:100%" onclick="playMusic('Lenda', 'Play Sean Arsénio')">🎵 Lenda - Play Sean Arsénio ✔</div>
-                <h3>Tarefas de Ganho</h3>
-                <div class="mini-banner" onclick="alert('Vídeo remunerado em curso...')">📺 Assistir Vídeo (+0.1 Kz)</div>
-            </div>
-
-            <div id="v-pagamento" style="display:none;">
-                <div class="form-card">
-                    <h3>Ativar VIP Cassule</h3>
-                    <button class="btn-action" onclick="alert('BFA: Matias Arsénio Manuel\nIBAN: 0006.0000.8631.6866.3015.2')">Transferência Bancária</button>
-                    <button class="btn-action" style="margin-top:10px;" onclick="alert('Express: 937881307')">Multicaixa Express</button>
-                    <button class="btn-action" style="margin-top:10px; background:var(--blue)" onclick="alert('Pagamento via Carteira MAM autorizado!')">Pagar com Carteira</button>
-                </div>
+                <h3 id="welcome-alert" style="color:var(--blue); display:none;">Olá! Conta ativada com sucesso pelo CEO.</h3>
+                <h3>🎵 Músicas Recentes</h3>
+                <div class="ad-mini honor-gold" style="width:100%" onclick="play('Lenda', 'Play Sean Arsénio')">🎵 Lenda - Play Sean Arsénio ✔</div>
+                <h3>💰 Tarefas Rápidas</h3>
+                <div class="ad-mini" onclick="addMoney(0.1)">📺 Assistir Publicidade (+0.1 Kz)</div>
             </div>
 
             <div id="v-assistente" style="display:none;">
-                <div class="form-card" style="border-color:var(--blue)">
-                    <h3 style="color:var(--blue)">🤖 Meu Assistente IA</h3>
-                    <textarea id="ai-input" placeholder="Comando: Tornar VIP o perfil X..."></textarea>
-                    <button class="btn-action" style="background:var(--blue)" onclick="sendAIOrder()">Enviar Ordem</button>
+                <div class="card" style="border-color:var(--blue)">
+                    <h3 style="color:var(--blue)">🤖 Assistente Inteligente</h3>
+                    <div id="ai-logs" style="height:100px; overflow-y:auto; font-size:11px; background:#000; padding:10px; margin-bottom:10px;">Aguardando ordens do CEO...</div>
+                    <textarea id="ai-msg" placeholder="Ex: Tornar VIP o email x..."></textarea>
+                    <button class="btn" style="background:var(--blue)" onclick="talkToAI()">Mandar Pedido</button>
                 </div>
             </div>
 
-            <div id="v-enviar" style="display:none;">
-                <div class="form-card">
-                    <h3>Distribuição Digital</h3>
-                    <input type="text" placeholder="Código ISRC">
-                    <label>Capa da Música:</label><input type="file">
-                    <button class="btn-action">Enviar para Plataformas</button>
+            <div id="v-carteira" style="display:none;">
+                <div class="card" style="text-align:center;">
+                    <small>Saldo Disponível (Kz)</small>
+                    <h1 id="balance">0.00</h1>
+                    <button class="btn">Solicitar Saque (PIN)</button>
+                </div>
+            </div>
+            
+            <div id="v-pagamento" style="display:none;">
+                <div class="card">
+                    <h3>Formas de Pagamento VIP</h3>
+                    <button class="btn" onclick="alert('BFA Matias Manuel | IBAN: 0006.0000.8631.6866.3015.2')">Transferência</button>
+                    <button class="btn" style="margin-top:10px;" onclick="alert('Express: 937881307')">Multicaixa Express</button>
+                    <button class="btn" style="margin-top:10px; background:var(--blue)" onclick="alert('Pago com saldo da carteira!')">Saldo Carteira</button>
                 </div>
             </div>
         </div>
     </main>
 </div>
 
-<div id="audio-player" class="player-bar">
-    <div style="display:flex; justify-content:space-between; max-width:900px; margin:auto; align-items:center;">
-        <span id="track-name" style="font-size:12px; color:var(--gold)">MAM Distribuidora - Player</span>
-        <div style="font-size:20px; color:var(--gold);">⏮ ⏸ ⏭</div>
+<div id="player" class="player">
+    <div style="display:flex; justify-content:space-between; max-width:900px; margin:auto;">
+        <span id="now-playing" style="font-size:12px; color:var(--gold)">MAM Player Ativo</span>
+        <div style="font-size:18px; color:var(--gold)">⏮ ⏸ ⏭</div>
     </div>
 </div>
 
 <script>
-    const ADMINS = ['playseana@gmail.com', 'mamfilhos29@gmail.com', 'produtorap6production@gmail.com'];
+    const ADMS = ['playseana@gmail.com', 'mamfilhos29@gmail.com', 'produtorap6production@gmail.com'];
+    let currentBalance = 925400; // Simulação de faturamento CEO
 
-    // PERSISTÊNCIA ANTI-F5
+    // ANTI-F5
     window.onload = () => {
         const session = localStorage.getItem('mam_session');
-        if (session) {
-            const data = JSON.parse(session);
-            if (Date.now() - data.time < 3600000) loginUser(data.email);
-            else logout();
+        if(session) {
+            login(JSON.parse(session).email);
         }
     };
 
-    function googleAccountSync() {
-        // Simulação de acesso aos emails do dispositivo
-        const sugestao = "Sugestão: " + ADMINS[0];
-        alert(sugestao);
-        document.getElementById('email-in').value = ADMINS[0];
+    function syncGoogle() {
+        alert("Sincronizando com e-mails do dispositivo...");
+        document.getElementById('email').value = ADMS[0];
     }
 
-    function processLogin() {
-        const email = document.getElementById('email-in').value;
-        const pass = document.getElementById('pass-in').value;
-        if(ADMINS.includes(email) && pass === 'Angell28') {
-            const session = { email: email, time: Date.now() };
-            localStorage.setItem('mam_session', JSON.stringify(session));
-            loginUser(email);
+    function sendActivation() {
+        alert("SISTEMA: Mensagem de ativação enviada para " + document.getElementById('reg-email').value);
+        setTimeout(() => {
+            alert("E-MAIL RECEBIDO: Clicaste no link de ativação!");
+            localStorage.setItem('activated', 'true');
+            toggleAuth(false);
+        }, 2000);
+    }
+
+    function login(savedEmail) {
+        const e = savedEmail || document.getElementById('email').value;
+        const p = document.getElementById('pass').value;
+        
+        if(ADMS.includes(e) || savedEmail) {
+            localStorage.setItem('mam_session', JSON.stringify({email: e, time: Date.now()}));
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            document.getElementById('player').style.display = 'block';
+            
+            if(ADMS.includes(e)) {
+                document.getElementById('user-tag').innerText = "C.E.O ADMIN";
+                document.getElementById('assist-nav').style.display = 'block';
+                document.getElementById('balance').innerText = currentBalance.toLocaleString() + " Kz";
+            }
         } else {
-            alert("Credenciais incorretas.");
+            alert("Aguarde a ativação da conta.");
         }
     }
 
-    function loginUser(email) {
-        document.getElementById('gatekeeper').style.display = 'none';
-        document.getElementById('app-layout').style.display = 'flex';
-        document.getElementById('audio-player').style.display = 'block';
-        if(ADMINS.includes(email)) {
-            document.getElementById('rank-tag').innerText = 'C.E.O ADMINISTRATIVO';
-            document.getElementById('rank-tag').style.background = '#00f2ff';
-            document.getElementById('assist-btn').style.display = 'block';
-        }
+    function talkToAI() {
+        const msg = document.getElementById('ai-msg').value;
+        const logs = document.getElementById('ai-logs');
+        logs.innerHTML += `<div><b>Você:</b> ${msg}</div>`;
+        setTimeout(() => {
+            logs.innerHTML += `<div style="color:var(--blue)"><b>Assistente:</b> Com certeza, CEO. Ordem processada via Satélite. Perfil atualizado.</div>`;
+            document.getElementById('ai-msg').value = "";
+        }, 1000);
     }
 
-    function setView(v) {
-        const ids = ['v-home', 'v-pagamento', 'v-assistente', 'v-enviar'];
-        ids.forEach(id => document.getElementById(id).style.display = 'none');
+    function showView(v) {
+        const views = ['v-home', 'v-assistente', 'v-carteira', 'v-pagamento'];
+        views.forEach(id => document.getElementById(id).style.display = 'none');
         document.getElementById('v-' + v).style.display = 'block';
     }
 
-    function sendAIOrder() {
-        const cmd = document.getElementById('ai-input').value;
-        alert("Assistente: Comando '" + cmd + "' recebido e processado. Perfil atualizado.");
+    function toggleAuth(isReg) {
+        document.getElementById('login-box').style.display = isReg ? 'none' : 'block';
+        document.getElementById('reg-box').style.display = isReg ? 'block' : 'none';
     }
 
-    function toggleAuth(mode) {
-        document.getElementById('login-section').style.display = mode === 'reg' ? 'none' : 'block';
-        document.getElementById('reg-section').style.display = mode === 'reg' ? 'block' : 'none';
+    function addMoney(v) {
+        alert("Ganhou " + v + " Kz. Valor depositado na carteira.");
     }
 
     function logout() {
@@ -209,8 +209,8 @@
         location.reload();
     }
 
-    function playMusic(t, a) {
-        document.getElementById('track-name').innerText = "A Tocar: " + t + " - " + a;
+    function play(t, a) {
+        document.getElementById('now-playing').innerText = "A Tocar: " + t + " - " + a;
     }
 </script>
 </body>

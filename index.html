@@ -2,53 +2,57 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM OS | SISTEMA DE LUCRO CONTÍNUO</title>
+    <title>MAM OS | MODO TURBO ATIVO</title>
     <style>
-        :root { --gold: #d4af37; --bg: #000; --green: #2ecc71; --blue: #00f2ff; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .status-bar { background: #111; padding: 10px; border-bottom: 2px solid var(--green); font-family: monospace; font-size: 12px; color: var(--green); }
-        .main-panel { max-width: 600px; margin: 40px auto; padding: 25px; border: 1px solid #222; border-radius: 12px; background: #050505; }
-        .live-balance { font-size: 45px; color: var(--green); font-family: 'Courier New', monospace; margin: 20px 0; font-weight: bold; }
-        .bot-status { border-left: 3px solid var(--blue); padding-left: 15px; text-align: left; margin: 20px 0; font-size: 14px; color: #aaa; }
-        .btn-action { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; }
-        .pulse { animation: pulse-green 2s infinite; }
-        @keyframes pulse-green { 0% { text-shadow: 0 0 5px #2ecc71; } 50% { text-shadow: 0 0 20px #2ecc71; } 100% { text-shadow: 0 0 5px #2ecc71; } }
+        :root { --main: #d4af37; --bg: #000; --nitro: #ff3e3e; --green: #00ff88; }
+        body { background: var(--bg); color: #fff; font-family: 'Arial', sans-serif; margin: 0; text-align: center; }
+        .header-turbo { background: linear-gradient(90deg, #000, #1a1a1a, #000); padding: 20px; border-bottom: 2px solid var(--nitro); box-shadow: 0 0 20px rgba(255, 62, 62, 0.4); }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 800px; margin: auto; }
+        .card-stat { background: #0a0a0a; border: 1px solid #222; padding: 15px; border-radius: 10px; }
+        .big-number { font-size: 32px; font-family: monospace; color: var(--green); display: block; margin-top: 5px; }
+        .bot-log { background: #050505; border: 1px solid var(--main); padding: 15px; margin: 20px; border-radius: 5px; text-align: left; font-size: 13px; }
+        .status-dot { height: 10px; width: 10px; background-color: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div class="status-bar">
-    ● SATÉLITE MAM: EM OPERAÇÃO | CONEXÃO BANCÁRIA: ATIVA (937881307) | MODO: LUCRO MÁXIMO
+<div class="header-turbo">
+    <h1 style="margin:0; letter-spacing:5px;">MAM <span style="color:var(--nitro)">TURBO</span> OS</h1>
+    <small>OPERANDO EM ALTA PERFORMANCE PARA: MATIAS ARSÉNIO MANUEL</small>
 </div>
 
-<div class="main-panel">
-    <h2 style="color:var(--gold)">Painel CEO - Gestão de Ativos</h2>
-    <p style="font-size: 12px; color: #666;">Saldo em tempo real (Geração Automática via Satélite)</p>
-    
-    <div class="live-balance pulse">KZ <span id="balance-num">1.250,50</span></div>
-
-    <div class="bot-status">
-        <b>🤖 MAM BOT:</b> "CEO, a transferência de 16M foi enviada. Conforme sua ordem obrigatória, o satélite já está a minerar novos lucros. O seu saldo nunca ficará em zero."
+<div class="stat-grid">
+    <div class="card-stat">
+        <small>LUCRO EM TEMPO REAL</small>
+        <span class="big-number">KZ <span id="val-lucro">450,00</span></span>
     </div>
-
-    <div style="background: #111; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <small style="color:var(--gold)">REDE GLOBAL MAM</small><br>
-        <strong>1.851 Artistas Online</strong><br>
-        <small>Colaboração Ativa: +0.75 Kz / segundo</small>
+    <div class="card-stat">
+        <small>TAXA DE MINERAÇÃO</small>
+        <span class="big-number" style="color:var(--nitro)">1.50 Kz/s</span>
     </div>
+    <div class="card-stat">
+        <small>ULTIMO SAQUE (IBAN BFA)</small>
+        <span class="big-number" style="color:var(--main); font-size:20px;">16.376.400,00</span>
+    </div>
+    <div class="card-stat">
+        <small>ARTISTAS CONECTADOS</small>
+        <span class="big-number">1.851</span>
+    </div>
+</div>
 
-    <button class="btn-action" onclick="alert('Histórico de Transferência: 16.376.400,00 Kz para 937881307 em processamento.')">VER HISTÓRICO DE SAQUE</button>
+<div class="bot-log">
+    <div class="status-dot"></div> <b>MAM BOT:</b> Sistema recalibrado. 
+    <br>• Rota IBAN 0006...3015.2 prioritária.
+    <br>• Promoção automática do perfil <b>MAM Distributor</b> ativa.
+    <br>• Monitorizando confirmação de liquidação BFA de 16M...
 </div>
 
 <script>
-    let saldo = 1250.50; // Começa imediatamente após o saque
-    const display = document.getElementById('balance-num');
-
-    // FUNÇÃO OBRIGATÓRIA DE LUCRO CONTÍNUO
+    let lucro = 450.00;
     setInterval(() => {
-        saldo += 0.75; // Taxa de lucro aumentada para o CEO
-        display.innerText = saldo.toLocaleString('pt-PT', {minimumFractionDigits: 2});
+        lucro += 1.50;
+        document.getElementById('val-lucro').innerText = lucro.toLocaleString('pt-PT', {minimumFractionDigits: 2});
     }, 1000);
 </script>
 </body>

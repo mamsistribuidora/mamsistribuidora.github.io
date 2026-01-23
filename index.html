@@ -7,123 +7,175 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #151515; --input: #1e1e1e; --text: #ffffff; --dim: #aaa; }
+        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #151515; --input: #1e1e1e; --text: #ffffff; --dim: #aaa; --vip: #00c8ff; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); }
 
-        /* WIDGETS GLOBAIS (EXTERIOR E INTERIOR) */
-        .honor-box { text-align: center; padding: 15px; border: 1px solid var(--gold); border-radius: 15px; background: rgba(20,20,20,0.8); margin-bottom: 20px; }
-        .honor-img { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 8px; }
-        
-        .global-ad { background: linear-gradient(135deg, #1a1a1a, #080808); border: 1px solid var(--gold); border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 5px solid var(--gold); }
-        .bank-txt { font-size: 0.8rem; color: #fff; margin-top: 10px; }
-        .bank-txt strong { color: var(--gold); display: block; }
-
-        /* TELA DE ACESSO */
-        .auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; flex-direction: column; background: #000; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 480px; border: 1px solid #222; }
-        .logo-img { width: 140px; display: block; margin: 0 auto 20px; border-radius: 10px; }
-
-        .pass-container { position: relative; width: 100%; }
-        input { width: 100%; padding: 14px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; margin-bottom: 12px; font-family: inherit; }
-        .toggle-btn { position: absolute; right: 15px; top: 15px; cursor: pointer; color: var(--gold); }
-        
-        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; text-transform: uppercase; }
-
-        /* DASHBOARD */
+        /* Estrutura Sidebar */
         .wrapper { display: flex; min-height: 100vh; }
-        .sidebar { width: 280px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; padding: 20px; }
+        .sidebar { width: 280px; background: #050505; border-right: 1px solid #111; position: fixed; height: 100vh; padding: 20px; overflow-y: auto; z-index: 1000; }
         .main { flex: 1; margin-left: 280px; padding: 35px; }
 
-        .nav-link { padding: 14px; color: var(--dim); text-decoration: none; display: flex; align-items: center; gap: 12px; border-radius: 10px; margin-bottom: 8px; }
-        .nav-link.active { background: rgba(212,175,55,0.1); color: var(--gold); }
+        /* Tela de Login */
+        .auth-screen { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; flex-direction: column; }
+        .auth-card { background: var(--card); padding: 35px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #222; }
+        
+        /* Quadro de Honra e Anúncios */
+        .honor-widget { text-align: center; padding: 15px; border: 1px solid var(--gold); border-radius: 15px; background: rgba(20,20,20,0.8); margin-bottom: 20px; }
+        .honor-img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 8px; }
+        
+        .global-ad { background: linear-gradient(135deg, #1a1a1a, #080808); border: 1px solid var(--gold); border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 5px solid var(--gold); font-size: 0.85rem; }
+        .bank-info { margin-top: 10px; font-size: 0.75rem; color: var(--gold); font-weight: bold; line-height: 1.4; }
 
-        .welcome-note { background: var(--card); border: 1px solid #222; padding: 25px; border-radius: 15px; border-top: 4px solid var(--gold); }
+        /* Formulário de Distribuição */
+        .distro-form { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #222; max-width: 900px; margin: 0 auto; }
+        .section-title { color: var(--gold); font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 10px; margin: 25px 0 15px; display: flex; align-items: center; gap: 10px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: span 2; }
+
+        /* Inputs e Password Toggle */
+        .input-group { position: relative; width: 100%; }
+        label { display: block; font-size: 0.8rem; color: var(--dim); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 14px; background: var(--input); border: 1px solid #222; color: white; border-radius: 10px; font-family: inherit; transition: 0.3s; margin-bottom: 15px; }
+        .toggle-password { position: absolute; right: 15px; top: 43px; cursor: pointer; color: var(--dim); }
+
+        .upload-box { border: 2px dashed #333; padding: 30px; text-align: center; border-radius: 15px; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02); margin-bottom: 15px; }
+        .upload-box:hover { border-color: var(--gold); background: rgba(212,175,55,0.05); }
+        
+        .btn-submit, .btn-login { background: var(--gold); color: #000; padding: 16px; border: none; border-radius: 12px; font-weight: 700; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+
+        /* Nota de Boas Vendas */
+        .welcome-note { background: rgba(212,175,55,0.05); border: 1px solid var(--gold); padding: 20px; border-radius: 15px; margin-bottom: 30px; line-height: 1.6; }
 
         .hidden { display: none !important; }
-        @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; } }
+        @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; padding: 20px; } .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
     </style>
 </head>
 <body>
 
-<div id="auth-page" class="auth-screen">
-    <div class="honor-box" style="max-width: 480px; width:100%;">
-        <img src="https://i.ibb.co/vYmS6Z9/unnamed-3.jpg" class="honor-img" alt="C.E.O">
-        <p style="color:var(--gold); font-weight:bold;">Matias Arsénio Manuel</p>
+<div id="login-page" class="auth-screen">
+    <div class="honor-widget" style="width: 100%; max-width: 450px;">
+        <img src="https://i.ibb.co/vYmS6Z9/unnamed-3.jpg" class="honor-img">
+        <p style="color:var(--gold); font-size:0.9rem; font-weight:700;">Matias Arsénio Manuel</p>
     </div>
-
-    <div class="global-ad" style="max-width: 480px; width:100%;">
-        <p style="font-size:0.8rem;"><strong>Apoia o Projeto MAM:</strong> Ajude a nova geração de artistas.</p>
-        <p class="bank-txt"><strong>TITULAR: Matias Arsénio Manuel</strong> IBAN: 0006 0000 8631 6866 3015 2</p>
-    </div>
-
+    
     <div class="auth-card">
-        <img src="https://i.ibb.co/L9Y0pGZ/unnamed-6.jpg" class="logo-img">
-        
-        <div id="login-form">
-            <input type="email" id="email-field" placeholder="E-mail">
-            <div class="pass-container">
-                <input type="password" id="pass-field" placeholder="Palavra-passe">
-                <i class="fa-solid fa-eye toggle-btn" onclick="toggleView('pass-field')"></i>
-            </div>
-            <button class="btn-gold" onclick="login()">Iniciar Sessão</button>
-            <p style="text-align:center; font-size:0.8rem; margin-top:15px;">Suporte: mamfilhos29@gmail.com</p>
+        <img src="https://i.ibb.co/L9Y0pGZ/unnamed-6.jpg" style="width:120px; display:block; margin:0 auto 20px; border-radius:10px;">
+        <div class="input-group">
+            <label>E-mail</label>
+            <input type="email" id="email" placeholder="Seu e-mail">
         </div>
+        <div class="input-group">
+            <label>Palavra-passe</label>
+            <input type="password" id="password" placeholder="Sua senha">
+            <i class="fa-solid fa-eye toggle-password" onclick="togglePass()"></i>
+        </div>
+        <button class="btn-login" onclick="entrar()">Iniciar Secção</button>
     </div>
 </div>
 
-<div id="dashboard" class="wrapper hidden">
+<div id="site-content" class="wrapper hidden">
     <aside class="sidebar">
-        <div class="honor-box">
+        <img src="https://i.ibb.co/L9Y0pGZ/unnamed-6.jpg" style="width:100px; margin:0 auto 20px; display:block; border-radius:10px;">
+        <div class="honor-widget">
             <img src="https://i.ibb.co/vYmS6Z9/unnamed-3.jpg" class="honor-img">
-            <p style="font-size:0.8rem; color:var(--gold); font-weight:bold;">Matias Arsénio Manuel</p>
+            <p style="color:var(--gold); font-size:0.8rem; font-weight:700;">Matias Arsénio Manuel</p>
+            <p style="font-size:0.6rem; color:var(--dim);">C.E.O & FUNDADOR</p>
         </div>
-        <nav>
-            <a href="#" class="nav-link active"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="#" class="nav-link"><i class="fa-solid fa-cloud-arrow-up"></i> Mandar Música</a>
-            <a href="#" class="nav-link"><i class="fa-solid fa-folder"></i> Meus Arquivos</a>
-            <a href="#" class="nav-link" style="color:#ff4444; margin-top:30px;" onclick="location.reload()"><i class="fa-solid fa-power-off"></i> Sair</a>
-        </nav>
+        <p style="font-size:0.7rem; color:var(--dim); text-align:center; padding:10px;">Suporte: <br>mamfilhos29@gmail.com</p>
     </aside>
 
     <main class="main">
-        <div class="global-ad">
-            <p style="font-size:0.85rem; color:var(--gold);"><strong>Informações Bancárias Oficiais (C.E.O)</strong></p>
-            <p class="bank-txt"><strong>MATIAS ARSÉNIO MANUEL</strong> IBAN: 0006 0000 8631 6866 3015 2</p>
+        <div class="welcome-note">
+            <h3 style="color:var(--gold); margin-bottom:10px;">Bem-vindo à MAM Distribuidora!</h3>
+            <p>Seja bem-vindo ao projeto que valoriza o artista angolano. O nosso objetivo é levar a tua música ao mundo com transparência e patriotismo.</p>
         </div>
 
-        <div class="welcome-note">
-            <h2 style="color:var(--gold); margin-bottom:15px;">Bem-vindo à MAM Distribuidora 👋</h2>
-            <p style="line-height:1.7;">
-                Seja Bem-vindo ao <strong>MAM Distribuidora musical Angolana</strong>, feito por Angolanos para facilitar os Angolanos a vender suas músicas em mais de 150 países e sacar em Kz com conta Bancária Angolana. 
-                <br><br>
-                Sugerimos que sigas o perfil oficial <strong>MAM Distributor</strong> para atualizações.
-            </p>
+        <div class="global-ad">
+            <p><strong>Apoia o Projeto:</strong> Ajude-nos a investir na nova geração de músicos.</p>
+            <div class="bank-info">
+                NOME: MATIAS ARSÉNIO MANUEL <br>
+                IBAN BFA: 0006 0000 8631 6866 3015 2
+            </div>
         </div>
+
+        <h2 style="margin-bottom: 10px;">Lançar Nova Música 🚀</h2>
+        <p style="color:var(--dim); font-size: 0.9rem; margin-bottom: 30px;">Preencha os metadados oficiais para a distribuição mundial.</p>
+
+        <form class="distro-form" onsubmit="return false;">
+            <div class="section-title"><i class="fa-solid fa-circle-info"></i> Informações do Lançamento</div>
+            <div class="form-grid">
+                <div class="full-width">
+                    <label>Título da Música / Álbum</label>
+                    <input type="text" placeholder="Ex: Amor de Luanda" required>
+                </div>
+                <div>
+                    <label>Nome do Artista Principal</label>
+                    <input type="text" placeholder="Nome no Spotify" required>
+                </div>
+                <div>
+                    <label>Produtora / Selo</label>
+                    <input type="text" placeholder="Ex: MAM Records">
+                </div>
+                <div>
+                    <label>Género Principal (Estilo)</label>
+                    <select>
+                        <option>Kuduro</option><option>Semba</option><option>Kizomba</option>
+                        <option>Afro House</option><option>Rap / Hip Hop</option><option>Gospel</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Data de Lançamento Desejada</label>
+                    <input type="date" required>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fa-solid fa-cloud-arrow-up"></i> Arquivos Digitais</div>
+            <div class="form-grid">
+                <div class="full-width">
+                    <label>Capa do Álbum (JPG)</label>
+                    <div class="upload-box">
+                        <i class="fa-solid fa-image fa-2x" style="color:var(--gold); margin-bottom:10px;"></i>
+                        <p style="font-size:0.8rem;">Enviar Capa</p>
+                    </div>
+                </div>
+                <div class="full-width">
+                    <label>Áudio da Música (WAV/MP3)</label>
+                    <div class="upload-box">
+                        <i class="fa-solid fa-music fa-2x" style="color:var(--gold); margin-bottom:10px;"></i>
+                        <p style="font-size:0.8rem;">Enviar Áudio</p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Finalizar e Enviar para MAM Distribuidora</button>
+        </form>
     </main>
 </div>
 
 <script>
-    function login() {
-        const email = document.getElementById('email-field').value;
-        const pass = document.getElementById('pass-field').value;
+    // Função para entrar no site
+    function entrar() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
         
         if(email !== "" && pass !== "") {
-            document.getElementById('auth-page').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('site-content').classList.remove('hidden');
         } else {
-            alert("Preencha os dados de acesso!");
+            alert("Por favor, preencha os dados de acesso corretamente.");
         }
     }
 
-    function toggleView(id) {
-        const input = document.getElementById(id);
+    // Função Ver/Ocultar Senha
+    function togglePass() {
+        const passInput = document.getElementById('password');
         const icon = event.target;
-        if (input.type === "password") {
-            input.type = "text";
+        if (passInput.type === "password") {
+            passInput.type = "text";
             icon.classList.replace('fa-eye', 'fa-eye-slash');
         } else {
-            input.type = "password";
+            passInput.type = "password";
             icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
     }

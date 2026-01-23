@@ -3,167 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Sistema Operativo v3.0</title>
+    <title>MAM Distribuidora | Official CEO Dashboard</title>
     <style>
         :root {
-            --gold: #d4af37; --dark: #050505; --card: #111;
-            --blue: #00d4ff; --red: #ff3e3e; --green: #00ff88;
+            --gold: #d4af37; --dark: #020202; --card: #0a0a0a;
+            --blue: #00d4ff; --red: #ff3e3e; --green: #00ff88; --glass: rgba(255,255,255,0.05);
         }
-        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        body { background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* HEADER & LOGO */
-        header { 
-            background: #000; padding: 15px 5%; border-bottom: 2px solid var(--gold); 
-            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--gold); letter-spacing: 2px; }
-        .nav-menu { display: flex; gap: 20px; }
-        .nav-item { cursor: pointer; color: #bbb; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem; }
-        .nav-item:hover, .active-nav { color: var(--gold); font-weight: bold; }
+        /* BARRA LATERAL (MENU) */
+        aside { width: 250px; background: #000; border-right: 1px solid var(--gold); display: flex; flex-direction: column; padding: 20px; }
+        .logo-box { text-align: center; padding-bottom: 30px; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .logo-box h2 { color: var(--gold); margin: 0; font-size: 1.2rem; letter-spacing: 2px; }
+        .nav-link { padding: 12px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; color: #888; display: flex; align-items: center; gap: 10px; }
+        .nav-link:hover, .nav-active { background: var(--glass); color: var(--gold); border-left: 3px solid var(--gold); }
 
-        /* TELA PRINCIPAL */
-        .container { padding: 30px 5%; max-width: 1200px; margin: auto; }
-        .page { display: none; animation: fadeIn 0.5s; }
+        /* ÁREA PRINCIPAL */
+        main { flex: 1; overflow-y: auto; padding: 30px; position: relative; }
+        .page { display: none; animation: slideUp 0.4s ease-out; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* CARDS E WIDGETS */
+        /* MOTOR DE RENDA (FLOATING) */
+        .income-engine { background: linear-gradient(135deg, #111, #000); border: 1px solid var(--gold); padding: 20px; border-radius: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(212,175,55,0.1); }
+        .profit-val { font-size: 2.5rem; font-weight: bold; color: var(--green); font-family: monospace; }
+
+        /* GRID E CARDS */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 15px; position: relative; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        
-        /* SISTEMA DE PLANOS */
-        .plan-box { border: 2px solid #333; transition: 0.3s; }
-        .plan-box:hover { border-color: var(--gold); background: #1a1a1a; }
-        .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; margin-bottom: 10px; display: inline-block; }
-        .vip { background: var(--gold); color: #000; }
-        .normal { background: #555; }
+        .card { background: var(--card); border: 1px solid #1a1a1a; padding: 20px; border-radius: 12px; }
+        .btn-pay { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 15px; }
 
-        /* NOTIFICAÇÕES E CHAT */
-        .msg-box { background: #000; border: 1px solid var(--green); padding: 10px; border-radius: 5px; font-size: 0.8rem; color: var(--green); margin-bottom: 10px; }
-        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-decoration: none; z-index: 1000; }
+        /* CHAT INTERNO */
+        .chat-container { height: 400px; background: #000; border: 1px solid #222; border-radius: 10px; display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; }
+        .msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 80%; }
+        .msg.bot { background: var(--glass); color: var(--blue); align-self: flex-start; }
+        .msg.ceo { background: var(--gold); color: #000; align-self: flex-end; margin-left: auto; }
+        .chat-input { display: flex; border-top: 1px solid #222; }
+        .chat-input input { flex: 1; background: transparent; border: none; color: #fff; padding: 15px; outline: none; }
 
-        /* FORMULÁRIOS */
-        input, select, textarea { width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; margin-top: 10px; border-radius: 5px; }
+        /* WHATSAPP FLOAT */
+        .wa-btn { position: fixed; bottom: 30px; right: 30px; background: #25d366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 9999; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">MAM DISTRIBUIDORA</div>
-    <div class="nav-menu">
-        <span class="nav-item active-nav" onclick="showPage('home')">Início</span>
-        <span class="nav-item" onclick="showPage('perfil')">Perfil</span>
-        <span class="nav-item" onclick="showPage('upload')">Músicas</span>
-        <span class="nav-item" onclick="showPage('carteira')">Carteira</span>
-        <span class="nav-item" onclick="showPage('config')">Admin</span>
-        <span class="nav-item" onclick="logout()" style="color:var(--red)">Sair</span>
-    </div>
-</header>
+    <aside>
+        <div class="logo-box">
+            <h2>MAM DISTRIBUIDORA</h2>
+            <small style="color: #555;">SISTEMA OPERATIVO v4.0</small>
+        </div>
+        <div class="nav-link nav-active" onclick="tab(this, 'dash')">🏠 Painel Principal</div>
+        <div class="nav-link" onclick="tab(this, 'artists')">👥 Gestão de Artistas</div>
+        <div class="nav-link" onclick="tab(this, 'wallet')">💰 Carteira & Saques</div>
+        <div class="nav-link" onclick="tab(this, 'chat')">💬 Chat Assistentes</div>
+        <div class="nav-link" onclick="tab(this, 'plans')">💎 Planos & Upgrades</div>
+        <div class="nav-link" onclick="tab(this, 'config')">⚙️ Configurações</div>
+        <div style="margin-top: auto; color: var(--red); cursor: pointer;" onclick="location.reload()">🔴 Terminar Sessão</div>
+    </aside>
 
-<div class="container">
-    
-    <div id="home" class="page active">
-        <div class="msg-box">📢 <b>COMUNICADO:</b> Upgrade de Servidor concluído. Modo Turbo Ativo a 1.50 Kz/s.</div>
-        <div class="grid">
+    <main>
+        <div class="income-engine">
+            <div>
+                <span style="color: var(--gold); text-transform: uppercase; font-size: 0.7rem;">Motor de Renda Passiva Ativo</span>
+                <div class="profit-val" id="profit">Kz 0,00</div>
+            </div>
+            <div style="text-align: right;">
+                <small style="color: #888;">TAXA ATUAL</small><br>
+                <b style="color: var(--blue);">1.50 Kz / Segundo</b>
+            </div>
+        </div>
+
+        <div id="dash" class="page active">
+            <div class="grid">
+                <div class="card">
+                    <h3>Perfil do C.E.O</h3>
+                    <p><b>Nome:</b> Matias Arsénio Manuel</p>
+                    <p><b>Contacto:</b> 937881307</p>
+                    <p><b>E-mail:</b> playseana@gmail.com</p>
+                    <span class="badge" style="background:var(--gold); padding:5px 10px; border-radius:5px; color:#000;">ADMINISTRADOR MASTER</span>
+                </div>
+                <div class="card">
+                    <h3>Estatísticas de Rede</h3>
+                    <p>Utilizadores Totais: <b>1.851</b></p>
+                    <p>Região Líder: <b>Luanda (60%)</b></p>
+                    <p>Novas Solicitações: <b style="color:var(--gold)">+43 hoje</b></p>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3>Comunicados & Anúncios</h3>
+                <marquee style="color: var(--green);">[URGENTE] Saque de 16.376.400,00 Kz processado com sucesso para IBAN BFA. | Siga o perfil MAM Distributor para bónus de rede.</marquee>
+            </div>
+        </div>
+
+        <div id="artists" class="page">
+            <h2>Controlo Geográfico</h2>
             <div class="card">
-                <span class="label">SALDO DISPONÍVEL</span>
-                <span style="font-size: 2rem; display: block;" id="live-profit">Kz 0,00</span>
-                <small style="color:var(--green)">Lucro Passivo Ativo</small>
+                <p>Luanda: <progress value="60" max="100" style="width:100%"></progress></p>
+                <p>Benguela: <progress value="17" max="100" style="width:100%"></progress></p>
+                <p>Diáspora: <progress value="23" max="100" style="width:100%"></progress></p>
             </div>
-            <div class="card">
-                <h3>Categorias de Perfil</h3>
-                <p>O seu nível atual é: <b id="current-level">NORMAL</b></p>
-                <button class="btn-gold" onclick="showPage('planos')">Mudar Plano / Upgrade</button>
-            </div>
+            <input type="text" placeholder="Pesquisar Artista por Nome ou IBAN..." style="width:96%; padding:15px; margin-top:20px; background:#111; border:1px solid #333; color:white;">
         </div>
-        <div class="card" style="margin-top:20px;">
-            <h3>Barra de Pesquisa de Artistas</h3>
-            <input type="text" placeholder="Pesquisar artista ou música na rede MAM...">
-        </div>
-    </div>
 
-    <div id="planos" class="page">
-        <h2>Escolha o seu Nível de Performance</h2>
-        <div class="grid">
-            <div class="card plan-box">
-                <span class="badge normal">NORMAL</span>
-                <h3>Plano Gratuito</h3>
-                <p>Distribuição básica em 10 plataformas.</p>
-                <button class="btn-gold">Plano Atual</button>
-            </div>
-            <div class="card plan-box" style="border-color: var(--gold);">
-                <span class="badge vip">VIP CASSULE</span>
-                <h3>VIP Cassule</h3>
-                <p>Distribuição Prioritária + Selo de Verificação.</p>
-                <p><b>Preço: 25.000 Kz</b></p>
-                <button class="btn-gold" onclick="payPlan('VIP CASSULE')">Pagar Agora</button>
-            </div>
-            <div class="card plan-box" style="border-color: var(--blue);">
-                <span class="badge" style="background:var(--blue); color:#000;">VIP DIAMANTE</span>
-                <h3>VIP Diamante</h3>
-                <p>Gestão de Carreira + Suporte 24h.</p>
-                <p><b>Preço: 75.000 Kz</b></p>
-                <button class="btn-gold" onclick="payPlan('VIP DIAMANTE')">Pagar Agora</button>
+        <div id="plans" class="page">
+            <h2>Categorias de Perfil (Incentivo ao Lucro)</h2>
+            <div class="grid">
+                <div class="card" style="border: 1px solid #333;">
+                    <h4>Perfil NORMAL</h4>
+                    <p>Ganhos padrão. Sem selo.</p>
+                    <button class="btn-pay" disabled>Plano Ativo</button>
+                </div>
+                <div class="card" style="border: 2px solid var(--gold);">
+                    <h4>Perfil VIP CASSULE</h4>
+                    <p>Prioridade no satélite + Ganhos 2x.</p>
+                    <p><b>Investimento: 25.000 Kz</b></p>
+                    <button class="btn-pay" onclick="pay('VIP CASSULE')">Adquirir Agora</button>
+                </div>
+                <div class="card" style="border: 2px solid var(--blue);">
+                    <h4>VIP DIAMANTE (CEO Partner)</h4>
+                    <p>Acesso a relatórios de auditoria.</p>
+                    <p><b>Investimento: 100.000 Kz</b></p>
+                    <button class="btn-pay" onclick="pay('VIP DIAMANTE')">Adquirir Agora</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="carteira" class="page">
-        <h2>Minha Carteira MAM</h2>
-        <div class="card">
-            <p>Saldo para Saque: <b>Kz 16.376.400,00</b></p>
-            <p>IBAN BFA: AO06...3015.2 (Matias Arsénio Manuel)</p>
-            <button class="btn-gold" style="background:var(--green)" onclick="alert('Solicitação de Saque enviada ao Satélite!')">Solicitar Novo Saque</button>
+        <div id="chat" class="page">
+            <h2>Canal de Comunicação Direta</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-msgs">
+                    <div class="msg bot">MAM BOT: Olá CEO, estou a monitorizar o satélite. Alguma instrução?</div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chat-in" placeholder="Escreva para os assistentes ou usuários...">
+                    <button style="background:var(--gold); border:none; padding:10px 20px;" onclick="sendMsg()">ENVIAR</button>
+                </div>
+            </div>
         </div>
-        <div class="system-log" id="log-wallet" style="background:#000; color:var(--green); padding:10px; margin-top:20px; font-family:monospace; font-size:0.8rem;">
-            [SISTEMA] Aguardando novas transações...
-        </div>
-    </div>
 
-    <div id="upload" class="page">
-        <h2>Enviar Novas Músicas</h2>
-        <div class="card">
-            <label>Título da Obra</label><input type="text">
-            <label>Gênero</label>
-            <select><option>Kuduro</option><option>Semba</option><option>Kizomba</option></select>
-            <label>Ficheiro Áudio (MP3/WAV)</label><input type="file">
-            <button class="btn-gold">Lançar via MAM Distributor</button>
-        </div>
-    </div>
+    </main>
 
-</div>
+    <a href="https://wa.me/244937881307?text=Olá CEO, envio o meu comprovativo de pagamento MAM" class="wa-btn" target="_blank">📲</a>
 
-<a href="https://wa.me/244937881307?text=Olá CEO, envio o meu comprovativo de pagamento MAM" class="whatsapp-float" target="_blank">
-    <i>W</i>
-</a>
+    <script>
+        // MOTOR DE RENDA
+        let capital = 0;
+        setInterval(() => {
+            capital += 1.50;
+            document.getElementById('profit').innerText = "Kz " + capital.toLocaleString('pt-PT', {minimumFractionDigits: 2});
+        }, 1000);
 
-<script>
-    // NAVEGAÇÃO ENTRE PÁGINAS
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-    }
+        // NAVEGAÇÃO
+        function tab(el, id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('nav-active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('nav-active');
+        }
 
-    // SISTEMA DE MINERAÇÃO
-    let saldo = 0;
-    setInterval(() => {
-        saldo += 1.50;
-        document.getElementById('live-profit').innerText = "Kz " + saldo.toLocaleString('pt-PT', {minimumFractionDigits: 2});
-    }, 1000);
+        // PAGAMENTOS
+        function pay(plano) {
+            alert("Redirecionando para o WhatsApp do CEO para envio de comprovativo...");
+            window.location.href = "https://wa.me/244937881307?text=Quero ativar o plano: " + plano;
+        }
 
-    // FUNÇÃO PAGAMENTO
-    function payPlan(nome) {
-        alert("Ordem de Pagamento gerada para " + nome + ". Por favor, envie o comprovativo para o WhatsApp do CEO 937881307.");
-        window.location.href = "https://wa.me/244937881307?text=Quero ativar o plano " + nome;
-    }
-
-    function logout() {
-        alert("Sessão Terminada na MAM Distribuidora.");
-        location.reload();
-    }
-</script>
-
+        // CHAT SIMULAÇÃO
+        function sendMsg() {
+            let inp = document.getElementById('chat-in');
+            if(inp.value == "") return;
+            let box = document.getElementById('chat-msgs');
+            box.innerHTML += `<div class="msg ceo">${inp.value}</div>`;
+            inp.value = "";
+            setTimeout(() => {
+                box.innerHTML += `<div class="msg bot">ASSISTENTE: Recebido, CEO. Ordem processada via Satélite.</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 1000);
+        }
+    </script>
 </body>
 </html>

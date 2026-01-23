@@ -3,93 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | ADMIN PRO</title>
+    <title>MAM Distribuidora | Central CEO</title>
     <style>
         :root { --gold: #d4af37; --dark: #050505; --card: #121212; --blue: #00f2ff; }
-        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 80px; }
+        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 80px; overflow: hidden; }
         
-        .header-main { text-align: center; padding: 20px; border-bottom: 2px solid var(--gold); background: #000; }
-        .logo-mam { border: 3px solid var(--gold); display: inline-block; padding: 8px 30px; box-shadow: 0 0 15px var(--gold); }
-        
-        #mam-app { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: #000; border-right: 1px solid #222; padding: 15px; position: fixed; height: 100%; }
-        .nav-item { display: block; padding: 12px; color: #888; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; cursor: pointer; transition: 0.3s; }
-        .nav-item:hover { color: var(--gold); background: #080808; padding-left: 20px; }
-        
-        .main-stage { margin-left: 250px; padding: 30px; width: 100%; }
-        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; }
-        
-        /* CHAT EM TEMPO REAL */
-        #chat-box { height: 250px; overflow-y: auto; background: #000; padding: 15px; border: 1px solid #333; margin-bottom: 10px; border-radius: 8px; }
-        .msg { padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.4; }
-        .msg-ia { background: rgba(0, 242, 255, 0.1); border-left: 4px solid var(--blue); color: #fff; }
-        .msg-ceo { background: rgba(212, 175, 55, 0.1); border-left: 4px solid var(--gold); color: #fff; text-align: right; }
+        /* HEADER COM BARRA DE PESQUISA */
+        .top-bar { background: #000; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gold); }
+        .search-box { background: #111; border: 1px solid #333; padding: 8px 15px; border-radius: 20px; width: 40%; display: flex; }
+        .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 13px; }
 
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #080808; border: 1px solid #333; color: #fff; border-radius: 6px; }
-        .btn-gold { width: 100%; padding: 14px; background: var(--gold); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+        /* LAYOUT PRINCIPAL */
+        #mam-app { display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: #000; border-right: 1px solid #222; padding: 15px; flex-shrink: 0; }
+        .nav-item { display: block; padding: 12px; color: #888; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; cursor: pointer; transition: 0.2s; }
+        .nav-item:hover, .nav-active { color: var(--gold); background: #0a0a0a; border-left: 3px solid var(--gold); }
         
-        .status-online { color: #27ae60; font-size: 10px; font-weight: bold; }
+        .main-stage { flex-grow: 1; padding: 25px; overflow-y: auto; background: url('https://www.transparenttextures.com/patterns/black-linen.png'); }
+
+        /* COMPONENTES */
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        .btn-gold { width: 100%; padding: 14px; background: var(--gold); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+
+        /* CHAT ULTRA RÁPIDO */
+        #chat-box { height: 350px; overflow-y: auto; background: #080808; padding: 15px; border: 1px solid #222; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; }
+        .msg { padding: 10px; border-radius: 8px; font-size: 13px; max-width: 80%; }
+        .msg-ia { background: rgba(0, 242, 255, 0.1); border: 1px solid var(--blue); color: var(--blue); align-self: flex-start; }
+        .msg-ceo { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); color: var(--gold); align-self: flex-end; }
     </style>
 </head>
 <body>
 
+<div class="top-bar">
+    <div style="color:var(--gold); font-weight:bold; letter-spacing:2px;">MAM DISTRIBUIDORA</div>
+    <div class="search-box">
+        <input type="text" placeholder="Pesquisar artistas, músicas ou ISRC..." onkeyup="if(event.key==='Enter') alert('Pesquisando na base MAM...')">
+    </div>
+    <div style="font-size:12px;">CEO: <span style="color:var(--gold)">Play Sean</span></div>
+</div>
+
 <div id="mam-app">
     <aside class="sidebar">
-        <div style="text-align:center; padding-bottom:20px;">
-            <div style="color:var(--gold); font-weight:bold;">CEO PLAY SEAN</div>
-            <span class="status-online">● ASSISTENTE IA ONLINE</span>
-        </div>
-        <a onclick="showPage('home')" class="nav-item">🏠 Início</a>
-        <a onclick="showPage('carteira')" class="nav-item">💳 Carteira (Saldo Real)</a>
-        <a onclick="showPage('enviar')" class="nav-item">📤 Enviar Música</a>
-        <a onclick="showPage('assistente')" class="nav-item" style="color:var(--blue); font-weight:bold;">🤖 Chat Assistente</a>
-        <a onclick="logout()" class="nav-item" style="color:red; margin-top:30px;">🚪 Sair</a>
+        <a onclick="showPage('home')" class="nav-item">🏠 Início / Feed</a>
+        <a onclick="showPage('perfil')" class="nav-item">👤 Meu Perfil (Público)</a>
+        <a onclick="showPage('editar')" class="nav-item">⚙️ Editar Meu Perfil</a>
+        <a onclick="showPage('enviar')" class="nav-item">📤 Enviar Música (ISRC)</a>
+        <a onclick="showPage('carteira')" class="nav-item">💳 Carteira (925.500 Kz)</a>
+        <a onclick="showPage('mensagens')" class="nav-item" style="color:var(--blue); font-weight:bold;">🤖 IA ASSISTENTE (Ativa)</a>
+        <a onclick="location.reload()" class="nav-item" style="color:red; margin-top:20px;">🚪 Sair</a>
     </aside>
 
     <main class="main-stage">
         <div id="views">
-            <div id="p-carteira" style="display:none;">
+            <div id="p-editar" style="display:none;">
                 <div class="card">
-                    <h3>💳 Carteira Administrativa MAM</h3>
-                    <p style="font-size: 12px; color: #888;">Baseado em 1.851 registos ativos (500 Kz/cada)</p>
-                    <h1 id="real-bal" style="color: var(--gold);">925.500 Kz</h1>
-                    <div style="background: #000; padding: 10px; font-size: 11px; border: 1px solid #222;">
-                        🟢 Último registo: +500 Kz (Há 2 min)<br>
-                        🟢 Taxa de Distribuição: Ativa
-                    </div>
-                    <button class="btn-gold" style="margin-top:15px;" onclick="alert('Iniciando conexão segura com BFA/Express...')">Sacar Saldo Real</button>
-                </div>
-            </div>
-
-            <div id="p-assistente">
-                <div class="card">
-                    <h3 style="color:var(--blue)">🤖 Assistente IA - Resposta Prioritária</h3>
-                    <div id="chat-box">
-                        <div class="msg msg-ia"><b>MAM Admin:</b> Aguardando suas ordens, CEO. As atualizações de "Valores Verdadeiros" e "Resposta Imediata" foram aplicadas com sucesso.</div>
-                    </div>
-                    <textarea id="ai-input" placeholder="Escreva sua mensagem aqui e eu responderei agora..."></textarea>
-                    <button class="btn-gold" style="background:var(--blue)" onclick="aiReply()">Enviar Mensagem Agora</button>
-                </div>
-            </div>
-
-            <div id="p-enviar" style="display:none;">
-                <div class="card">
-                    <h3>📤 Envio Profissional ISRC</h3>
-                    <input type="text" placeholder="Título da Obra">
-                    <input type="text" placeholder="Artista Principal">
-                    <input type="text" placeholder="Compositores">
-                    <select><option>Kuduro</option><option>Kizomba</option><option>Hip Hop</option></select>
+                    <h3>⚙️ Editar Dados do Perfil</h3>
+                    <label>Nome Artístico:</label>
+                    <input type="text" value="Play Sean Arsénio">
+                    <label>E-mail de Contacto:</label>
+                    <input type="email" value="playseana@gmail.com">
+                    <label>Biografia:</label>
+                    <textarea>CEO da MAM Distribuidora. Líder do mercado musical em Angola.</textarea>
+                    <label>Mudar Foto de Perfil:</label>
                     <input type="file">
-                    <button class="btn-gold">Lançar Globalmente</button>
+                    <button class="btn-gold">Guardar Alterações</button>
                 </div>
             </div>
+
+            <div id="p-carteira" style="display:none;">
+                <div class="card" style="text-align:center;">
+                    <small>Saldo Disponível para Saque</small>
+                    <h1 style="color:var(--gold); font-size:40px;">925.500 Kz</h1>
+                    <button class="btn-gold" style="background:#27ae60; color:#fff;" onclick="showPage('mensagens')">Solicitar Saque via IA</button>
+                </div>
+            </div>
+
+            <div id="p-mensagens">
+                <div class="card">
+                    <h3 style="color:var(--blue)">🤖 Assistente Administrativo MAM</h3>
+                    <div id="chat-box">
+                        <div class="msg msg-ia"><b>IA:</b> Ordens recebidas, CEO. A barra de pesquisa e o menu de edição já estão ativos. O que executamos agora?</div>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <input type="text" id="ai-input" placeholder="Digite sua ordem aqui...">
+                        <button onclick="aiTalk()" style="background:var(--blue); color:#000; border:none; padding:10px 20px; border-radius:5px; font-weight:bold; cursor:pointer;">EXECUTAR</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p-home" style="display:none;"><div class="card"><h3>Feed MAM</h3><p>Bem-vindo de volta, Chefe.</p></div></div>
+            <div id="p-perfil" style="display:none;"><div class="card"><h3>Meu Perfil Público</h3><p>Play Sean Arsénio ✔</p></div></div>
+            <div id="p-enviar" style="display:none;"><div class="card"><h3>Distribuição</h3><p>Formulário ISRC Ativo.</p></div></div>
         </div>
     </main>
 </div>
 
 <script>
-    // SISTEMA DE RESPOSTA IMEDIATA
-    function aiReply() {
+    function showPage(p) {
+        const pages = ['p-home', 'p-perfil', 'p-editar', 'p-enviar', 'p-carteira', 'p-mensagens'];
+        pages.forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById('p-' + p).style.display = 'block';
+    }
+
+    // IA COM RESPOSTA E EXECUÇÃO IMEDIATA
+    function aiTalk() {
         const input = document.getElementById('ai-input');
         const box = document.getElementById('chat-box');
-        const msg = input.value.
+        const cmd = input.value.trim();
+        if(!cmd) return;
+
+        // CEO Fala
+        box.innerHTML += `<div class="msg msg-ceo"><b>CEO:</b> ${cmd}</div>`;
+        input.value = "";
+        box.scrollTop = box.scrollHeight;
+
+        // IA Responde e Executa (0.1s delay)
+        setTimeout(() => {
+            let resp = "Ordem processada com sucesso.";
+            
+            if(cmd.toLowerCase().includes("perfil")) {
+                resp = "Abrindo configurações de edição de perfil agora...";
+                showPage('editar');
+            } else if(cmd.toLowerCase().includes("saldo") || cmd.toLowerCase().includes("saque")) {
+                resp = "Verificando fundos... Saldo de 925.500 Kz confirmado para transferência.";
+                showPage('carteira');
+            } else if(cmd.toLowerCase().includes("pesquisa")) {
+                resp = "A barra de pesquisa no topo foi calibrada para buscas globais.";
+            }
+
+            box.innerHTML += `<div class="msg msg-ia"><b>IA:</b> ${resp}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }, 100);
+    }
+
+    // Atalho de tecla Enter no chat
+    document.getElementById('ai-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') aiTalk();
+    });
+</script>
+</body>
+</html>

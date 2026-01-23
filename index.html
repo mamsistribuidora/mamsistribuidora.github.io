@@ -4,103 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root { --gold: #d4af37; --black: #050505; --dark: #111; --green: #00ff88; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--black); color: white; }
+        :root {
+            --gold: #d4af37;
+            --black: #050505;
+            --gray: #121212;
+            --green: #00ff88;
+            --text: #ffffff;
+        }
 
-        /* HEADER FIXO */
-        header { background: var(--dark); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
-        .logo { color: var(--gold); font-weight: 800; font-size: 1.1rem; }
-        .status-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px var(--green); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--black); color: var(--text); line-height: 1.6; }
 
-        /* NAVEGAÇÃO ENTRE PAINÉIS */
-        .nav-tabs { display: flex; background: #000; padding: 5px; border-bottom: 1px solid #222; }
-        .tab { flex: 1; text-align: center; padding: 12px; font-size: 0.8rem; color: #555; cursor: pointer; font-weight: bold; border-bottom: 2px solid transparent; }
-        .tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
+        /* NAVEGAÇÃO */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 5%; background: rgba(0,0,0,0.9);
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222;
+        }
+        .logo { color: var(--gold); font-weight: 900; font-size: 1.4rem; letter-spacing: 2px; }
+        .nav-btns { display: flex; gap: 15px; }
+        .btn-login { color: var(--gold); text-decoration: none; font-weight: bold; font-size: 0.9rem; margin-top: 8px; }
 
-        /* CONTEÚDO DOS PAINÉIS */
-        .panel { display: none; padding: 20px; animation: fadeIn 0.5s; }
-        .panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* HERO SECTION (ESTILO MUSICPRO) */
+        .hero {
+            padding: 100px 20px; text-align: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+        }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
+        .hero h1 span { color: var(--gold); }
+        .hero p { color: #888; font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px; }
 
-        /* CARDS E DASHBOARD */
-        .card { background: var(--dark); border-radius: 15px; padding: 20px; border: 1px solid #222; margin-bottom: 20px; }
-        .balance-label { font-size: 0.7rem; color: #888; letter-spacing: 1px; }
-        .amount { font-size: 2.2rem; font-weight: bold; color: var(--green); margin: 10px 0; }
+        /* BOTÃO PRINCIPAL ARREDONDADO */
+        .cta-main {
+            background: var(--gold); color: #000; padding: 18px 45px;
+            border-radius: 50px; font-weight: 900; text-decoration: none;
+            display: inline-block; transition: 0.3s; border: none; font-size: 1rem;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
 
-        /* BOTÕES */
-        .btn-gold { background: var(--gold); color: #000; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .admin-stat { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.85rem; }
+        /* PAINEL DE RENDIMENTOS (NOSSO TOQUE ESPECIAL) */
+        .live-panel {
+            background: var(--gray); border: 1px solid #333; border-radius: 20px;
+            padding: 30px; margin: 50px auto; max-width: 500px;
+        }
+        .counter { font-size: 3rem; color: var(--green); font-weight: 800; font-family: monospace; }
 
-        /* FOOTER */
-        footer { text-align: center; padding: 20px; color: #444; font-size: 0.7rem; border-top: 1px solid #111; }
+        /* CARDS DE RECURSOS */
+        .features { padding: 60px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .card {
+            background: var(--gray); padding: 35px; border-radius: 20px;
+            border: 1px solid #222; transition: 0.3s;
+        }
+        .card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .card h3 { color: var(--gold); margin-bottom: 15px; font-size: 1.3rem; }
+        .card p { color: #888; font-size: 0.95rem; }
+
+        /* RODAPÉ COMPLETO */
+        footer {
+            background: #000; padding: 60px 5%; border-top: 1px solid #222;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;
+        }
+        footer h4 { color: white; margin-bottom: 20px; font-size: 1.1rem; }
+        footer p, footer a { color: #666; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        footer b { color: var(--gold); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">MAM SYSTEM</div>
-    <div style="font-size: 0.7rem;"><span class="status-dot"></span>SERVIDOR ATIVO</div>
-</header>
+    <nav>
+        <div class="logo">MAM DISTRIBUIDORA</div>
+        <div class="nav-btns">
+            <a href="#" class="btn-login">LOGIN</a>
+            <a href="#" style="background:var(--gold); color:black; padding:8px 15px; border-radius:5px; text-decoration:none; font-weight:bold; font-size:0.8rem;">CRIAR CONTA</a>
+        </div>
+    </nav>
 
-<div class="nav-tabs">
-    <div class="tab active" onclick="switchTab(this, 'user-panel')">📱 UTILIZADOR</div>
-    <div class="tab" onclick="switchTab(this, 'admin-panel')">⚙️ ADMINISTRATIVO</div>
-</div>
-
-<div id="user-panel" class="panel active">
-    <div class="card">
-        <p class="balance-label">SALDO ESTIMADO DO ARTISTA</p>
-        <div class="amount" id="user-money">Kz 0,00</div>
-        <p style="font-size: 0.75rem; color: #666;">Taxa de distribuição aplicada: 2%</p>
-    </div>
-
-    <button class="btn-gold" onclick="window.open('https://wa.me/244937881307?text=Quero+ativar+meu+VIP+BFA')">💎 ATIVAR PAINEL VIP</button>
-    
-    <div class="card" style="margin-top:20px;">
-        <h3 style="font-size:1rem; color:var(--gold);">Submeter Obra</h3>
-        <p style="font-size:0.8rem; color:#888; margin:10px 0;">Envie seu ficheiro MP3/WAV e capa.</p>
-        <button onclick="window.location.href='mailto:mamfilhos29@gmail.com'" style="background:transparent; color:white; border:1px solid #333; width:100%; padding:10px; border-radius:8px;">✉️ ENVIAR PARA MAM</button>
-    </div>
-</div>
-
-<div id="admin-panel" class="panel">
-    <div class="card" style="border-color: var(--gold);">
-        <h3 style="color: var(--gold); font-size: 0.9rem;">CENTRAL DO CEO MATIAS</h3>
-        <div class="admin-stat"><span>Artistas Ativos:</span> <b>1.240</b></div>
-        <div class="admin-stat"><span>Músicas em Análise:</span> <b>48</b></div>
-        <div class="admin-stat"><span>Total Distribuído:</span> <b>Kz 4.2M</b></div>
-    </div>
-
-    <div class="card">
-        <h4 style="font-size:0.8rem; margin-bottom:10px;">CONFIGURAÇÕES DE REDE</h4>
-        <p style="font-size:0.75rem; color:#888;">Email Oficial: <b>mamfilhos29@gmail.com</b></p>
-        <p style="font-size:0.75rem; color:#888;">Suporte BFA: <b>937881307</b></p>
-        <button onclick="alert('Sistema de ISRC Gerado com Sucesso')" style="margin-top:15px; background:#222; color:white; width:100%; padding:10px; border:none; border-radius:5px; font-size:0.7rem;">GERAR CÓDIGOS ISRC</button>
-    </div>
-</div>
-
-<footer>
-    MAM & FILHOS © 2026<br>DISTRIBUIÇÃO DIGITAL PROFISSIONAL
-</footer>
-
-<script>
-    // Sistema de troca de abas
-    function switchTab(element, tabId) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    <section class="hero">
+        <h1>Lança a tua música para o <span>Mundo Inteiro.</span></h1>
+        <p>A distribuidora digital líder em Angola. Transparência total, relatórios analíticos e pagamentos via BFA.</p>
         
-        element.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-    }
+        <button class="cta-main" onclick="window.open('https://wa.me/244937881307?text=Olá+CEO+Matias,+quero+começar+a+distribuir')">COMECE AQUI</button>
 
-    // Motor de Ganhos do Utilizador
-    let val = 0;
-    setInterval(() => {
-        val += 1.50;
-        document.getElementById('user-money').innerText = "Kz " + val.toLocaleString('pt-PT', {minimumFractionDigits: 2});
-    }, 1000);
-</script>
+        <div class="live-panel">
+            <small style="color: #666; letter-spacing: 2px; font-weight: bold;">MONETIZAÇÃO GLOBAL MAM</small>
+            <div class="counter" id="money">Kz 0,00</div>
+            <p style="color: var(--green); font-size: 0.8rem; margin-top: 10px;">● SISTEMA ATIVO: 1.50 Kz / Segundo</p>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="card">
+            <h3>Distribuição Digital</h3>
+            <p>Colocamos a sua música no Spotify, Apple Music, TikTok, Audiomack e mais 150 lojas.</p>
+        </div>
+        <div class="card">
+            <h3>Receba via BFA</h3>
+            <p>Partilha de receitas automática e pagamentos diretos para a sua conta em Angola.</p>
+        </div>
+        <div class="card">
+            <h3>Relatórios PRO</h3>
+            <p>Entenda com clareza como a sua música performa em cada plataforma digital.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div>
+            <div class="logo" style="margin-bottom: 20px;">MAM</div>
+            <p>A maior força na distribuição digital independente.</p>
+        </div>
+        <div>
+            <h4>Plataforma</h4>
+            <a href="#">Planos</a>
+            <a href="#">Distribuição</a>
+            <a href="#">Marketing</a>
+        </div>
+        <div>
+            <h4>Contacto</h4>
+            <p><b>Email:</b> mamfilhos29@gmail.com</p>
+            <p><b>WhatsApp:</b> 937881307</p>
+            <p><b>CEO:</b> Matias Manuel</p>
+        </div>
+    </footer>
+
+    <script>
+        let count = 0;
+        setInterval(() => {
+            count += 1.50;
+            document.getElementById('money').innerText = "Kz " + count.toLocaleString('pt-PT', {minimumFractionDigits: 2});
+        }, 1000);
+    </script>
 
 </body>
 </html>

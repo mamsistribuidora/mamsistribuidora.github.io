@@ -2,209 +2,228 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Império Play Sean Arsénio</title>
+    <title>MAM Distribuidora | Oficial CEO Play Sean Arsénio</title>
     <style>
-        :root {
-            --gold: #d4af37; --silver: #c0c0c0; --dark: #050505; --card: #111;
-            --text: #fff; --cassule: #e67e22; --vip-max: #00f2ff;
-        }
-        body { background: var(--dark); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        :root { --gold: #d4af37; --dark: #050505; --card: #121212; --blue: #00f2ff; --cassule: #e67e22; }
+        body { background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         
-        /* CABEÇALHO COM LOGO CRIADO */
-        .header-brand { text-align: center; padding: 20px; background: #000; border-bottom: 2px solid var(--gold); }
-        .logo-box { border: 2px solid var(--gold); display: inline-block; padding: 10px 20px; border-radius: 5px; }
-        .logo-box h1 { margin: 0; font-size: 30px; letter-spacing: 8px; color: var(--gold); }
-        .logo-box span { font-size: 10px; color: #888; text-transform: uppercase; }
+        /* HEADER & LOGO */
+        .mam-header { text-align: center; padding: 15px; border-bottom: 1px solid #222; background: #000; }
+        .logo-box { border: 3px solid var(--gold); display: inline-block; padding: 5px 30px; box-shadow: 0 0 15px var(--gold); }
+        .logo-box h1 { margin: 0; letter-spacing: 10px; color: var(--gold); font-size: 28px; }
 
-        /* QUADRO DE HONRA E APOIO (TAMANHO PEQUENO/VISÍVEL) */
-        .honor-section { max-width: 800px; margin: 15px auto; border: 1px solid var(--gold); padding: 15px; border-radius: 10px; background: rgba(212, 175, 55, 0.05); display: flex; align-items: center; gap: 20px; }
-        .honor-section img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--gold); }
-        .honor-text { font-size: 12px; }
-        .honor-text h4 { margin: 0; color: var(--gold); }
+        /* BANNERS E QUADRO DE HONRA (TAMANHO PEQUENO) */
+        .info-bar { display: flex; overflow-x: auto; gap: 10px; padding: 10px; background: #080808; border-bottom: 1px solid #222; }
+        .mini-banner { min-width: 250px; background: #111; border: 1px solid #333; border-radius: 6px; padding: 8px; font-size: 11px; }
+        .gold-honor { border: 2px solid var(--gold); background: linear-gradient(45deg, #000, #1a1a1a); display: flex; align-items: center; gap: 8px; }
+        .ceo-avatar { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--gold); background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_LpB...') center/cover; }
 
-        /* ÁREA DE BOAS VINDAS (PORTAL DE ENTRADA) */
-        .welcome-portal { max-width: 500px; margin: 30px auto; text-align: center; padding: 20px; }
-        .welcome-msg { font-size: 13px; color: #ccc; line-height: 1.4; margin-bottom: 20px; }
-        
-        /* BOTÕES E INPUTS */
-        .btn-main { width: 100%; padding: 12px; margin: 8px 0; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 12px; }
-        .btn-gold { background: var(--gold); color: #000; }
-        .btn-google { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; box-sizing: border-box; }
+        /* PORTAL DE ACESSO */
+        .portal-entry { max-width: 400px; margin: 30px auto; padding: 25px; background: var(--card); border-radius: 12px; border: 1px solid #222; text-align: center; }
+        input, select { width: 100%; padding: 10px; margin: 5px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; box-sizing: border-box; }
+        .btn-gold { width: 100%; padding: 12px; background: var(--gold); color: #000; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
 
-        /* MENU DE NAVEGAÇÃO INTERNO */
-        .nav-sidebar { width: 220px; position: fixed; height: 100%; background: #000; border-right: 1px solid #222; padding: 15px; display: none; }
-        .nav-item { padding: 10px; color: #888; cursor: pointer; display: block; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; }
+        /* DASHBOARD INTERNO */
+        #main-app { display: none; display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: #000; border-right: 1px solid #222; position: fixed; height: 100%; padding: 20px; box-sizing: border-box; }
+        .nav-item { display: block; padding: 12px; color: #888; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; cursor: pointer; }
         .nav-item:hover { color: var(--gold); background: #111; }
+        .main-content { margin-left: 250px; padding: 25px; width: 100%; }
 
-        /* PAINEL DE CONTEÚDO */
-        .main-wrapper { margin-left: 0; padding: 20px; transition: 0.3s; }
-        .active-session .nav-sidebar { display: block; }
-        .active-session .main-wrapper { margin-left: 240px; }
-
-        /* GRID DE MÚSICAS E TAREFAS */
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
-        .music-card { background: var(--card); padding: 10px; border-radius: 8px; text-align: center; font-size: 11px; }
-        .music-card img { width: 100%; border-radius: 5px; }
-        
-        /* MODAL DE PLAYER E CARTEIRA */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 2px solid var(--gold); padding: 10px; display: flex; align-items: center; gap: 20px; z-index: 1000; display: none; }
-        
-        .verified-badge { color: #3498db; font-size: 10px; margin-left: 5px; }
+        /* PLAYER */
+        .player-bar { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 2px solid var(--gold); padding: 12px; display: none; z-index: 999; }
     </style>
 </head>
 <body>
 
-<header class="header-brand">
-    <div class="logo-box">
-        <h1>MAM</h1>
-        <span>Distribuidora Digital</span>
+<div id="portal-screen">
+    <div class="mam-header">
+        <div class="logo-box"><h1>MAM</h1><small style="color:var(--gold); font-size:9px;">DISTRIBUIDORA</small></div>
     </div>
-</header>
 
-<div class="honor-section">
-    <div style="background: var(--gold); width: 50px; height: 50px; border-radius: 50%;"></div>
-    <div class="honor-text">
-        <h4>Quadro de Honra: Play Sean Arsénio <span class="verified-badge">✔</span></h4>
-        <p>Matias Arsénio Manuel. Apoie este projeto angolano para fortalecer nossa cultura. 
-           💰 <b>VIP Cassule: 300 Kz</b> - Inscrição aberta!</p>
+    <div class="info-bar">
+        <div class="mini-banner gold-honor">
+            <div class="ceo-avatar"></div>
+            <div>
+                <strong style="color:var(--gold)">QUADRO DE HONRA: Play Sean Arsénio ✔</strong><br>
+                <span>CEO & Artista VIP Máximo</span>
+            </div>
+        </div>
+        <div class="mini-banner">
+            <strong style="color:var(--cassule)">VIP CASSULE: 3.000 Kz</strong><br>
+            Vantagens VIP: Ganhos +20% | 2 Artistas. <button onclick="alert('BFA: 0006.0000.8631.6866.3015.2')" style="font-size:9px;">PAGAR</button>
+        </div>
+        <div class="mini-banner">
+            <strong>BFA: MATIAS ARSÉNIO MANUEL</strong><br>
+            IBAN: 0006.0000.8631.6866.3015.2 | Express: 937881307
+        </div>
+    </div>
+
+    <div class="portal-entry" id="login-box">
+        <p style="font-size:11px; color:#aaa;">Seja bem-vindo a MAM Distribuidora... aqui n precisas de Visa para ganhar... BFA, Bai ou Multicaixa Express. Inscreva-se já.</p>
+        <form onsubmit="handleLogin(event)">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="pass" placeholder="Senha" required>
+            <button class="btn-gold">Iniciar Secção</button>
+        </form>
+        <button class="btn-gold" style="background:#fff;" onclick="alert('Escolha o email do seu dispositivo.')">Entrar com Google</button>
+        <p style="font-size:11px">Novo aqui? <a href="#" onclick="togglePortal('reg')" style="color:var(--gold)">Criar Conta</a></p>
+    </div>
+
+    <div class="portal-entry" id="reg-box" style="display:none;">
+        <div class="logo-box" style="padding:2px 15px;"><h1>MAM</h1></div>
+        <input type="text" placeholder="Nome do Artista ou Produtora">
+        <input type="email" placeholder="E-mail">
+        <input type="tel" placeholder="Telefone (+244)">
+        <input type="password" placeholder="Criar Senha">
+        <button class="btn-gold" onclick="registerUser()">Confirmar & Verificar E-mail</button>
     </div>
 </div>
 
-<nav id="sidebar" class="nav-sidebar">
-    <div style="text-align:center; padding-bottom: 20px;">
-        <small style="color:var(--gold)">PAINEL ADMINISTRATIVO</small>
-    </div>
-    <a onclick="showPage('home')" class="nav-item">🏠 Página Inicial</a>
-    <a onclick="showPage('profile')" class="nav-item">👤 Perfil & Ficheiros</a>
-    <a onclick="showPage('wallet')" class="nav-item">💳 Carteira & Saque</a>
-    <a onclick="showPage('create-artist')" class="nav-item">➕ Criar Artista/Produtora</a>
-    <a onclick="showPage('upload')" class="nav-item">📤 Enviar Música</a>
-    <a onclick="showPage('earn')" class="nav-item">💰 Fazer Dinheiro (Tasks)</a>
-    <a id="adminAssistant" class="nav-item" style="color:var(--vip-max); display:none;">🤖 Meu Assistente (CEO)</a>
-    <a href="#" onclick="logout()" class="nav-item" style="color:#ff4444;">🚪 Sair</a>
-</nav>
-
-<div class="main-wrapper" id="content">
-    
-    <section id="login-page" class="welcome-portal">
-        <div class="welcome-msg">
-            Seja bem-vindo à MAM Distribuidora. Criada por Angolanos para facilitar Angolanos. 
-            Sem Visa, receba em Kwanza (BFA, BAI, Express). Distribua e ganhe assistindo.
+<div id="main-app">
+    <aside class="sidebar">
+        <div style="text-align:center; margin-bottom:20px;">
+            <span id="u-rank" style="background:var(--gold); color:#000; font-size:10px; font-weight:bold; padding:3px 12px; border-radius:15px;">CARREGANDO...</span>
         </div>
-        
-        <form onsubmit="login(event)">
-            <input type="email" id="loginEmail" placeholder="E-mail" required>
-            <input type="password" id="loginPass" placeholder="Palavra-passe" required>
-            <button type="submit" class="btn-main btn-gold">Iniciar Secção</button>
-        </form>
+        <a onclick="location.reload()" class="nav-item">🏠 Página Inicial</a>
+        <a onclick="show('perfil')" class="nav-item">👤 Perfil & Editar</a>
+        <a onclick="show('carteira')" class="nav-item">💳 Carteira & Saque</a>
+        <a onclick="show('artista')" class="nav-item">➕ Criar Artista/Produtora</a>
+        <a onclick="show('enviar')" class="nav-item">📤 Enviar Música (ISRC)</a>
+        <a onclick="show('ganhar')" class="nav-item">💰 Fazer Dinheiro</a>
+        <a id="ceo-assist" onclick="show('assistente')" class="nav-item" style="display:none; color:var(--blue)">🤖 Meu Assistente</a>
+        <a onclick="logout()" class="nav-item" style="color:red; margin-top:20px;">🚪 Sair</a>
+    </aside>
 
-        <button class="btn-main btn-google" onclick="googleSimulate()">
-            <img src="https://cdn-icons-png.flaticon.com/128/300/300221.png" width="16"> Entrar com Google
-        </button>
-
-        <p style="font-size: 12px;">Não tem conta? <a href="#" onclick="showRegister()" style="color:var(--gold)">Criar Conta</a></p>
-    </section>
-
-    <section id="register-page" style="display:none; max-width: 450px; margin: auto;">
-        <h3 style="text-align:center">Registar na MAM</h3>
-        <input type="text" placeholder="Nome do Artista ou Produtora">
-        <input type="email" placeholder="E-mail Oficial">
-        <div style="display:flex; gap:5px;">
-            <select style="width: 30%"><option>AO (+244)</option></select>
-            <input type="text" placeholder="Telemóvel" style="width: 70%">
-        </div>
-        <input type="password" placeholder="Criar Palavra-passe">
-        <input type="password" placeholder="Confirmar Palavra-passe">
-        <button class="btn-main btn-gold" onclick="verifyEmailSimulate()">Confirmar Registo</button>
-    </section>
-
-    <section id="home-page" style="display:none;">
-        <div style="background:rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-            <small>ANÚNCIO: VIP CASSULE - 300 Kz. 2 Artistas + 30% Ganhos Extra!</small>
-        </div>
-
-        <h4>🎵 Músicas Recentes</h4>
-        <div class="grid-layout">
-            <div class="music-card" onclick="playMusic('Play Sean - Lenda', 'Play Sean Arsénio')">
-                <div style="background:#222; height:100px; margin-bottom:10px;"></div>
-                <strong>Lenda</strong><br>
-                <span>Play Sean Arsénio <span class="verified-badge">✔</span></span>
-            </div>
+    <main class="main-content">
+        <h2 id="page-title">Página Inicial</h2>
+        <div id="content-dynamic">
+            <div id="v-home">
+                <div class="mini-banner" style="width:100%; margin-bottom:20px;">Publicidade: <strong>MAM - A Distribuidora dos Angolanos</strong></div>
+                <h4>Músicas Sugeridas</h4>
+                <div class="mini-banner gold-honor" onclick="play('Lenda', 'Play Sean Arsénio')">🎵 Lenda - Play Sean Arsénio <span style="color:var(--blue)">✔</span></div>
+                
+                <h4 style="margin-top:20px;">Tarefa Caça-Moeda</h4>
+                <div class="mini-banner" style="display:flex; justify-content:space-between;">
+                    <span>Ver Vídeo Premiado</span>
+                    <button onclick="addCash(0.1)" style="background:var(--gold); border:none; border-radius:3px; padding:2px 8px; cursor:pointer;">GANHAR 0.1</button>
+                </div>
             </div>
 
-        <h4 style="margin-top:30px;">💎 Caça Moedas (Tarefas)</h4>
-        <div class="grid-layout">
-            <div class="music-card" style="border:1px solid var(--cassule)">
-                <strong>Ver Vídeo Promocional</strong><br>
-                <small>Ganho: 0.1 Kz</small>
-                <button class="btn-main btn-gold" style="font-size:10px; padding:5px;">Executar</button>
+            <div id="v-enviar" style="display:none;">
+                <div class="mini-banner">
+                    <h3>📤 Envio Profissional</h3>
+                    <input type="text" placeholder="Título da Música">
+                    <input type="text" placeholder="Código ISRC">
+                    <label>Capa do Single:</label><input type="file">
+                    <select><option>Todas Plataformas Digitais</option></select>
+                    <button class="btn-gold" onclick="alert('Música enviada para análise técnica MAM.')">Lançar Música</button>
+                </div>
+            </div>
+
+            <div id="v-perfil" style="display:none;">
+                <div class="mini-banner">
+                    <h3>👤 Edição de Perfil</h3>
+                    <input type="file" title="Editar Foto">
+                    <label>PIN Secreto de Saque (4 dígitos):</label>
+                    <input type="password" maxlength="4" placeholder="••••">
+                    <button class="btn-gold">Guardar PIN Secreto</button>
+                </div>
+            </div>
+
+            <div id="v-assistente" style="display:none;">
+                <h3 style="color:var(--blue)">🤖 Meu Assistente (Comandos de Voz/Texto)</h3>
+                <textarea id="cmd" placeholder="Comando CEO: Ex: Tornar VIP perfil 937..."></textarea>
+                <button class="btn-gold" style="background:var(--blue)" onclick="alert('Comando executado via satélite!')">Executar</button>
             </div>
         </div>
-    </section>
-
+    </main>
 </div>
 
 <div id="player" class="player-bar">
-    <div style="width: 40px; height: 40px; background: #333;"></div>
-    <div>
-        <strong id="p-title" style="font-size:12px;">Título</strong><br>
-        <small id="p-artist" style="font-size:10px;">Artista</small>
+    <div style="display:flex; justify-content:space-between; align-items:center; max-width:900px; margin:auto;">
+        <span id="song" style="font-size:12px;">MAM Player - Selecione uma música</span>
+        <div style="color:var(--gold); font-size:18px;">⏮ ⏸ ⏭</div>
     </div>
-    <div style="flex-grow:1; text-align:center; color:var(--gold);">▶️ ⏸️ ⏹️</div>
 </div>
 
 <script>
-    // Lógica de Navegação e Sessão
-    let sessionActive = false;
-    let currentUser = null;
+    const ADMS = ['playseana@gmail.com', 'mamfilhos29@gmail.com', 'produtorap6production@gmail.com'];
+    
+    // PERSISTÊNCIA DE SESSÃO
+    let session = JSON.parse(localStorage.getItem('mam_auth'));
 
-    function login(e) {
+    if (session) {
+        startSystem(session.email);
+    } else {
+        document.getElementById('main-app').style.display = 'none';
+    }
+
+    function handleLogin(e) {
         e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
 
-        // LOGIN ADMINISTRATIVO CONFIGURADO
-        if((email === 'playseana@gmail.com' || email === 'mamfilhos29@gmail.com' || email === 'produtorap6production@gmail.com') && pass === 'Angell28') {
-            document.getElementById('adminAssistant').style.display = 'block';
+        if (ADMS.includes(email) && pass === 'Angell28') {
+            const data = { email: email, loginTime: Date.now() };
+            localStorage.setItem('mam_auth', JSON.stringify(data));
+            // Satélite MAM: +100 Kz por login
+            startSystem(email);
+        } else {
+            alert("Acesso Negado.");
         }
-
-        document.body.classList.add('active-session');
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('home-page').style.display = 'block';
-        document.getElementById('player').style.display = 'flex';
-        sessionActive = true;
     }
 
-    function showPage(page) {
-        const sections = ['home-page', 'register-page', 'login-page'];
-        sections.forEach(s => document.getElementById(s).style.display = 'none');
-        document.getElementById(page + '-page').style.display = 'block';
-    }
+    function startSystem(email) {
+        document.getElementById('portal-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+        document.getElementById('player').style.display = 'block';
 
-    function playMusic(title, artist) {
-        document.getElementById('p-title').innerText = title;
-        document.getElementById('p-artist').innerText = artist;
-    }
-
-    function verifyEmailSimulate() {
-        alert("MAM DISTRIBUIDORA: Enviamos um link de verificação para o seu e-mail. Clique para ativar sua conta.");
-        showPage('login');
-    }
-
-    function googleSimulate() {
-        alert("Sugestão Google: Escolha um e-mail do dispositivo para continuar.");
-    }
-
-    // Sistema de Expiração de Sessão (1 Hora)
-    setTimeout(() => {
-        if(sessionActive) {
-            alert("Sessão expirada por inatividade.");
-            location.reload();
+        if (ADMS.includes(email)) {
+            document.getElementById('u-rank').innerText = 'CEO ADMIN MASTER';
+            document.getElementById('u-rank').style.background = '#00f2ff';
+            document.getElementById('ceo-assist').style.display = 'block';
+        } else {
+            document.getElementById('u-rank').innerText = 'NORMAL';
         }
-    }, 3600000);
+    }
 
+    function registerUser() {
+        alert("E-mail de verificação enviado! Satélite MAM faturou +500 Kz pelo registo.");
+        togglePortal('login');
+    }
+
+    function togglePortal(box) {
+        document.getElementById('login-box').style.display = box === 'login' ? 'block' : 'none';
+        document.getElementById('reg-box').style.display = box === 'reg' ? 'block' : 'none';
+    }
+
+    function show(view) {
+        const ids = ['v-home', 'v-enviar', 'v-perfil', 'v-assistente'];
+        ids.forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById('v-' + view).style.display = 'block';
+        document.getElementById('page-title').innerText = view.toUpperCase();
+    }
+
+    function addCash(v) {
+        alert("Carteira: +" + v + " Kz adicionados via Caça-Moeda.");
+    }
+
+    function play(n, a) {
+        document.getElementById('song').innerText = "Ouvindo: " + n + " | Artista: " + a;
+        if(a.includes("Play Sean")) alert("Acedendo ao Perfil VIP do Artista...");
+    }
+
+    function logout() {
+        localStorage.removeItem('mam_auth');
+        location.reload();
+    }
+
+    // Timer de Inatividade (1h)
+    setInterval(() => {
+        let s = JSON.parse(localStorage.getItem('mam_auth'));
+        if(s && (Date.now() - s.loginTime > 3600000)) logout();
+    }, 60000);
 </script>
 </body>
 </html>

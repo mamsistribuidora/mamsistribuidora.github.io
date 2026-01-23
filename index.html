@@ -3,216 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora - Acesso</title>
+    <title>MAM Distribuidora - Oficial</title>
     <style>
-        /* CSS - ESTILO PROFISSIONAL */
-        :root {
-            --primary-color: #0056b3;
-            --secondary-color: #28a745;
-            --bg-color: #f4f7f9;
-            --text-color: #333;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .auth-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .auth-card h2 {
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-        }
-
-        .auth-card p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-
-        .input-group {
-            text-align: left;
-            margin-bottom: 1.2rem;
-        }
-
-        .input-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-            font-size: 0.85rem;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        /* Botão com Loading */
-        #btn-submit {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.3s;
-        }
-
-        #btn-submit:hover { background-color: #004494; }
-        #btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .toggle-link {
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .toggle-link a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        /* Esconder campo de confirmação no Login */
+        body { font-family: sans-serif; background: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e1e1e; padding: 30px; border-radius: 15px; width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
+        h2 { color: #007bff; margin-bottom: 5px; }
+        p { font-size: 12px; color: #888; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #007bff; border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #444; cursor: not-allowed; }
+        .toggle { margin-top: 15px; font-size: 13px; color: #aaa; }
+        .toggle span { color: #007bff; cursor: pointer; text-decoration: underline; }
         .hidden { display: none; }
-
-        .success-msg { color: var(--secondary-color); font-weight: bold; margin-top: 1rem; display: none; }
+        #loader { display: none; margin: 10px auto; border: 3px solid #f3f3f3; border-top: 3px solid #007bff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="auth-card">
-        <h2 id="form-title">Login MAM</h2>
-        <p id="form-subtitle">Bem-vindo à MAM Distribuidora</p>
+<div class="card">
+    <h2>MAM Distribuidora</h2>
+    <p>O portal do artista independente</p>
 
-        <form id="auth-form">
-            <div class="input-group">
-                <label for="email">E-mail Profissional</label>
-                <input type="email" id="email" placeholder="exemplo@mam.com" required>
-            </div>
+    <form id="meuFormulario">
+        <input type="email" id="email" placeholder="Seu E-mail" required>
+        <input type="password" id="senha" placeholder="Sua Senha" required minlength="6">
+        <input type="password" id="confirmarSenha" placeholder="Confirme a Senha" class="hidden">
+        
+        <div id="loader"></div>
+        <button type="submit" id="btnAcao">Entrar</button>
+    </form>
 
-            <div class="input-group">
-                <label for="password">Senha</label>
-                <input type="password" id="password" placeholder="Sua senha segura" required>
-            </div>
-
-            <div class="input-group hidden" id="confirm-pass-group">
-                <label for="confirm-password">Confirmar Senha</label>
-                <input type="password" id="confirm-password" placeholder="Repita a senha">
-            </div>
-
-            <button type="submit" id="btn-submit">
-                <span id="btn-text">Entrar</span>
-                <div class="spinner" id="btn-loader"></div>
-            </button>
-        </form>
-
-        <div id="response-msg" class="success-msg">Operação realizada!</div>
-
-        <div class="toggle-link">
-            <span id="toggle-text">Ainda não tem conta?</span> 
-            <a href="javascript:void(0)" id="change-mode">Cadastrar-se</a>
-        </div>
+    <div class="toggle">
+        <span id="txtAlternar">Ainda não tem conta? Cadastrar-se</span>
     </div>
+    
+    <div style="margin-top:20px; font-size: 10px; color: #555;">
+        Suporte: mamfilhos29@gmail.com
+    </div>
+</div>
 
-    <script>
-        /* JAVASCRIPT - LÓGICA DE FUNCIONALIDADE */
-        const form = document.getElementById('auth-form');
-        const btnSubmit = document.getElementById('btn-submit');
-        const btnText = document.getElementById('btn-text');
-        const loader = document.getElementById('btn-loader');
-        const modeLink = document.getElementById('change-mode');
-        const title = document.getElementById('form-title');
-        const confirmGroup = document.getElementById('confirm-pass-group');
-        const responseMsg = document.getElementById('response-msg');
+<script>
+    // Seleção de elementos
+    const form = document.getElementById('meuFormulario');
+    const btn = document.getElementById('btnAcao');
+    const inputConfirmar = document.getElementById('confirmarSenha');
+    const txtAlternar = document.getElementById('txtAlternar');
+    const loader = document.getElementById('loader');
 
-        let isLoginMode = true;
+    let modoLogin = true;
 
-        // Alternar entre Login e Cadastro
-        modeLink.addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            
-            if (isLoginMode) {
-                title.innerText = "Login MAM";
-                btnText.innerText = "Entrar";
-                modeLink.innerText = "Cadastrar-se";
-                document.getElementById('toggle-text').innerText = "Ainda não tem conta?";
-                confirmGroup.classList.add('hidden');
-            } else {
-                title.innerText = "Cadastro MAM";
-                btnText.innerText = "Criar Minha Conta";
-                modeLink.innerText = "Fazer Login";
-                document.getElementById('toggle-text').innerText = "Já é um artista MAM?";
-                confirmGroup.classList.remove('hidden');
-            }
-        });
+    // Função para alternar entre Login e Cadastro
+    txtAlternar.onclick = function() {
+        modoLogin = !modoLogin;
+        if (modoLogin) {
+            btn.innerText = "Entrar";
+            inputConfirmar.classList.add('hidden');
+            inputConfirmar.removeAttribute('required');
+            txtAlternar.innerText = "Ainda não tem conta? Cadastrar-se";
+        } else {
+            btn.innerText = "Criar Conta";
+            inputConfirmar.classList.remove('hidden');
+            inputConfirmar.setAttribute('required', 'true');
+            txtAlternar.innerText = "Já tem conta? Fazer Login";
+        }
+    };
 
-        // Simular envio de dados
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+    // Ação do formulário
+    form.onsubmit = function(event) {
+        event.preventDefault(); // Impede o erro de recarregar a página
 
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            const confirmPass = document.getElementById('confirm-password').value;
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
 
-            // Validação básica de senha para cadastro
-            if (!isLoginMode && pass !== confirmPass) {
-                alert("As senhas não coincidem!");
+        // Validação de senha no cadastro
+        if (!modoLogin) {
+            const confirmar = document.getElementById('confirmarSenha').value;
+            if (senha !== confirmar) {
+                alert("As senhas não conferem!");
                 return;
             }
+        }
 
-            // Iniciar Efeito de Carregamento (Loading)
-            btnSubmit.disabled = true;
-            btnText.style.display = 'none';
-            loader.style.display = 'block';
+        // Feedback visual de que está funcionando
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        loader.style.display = "block";
 
-            // Simula uma resposta do servidor da MAM Distribuidora
-            setTimeout(() => {
-                loader.style.display = 'none';
-                btnText.style.display = 'block';
-                btnSubmit.disabled = false;
+        console.log("Processando dados para MAM Distribuidora...");
 
-                // Feedback visual de sucesso
-                responseMsg.style.display = 'block';
-                responseMsg.innerText = isLoginMode ? "Login Autorizado!" : "Cadastro MAM Concluído!";
-                
-                console.log(`Dados processados para mamfilhos29@gmail.com
+        // Simula o envio (Aqui você conectaria com o banco de dados)
+        setTimeout(() => {
+            loader.style.display = "none";
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            
+            alert("Sucesso! Bem-vindo à MAM Distribuidora.\nE-mail: " + email);
+            
+            // Aqui você redirecionaria o usuário:
+            // window.location.href = "painel-do-artista.html";
+        }, 1500);
+    };
+</script>
+
+</body>
+</html>

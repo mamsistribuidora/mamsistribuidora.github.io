@@ -3,102 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Enterprise OS v8.0</title>
     <style>
-        :root {
-            --gold: #d4af37; --dark: #020202; --card: #0a0a0a;
-            --blue: #00d4ff; --red: #ff3e3e; --green: #00ff88; --glass: rgba(255,255,255,0.05);
-        }
-        body { background: var(--dark); color: #fff; font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* MENU LATERAL */
-        aside { width: 260px; background: #000; border-right: 1px solid var(--gold); display: flex; flex-direction: column; padding: 20px; }
-        .logo-box { text-align: center; padding-bottom: 25px; border-bottom: 1px solid #222; margin-bottom: 20px; }
-        .logo-box h2 { color: var(--gold); margin: 0; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; }
-        .nav-link { padding: 12px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 8px; transition: 0.3s; color: #888; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
-        .nav-link:hover, .nav-active { background: var(--glass); color: var(--gold); border-left: 4px solid var(--gold); }
-
-        /* ÁREA DE CONTEÚDO */
-        main { flex: 1; overflow-y: auto; padding: 30px; position: relative; }
-        .page { display: none; animation: fadeIn 0.4s ease-in-out; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
-
-        /* PAINEL DE RENDIMENTOS */
-        .income-engine { background: linear-gradient(135deg, #111, #000); border: 1px solid var(--gold); padding: 25px; border-radius: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .profit-val { font-size: 2.5rem; font-weight: bold; color: var(--green); font-family: 'Courier New', monospace; }
-        .fee-tag { font-size: 0.7rem; background: var(--red); padding: 2px 6px; border-radius: 4px; color: white; margin-left: 10px; }
-
-        /* COMPONENTES */
-        .card { background: var(--card); border: 1px solid #1a1a1a; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 6px; margin-top: 10px; }
-
-        /* MODAIS */
-        .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:10000; display:flex; align-items:center; justify-content:center; }
-        .modal-content { background:#0a0a0a; padding:40px; border-radius:20px; border:2px solid var(--gold); max-width:500px; text-align:center; }
-
-        /* WHATSAPP */
-        .wa-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white; text-decoration: none; z-index: 999; }
+        body { background: #000; color: #d4af37; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
+        .app-container { background: #0a0a0a; border: 2px solid #d4af37; border-radius: 20px; padding: 20px; max-width: 500px; margin: auto; box-shadow: 0 0 25px rgba(212, 175, 55, 0.2); }
+        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 15px; }
+        .profit-card { background: #111; border-radius: 15px; padding: 20px; margin: 20px 0; text-align: center; border: 1px solid #333; }
+        .money { font-size: 2.5rem; color: #00ff88; font-weight: bold; font-family: monospace; }
+        .nav-buttons { display: grid; gap: 10px; margin-top: 20px; }
+        .btn { padding: 15px; border-radius: 10px; border: none; font-weight: bold; text-transform: uppercase; cursor: pointer; font-size: 0.9rem; }
+        .btn-gold { background: #d4af37; color: #000; }
+        .btn-outline { background: transparent; color: #d4af37; border: 1px solid #d4af37; }
+        .rules { font-size: 0.75rem; color: #888; margin-top: 20px; line-height: 1.5; padding: 10px; background: #111; border-radius: 10px; }
+        .footer { text-align: center; font-size: 0.7rem; color: #555; margin-top: 15px; }
     </style>
 </head>
 <body>
+    <div class="app-container">
+        <div class="header">
+            <h2 style="margin:0; letter-spacing: 2px;">MAM DISTRIBUIDORA</h2>
+            <small>PAINEL DE GESTÃO - CEO MATIAS MANUEL</small>
+        </div>
 
-    <div id="terms-modal" class="modal">
-        <div class="modal-content">
-            <h1 style="color:var(--gold);">MAM DISTRIBUIDORA</h1>
-            <p style="font-size: 0.9rem; color: #888;">Contrato de Gestão e Taxas de Serviço</p>
-            <div style="height:150px; overflow-y:auto; text-align:left; font-size:0.8rem; background:#000; padding:15px; border:1px solid #333; margin: 20px 0;">
-                1. <b>Taxa de Distribuição:</b> Aplica-se uma taxa de 2% sobre o valor de cada obra enviada para manutenção do servidor.<br><br>
-                2. <b>Fundo de Expansão:</b> 20% do lucro passivo é reinvestido automaticamente no site.<br><br>
-                3. <b>Obrigatoriedade:</b> Seguir o perfil <b>MAM Distributor</b> para liberar saques.<br><br>
-                4. <b>Email Oficial:</b> mamfilhos29@gmail.com
-            </div>
-            <button class="btn-gold" onclick="closeTerms()">ACEITAR E ENTRAR NO PAINEL</button>
+        <div class="profit-card">
+            <small style="color:#00ff88; text-transform:uppercase;">Rendimento de Rede (Tempo Real)</small>
+            <div class="money" id="counter">Kz 0,00</div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-gold" onclick="action('vip')">💎 ATIVAR PLANO VIP (BFA)</button>
+            <button class="btn btn-outline" onclick="action('email')">✉️ ENVIAR MÚSICA PARA DISTRIBUIÇÃO</button>
+            <button class="btn btn-outline" onclick="action('follow')">👤 SEGUIR MAM DISTRIBUTOR</button>
+        </div>
+
+        <div class="rules">
+            <b>PROTOCOLO DE OPERAÇÃO:</b><br>
+            • Taxa de Distribuição: 2% sobre obras.<br>
+            • Fundo de Expansão: 20% retidos para crescimento.<br>
+            • Email Oficial: mamfilhos29@gmail.com<br>
+            • É obrigatório seguir o perfil oficial para validar saques.
+        </div>
+
+        <div class="footer">
+            MAM & FILHOS © 2026 | Angola
         </div>
     </div>
 
-    <aside>
-        <div class="logo-box">
-            <h2>MAM OS v8.0</h2>
-            <small style="color: var(--gold);">CEO MATIAS MANUEL</small>
-        </div>
-        <div class="nav-link nav-active" onclick="tab(this, 'dash')">🏠 Painel Principal</div>
-        <div class="nav-link" onclick="tab(this, 'upload')">🎵 Enviar Músicas <span class="fee-tag">2% FEE</span></div>
-        <div class="nav-link" onclick="tab(this, 'plans')">💎 Planos VIP</div>
-        <div class="nav-link" onclick="tab(this, 'wallet')">💰 Carteira (16M)</div>
-        <div class="nav-link" onclick="tab(this, 'chat')">💬 Suporte Assistente</div>
-        <div style="margin-top: auto; color: var(--red); cursor: pointer;" onclick="location.reload()">🔒 Sair</div>
-    </aside>
+    <script>
+        let val = 0;
+        setInterval(() => {
+            val += 1.50;
+            document.getElementById('counter').innerText = "Kz " + val.toLocaleString('pt-PT', {minimumFractionDigits: 2});
+        }, 1000);
 
-    <main>
-        <div class="income-engine">
-            <div>
-                <span style="color: var(--gold); font-size: 0.75rem;">SALDO EM MINERAÇÃO TURBO</span>
-                <div class="profit-val" id="profit">Kz 0,00</div>
-                <div style="color:var(--blue); font-size:0.8rem;" id="fund">Fundo de Manutenção: Kz 0,00</div>
-            </div>
-            <div style="text-align: right;">
-                <small style="color: #888;">EMAIL MASTER</small><br>
-                <b style="color: var(--blue);">mamfilhos29@gmail.com</b><br>
-                <small style="color: var(--green);">SISTEMA AUTOPAGO</small>
-            </div>
-        </div>
-
-        <div id="dash" class="page active">
-            <div class="card">
-                <h3>Informações do Administrador</h3>
-                <p><b>CEO:</b> Matias Arsénio Manuel</p>
-                <p><b>WhatsApp:</b> 937881307</p>
-                <p><b>Artistas na Rede:</b> 1.851</p>
-            </div>
-            <marquee style="color:var(--green); font-weight:bold;">SISTEMA INTELIGENTE: Taxa de 2% sobre uploads ativa para autofinanciamento do domínio e marketing.</marquee>
-        </div>
-
-        <div id="upload" class="page">
-            <h3>Distribuição de Novas Obras</h3>
-            <div class="card">
-                <label>Título da Música</label><input type="text" placeholder="Ex: Hit de Luanda">
-                <label>Estimativa de Valor da Obra (Kz)</label>
-                <input type="number" id="music-val" placeholder="Ex: 100000" oninput="calcFee()">
-                <p id="fee-info" style="color:var(--red); font-size:0.85rem; margin-top:10px;">Taxa
+        function action(type) {
+            if(type === 'vip') {
+                window.open("https://wa.me/244937881307?text=Olá+CEO+Matias,+quero+ativar+o+Plano+VIP+na+MAM+Distribuidora.");
+            } else if(type === 'email') {
+                window.location.href = "mailto:mamfilhos29@gmail.com?subject=Envio de Música - Distribuição MAM";
+            } else if(type === 'follow') {
+                alert("Redirecionando para o perfil MAM Distributor...");
+                // Aqui você pode trocar pelo link real do Instagram/Facebook quando tiver
+            }
+        }
+    </script>
+</body>
+</html>

@@ -3,116 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Império Digital P6</title>
+    <title>MAM Distribuidora | Império Play Sean Arsénio</title>
     <style>
         :root {
-            --gold: #d4af37; --dark: #050505; --card: #111111; --text: #fff;
-            --cassule: #e67e22; --vip-gold: #f1c40f;
+            --gold: #d4af37; --silver: #c0c0c0; --dark: #050505; --card: #111;
+            --text: #fff; --cassule: #e67e22; --vip-max: #00f2ff;
         }
-        body { background: var(--dark); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        body { background: var(--dark); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
         
-        /* CABEÇALHO E LOGO */
-        .mam-header { text-align: center; padding: 40px 20px; border-bottom: 2px solid var(--gold); background: #000; }
-        .mam-header h1 { font-size: 50px; letter-spacing: 10px; margin: 0; color: var(--gold); text-shadow: 0 0 20px rgba(212,175,55,0.5); }
+        /* CABEÇALHO COM LOGO CRIADO */
+        .header-brand { text-align: center; padding: 20px; background: #000; border-bottom: 2px solid var(--gold); }
+        .logo-box { border: 2px solid var(--gold); display: inline-block; padding: 10px 20px; border-radius: 5px; }
+        .logo-box h1 { margin: 0; font-size: 30px; letter-spacing: 8px; color: var(--gold); }
+        .logo-box span { font-size: 10px; color: #888; text-transform: uppercase; }
 
-        /* QUADRO DE HONRA CEO */
-        .ceo-honor { max-width: 900px; margin: 30px auto; border: 3px ridge var(--gold); padding: 30px; border-radius: 15px; background: linear-gradient(145deg, #0a0a0a, #151515); text-align: center; }
-        .ceo-honor h2 { color: var(--gold); margin-top: 0; font-size: 32px; }
-        .social-links a { color: var(--gold); margin: 0 10px; text-decoration: none; font-size: 14px; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 5px; }
+        /* QUADRO DE HONRA E APOIO (TAMANHO PEQUENO/VISÍVEL) */
+        .honor-section { max-width: 800px; margin: 15px auto; border: 1px solid var(--gold); padding: 15px; border-radius: 10px; background: rgba(212, 175, 55, 0.05); display: flex; align-items: center; gap: 20px; }
+        .honor-section img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--gold); }
+        .honor-text { font-size: 12px; }
+        .honor-text h4 { margin: 0; color: var(--gold); }
 
-        /* SECCÃO DE LOGIN / GOOGLE */
-        .auth-container { max-width: 450px; margin: 40px auto; background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #333; text-align: center; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        /* ÁREA DE BOAS VINDAS (PORTAL DE ENTRADA) */
+        .welcome-portal { max-width: 500px; margin: 30px auto; text-align: center; padding: 20px; }
+        .welcome-msg { font-size: 13px; color: #ccc; line-height: 1.4; margin-bottom: 20px; }
+        
+        /* BOTÕES E INPUTS */
+        .btn-main { width: 100%; padding: 12px; margin: 8px 0; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 12px; }
         .btn-gold { background: var(--gold); color: #000; }
-        .btn-google { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; text-decoration: none; font-size: 14px; }
+        .btn-google { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; box-sizing: border-box; }
 
-        /* PROMOÇÃO VIP CASSULE */
-        .promo-cassule { background: rgba(230, 126, 34, 0.1); border: 2px dashed var(--cassule); padding: 20px; border-radius: 12px; margin: 20px 0; text-align: left; }
-        .promo-cassule h4 { color: var(--cassule); margin: 0; }
+        /* MENU DE NAVEGAÇÃO INTERNO */
+        .nav-sidebar { width: 220px; position: fixed; height: 100%; background: #000; border-right: 1px solid #222; padding: 15px; display: none; }
+        .nav-item { padding: 10px; color: #888; cursor: pointer; display: block; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; }
+        .nav-item:hover { color: var(--gold); background: #111; }
 
-        /* FORMULÁRIO DE ENVIO UNIFICADO */
-        .main-panel { max-width: 1000px; margin: 40px auto; padding: 20px; display: none; } /* Só aparece após login */
-        .form-upload { background: var(--card); padding: 30px; border-radius: 15px; border-left: 5px solid var(--gold); }
-        .badge-status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 20px; }
+        /* PAINEL DE CONTEÚDO */
+        .main-wrapper { margin-left: 0; padding: 20px; transition: 0.3s; }
+        .active-session .nav-sidebar { display: block; }
+        .active-session .main-wrapper { margin-left: 240px; }
 
-        footer { text-align: center; padding: 40px; color: #666; font-size: 13px; border-top: 1px solid #222; }
+        /* GRID DE MÚSICAS E TAREFAS */
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
+        .music-card { background: var(--card); padding: 10px; border-radius: 8px; text-align: center; font-size: 11px; }
+        .music-card img { width: 100%; border-radius: 5px; }
+        
+        /* MODAL DE PLAYER E CARTEIRA */
+        .player-bar { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 2px solid var(--gold); padding: 10px; display: flex; align-items: center; gap: 20px; z-index: 1000; display: none; }
+        
+        .verified-badge { color: #3498db; font-size: 10px; margin-left: 5px; }
     </style>
 </head>
 <body>
 
-    <header class="mam-header">
+<header class="header-brand">
+    <div class="logo-box">
         <h1>MAM</h1>
-        <p style="letter-spacing: 3px; color: #888;">MATIAS ARSÉNIO MANUEL DISTRIBUIDORA</p>
-    </header>
+        <span>Distribuidora Digital</span>
+    </div>
+</header>
 
-    <section class="ceo-honor">
-        <h3>QUADRO DE HONRA DO FUNDADOR</h3>
-        <h2>Play Sean Arsénio</h2>
-        <p style="font-style: italic; color: var(--gold);">Filho de Arsénio Manuel e Justina Ngueve</p>
-        <p style="max-width: 700px; margin: 15px auto; color: #bbb;">Visionário do Grupo P6, liderando a inovação musical em Angola através da MAM, P6 Production e portais +Doque 9Dades. O compromisso com a excelência global.</p>
-        <div class="social-links">
-            <a href="#">YouTube @p6production</a> <a href="#">Instagram</a> <a href="#">Facebook</a>
+<div class="honor-section">
+    <div style="background: var(--gold); width: 50px; height: 50px; border-radius: 50%;"></div>
+    <div class="honor-text">
+        <h4>Quadro de Honra: Play Sean Arsénio <span class="verified-badge">✔</span></h4>
+        <p>Matias Arsénio Manuel. Apoie este projeto angolano para fortalecer nossa cultura. 
+           💰 <b>VIP Cassule: 300 Kz</b> - Inscrição aberta!</p>
+    </div>
+</div>
+
+<nav id="sidebar" class="nav-sidebar">
+    <div style="text-align:center; padding-bottom: 20px;">
+        <small style="color:var(--gold)">PAINEL ADMINISTRATIVO</small>
+    </div>
+    <a onclick="showPage('home')" class="nav-item">🏠 Página Inicial</a>
+    <a onclick="showPage('profile')" class="nav-item">👤 Perfil & Ficheiros</a>
+    <a onclick="showPage('wallet')" class="nav-item">💳 Carteira & Saque</a>
+    <a onclick="showPage('create-artist')" class="nav-item">➕ Criar Artista/Produtora</a>
+    <a onclick="showPage('upload')" class="nav-item">📤 Enviar Música</a>
+    <a onclick="showPage('earn')" class="nav-item">💰 Fazer Dinheiro (Tasks)</a>
+    <a id="adminAssistant" class="nav-item" style="color:var(--vip-max); display:none;">🤖 Meu Assistente (CEO)</a>
+    <a href="#" onclick="logout()" class="nav-item" style="color:#ff4444;">🚪 Sair</a>
+</nav>
+
+<div class="main-wrapper" id="content">
+    
+    <section id="login-page" class="welcome-portal">
+        <div class="welcome-msg">
+            Seja bem-vindo à MAM Distribuidora. Criada por Angolanos para facilitar Angolanos. 
+            Sem Visa, receba em Kwanza (BFA, BAI, Express). Distribua e ganhe assistindo.
+        </div>
+        
+        <form onsubmit="login(event)">
+            <input type="email" id="loginEmail" placeholder="E-mail" required>
+            <input type="password" id="loginPass" placeholder="Palavra-passe" required>
+            <button type="submit" class="btn-main btn-gold">Iniciar Secção</button>
+        </form>
+
+        <button class="btn-main btn-google" onclick="googleSimulate()">
+            <img src="https://cdn-icons-png.flaticon.com/128/300/300221.png" width="16"> Entrar com Google
+        </button>
+
+        <p style="font-size: 12px;">Não tem conta? <a href="#" onclick="showRegister()" style="color:var(--gold)">Criar Conta</a></p>
+    </section>
+
+    <section id="register-page" style="display:none; max-width: 450px; margin: auto;">
+        <h3 style="text-align:center">Registar na MAM</h3>
+        <input type="text" placeholder="Nome do Artista ou Produtora">
+        <input type="email" placeholder="E-mail Oficial">
+        <div style="display:flex; gap:5px;">
+            <select style="width: 30%"><option>AO (+244)</option></select>
+            <input type="text" placeholder="Telemóvel" style="width: 70%">
+        </div>
+        <input type="password" placeholder="Criar Palavra-passe">
+        <input type="password" placeholder="Confirmar Palavra-passe">
+        <button class="btn-main btn-gold" onclick="verifyEmailSimulate()">Confirmar Registo</button>
+    </section>
+
+    <section id="home-page" style="display:none;">
+        <div style="background:rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+            <small>ANÚNCIO: VIP CASSULE - 300 Kz. 2 Artistas + 30% Ganhos Extra!</small>
+        </div>
+
+        <h4>🎵 Músicas Recentes</h4>
+        <div class="grid-layout">
+            <div class="music-card" onclick="playMusic('Play Sean - Lenda', 'Play Sean Arsénio')">
+                <div style="background:#222; height:100px; margin-bottom:10px;"></div>
+                <strong>Lenda</strong><br>
+                <span>Play Sean Arsénio <span class="verified-badge">✔</span></span>
+            </div>
+            </div>
+
+        <h4 style="margin-top:30px;">💎 Caça Moedas (Tarefas)</h4>
+        <div class="grid-layout">
+            <div class="music-card" style="border:1px solid var(--cassule)">
+                <strong>Ver Vídeo Promocional</strong><br>
+                <small>Ganho: 0.1 Kz</small>
+                <button class="btn-main btn-gold" style="font-size:10px; padding:5px;">Executar</button>
+            </div>
         </div>
     </section>
 
-    <div id="authArea" class="auth-container">
-        <h2 style="margin-top:0;">Bem-vindo à MAM</h2>
-        <p style="font-size: 14px; color: #888;">Acesse sua conta ou crie um novo perfil artístico.</p>
-        
-        <div class="promo-cassule">
-            <h4>🚀 PROMOÇÃO VIP CASSULE</h4>
-            <p style="font-size: 12px; margin: 5px 0;">3.000 Kz | 2 Artistas | 30% Ganhos VIP Superior</p>
-            <button class="btn-main" style="background: var(--cassule); color: #fff; padding: 8px;" onclick="alert('Dados Pagamento: 937881307 (Express) - Enviar comprovativo para mamfilhos29@gmail.com')">Aderir Agora</button>
-        </div>
+</div>
 
-        <form onsubmit="event.preventDefault(); showPanel();">
-            <input type="email" placeholder="E-mail (mamfilhos29@gmail.com)" required>
-            <input type="password" placeholder="Palavra-passe" required>
-            <button type="submit" class="btn-main btn-gold">Entrar no Painel</button>
-        </form>
-
-        <a href="https://accounts.google.com" class="btn-main btn-google">
-            <img src="https://cdn-icons-png.flaticon.com/128/300/300221.png" width="18"> Entrar com Conta Google
-        </a>
-        <p style="font-size: 13px;">Novo artista? <a href="#" style="color: var(--gold);">Criar Conta Grátis</a></p>
+<div id="player" class="player-bar">
+    <div style="width: 40px; height: 40px; background: #333;"></div>
+    <div>
+        <strong id="p-title" style="font-size:12px;">Título</strong><br>
+        <small id="p-artist" style="font-size:10px;">Artista</small>
     </div>
+    <div style="flex-grow:1; text-align:center; color:var(--gold);">▶️ ⏸️ ⏹️</div>
+</div>
 
-    <div id="mainPanel" class="main-panel">
-        <div class="form-upload">
-            <div id="userBadge" class="badge-status" style="background: var(--cassule); color: #fff;">PERFIL: VIP CASSULE (ATIVO)</div>
-            <h2 style="margin-top:0;">📤 Enviar Música para Distribuição</h2>
-            <p id="limitNote" style="font-size: 13px; color: #888;">Seu plano permite gerir até <b>2 Artistas</b> e receber <b>30% de vantagens</b>.</p>
-            
-            <form>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <input type="text" placeholder="Título da Obra">
-                    <input type="text" placeholder="Nome do Artista">
-                    <select style="width:100%; padding:15px; background:#000; color:#fff; border:1px solid #444; border-radius:8px;">
-                        <option>Kizomba / Semba</option>
-                        <option>Hip-Hop / Rap</option>
-                        <option>Afro House</option>
-                    </select>
-                    <input type="date">
-                </div>
-                <label style="display:block; margin-top:15px; font-size:12px; color:var(--gold);">Upload Áudio (WAV/MP3) & Capa (3000px):</label>
-                <input type="file" multiple>
-                <button type="button" class="btn-main btn-gold" style="margin-top:20px;">Lançar Obra Mundialmente</button>
-            </form>
-        </div>
-    </div>
+<script>
+    // Lógica de Navegação e Sessão
+    let sessionActive = false;
+    let currentUser = null;
 
-    <footer>
-        <p>Gabinete Administrativo: <strong>mamfilhos29@gmail.com</strong> | 937881307</p>
-        <p>© 2026 MATIAS ARSÉNIO MANUEL - MAM DISTRIBUIDORA GLOBAL</p>
-    </footer>
+    function login(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
 
-    <script>
-        function showPanel() {
-            document.getElementById('authArea').style.display = 'none';
-            document.getElementById('mainPanel').style.display = 'block';
-            window.scrollTo(0,0);
+        // LOGIN ADMINISTRATIVO CONFIGURADO
+        if((email === 'playseana@gmail.com' || email === 'mamfilhos29@gmail.com' || email === 'produtorap6production@gmail.com') && pass === 'Angell28') {
+            document.getElementById('adminAssistant').style.display = 'block';
         }
-    </script>
+
+        document.body.classList.add('active-session');
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('home-page').style.display = 'block';
+        document.getElementById('player').style.display = 'flex';
+        sessionActive = true;
+    }
+
+    function showPage(page) {
+        const sections = ['home-page', 'register-page', 'login-page'];
+        sections.forEach(s => document.getElementById(s).style.display = 'none');
+        document.getElementById(page + '-page').style.display = 'block';
+    }
+
+    function playMusic(title, artist) {
+        document.getElementById('p-title').innerText = title;
+        document.getElementById('p-artist').innerText = artist;
+    }
+
+    function verifyEmailSimulate() {
+        alert("MAM DISTRIBUIDORA: Enviamos um link de verificação para o seu e-mail. Clique para ativar sua conta.");
+        showPage('login');
+    }
+
+    function googleSimulate() {
+        alert("Sugestão Google: Escolha um e-mail do dispositivo para continuar.");
+    }
+
+    // Sistema de Expiração de Sessão (1 Hora)
+    setTimeout(() => {
+        if(sessionActive) {
+            alert("Sessão expirada por inatividade.");
+            location.reload();
+        }
+    }, 3600000);
+
+</script>
 </body>
 </html>

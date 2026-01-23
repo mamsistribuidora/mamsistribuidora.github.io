@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Acesso Oficial</title>
+    <title>MAM Distribuidora | Login Oficial</title>
     <style>
         :root {
             --gold: #d4af37;
@@ -25,7 +25,7 @@
             padding: 20px;
         }
 
-        /* LOGOTIPO DA MAM NO CABEÇALHO */
+        /* LOGOTIPO NO CABEÇALHO */
         .mam-logo-header {
             text-align: center;
             margin-bottom: 30px;
@@ -35,9 +35,9 @@
             max-width: 450px;
         }
         .mam-logo-header h1 { 
-            font-size: 35px; 
+            font-size: 38px; 
             margin: 0; 
-            letter-spacing: 5px; 
+            letter-spacing: 6px; 
             color: var(--gold);
             text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
@@ -61,18 +61,20 @@
             background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; transition: 0.3s;
         }
 
-        /* BOTÃO GOOGLE */
+        /* CORREÇÃO DO BOTÃO GOOGLE */
         .btn-google {
-            background: #fff; color: #000; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: #fff; color: #000; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none; font-size: 14px;
         }
-
-        /* SECCÕES DE FORMULÁRIO */
-        #registerForm { display: none; } /* Escondido por padrão */
+        .btn-google:hover { background: #f1f1f1; }
 
         /* VIP CASSULE */
         .vip-cassule-box {
-            margin-top: 30px; padding: 20px; border: 2px dashed var(--cassule); border-radius: 12px; background: rgba(230, 126, 34, 0.05);
+            margin-top: 30px; padding: 25px; border: 2px dashed var(--cassule); border-radius: 12px; background: rgba(230, 126, 34, 0.08); text-align: left;
         }
+        .vip-cassule-box h3 { color: var(--cassule); margin: 0 0 10px 0; text-align: center; }
+        .benefits-list { font-size: 12px; color: #ccc; margin: 10px 0; padding-left: 15px; list-style: none; }
+        .benefits-list li::before { content: "✅ "; }
 
         footer { margin-top: 30px; font-size: 11px; color: #444; text-align: center; }
     </style>
@@ -81,68 +83,73 @@
 
 <div class="mam-logo-header">
     <h1>MAM</h1>
-    <p style="margin: 0; font-size: 10px; color: #888; letter-spacing: 2px;">DISTRIBUIDORA DIGITAL</p>
+    <p style="margin: 0; font-size: 11px; color: #888; letter-spacing: 3px;">DISTRIBUIDORA DIGITAL</p>
 </div>
 
 <div class="login-container">
     <div class="auth-card">
         
-        <div id="loginSection">
-            <h2 style="margin-top: 0;">Entrar</h2>
-            <form>
-                <input type="email" placeholder="E-mail" required>
-                <input type="password" placeholder="Palavra-passe" required>
-                <button type="submit" class="btn-gold">Entrar na Conta</button>
+        <div id="authSection">
+            <h2 id="formTitle" style="margin-top: 0;">Entrar</h2>
+            
+            <form onsubmit="event.preventDefault(); window.location.href='#painel-geral'; alert('Redirecionando para o Painel Administrativo...');">
+                <input type="email" placeholder="E-mail Administrativo ou Artista" required>
+                <input type="password" placeholder="Sua Palavra-passe" required>
+                <button type="submit" class="btn-gold">Aceder ao Império</button>
             </form>
             
-            <button class="btn-google">
-                <img src="https://cdn-icons-png.flaticon.com/128/300/300221.png" width="18"> Entrar com Google
+            <button class="btn-google" onclick="window.location.href='https://accounts.google.com/o/oauth2/auth';">
+                <img src="https://cdn-icons-png.flaticon.com/128/300/300221.png" width="18"> Continuar com Google
             </button>
             
-            <p style="font-size: 13px; margin-top: 20px;">Novo na MAM? <a href="javascript:void(0)" onclick="toggleAuth()" style="color: var(--gold);">Criar conta gratuita</a></p>
-        </div>
-
-        <div id="registerSection" style="display: none;">
-            <h2 style="margin-top: 0;">Criar Conta</h2>
-            <form>
-                <input type="text" placeholder="Nome Completo" required>
-                <input type="email" placeholder="E-mail" required>
-                <input type="password" placeholder="Criar Palavra-passe" required>
-                <button type="submit" class="btn-gold">Finalizar Registo</button>
-            </form>
-            <p style="font-size: 13px; margin-top: 20px;">Já tem conta? <a href="javascript:void(0)" onclick="toggleAuth()" style="color: var(--gold);">Fazer Login</a></p>
+            <p id="toggleText" style="font-size: 13px; margin-top: 20px;">
+                Novo na MAM? <a href="javascript:void(0)" onclick="toggleAuth()" style="color: var(--gold);">Criar conta gratuita</a>
+            </p>
         </div>
 
         <hr style="border: 0; border-top: 1px solid #333; margin: 30px 0;">
 
         <div class="vip-cassule-box">
-            <h3 style="color: var(--cassule); margin: 0;">VIP Cassule (3.000 Kz)</h3>
-            <p style="font-size: 11px; color: #888;">Ganha por ouvir e distribuir com prioridade.</p>
-            <button class="btn-gold" style="background: var(--cassule); color: white;" onclick="alert('Dados de Pagamento: \nIBAN: [Seu IBAN aqui] \nExpress: 937881307')">
-                Adquirir VIP agora
+            <h3>PACOTE VIP CASSULE</h3>
+            <ul class="benefits-list">
+                <li>Gestão Profissional de <b>2 Artistas</b></li>
+                <li><b>30% de vantagem</b> nos lucros VIP Superiores</li>
+                <li>Acesso ao Sistema de Caça-Links e Vídeos</li>
+                <li>Distribuição Direta via <b>mamfilhos29@gmail.com</b></li>
+            </ul>
+            <p style="text-align: center; font-weight: bold; font-size: 20px; margin: 10px 0;">3.000,00 Kz</p>
+            <button class="btn-gold" style="background: var(--cassule); color: white;" onclick="showPaymentInfo()">
+                ATIVAR VIP CASSULE
             </button>
         </div>
     </div>
 
     <footer>
-        <p>E-mail Oficial: <strong style="color: var(--gold);">mamfilhos29@gmail.com</strong></p>
+        <p>Contacto Oficial: <strong style="color: var(--gold);">937881307</strong></p>
+        <p>E-mail: mamfilhos29@gmail.com</p>
         <p>© 2026 MATIAS ARSÉNIO MANUEL | CEO PLAY SEAN ARSÉNIO</p>
     </footer>
 </div>
 
 <script>
-    // Função para alternar entre Login e Criar Conta
     function toggleAuth() {
-        const login = document.getElementById('loginSection');
-        const register = document.getElementById('registerSection');
-        
-        if (login.style.display === "none") {
-            login.style.display = "block";
-            register.style.display = "none";
+        const title = document.getElementById('formTitle');
+        const toggleBtn = document.getElementById('toggleText');
+        if (title.innerText === "Entrar") {
+            title.innerText = "Criar Conta";
+            toggleBtn.innerHTML = 'Já tem conta? <a href="javascript:void(0)" onclick="toggleAuth()" style="color: var(--gold);">Fazer Login</a>';
         } else {
-            login.style.display = "none";
-            register.style.display = "block";
+            title.innerText = "Entrar";
+            toggleBtn.innerHTML = 'Novo na MAM? <a href="javascript:void(0)" onclick="toggleAuth()" style="color: var(--gold);">Criar conta gratuita</a>';
         }
+    }
+
+    function showPaymentInfo() {
+        alert("PAGAMENTO VIP CASSULE (3.000 Kz)\n\n" +
+              "Efetue o pagamento para os dados do CEO:\n" +
+              "🏦 IBAN: [Insira o seu IBAN]\n" +
+              "📱 Multicaixa Express: 937881307\n\n" +
+              "Envie o comprovativo para mamfilhos29@gmail.com");
     }
 </script>
 

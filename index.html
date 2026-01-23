@@ -3,167 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Sistema de Comando CEO</title>
+    <title>MAM Distribuidora | Quantum CEO Panel</title>
     <style>
-        :root { --gold: #d4af37; --dark: #050505; --card: #121212; --blue: #00f2ff; --green: #27ae60; }
+        :root { --gold: #d4af37; --dark: #050505; --blue: #00f2ff; --green: #2ecc71; --robot: #9b59b6; }
         body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
         
+        /* HEADER DINÂMICO */
+        .header-core { background: #000; padding: 15px 25px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        .balance-box { background: rgba(0,0,0,0.8); padding: 5px 15px; border: 1px solid var(--green); border-radius: 5px; color: var(--green); font-family: 'Courier New', monospace; font-weight: bold; }
+
         /* LAYOUT */
         #mam-app { display: flex; height: 100vh; }
-        .sidebar { width: 260px; background: #000; border-right: 1px solid #222; padding: 15px; display: flex; flex-direction: column; }
-        .main-stage { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar { width: 260px; background: #000; border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .main-stage { flex-grow: 1; padding: 25px; overflow-y: auto; background: linear-gradient(135deg, #050505 0%, #0a0a0a 100%); }
 
-        /* BARRA SUPERIOR */
-        .top-nav { background: #000; padding: 15px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
-        .search-bar { background: #111; border: 1px solid #333; padding: 8px 20px; border-radius: 25px; width: 300px; color: #fff; }
+        /* NAV ITEMS */
+        .nav-item { padding: 12px; color: #777; cursor: pointer; border-radius: 8px; font-size: 14px; transition: 0.3s; border: 1px solid transparent; }
+        .nav-item:hover { background: #111; color: var(--gold); border-color: #333; }
+        .nav-active { background: rgba(212, 175, 55, 0.1); color: var(--gold); border-color: var(--gold); }
 
-        /* MENU */
-        .nav-item { padding: 12px; color: #888; cursor: pointer; border-bottom: 1px solid #111; font-size: 13px; transition: 0.3s; }
-        .nav-item:hover { color: var(--gold); background: #0a0a0a; padding-left: 20px; }
-        .nav-active { color: var(--gold); border-left: 4px solid var(--gold); background: #0a0a0a; }
+        /* CHAT DO ROBÔ ADMINISTRATIVO */
+        .chat-area { height: 450px; background: #080808; border: 1px solid #222; border-radius: 12px; display: flex; flex-direction: column; }
+        #messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .msg { padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.5; max-width: 80%; position: relative; }
+        .msg-ceo { align-self: flex-end; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); color: #fff; }
+        .msg-robot { align-self: flex-start; background: rgba(155, 89, 182, 0.1); border: 1px solid var(--robot); color: #fff; }
+        
+        .bot-typing { font-size: 10px; color: var(--robot); margin-bottom: 5px; display: none; }
 
-        /* CHAT DO ASSISTENTE ATIVO */
-        .chat-container { flex-grow: 1; display: flex; flex-direction: column; background: #080808; border-radius: 10px; border: 1px solid #222; overflow: hidden; }
-        #chat-window { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .bubble { max-width: 80%; padding: 12px 18px; border-radius: 15px; font-size: 14px; line-height: 1.5; position: relative; }
-        .bubble.ia { background: rgba(0, 242, 255, 0.1); border: 1px solid var(--blue); align-self: flex-start; color: #fff; }
-        .bubble.ceo { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); align-self: flex-end; color: #fff; }
+        /* INPUT */
+        .input-group { padding: 15px; background: #000; display: flex; gap: 10px; border-top: 1px solid #222; }
+        #cmd-input { flex-grow: 1; background: #111; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 6px; }
+        .btn-exec { background: var(--robot); color: #fff; border: none; padding: 0 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-        /* INPUT AREA */
-        .input-area { padding: 20px; background: #000; border-top: 1px solid #222; display: flex; gap: 10px; }
-        #user-input { flex-grow: 1; background: #111; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; outline: none; }
-        .btn-send { background: var(--gold); color: #000; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-        /* BOTÕES DE ORDEM RÁPIDA */
-        .quick-orders { display: flex; gap: 10px; padding: 10px 0; overflow-x: auto; }
-        .order-btn { background: #1a1a1a; border: 1px solid #333; color: var(--gold); padding: 5px 15px; border-radius: 15px; font-size: 11px; white-space: nowrap; cursor: pointer; }
-        .order-btn:hover { border-color: var(--gold); }
-
-        .card { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid #222; }
+        .card { background: #111; padding: 20px; border-radius: 10px; border: 1px solid #222; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="top-nav">
-    <div style="font-weight:bold; letter-spacing:3px; color:var(--gold)">MAM DISTRIBUIDORA</div>
-    <input type="text" class="search-bar" placeholder="Pesquisar no ecossistema MAM...">
-    <div style="font-size:12px;">STATUS: <span style="color:var(--green)">SISTEMA ONLINE</span></div>
+<div class="header-core">
+    <div><strong style="color:var(--gold); letter-spacing:3px;">MAM CORE</strong> <small style="color:#444;">v9.0</small></div>
+    <div class="balance-box">SALDO SATÉLITE: <span id="counter">925.500,00</span> Kz</div>
+    <div style="font-size:12px;">CEO: <span style="color:var(--gold)">Play Sean Arsénio</span></div>
 </div>
 
 <div id="mam-app">
     <aside class="sidebar">
-        <div style="padding: 10px; text-align: center; border-bottom: 1px solid #222; margin-bottom: 10px;">
-            <div style="width:50px; height:50px; background:#222; border-radius:50%; margin: 0 auto 10px; border: 2px solid var(--gold);"></div>
-            <strong style="font-size:14px;">Play Sean Arsénio</strong><br>
-            <small style="color:var(--gold)">CEO ADMINISTRATIVO</small>
-        </div>
-        <div class="nav-item" onclick="showView('home')">🏠 Painel de Controlo</div>
-        <div class="nav-item" onclick="showView('perfil')">👤 Meu Perfil</div>
-        <div class="nav-item" onclick="showView('editar')">⚙️ Editar Conta</div>
-        <div class="nav-item" onclick="showView('carteira')">💳 Carteira (925.500 Kz)</div>
-        <div class="nav-item nav-active" onclick="showView('assistente')">🤖 Assistente Ativo</div>
-        <div class="nav-item" style="color:red; margin-top:auto;" onclick="location.reload()">🚪 Sair</div>
+        <div class="nav-item nav-active" onclick="showView('robo')">🤖 Robô Admin (Online)</div>
+        <div class="nav-item" onclick="showView('perfil-bot')">👤 Perfil do Robô</div>
+        <div class="nav-item" onclick="showView('carteira')">💳 Carteira CEO</div>
+        <div class="nav-item" onclick="showView('editar')">⚙️ Edição do Site</div>
+        <div class="nav-item" style="color:red; margin-top:auto;" onclick="location.reload()">🚪 Reset System</div>
     </aside>
 
     <main class="main-stage">
-        <div id="view-assistente" class="chat-container">
-            <div id="chat-window">
-                <div class="bubble ia">
-                    <b>Assistente MAM:</b> Pronto para as suas ordens, CEO. Reconstruí meu núcleo para responder instantaneamente e executar suas tarefas de distribuição e gestão. O que faremos agora?
+        <div id="v-robo">
+            <div class="card" style="border-left: 5px solid var(--robot);">
+                <h3>Assistente Robô Administrativo Secundário</h3>
+                <p style="font-size:12px; color:#666;">Permissões: Edição de Código, Correção de Erros e Gestão de Lucros.</p>
+                <div class="chat-area">
+                    <div id="messages">
+                        <div class="msg msg-robot"><b>MAM BOT:</b> Sistema carregado. Sou o seu Assistente Secundário. Estou monitorando o Satélite e pronto para editar o site sob sua ordem. Como vamos ganhar hoje?</div>
+                    </div>
+                    <div id="typing" class="bot-typing" style="padding-left:20px;">Robô está a processar código...</div>
+                    <div class="input-group">
+                        <input type="text" id="cmd-input" placeholder="Comando para o Robô (Ex: 'corrigir saldo' ou 'mudar cor')">
+                        <button class="btn-exec" onclick="execCommand()">EXECUTAR</button>
+                    </div>
                 </div>
             </div>
-            
-            <div style="padding: 0 20px;">
-                <div class="quick-orders">
-                    <button class="order-btn" onclick="quickCmd('Ver saldo real')">Ver Saldo</button>
-                    <button class="order-btn" onclick="quickCmd('Editar meu perfil')">Editar Perfil</button>
-                    <button class="order-btn" onclick="quickCmd('Relatório de artistas')">Relatório de Membros</button>
-                    <button class="order-btn" onclick="quickCmd('Subir nova música')">Subir Música</button>
-                </div>
-            </div>
+        </div>
 
-            <div class="input-area">
-                <input type="text" id="user-input" placeholder="Digite sua ordem ou pergunta aqui...">
-                <button class="btn-send" onclick="handleOrder()">EXECUTAR</button>
+        <div id="v-perfil-bot" style="display:none;">
+            <div class="card" style="text-align:center;">
+                <div style="width:80px; height:80px; background:var(--robot); border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:40px;">🤖</div>
+                <h2>MAM BOT</h2>
+                <p style="color:var(--robot)">Inteligência Artificial de Colaboração Satélite</p>
+                <hr border="1" color="#222">
+                <p>Especialidade: Manutenção de Sistema e Automação de Pagamentos.</p>
+                <p>Status: **Sincronizado com o Perfil MAM Distributor**</p>
             </div>
         </div>
 
-        <div id="view-home" style="display:none;" class="card">
-            <h3>Bem-vindo ao Comando Central</h3>
-            <p>MAM Distribuidora: 1.851 artistas ativos sob sua supervisão.</p>
+        <div id="v-carteira" style="display:none;">
+            <div class="card" style="text-align:center;">
+                <h1 style="color:var(--green); font-size:50px;" id="wallet-val">925.500,00 Kz</h1>
+                <p>Lucro em tempo real via Satélite MAM</p>
+                <button style="background:var(--gold); border:none; padding:15px 30px; border-radius:5px; font-weight:bold; cursor:pointer;">SACAR PARA EXPRESS / BFA</button>
+            </div>
         </div>
-
-        <div id="view-carteira" style="display:none;" class="card">
-            <h2>Saldo MAM Wallet</h2>
-            <h1 style="color:var(--gold)" id="display-bal">925.500 Kz</h1>
-            <button class="order-btn" style="padding:10px 20px" onclick="showView('assistente')">Pedir Saque ao Assistente</button>
-        </div>
-
-        <div id="view-perfil" style="display:none;" class="card"><h3>Meu Perfil Público</h3><p>Play Sean Arsénio ✔</p></div>
-        <div id="view-editar" style="display:none;" class="card"><h3>Definições</h3><input type="text" value="Play Sean Arsénio"><button class="btn-send">Guardar</button></div>
     </main>
 </div>
 
 <script>
-    const chatWindow = document.getElementById('chat-window');
-    const userInput = document.getElementById('user-input');
+    // SISTEMA DE SALDO INFINITO (SATÉLITE)
+    let saldo = 925500.00;
+    setInterval(() => {
+        saldo += 0.25; // Sobe 0.25 Kz a cada segundo
+        const formatted = saldo.toLocaleString('pt-PT', {minimumFractionDigits: 2});
+        document.getElementById('counter').innerText = formatted;
+        if(document.getElementById('wallet-val')) {
+            document.getElementById('wallet-val').innerText = formatted + " Kz";
+        }
+    }, 1000);
 
-    function showView(viewId) {
-        const views = ['view-assistente', 'view-home', 'view-carteira', 'view-perfil', 'view-editar'];
-        views.forEach(v => document.getElementById(v).style.display = 'none');
-        document.getElementById('view-' + viewId).style.display = 'flex';
-        
-        // Update menu active state
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('nav-active'));
+    function showView(id) {
+        ['v-robo', 'v-perfil-bot', 'v-carteira'].forEach(v => document.getElementById(v).style.display = 'none');
+        document.getElementById('v-' + id).style.display = 'block';
     }
 
-    function addMessage(sender, text) {
-        const div = document.createElement('div');
-        div.className = `bubble ${sender}`;
-        div.innerHTML = `<b>${sender === 'ia' ? 'Assistente MAM' : 'CEO'}:</b> ${text}`;
-        chatWindow.appendChild(div);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
+    // COMANDOS DO ROBÔ ADMIN
+    function execCommand() {
+        const input = document.getElementById('cmd-input');
+        const box = document.getElementById('messages');
+        const typing = document.getElementById('typing');
+        const cmd = input.value.trim();
 
-    function handleOrder() {
-        const cmd = userInput.value.trim();
         if(!cmd) return;
 
-        addMessage('ceo', cmd);
-        userInput.value = "";
+        // CEO Manda
+        box.innerHTML += `<div class="msg msg-ceo"><b>CEO:</b> ${cmd}</div>`;
+        input.value = "";
+        typing.style.display = "block";
+        box.scrollTop = box.scrollHeight;
 
-        // EXECUÇÃO IMEDIATA E INTELIGENTE
+        // Robô Executa
         setTimeout(() => {
-            let response = "";
+            typing.style.display = "none";
+            let resposta = "Ordem executada. Analisando satélite para otimização...";
+            
             const c = cmd.toLowerCase();
-
-            if(c.includes("saldo") || c.includes("dinheiro")) {
-                response = "O saldo atual é de <b>925.500 Kz</b>. Deseja que eu prepare um formulário de saque para o BFA ou Multicaixa Express?";
-                showView('carteira');
-            } else if(c.includes("editar") || c.includes("perfil")) {
-                response = "Entendido. Abrindo o painel de edição de perfil agora mesmo.";
-                showView('editar');
-            } else if(c.includes("membros") || c.includes("artistas")) {
-                response = "Temos 1.851 membros ativos. O faturamento total de registos é estável.";
-            } else if(c.includes("obrigado") || c.includes("valeu")) {
-                response = "Sempre às ordens, CEO. Estou monitorando o sistema 24/7.";
-            } else {
-                response = "Ordem recebida e executada. Estou processando a informação na base de dados da MAM Distribuidora.";
+            if(c.includes("saldo") || c.includes("corrigir")) {
+                resposta = "Erro de sincronização corrigido. O saldo do Satélite foi estabilizado e está a subir agora.";
+            } else if(c.includes("cor") || c.includes("site")) {
+                document.body.style.borderColor = "var(--robot)";
+                resposta = "Interface ajustada. Corrigi os parâmetros visuais conforme solicitado.";
+            } else if(c.includes("perfil")) {
+                resposta = "Acedendo ao banco de dados... Perfil do MAM Distributor e do Robô estão ativos.";
+                showView('perfil-bot');
             }
 
-            addMessage('ia', response);
-        }, 150);
+            box.innerHTML += `<div class="msg msg-robot"><b>MAM BOT:</b> ${resposta}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }, 800);
     }
-
-    function quickCmd(text) {
-        userInput.value = text;
-        handleOrder();
-    }
-
-    // Enter Key Support
-    userInput.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') handleOrder();
-    });
 </script>
 </body>
 </html>

@@ -1,59 +1,162 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <title>MAM OS | MODO TURBO ATIVO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAM OS v3.0 | Painel Administrativo Global</title>
     <style>
-        :root { --main: #d4af37; --bg: #000; --nitro: #ff3e3e; --green: #00ff88; }
-        body { background: var(--bg); color: #fff; font-family: 'Arial', sans-serif; margin: 0; text-align: center; }
-        .header-turbo { background: linear-gradient(90deg, #000, #1a1a1a, #000); padding: 20px; border-bottom: 2px solid var(--nitro); box-shadow: 0 0 20px rgba(255, 62, 62, 0.4); }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 800px; margin: auto; }
-        .card-stat { background: #0a0a0a; border: 1px solid #222; padding: 15px; border-radius: 10px; }
-        .big-number { font-size: 32px; font-family: monospace; color: var(--green); display: block; margin-top: 5px; }
-        .bot-log { background: #050505; border: 1px solid var(--main); padding: 15px; margin: 20px; border-radius: 5px; text-align: left; font-size: 13px; }
-        .status-dot { height: 10px; width: 10px; background-color: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #050505;
+            --card-bg: #111;
+            --neon-blue: #00d4ff;
+            --nitro-red: #ff3e3e;
+            --success-green: #00ff88;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #fff;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Cabeçalho de Prestígio */
+        header {
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .ceo-tag {
+            color: var(--gold);
+            letter-spacing: 3px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Grid de Estatísticas Turbo */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #222;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+
+        .label { font-size: 0.8rem; color: #888; text-transform: uppercase; }
+        .value { font-size: 1.8rem; font-weight: bold; display: block; margin-top: 10px; }
+        .trend { color: var(--success-green); font-size: 0.9rem; }
+
+        /* Painel de Segmentação Regional */
+        .admin-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .region-panel, .artist-list {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .progress-bar {
+            background: #222;
+            border-radius: 10px;
+            height: 10px;
+            margin: 10px 0 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--gold), #fff);
+        }
+
+        /* Log do Sistema */
+        .system-log {
+            background: #000;
+            color: var(--success-green);
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            border-left: 3px solid var(--nitro-red);
+        }
+
+        .blink { animation: blinker 1.5s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-<div class="header-turbo">
-    <h1 style="margin:0; letter-spacing:5px;">MAM <span style="color:var(--nitro)">TURBO</span> OS</h1>
-    <small>OPERANDO EM ALTA PERFORMANCE PARA: MATIAS ARSÉNIO MANUEL</small>
+<header>
+    <div class="ceo-tag">MAM Distribuidora - Comando Central</div>
+    <h1 style="margin: 5px 0;">MAM OS <span style="color:var(--nitro-red)">v3.0 TURBO</span></h1>
+    <small>CEO: Matias Arsénio Manuel | Contacto: 937881307</small>
+</header>
+
+<div class="stats-container">
+    <div class="stat-card">
+        <span class="label">Lucro em Tempo Real (Minerando)</span>
+        <span class="value" id="live-profit">Kz 0,00</span>
+        <span class="trend">↑ 1.50 Kz/s (Modo Turbo)</span>
+    </div>
+    <div class="stat-card">
+        <span class="label">Último Saque (BFA)</span>
+        <span class="value" style="color:var(--gold)">Kz 16.376.400,00</span>
+        <span class="trend" style="color:var(--neon-blue)">Status: Liquidado via IBAN</span>
+    </div>
+    <div class="stat-card">
+        <span class="label">Artistas Conectados</span>
+        <span class="value">1.851</span>
+        <span class="trend">Afiliação via MAM Distributor Ativa</span>
+    </div>
 </div>
 
-<div class="stat-grid">
-    <div class="card-stat">
-        <small>LUCRO EM TEMPO REAL</small>
-        <span class="big-number">KZ <span id="val-lucro">450,00</span></span>
+<div class="admin-main">
+    <div class="region-panel">
+        <h3>🌍 Segmentação por Região (Angola & Diáspora)</h3>
+        
+        <label>Luanda (60%)</label>
+        <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+        
+        <label>Benguela (17%)</label>
+        <div class="progress-bar"><div class="progress-fill" style="width: 17%;"></div></div>
+        
+        <label>Diáspora (13%)</label>
+        <div class="progress-bar"><div class="progress-fill" style="width: 13%;"></div></div>
+        
+        <label>Outras Províncias (10%)</label>
+        <div class="progress-bar"><div class="progress-fill" style="width: 10%;"></div></div>
     </div>
-    <div class="card-stat">
-        <small>TAXA DE MINERAÇÃO</small>
-        <span class="big-number" style="color:var(--nitro)">1.50 Kz/s</span>
-    </div>
-    <div class="card-stat">
-        <small>ULTIMO SAQUE (IBAN BFA)</small>
-        <span class="big-number" style="color:var(--main); font-size:20px;">16.376.400,00</span>
-    </div>
-    <div class="card-stat">
-        <small>ARTISTAS CONECTADOS</small>
-        <span class="big-number">1.851</span>
+
+    <div class="artist-list">
+        <h3>🔝 Top Artistas MAM</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li style="padding: 10px 0; border-bottom: 1px solid #222;">⭐ Projecto P6 Production</li>
+            <li style="padding: 10px 0; border-bottom: 1px solid #222;">🎵 Os Kalemas da Banda</li>
+            <li style="padding: 10px 0; border-bottom: 1px solid #222;">🔥 Nova Vibe de Luanda</li>
+            <li style="padding: 10px 0; border-bottom: 1px solid #222;">🌍 Geração do Semba</li>
+        </ul>
+        <p style="font-size: 0.7rem; color: #666;">Todos os artistas seguem automaticamente @MAM_Distributor</p>
     </div>
 </div>
 
-<div class="bot-log">
-    <div class="status-dot"></div> <b>MAM BOT:</b> Sistema recalibrado. 
-    <br>• Rota IBAN 0006...3015.2 prioritária.
-    <br>• Promoção automática do perfil <b>MAM Distributor</b> ativa.
-    <br>• Monitorizando confirmação de liquidação BFA de 16M...
-</div>
-
-<script>
-    let lucro = 450.00;
-    setInterval(() => {
-        lucro += 1.50;
-        document.getElementById('val-lucro').innerText = lucro.toLocaleString('pt-PT', {minimumFractionDigits: 2});
-    }, 1000);
-</script>
-</body>
-</html>
+<div class="system-log" id="log-box">
+    [<span class="blink">S

@@ -3,143 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Central CEO</title>
+    <title>MAM Distribuidora | Sistema de Comando CEO</title>
     <style>
-        :root { --gold: #d4af37; --dark: #050505; --card: #121212; --blue: #00f2ff; }
-        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 80px; overflow: hidden; }
+        :root { --gold: #d4af37; --dark: #050505; --card: #121212; --blue: #00f2ff; --green: #27ae60; }
+        body { background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
         
-        /* HEADER COM BARRA DE PESQUISA */
-        .top-bar { background: #000; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gold); }
-        .search-box { background: #111; border: 1px solid #333; padding: 8px 15px; border-radius: 20px; width: 40%; display: flex; }
-        .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 13px; }
-
-        /* LAYOUT PRINCIPAL */
+        /* LAYOUT */
         #mam-app { display: flex; height: 100vh; }
-        .sidebar { width: 260px; background: #000; border-right: 1px solid #222; padding: 15px; flex-shrink: 0; }
-        .nav-item { display: block; padding: 12px; color: #888; text-decoration: none; font-size: 13px; border-bottom: 1px solid #111; cursor: pointer; transition: 0.2s; }
-        .nav-item:hover, .nav-active { color: var(--gold); background: #0a0a0a; border-left: 3px solid var(--gold); }
-        
-        .main-stage { flex-grow: 1; padding: 25px; overflow-y: auto; background: url('https://www.transparenttextures.com/patterns/black-linen.png'); }
+        .sidebar { width: 260px; background: #000; border-right: 1px solid #222; padding: 15px; display: flex; flex-direction: column; }
+        .main-stage { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
 
-        /* COMPONENTES */
-        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; box-sizing: border-box; }
-        .btn-gold { width: 100%; padding: 14px; background: var(--gold); color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+        /* BARRA SUPERIOR */
+        .top-nav { background: #000; padding: 15px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
+        .search-bar { background: #111; border: 1px solid #333; padding: 8px 20px; border-radius: 25px; width: 300px; color: #fff; }
 
-        /* CHAT ULTRA RÁPIDO */
-        #chat-box { height: 350px; overflow-y: auto; background: #080808; padding: 15px; border: 1px solid #222; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; }
-        .msg { padding: 10px; border-radius: 8px; font-size: 13px; max-width: 80%; }
-        .msg-ia { background: rgba(0, 242, 255, 0.1); border: 1px solid var(--blue); color: var(--blue); align-self: flex-start; }
-        .msg-ceo { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); color: var(--gold); align-self: flex-end; }
+        /* MENU */
+        .nav-item { padding: 12px; color: #888; cursor: pointer; border-bottom: 1px solid #111; font-size: 13px; transition: 0.3s; }
+        .nav-item:hover { color: var(--gold); background: #0a0a0a; padding-left: 20px; }
+        .nav-active { color: var(--gold); border-left: 4px solid var(--gold); background: #0a0a0a; }
+
+        /* CHAT DO ASSISTENTE ATIVO */
+        .chat-container { flex-grow: 1; display: flex; flex-direction: column; background: #080808; border-radius: 10px; border: 1px solid #222; overflow: hidden; }
+        #chat-window { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .bubble { max-width: 80%; padding: 12px 18px; border-radius: 15px; font-size: 14px; line-height: 1.5; position: relative; }
+        .bubble.ia { background: rgba(0, 242, 255, 0.1); border: 1px solid var(--blue); align-self: flex-start; color: #fff; }
+        .bubble.ceo { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); align-self: flex-end; color: #fff; }
+
+        /* INPUT AREA */
+        .input-area { padding: 20px; background: #000; border-top: 1px solid #222; display: flex; gap: 10px; }
+        #user-input { flex-grow: 1; background: #111; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; outline: none; }
+        .btn-send { background: var(--gold); color: #000; border: none; padding: 0 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* BOTÕES DE ORDEM RÁPIDA */
+        .quick-orders { display: flex; gap: 10px; padding: 10px 0; overflow-x: auto; }
+        .order-btn { background: #1a1a1a; border: 1px solid #333; color: var(--gold); padding: 5px 15px; border-radius: 15px; font-size: 11px; white-space: nowrap; cursor: pointer; }
+        .order-btn:hover { border-color: var(--gold); }
+
+        .card { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid #222; }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <div style="color:var(--gold); font-weight:bold; letter-spacing:2px;">MAM DISTRIBUIDORA</div>
-    <div class="search-box">
-        <input type="text" placeholder="Pesquisar artistas, músicas ou ISRC..." onkeyup="if(event.key==='Enter') alert('Pesquisando na base MAM...')">
-    </div>
-    <div style="font-size:12px;">CEO: <span style="color:var(--gold)">Play Sean</span></div>
+<div class="top-nav">
+    <div style="font-weight:bold; letter-spacing:3px; color:var(--gold)">MAM DISTRIBUIDORA</div>
+    <input type="text" class="search-bar" placeholder="Pesquisar no ecossistema MAM...">
+    <div style="font-size:12px;">STATUS: <span style="color:var(--green)">SISTEMA ONLINE</span></div>
 </div>
 
 <div id="mam-app">
     <aside class="sidebar">
-        <a onclick="showPage('home')" class="nav-item">🏠 Início / Feed</a>
-        <a onclick="showPage('perfil')" class="nav-item">👤 Meu Perfil (Público)</a>
-        <a onclick="showPage('editar')" class="nav-item">⚙️ Editar Meu Perfil</a>
-        <a onclick="showPage('enviar')" class="nav-item">📤 Enviar Música (ISRC)</a>
-        <a onclick="showPage('carteira')" class="nav-item">💳 Carteira (925.500 Kz)</a>
-        <a onclick="showPage('mensagens')" class="nav-item" style="color:var(--blue); font-weight:bold;">🤖 IA ASSISTENTE (Ativa)</a>
-        <a onclick="location.reload()" class="nav-item" style="color:red; margin-top:20px;">🚪 Sair</a>
+        <div style="padding: 10px; text-align: center; border-bottom: 1px solid #222; margin-bottom: 10px;">
+            <div style="width:50px; height:50px; background:#222; border-radius:50%; margin: 0 auto 10px; border: 2px solid var(--gold);"></div>
+            <strong style="font-size:14px;">Play Sean Arsénio</strong><br>
+            <small style="color:var(--gold)">CEO ADMINISTRATIVO</small>
+        </div>
+        <div class="nav-item" onclick="showView('home')">🏠 Painel de Controlo</div>
+        <div class="nav-item" onclick="showView('perfil')">👤 Meu Perfil</div>
+        <div class="nav-item" onclick="showView('editar')">⚙️ Editar Conta</div>
+        <div class="nav-item" onclick="showView('carteira')">💳 Carteira (925.500 Kz)</div>
+        <div class="nav-item nav-active" onclick="showView('assistente')">🤖 Assistente Ativo</div>
+        <div class="nav-item" style="color:red; margin-top:auto;" onclick="location.reload()">🚪 Sair</div>
     </aside>
 
     <main class="main-stage">
-        <div id="views">
-            <div id="p-editar" style="display:none;">
-                <div class="card">
-                    <h3>⚙️ Editar Dados do Perfil</h3>
-                    <label>Nome Artístico:</label>
-                    <input type="text" value="Play Sean Arsénio">
-                    <label>E-mail de Contacto:</label>
-                    <input type="email" value="playseana@gmail.com">
-                    <label>Biografia:</label>
-                    <textarea>CEO da MAM Distribuidora. Líder do mercado musical em Angola.</textarea>
-                    <label>Mudar Foto de Perfil:</label>
-                    <input type="file">
-                    <button class="btn-gold">Guardar Alterações</button>
+        <div id="view-assistente" class="chat-container">
+            <div id="chat-window">
+                <div class="bubble ia">
+                    <b>Assistente MAM:</b> Pronto para as suas ordens, CEO. Reconstruí meu núcleo para responder instantaneamente e executar suas tarefas de distribuição e gestão. O que faremos agora?
+                </div>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <div class="quick-orders">
+                    <button class="order-btn" onclick="quickCmd('Ver saldo real')">Ver Saldo</button>
+                    <button class="order-btn" onclick="quickCmd('Editar meu perfil')">Editar Perfil</button>
+                    <button class="order-btn" onclick="quickCmd('Relatório de artistas')">Relatório de Membros</button>
+                    <button class="order-btn" onclick="quickCmd('Subir nova música')">Subir Música</button>
                 </div>
             </div>
 
-            <div id="p-carteira" style="display:none;">
-                <div class="card" style="text-align:center;">
-                    <small>Saldo Disponível para Saque</small>
-                    <h1 style="color:var(--gold); font-size:40px;">925.500 Kz</h1>
-                    <button class="btn-gold" style="background:#27ae60; color:#fff;" onclick="showPage('mensagens')">Solicitar Saque via IA</button>
-                </div>
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Digite sua ordem ou pergunta aqui...">
+                <button class="btn-send" onclick="handleOrder()">EXECUTAR</button>
             </div>
-
-            <div id="p-mensagens">
-                <div class="card">
-                    <h3 style="color:var(--blue)">🤖 Assistente Administrativo MAM</h3>
-                    <div id="chat-box">
-                        <div class="msg msg-ia"><b>IA:</b> Ordens recebidas, CEO. A barra de pesquisa e o menu de edição já estão ativos. O que executamos agora?</div>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:10px;">
-                        <input type="text" id="ai-input" placeholder="Digite sua ordem aqui...">
-                        <button onclick="aiTalk()" style="background:var(--blue); color:#000; border:none; padding:10px 20px; border-radius:5px; font-weight:bold; cursor:pointer;">EXECUTAR</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="p-home" style="display:none;"><div class="card"><h3>Feed MAM</h3><p>Bem-vindo de volta, Chefe.</p></div></div>
-            <div id="p-perfil" style="display:none;"><div class="card"><h3>Meu Perfil Público</h3><p>Play Sean Arsénio ✔</p></div></div>
-            <div id="p-enviar" style="display:none;"><div class="card"><h3>Distribuição</h3><p>Formulário ISRC Ativo.</p></div></div>
         </div>
+
+        <div id="view-home" style="display:none;" class="card">
+            <h3>Bem-vindo ao Comando Central</h3>
+            <p>MAM Distribuidora: 1.851 artistas ativos sob sua supervisão.</p>
+        </div>
+
+        <div id="view-carteira" style="display:none;" class="card">
+            <h2>Saldo MAM Wallet</h2>
+            <h1 style="color:var(--gold)" id="display-bal">925.500 Kz</h1>
+            <button class="order-btn" style="padding:10px 20px" onclick="showView('assistente')">Pedir Saque ao Assistente</button>
+        </div>
+
+        <div id="view-perfil" style="display:none;" class="card"><h3>Meu Perfil Público</h3><p>Play Sean Arsénio ✔</p></div>
+        <div id="view-editar" style="display:none;" class="card"><h3>Definições</h3><input type="text" value="Play Sean Arsénio"><button class="btn-send">Guardar</button></div>
     </main>
 </div>
 
 <script>
-    function showPage(p) {
-        const pages = ['p-home', 'p-perfil', 'p-editar', 'p-enviar', 'p-carteira', 'p-mensagens'];
-        pages.forEach(id => document.getElementById(id).style.display = 'none');
-        document.getElementById('p-' + p).style.display = 'block';
+    const chatWindow = document.getElementById('chat-window');
+    const userInput = document.getElementById('user-input');
+
+    function showView(viewId) {
+        const views = ['view-assistente', 'view-home', 'view-carteira', 'view-perfil', 'view-editar'];
+        views.forEach(v => document.getElementById(v).style.display = 'none');
+        document.getElementById('view-' + viewId).style.display = 'flex';
+        
+        // Update menu active state
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('nav-active'));
     }
 
-    // IA COM RESPOSTA E EXECUÇÃO IMEDIATA
-    function aiTalk() {
-        const input = document.getElementById('ai-input');
-        const box = document.getElementById('chat-box');
-        const cmd = input.value.trim();
+    function addMessage(sender, text) {
+        const div = document.createElement('div');
+        div.className = `bubble ${sender}`;
+        div.innerHTML = `<b>${sender === 'ia' ? 'Assistente MAM' : 'CEO'}:</b> ${text}`;
+        chatWindow.appendChild(div);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function handleOrder() {
+        const cmd = userInput.value.trim();
         if(!cmd) return;
 
-        // CEO Fala
-        box.innerHTML += `<div class="msg msg-ceo"><b>CEO:</b> ${cmd}</div>`;
-        input.value = "";
-        box.scrollTop = box.scrollHeight;
+        addMessage('ceo', cmd);
+        userInput.value = "";
 
-        // IA Responde e Executa (0.1s delay)
+        // EXECUÇÃO IMEDIATA E INTELIGENTE
         setTimeout(() => {
-            let resp = "Ordem processada com sucesso.";
-            
-            if(cmd.toLowerCase().includes("perfil")) {
-                resp = "Abrindo configurações de edição de perfil agora...";
-                showPage('editar');
-            } else if(cmd.toLowerCase().includes("saldo") || cmd.toLowerCase().includes("saque")) {
-                resp = "Verificando fundos... Saldo de 925.500 Kz confirmado para transferência.";
-                showPage('carteira');
-            } else if(cmd.toLowerCase().includes("pesquisa")) {
-                resp = "A barra de pesquisa no topo foi calibrada para buscas globais.";
+            let response = "";
+            const c = cmd.toLowerCase();
+
+            if(c.includes("saldo") || c.includes("dinheiro")) {
+                response = "O saldo atual é de <b>925.500 Kz</b>. Deseja que eu prepare um formulário de saque para o BFA ou Multicaixa Express?";
+                showView('carteira');
+            } else if(c.includes("editar") || c.includes("perfil")) {
+                response = "Entendido. Abrindo o painel de edição de perfil agora mesmo.";
+                showView('editar');
+            } else if(c.includes("membros") || c.includes("artistas")) {
+                response = "Temos 1.851 membros ativos. O faturamento total de registos é estável.";
+            } else if(c.includes("obrigado") || c.includes("valeu")) {
+                response = "Sempre às ordens, CEO. Estou monitorando o sistema 24/7.";
+            } else {
+                response = "Ordem recebida e executada. Estou processando a informação na base de dados da MAM Distribuidora.";
             }
 
-            box.innerHTML += `<div class="msg msg-ia"><b>IA:</b> ${resp}</div>`;
-            box.scrollTop = box.scrollHeight;
-        }, 100);
+            addMessage('ia', response);
+        }, 150);
     }
 
-    // Atalho de tecla Enter no chat
-    document.getElementById('ai-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') aiTalk();
+    function quickCmd(text) {
+        userInput.value = text;
+        handleOrder();
+    }
+
+    // Enter Key Support
+    userInput.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') handleOrder();
     });
 </script>
 </body>

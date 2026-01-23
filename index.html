@@ -4,105 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root { --gold: #d4af37; --black: #050505; --gray: #111; --green: #00ff88; }
+        :root { --gold: #d4af37; --black: #050505; --dark: #111; --green: #00ff88; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--black); color: white; overflow-x: hidden; }
+        body { background: var(--black); color: white; }
 
-        /* NAV ESTILO MUSICPRO */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: rgba(0,0,0,0.95); position: sticky; top: 0; border-bottom: 1px solid #222; z-index: 1000; }
-        .logo { color: var(--gold); font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; }
-        .nav-links { display: none; } /* Simplificado para Mobile no Google Sites */
+        /* HEADER FIXO */
+        header { background: var(--dark); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
+        .logo { color: var(--gold); font-weight: 800; font-size: 1.1rem; }
+        .status-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px var(--green); }
 
-        /* HERO SECTION */
-        .hero { padding: 60px 20px; text-align: center; background: radial-gradient(circle at top, #1a1a1a 0%, #050505 100%); }
-        .hero h1 { font-size: 2.2rem; line-height: 1.2; margin-bottom: 15px; font-weight: 700; }
-        .hero h1 span { color: var(--gold); }
-        .hero p { color: #888; font-size: 1rem; max-width: 600px; margin: 0 auto 30px; }
+        /* NAVEGAÇÃO ENTRE PAINÉIS */
+        .nav-tabs { display: flex; background: #000; padding: 5px; border-bottom: 1px solid #222; }
+        .tab { flex: 1; text-align: center; padding: 12px; font-size: 0.8rem; color: #555; cursor: pointer; font-weight: bold; border-bottom: 2px solid transparent; }
+        .tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
 
-        /* DASHBOARD DE GANHOS (A SUA EXCLUSIVIDADE) */
-        .dashboard { background: var(--gray); border-radius: 20px; padding: 25px; margin: 20px auto; max-width: 400px; border: 1px solid #333; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .counter { font-size: 2.5rem; color: var(--green); font-weight: 800; font-family: monospace; margin: 10px 0; }
+        /* CONTEÚDO DOS PAINÉIS */
+        .panel { display: none; padding: 20px; animation: fadeIn 0.5s; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* BUTTONS */
-        .btn-gold { background: var(--gold); color: black; padding: 16px 32px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px; border: none; font-size: 0.9rem; cursor: pointer; width: 85%; }
+        /* CARDS E DASHBOARD */
+        .card { background: var(--dark); border-radius: 15px; padding: 20px; border: 1px solid #222; margin-bottom: 20px; }
+        .balance-label { font-size: 0.7rem; color: #888; letter-spacing: 1px; }
+        .amount { font-size: 2.2rem; font-weight: bold; color: var(--green); margin: 10px 0; }
 
-        /* FEATURES (CARDS) */
-        .features { padding: 40px 20px; display: grid; gap: 15px; }
-        .card { background: var(--gray); padding: 20px; border-radius: 15px; border: 1px solid #222; transition: 0.3s; }
-        .card:hover { border-color: var(--gold); }
-        .card h3 { color: var(--gold); font-size: 1.1rem; margin-bottom: 10px; }
-        .card p { color: #888; font-size: 0.85rem; line-height: 1.5; }
+        /* BOTÕES */
+        .btn-gold { background: var(--gold); color: #000; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .admin-stat { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.85rem; }
 
-        /* FOOTER ESTILO MUSICPRO */
-        footer { background: #000; padding: 40px 20px; border-top: 1px solid #222; text-align: left; }
-        .footer-logo { color: var(--gold); font-weight: 800; margin-bottom: 20px; }
-        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 20px; font-size: 0.85rem; color: #888; }
-        .footer-grid b { color: white; display: block; margin-bottom: 5px; }
-
-        .tag-premium { background: #d4af3722; color: var(--gold); padding: 4px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+        /* FOOTER */
+        footer { text-align: center; padding: 20px; color: #444; font-size: 0.7rem; border-top: 1px solid #111; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">MAM DISTRIBUIDORA</div>
-        <div style="color:var(--gold); font-size: 0.7rem; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 5px;">LOGIN</div>
-    </nav>
+<header>
+    <div class="logo">MAM SYSTEM</div>
+    <div style="font-size: 0.7rem;"><span class="status-dot"></span>SERVIDOR ATIVO</div>
+</header>
 
-    <section class="hero">
-        <div class="tag-premium">#1 DISTRIBUIDORA DE ANGOLA</div>
-        <h1>Lança a tua música para o <span>Mundo Inteiro.</span></h1>
-        <p>Distribuição digital profissional com relatórios analíticos e recebimentos via BFA.</p>
+<div class="nav-tabs">
+    <div class="tab active" onclick="switchTab(this, 'user-panel')">📱 UTILIZADOR</div>
+    <div class="tab" onclick="switchTab(this, 'admin-panel')">⚙️ ADMINISTRATIVO</div>
+</div>
 
-        <div class="dashboard">
-            <small style="color: #666; font-weight: bold;">RENDIMENTO GLOBAL (REALTIME)</small>
-            <div class="counter" id="live-money">Kz 0,00</div>
-            <div style="font-size: 0.7rem; color: var(--green);">● SISTEMA DE MONETIZAÇÃO ATIVO</div>
-        </div>
+<div id="user-panel" class="panel active">
+    <div class="card">
+        <p class="balance-label">SALDO ESTIMADO DO ARTISTA</p>
+        <div class="amount" id="user-money">Kz 0,00</div>
+        <p style="font-size: 0.75rem; color: #666;">Taxa de distribuição aplicada: 2%</p>
+    </div>
 
-        <button class="btn-gold" onclick="window.open('https://wa.me/244937881307?text=Quero+ser+Premium+MAM')">COMEÇAR AGORA</button>
-    </section>
+    <button class="btn-gold" onclick="window.open('https://wa.me/244937881307?text=Quero+ativar+meu+VIP+BFA')">💎 ATIVAR PAINEL VIP</button>
+    
+    <div class="card" style="margin-top:20px;">
+        <h3 style="font-size:1rem; color:var(--gold);">Submeter Obra</h3>
+        <p style="font-size:0.8rem; color:#888; margin:10px 0;">Envie seu ficheiro MP3/WAV e capa.</p>
+        <button onclick="window.location.href='mailto:mamfilhos29@gmail.com'" style="background:transparent; color:white; border:1px solid #333; width:100%; padding:10px; border-radius:8px;">✉️ ENVIAR PARA MAM</button>
+    </div>
+</div>
 
-    <section class="features">
-        <div class="card">
-            <h3>Distribuição Digital</h3>
-            <p>Spotify, Apple Music, TikTok, Instagram e mais de 150 lojas globais.</p>
-        </div>
-        <div class="card">
-            <h3>Receba via BFA</h3>
-            <p>Seus royalties pagos diretamente na sua conta bancária em Angola.</p>
-        </div>
-        <div class="card">
-            <h3>Suporte Especializado</h3>
-            <p>Atendimento direto via mamfilhos29@gmail.com com o nosso time A&R.</p>
-        </div>
-    </section>
+<div id="admin-panel" class="panel">
+    <div class="card" style="border-color: var(--gold);">
+        <h3 style="color: var(--gold); font-size: 0.9rem;">CENTRAL DO CEO MATIAS</h3>
+        <div class="admin-stat"><span>Artistas Ativos:</span> <b>1.240</b></div>
+        <div class="admin-stat"><span>Músicas em Análise:</span> <b>48</b></div>
+        <div class="admin-stat"><span>Total Distribuído:</span> <b>Kz 4.2M</b></div>
+    </div>
 
-    <footer>
-        <div class="footer-logo">MAM DISTRIBUIDORA</div>
-        <div class="footer-grid">
-            <div>
-                <b>PLATAFORMA</b>
-                Planos VIP<br>Distribuição<br>Relatórios
-            </div>
-            <div>
-                <b>CONTACTO</b>
-                mamfilhos29@gmail.com<br>WhatsApp: 937881307<br>Angola
-            </div>
-            <div style="margin-top:20px;">
-                <p><b>CEO MATIAS MANUEL</b></p>
-                <p>MAM & FILHOS © 2026 | Performance Digital</p>
-            </div>
-        </div>
-    </footer>
+    <div class="card">
+        <h4 style="font-size:0.8rem; margin-bottom:10px;">CONFIGURAÇÕES DE REDE</h4>
+        <p style="font-size:0.75rem; color:#888;">Email Oficial: <b>mamfilhos29@gmail.com</b></p>
+        <p style="font-size:0.75rem; color:#888;">Suporte BFA: <b>937881307</b></p>
+        <button onclick="alert('Sistema de ISRC Gerado com Sucesso')" style="margin-top:15px; background:#222; color:white; width:100%; padding:10px; border:none; border-radius:5px; font-size:0.7rem;">GERAR CÓDIGOS ISRC</button>
+    </div>
+</div>
 
-    <script>
-        let val = 0;
-        setInterval(() => {
-            val += 1.50;
-            document.getElementById('live-money').innerText = "Kz " + val.toLocaleString('pt-PT', {minimumFractionDigits: 2});
-        }, 1000);
-    </script>
+<footer>
+    MAM & FILHOS © 2026<br>DISTRIBUIÇÃO DIGITAL PROFISSIONAL
+</footer>
+
+<script>
+    // Sistema de troca de abas
+    function switchTab(element, tabId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        
+        element.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // Motor de Ganhos do Utilizador
+    let val = 0;
+    setInterval(() => {
+        val += 1.50;
+        document.getElementById('user-money').innerText = "Kz " + val.toLocaleString('pt-PT', {minimumFractionDigits: 2});
+    }, 1000);
+</script>
 
 </body>
 </html>

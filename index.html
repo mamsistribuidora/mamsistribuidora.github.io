@@ -1,121 +1,218 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAM Distribuidora - Acesso</title>
     <style>
-        :root { --gold: #d4af37; --black: #050505; --dark-gray: #111; --text: #ffffff; --green: #00ff88; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
-        body { background-color: var(--black); color: var(--text); }
+        /* CSS - ESTILO PROFISSIONAL */
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #28a745;
+            --bg-color: #f4f7f9;
+            --text-color: #333;
+        }
 
-        /* HEADER (IGUAL MUSICPRO) */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #1a1a1a; }
-        .logo { font-weight: 900; color: var(--gold); letter-spacing: 1px; font-size: 1.2rem; }
-        .nav-right { display: flex; gap: 20px; align-items: center; }
-        .nav-right a { text-decoration: none; color: white; font-size: 0.85rem; font-weight: 600; }
-        .btn-top { background: var(--gold); color: black !important; padding: 8px 18px; border-radius: 5px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-        /* HERO SECTION */
-        .hero { padding: 80px 5%; text-align: center; background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%); }
-        .hero h1 { font-size: 2.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
-        .hero h1 span { color: var(--gold); }
-        .hero p { color: #888; font-size: 1rem; max-width: 500px; margin: 0 auto 30px; }
-        .btn-main { background: var(--gold); color: black; padding: 18px 40px; border-radius: 50px; font-weight: 800; text-decoration: none; display: inline-block; font-size: 1rem; box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+        .auth-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
 
-        /* DASHBOARD (A EXCLUSIVIDADE MAM) */
-        .dashboard { background: var(--dark-gray); border: 1px solid #222; border-radius: 20px; padding: 25px; margin: 40px auto; max-width: 450px; text-align: center; }
-        .dashboard small { color: var(--gold); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 2px; }
-        .counter { font-size: 2.5rem; color: var(--green); font-weight: 800; font-family: monospace; margin: 10px 0; }
+        .auth-card h2 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
 
-        /* SEÇÃO DE CARDS (PRODUTOS) */
-        .grid-services { padding: 40px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--dark-gray); padding: 30px; border-radius: 15px; border: 1px solid #1a1a1a; }
-        .card h3 { color: var(--gold); margin-bottom: 15px; font-size: 1.2rem; }
-        .card p { color: #888; font-size: 0.9rem; line-height: 1.5; }
+        .auth-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
 
-        /* SEÇÃO PREMIUM (O SEU PLANO BFA) */
-        .premium-box { background: linear-gradient(90deg, #111 0%, #1a1a1a 100%); margin: 40px 5%; padding: 40px; border-radius: 20px; border: 1px solid var(--gold); text-align: center; }
-        .premium-box h2 { color: var(--gold); margin-bottom: 10px; }
-        .premium-box p { font-size: 0.9rem; color: #ccc; margin-bottom: 20px; }
+        .input-group {
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
 
-        /* FOOTER */
-        footer { background: #000; padding: 50px 5%; border-top: 1px solid #1a1a1a; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 30px; }
-        footer h4 { margin-bottom: 20px; font-size: 0.9rem; color: #fff; text-transform: uppercase; }
-        footer a, footer p { color: #666; text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 10px; }
-        footer b { color: var(--gold); }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
 
-        @media (max-width: 600px) { .hero h1 { font-size: 2rem; } }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Botão com Loading */
+        #btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        #btn-submit:hover { background-color: #004494; }
+        #btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toggle-link {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .toggle-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Esconder campo de confirmação no Login */
+        .hidden { display: none; }
+
+        .success-msg { color: var(--secondary-color); font-weight: bold; margin-top: 1rem; display: none; }
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="logo">MAM DISTRIBUIDORA</div>
-    <div class="nav-right">
-        <a href="#">Login</a>
-        <a href="#" class="btn-top">Cadastro</a>
-    </div>
-</nav>
+    <div class="auth-card">
+        <h2 id="form-title">Login MAM</h2>
+        <p id="form-subtitle">Bem-vindo à MAM Distribuidora</p>
 
-<section class="hero">
-    <h1>Lance sua música para o <span>mundo inteiro ouvir.</span></h1>
-    <p>Distribuidora digital 100% focada no mercado de Angola. Receba via BFA e cresça globalmente.</p>
-    <a href="https://wa.me/244937881307?text=Quero+começar+agora" class="btn-main">Comece aqui</a>
+        <form id="auth-form">
+            <div class="input-group">
+                <label for="email">E-mail Profissional</label>
+                <input type="email" id="email" placeholder="exemplo@mam.com" required>
+            </div>
 
-    <div class="dashboard">
-        <small>Rendimento Global em Tempo Real</small>
-        <div class="counter" id="m-count">Kz 0,00</div>
-        <p style="color:var(--green); font-size: 0.7rem;">● SISTEMA DE MONETIZAÇÃO ATIVO (+1.50 Kz/s)</p>
-    </div>
-</section>
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" placeholder="Sua senha segura" required>
+            </div>
 
-<section class="grid-services">
-    <div class="card">
-        <h3>Distribuição Digital</h3>
-        <p>Distribua, proteja e monetize seu lançamento com a MAM nas principais plataformas mundiais.</p>
-    </div>
-    <div class="card">
-        <h3>Receba via BFA</h3>
-        <p>Receba seus ganhos diretamente em sua conta BFA e compartilhe receitas com sua equipa.</p>
-    </div>
-    <div class="card">
-        <h3>Relatórios Analíticos</h3>
-        <p>Entenda com clareza como sua música performa em cada plataforma digital.</p>
-    </div>
-</section>
+            <div class="input-group hidden" id="confirm-pass-group">
+                <label for="confirm-password">Confirmar Senha</label>
+                <input type="password" id="confirm-password" placeholder="Repita a senha">
+            </div>
 
-<section class="premium-box">
-    <h2>SEJA PREMIUM MAM</h2>
-    <p>Tenha acesso a todas as ferramentas, rapidez na aprovação e suporte exclusivo do CEO Matias Manuel.</p>
-    <a href="https://wa.me/244937881307" style="color:var(--gold); font-weight:bold; text-decoration:none;">Saiba mais ></a>
-</section>
+            <button type="submit" id="btn-submit">
+                <span id="btn-text">Entrar</span>
+                <div class="spinner" id="btn-loader"></div>
+            </button>
+        </form>
 
-<footer>
-    <div>
-        <div class="logo" style="margin-bottom:15px;">MAM</div>
-        <p>A maior força na distribuição digital independente.</p>
-    </div>
-    <div>
-        <h4>Plataforma</h4>
-        <a href="#">Distribuição</a>
-        <a href="#">Planos VIP</a>
-        <a href="#">Blog MAM</a>
-    </div>
-    <div>
-        <h4>Contacto</h4>
-        <p><b>Email:</b> mamfilhos29@gmail.com</p>
-        <p><b>WhatsApp:</b> 937881307</p>
-        <p><b>Siga:</b> MAM Distributor</p>
-    </div>
-</footer>
+        <div id="response-msg" class="success-msg">Operação realizada!</div>
 
-<script>
-    let c = 0;
-    setInterval(() => {
-        c += 1.50;
-        document.getElementById('m-count').innerText = "Kz " + c.toLocaleString('pt-PT', {minimumFractionDigits: 2});
-    }, 1000);
-</script>
+        <div class="toggle-link">
+            <span id="toggle-text">Ainda não tem conta?</span> 
+            <a href="javascript:void(0)" id="change-mode">Cadastrar-se</a>
+        </div>
+    </div>
 
-</body>
-</html>
+    <script>
+        /* JAVASCRIPT - LÓGICA DE FUNCIONALIDADE */
+        const form = document.getElementById('auth-form');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnText = document.getElementById('btn-text');
+        const loader = document.getElementById('btn-loader');
+        const modeLink = document.getElementById('change-mode');
+        const title = document.getElementById('form-title');
+        const confirmGroup = document.getElementById('confirm-pass-group');
+        const responseMsg = document.getElementById('response-msg');
+
+        let isLoginMode = true;
+
+        // Alternar entre Login e Cadastro
+        modeLink.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            
+            if (isLoginMode) {
+                title.innerText = "Login MAM";
+                btnText.innerText = "Entrar";
+                modeLink.innerText = "Cadastrar-se";
+                document.getElementById('toggle-text').innerText = "Ainda não tem conta?";
+                confirmGroup.classList.add('hidden');
+            } else {
+                title.innerText = "Cadastro MAM";
+                btnText.innerText = "Criar Minha Conta";
+                modeLink.innerText = "Fazer Login";
+                document.getElementById('toggle-text').innerText = "Já é um artista MAM?";
+                confirmGroup.classList.remove('hidden');
+            }
+        });
+
+        // Simular envio de dados
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+
+            // Validação básica de senha para cadastro
+            if (!isLoginMode && pass !== confirmPass) {
+                alert("As senhas não coincidem!");
+                return;
+            }
+
+            // Iniciar Efeito de Carregamento (Loading)
+            btnSubmit.disabled = true;
+            btnText.style.display = 'none';
+            loader.style.display = 'block';
+
+            // Simula uma resposta do servidor da MAM Distribuidora
+            setTimeout(() => {
+                loader.style.display = 'none';
+                btnText.style.display = 'block';
+                btnSubmit.disabled = false;
+
+                // Feedback visual de sucesso
+                responseMsg.style.display = 'block';
+                responseMsg.innerText = isLoginMode ? "Login Autorizado!" : "Cadastro MAM Concluído!";
+                
+                console.log(`Dados processados para mamfilhos29@gmail.com

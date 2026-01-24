@@ -3,48 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora - Premium</title>
+    <title>MAM Distribuidora | Oficial</title>
     <style>
-        /* RESET BÁSICO */
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background-color: #000000; /* Fundo Preto */
-            color: #ffffff; 
-            font-family: sans-serif; 
+        /* CONFIGURAÇÃO DE CORES - PRETO E DOURADO */
+        :root {
+            --dourado: #D4AF37;
+            --dourado-escuro: #B8860B;
+            --preto-puro: #000000;
+            --preto-card: #111111;
+            --branco: #ffffff;
+            --cinza: #888888;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--preto-puro);
+            color: var(--branco);
+            font-family: 'Segoe UI', Arial, sans-serif;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* TOPO */
+        /* CABEÇALHO */
         header {
-            border-bottom: 2px solid #D4AF37;
-            padding: 20px;
-            text-align: center;
-            background: #0a0a0a;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--dourado);
+            background: var(--preto-card);
         }
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; }
-        .logo span { color: #D4AF37; }
 
-        /* AREA CENTRAL */
-        .container {
-            flex: 1;
+        .logo { font-size: 22px; font-weight: 800; letter-spacing: 1px; color: var(--branco); }
+        .logo span { color: var(--dourado); }
+
+        /* HERO / CHAMADA */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+
+        .hero h1 { color: var(--dourado); font-size: 2.5rem; margin-bottom: 10px; }
+        .hero p { color: var(--cinza); font-size: 1.1rem; }
+
+        /* CARD DE ACESSO */
+        .container-auth {
             display: flex;
             justify-content: center;
-            align-items: center;
             padding: 20px;
+            flex: 1;
         }
 
-        /* CAIXA DE LOGIN/CADASTRO */
         .auth-card {
-            background: #111111;
-            border: 1px solid #D4AF37; /* Borda Dourada */
-            padding: 30px;
+            background: var(--preto-card);
+            border: 1px solid var(--dourado);
+            border-radius: 12px;
             width: 100%;
             max-width: 400px;
-            border-radius: 15px;
-            box-shadow: 0px 0px 20px rgba(212, 175, 55, 0.2);
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
         }
 
         .tabs {
@@ -52,158 +71,29 @@
             margin-bottom: 25px;
             border-bottom: 1px solid #333;
         }
+
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
-            color: #888;
             font-weight: bold;
-        }
-        .tab.active {
-            color: #D4AF37;
-            border-bottom: 2px solid #D4AF37;
+            color: var(--cinza);
+            transition: 0.3s;
         }
 
-        /* CAMPOS */
-        .input-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; color: #D4AF37; font-size: 12px; margin-bottom: 5px; text-transform: uppercase; }
+        .tab.active {
+            color: var(--dourado);
+            border-bottom: 3px solid var(--dourado);
+        }
+
+        /* FORMULÁRIO */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; color: var(--dourado); font-size: 12px; margin-bottom: 6px; font-weight: bold; }
         input {
             width: 100%;
             padding: 12px;
             background: #000;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        input:focus { border-color: #D4AF37; outline: none; }
-
-        /* BOTÃO */
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #D4AF37;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:hover { background: #b8860b; }
-
-        /* RODAPÉ */
-        footer {
-            background: #0a0a0a;
-            padding: 20px;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            border-top: 1px solid #333;
-        }
-
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="logo">MAM <span>DISTRIBUIDORA</span></div>
-    </header>
-
-    <div class="container">
-        <div class="auth-card" id="tela-acesso">
-            <div class="tabs">
-                <div class="tab active" id="tab-login" onclick="mudarPara('login')">LOGIN</div>
-                <div class="tab" id="tab-cadastro" onclick="mudarPara('cadastro')">CRIAR CONTA</div>
-            </div>
-
-            <form id="meuForm">
-                <div class="input-group">
-                    <label>E-mail Oficial</label>
-                    <input type="email" id="email" placeholder="artista@exemplo.com" required>
-                </div>
-
-                <div class="input-group">
-                    <label>Senha</label>
-                    <input type="password" id="senha" placeholder="******" required>
-                </div>
-
-                <div class="input-group hidden" id="campo-confirmar">
-                    <label>Confirmar Senha</label>
-                    <input type="password" id="confirmar-senha" placeholder="******">
-                </div>
-
-                <button type="submit" class="btn" id="btn-texto">ENTRAR NO PAINEL</button>
-            </form>
-        </div>
-
-        <div class="auth-card hidden" id="tela-painel">
-            <h2 style="color: #D4AF37;">Bem-vindo à MAM!</h2>
-            <p>Sua conta está ativa e pronta para lançamentos.</p>
-            <br>
-            <button class="btn" onclick="location.reload()">SAIR</button>
-        </div>
-    </div>
-
-    <footer>
-        MAM Distribuidora &copy; 2026<br>
-        Suporte: 937881307 | mamfilhos29@gmail.com
-    </footer>
-
-    <script>
-        let modo = 'login';
-
-        function mudarPara(novoModo) {
-            modo = novoModo;
-            const tabL = document.getElementById('tab-login');
-            const tabC = document.getElementById('tab-cadastro');
-            const campoConfirmar = document.getElementById('campo-confirmar');
-            const btn = document.getElementById('btn-texto');
-
-            if (modo === 'login') {
-                tabL.classList.add('active');
-                tabC.classList.remove('active');
-                campoConfirmar.classList.add('hidden');
-                btn.innerText = "ENTRAR NO PAINEL";
-            } else {
-                tabC.classList.add('active');
-                tabL.classList.remove('active');
-                campoConfirmar.classList.remove('hidden');
-                btn.innerText = "CRIAR MINHA CONTA";
-            }
-        }
-
-        document.getElementById('meuForm').onsubmit = function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-
-            if (modo === 'cadastro') {
-                const conf = document.getElementById('confirmar-senha').value;
-                if (senha !== conf) {
-                    alert("As senhas não são iguais!");
-                    return;
-                }
-                // Salva no navegador
-                localStorage.setItem(email, senha);
-                alert("Conta criada com sucesso! Agora faça o login.");
-                mudarPara('login');
-            } else {
-                // Login
-                const senhaSalva = localStorage.getItem(email);
-                if (senhaSalva === senha) {
-                    document.getElementById('tela-acesso').classList.add('hidden');
-                    document.getElementById('tela-painel').classList.remove('hidden');
-                } else {
-                    alert("Dados incorretos. Verifique se criou a conta.");
-                }
-            }
-        };
-    </script>
-
-</body>
-</html>
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #

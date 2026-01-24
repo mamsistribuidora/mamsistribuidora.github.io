@@ -136,3 +136,126 @@
             margin-top: 30px;
             font-size: 12px;
             text-align: center;
+            color: #999;
+            line-height: 1.6;
+        }
+
+        .contact-info b { color: #333; }
+
+        /* Loader */
+        .loader {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ffffff44;
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="header">
+        <h1>MAM Distribuidora</h1>
+        <p>Lance sua música globalmente.</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" id="tab-login" onclick="setMode('login')">Fazer Login</div>
+        <div class="tab" id="tab-register" onclick="setMode('register')">Criar Conta</div>
+    </div>
+
+    <form id="mam-form">
+        <div class="input-box">
+            <label>E-mail Profissional</label>
+            <input type="email" id="email" placeholder="nome@exemplo.com" required>
+        </div>
+
+        <div class="input-box">
+            <label>Sua Senha</label>
+            <input type="password" id="pass" placeholder="Mínimo 8 caracteres" required minlength="8">
+        </div>
+
+        <div class="input-box hidden" id="box-confirm">
+            <label>Confirmar Senha</label>
+            <input type="password" id="pass-confirm" placeholder="Repita a senha">
+        </div>
+
+        <button type="submit" class="btn-main" id="btn-text">
+            <span id="label-btn">Entrar na conta</span>
+            <div class="loader" id="loader"></div>
+        </button>
+    </form>
+
+    <div class="contact-info">
+        Precisa de ajuda? Fale com a MAM:<br>
+        <b>mamfilhos29@gmail.com</b> | <b>937881307</b><br>
+        Suporte: produtorap6production@gmail.com
+    </div>
+</div>
+
+<script>
+    let mode = 'login';
+    const form = document.getElementById('mam-form');
+    const labelBtn = document.getElementById('label-btn');
+    const loader = document.getElementById('loader');
+    const boxConfirm = document.getElementById('box-confirm');
+    const inputConfirm = document.getElementById('pass-confirm');
+
+    function setMode(newMode) {
+        mode = newMode;
+        // Reset tabs
+        document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+        document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+
+        if (mode === 'login') {
+            labelBtn.innerText = "Entrar na conta";
+            boxConfirm.classList.add('hidden');
+            inputConfirm.removeAttribute('required');
+        } else {
+            labelBtn.innerText = "Começar agora";
+            boxConfirm.classList.remove('hidden');
+            inputConfirm.setAttribute('required', 'true');
+        }
+    }
+
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        
+        const emailVal = document.getElementById('email').value;
+        const passVal = document.getElementById('pass').value;
+
+        // Validação extra para Cadastro
+        if (mode === 'register') {
+            const confirmVal = inputConfirm.value;
+            if (passVal !== confirmVal) {
+                alert("As senhas não coincidem!");
+                return;
+            }
+        }
+
+        // Simulação Profissional de Envio
+        labelBtn.style.display = 'none';
+        loader.style.display = 'block';
+        document.getElementById('btn-text').disabled = true;
+
+        console.log(`Enviando para MAM: ${emailVal}`);
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+            labelBtn.style.display = 'block';
+            document.getElementById('btn-text').disabled = false;
+            
+            alert(`MAM Distribuidora diz: ${mode === 'login' ? 'Bem-vindo de volta!' : 'Cadastro realizado com sucesso!'}`);
+        }, 2000);
+    };
+</script>
+
+</body>
+</html>

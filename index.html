@@ -3,97 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora</title>
     <style>
-        /* CONFIGURAÇÃO DE CORES - PRETO E DOURADO */
-        :root {
-            --dourado: #D4AF37;
-            --dourado-escuro: #B8860B;
-            --preto-puro: #000000;
-            --preto-card: #111111;
-            --branco: #ffffff;
-            --cinza: #888888;
+        /* CORES FIXAS E LEVES */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: sans-serif; /* Fonte do sistema (mais rápido) */
+            line-height: 1.5;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--preto-puro);
-            color: var(--branco);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* CABEÇALHO */
+        /* TOPO */
         header {
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--dourado);
-            background: var(--preto-card);
-        }
-
-        .logo { font-size: 22px; font-weight: 800; letter-spacing: 1px; color: var(--branco); }
-        .logo span { color: var(--dourado); }
-
-        /* HERO / CHAMADA */
-        .hero {
+            padding: 15px;
             text-align: center;
-            padding: 60px 20px 30px;
+            border-bottom: 2px solid #D4AF37;
+            background: #0a0a0a;
         }
+        .logo { font-size: 22px; font-weight: 900; color: #fff; }
+        .logo span { color: #D4AF37; }
 
-        .hero h1 { color: var(--dourado); font-size: 2.5rem; margin-bottom: 10px; }
-        .hero p { color: var(--cinza); font-size: 1.1rem; }
-
-        /* CARD DE ACESSO */
-        .container-auth {
+        /* LOGIN / CADASTRO */
+        .main-container {
             display: flex;
             justify-content: center;
-            padding: 20px;
-            flex: 1;
+            padding: 30px 15px;
         }
 
         .auth-card {
-            background: var(--preto-card);
-            border: 1px solid var(--dourado);
-            border-radius: 12px;
+            background: #111;
+            border: 1px solid #D4AF37;
+            border-radius: 10px;
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+            max-width: 380px;
+            padding: 25px;
         }
 
         .tabs {
             display: flex;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border-bottom: 1px solid #333;
         }
-
         .tab {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
+            color: #777;
+            font-size: 14px;
             font-weight: bold;
-            color: var(--cinza);
-            transition: 0.3s;
         }
-
         .tab.active {
-            color: var(--dourado);
-            border-bottom: 3px solid var(--dourado);
+            color: #D4AF37;
+            border-bottom: 2px solid #D4AF37;
         }
 
-        /* FORMULÁRIO */
-        .input-group { margin-bottom: 15px; }
-        label { display: block; color: var(--dourado); font-size: 12px; margin-bottom: 6px; font-weight: bold; }
+        /* CAMPOS */
+        .field { margin-bottom: 15px; }
+        label { display: block; color: #D4AF37; font-size: 11px; margin-bottom: 5px; font-weight: bold; }
         input {
             width: 100%;
             padding: 12px;
             background: #000;
             border: 1px solid #444;
-            border-radius: 6px;
-            color: #
+            color: #fff;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #D4AF37;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* MENU DE INFORMAÇÃO (RODAPÉ) */
+        footer {
+            background: #0a0a0a;
+            border-top: 1px solid #D4AF37;
+            padding: 30px 20px;
+            margin-top: 40px;
+        }
+
+        .info-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-col h4 { color: #D4AF37; margin-bottom: 10px; font-size: 14px; }
+        .info-col p, .info-col a { color: #999; font-size: 13px; text-decoration: none; display: block; margin-bottom: 8px; }
+
+        .hidden { display: none; }
+        #painel { display: none; text-align: center; padding: 50px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">MAM <span>DISTRIBUIDORA</span></div>
+    </header>
+
+    <div id="view-auth">
+        <div style="text-align: center; padding: 30px 10px 0;">
+            <h2 style="color: #D4AF37;">Lançamento Profissional</h2>
+            <p style="color: #666; font-size: 14px;">MAM: Sua música em todas as lojas.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="auth-card">
+                <div class="tabs">
+                    <div class="tab active" id="t-login" onclick="mudar('login')">LOGIN</div>
+                    <div class="tab" id="t-criar" onclick="mudar('criar')">CRIAR CONTA</div>
+                </div>
+
+                <form id="mamForm">
+                    <div class="field">
+                        <label>E-MAIL</label>
+                        <input type="email" id="email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="field">
+                        <label>SENHA</label>
+                        <input type="password" id="senha" placeholder="******" required>
+                    </div>
+                    <div class="field hidden" id="box-confirm">
+                        <label>CONFIRMAR SENHA</label>
+                        <input type="password" id="conf-senha" placeholder="******">
+                    </div>
+                    <button type="submit" class="btn" id="btn-txt">ENTRAR</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="painel">
+        <h1 style="color: #D4AF37;">Acesso Confirmado!</h1>
+        <p>Bem-vindo ao Painel da MAM Distribuidora.</p><br>
+        <button class="btn" style="max-width: 200px;" onclick="location.reload()">SAIR</button>
+    </div>
+
+    <footer>
+        <div class="info-grid">
+            <div class="info-col">
+                <h4>CONTATO OFICIAL</h4>
+                <p>WhatsApp: 937881307</p>
+                <p>mamfilhos29@gmail.com</p>
+                <p>Suporte: playseana@gmail.com</p>
+            </div>
+            <div class="info-col">
+                <h4>SERVIÇOS</h4>
+                <p>Distribuição Spotify/Apple</p>
+                <p>Monetização de Vídeos</p>
+                <p>Gestão de Royalties</p>
+            </div>
+            <div class="info-col">
+                <h4>DISTRIBUIDORA MAM</h4>
+                <p>O melhor suporte para artistas e produtores independentes em 2026.</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #444;">
+            &copy; 2026 MAM Distribuidora.
+        </div>
+    </footer>
+
+    <script>
+        let modo = 'login';
+
+        function mudar(m) {
+            modo = m;
+            document.getElementById('t-login').className = (m === 'login') ? 'tab active' : 'tab';
+            document.getElementById('t-criar').className = (m === 'criar') ? 'tab active' : 'tab';
+            document.getElementById('box-confirm').className = (m === 'criar') ? 'field' : 'field hidden';
+            document.getElementById('btn-txt').innerText = (m === 'login') ? 'ENTRAR' : 'CADASTRAR AGORA';
+        }
+
+        document.getElementById('mamForm').onsubmit = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            if (modo === 'criar') {
+                const conf = document.getElementById('conf-senha').value;
+                if (senha !== conf) { alert("Senhas diferentes!"); return; }
+                localStorage.setItem(email, senha);
+                alert("Conta criada! Agora faça o login.");
+                mudar('login');
+            } else {
+                if (localStorage.getItem(email) === senha) {
+                    document.getElementById('view-auth').style.display = 'none';
+                    document.getElementById('painel').style.display = 'block';
+                } else {
+                    alert("Dados incorretos!");
+                }
+            }
+        };
+    </script>
+</body>
+</html>

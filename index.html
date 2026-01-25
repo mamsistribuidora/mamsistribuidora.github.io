@@ -3,25 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Play Sean Arsenio</title>
+    <title>MAM Distribuidora | Play Sean Arsénio</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; }
-        header { padding: 20px; text-align: center; border-bottom: 2px solid #D4AF37; background: #0a0a0a; }
-        .logo { font-size: 24px; font-weight: bold; }
-        .logo span { color: #D4AF37; }
-        
-        /* BOX DE LOGIN */
-        .auth-container { display: flex; justify-content: center; padding: 40px 20px; }
-        .card { background: #111; border: 1px solid #D4AF37; padding: 30px; width: 100%; max-width: 400px; border-radius: 10px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; }
-        .btn { width: 100%; padding: 15px; background: #D4AF37; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        /* CORES E ESTILO PREMIUM */
+        :root {
+            --ouro: #D4AF37;
+            --ouro-escuro: #B8860B;
+            --preto: #000000;
+            --card: #111111;
+            --texto: #ffffff;
+            --cinza: #888888;
+        }
 
-        /* REGISTRO E REDES SOCIAIS (MENU INFERIOR) */
-        footer { background: #0a0a0a; border-top: 1px solid #D4AF37; padding: 40px 20px; margin-top: 50px; }
-        .footer-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-        .col h4 { color: #D4AF37; margin-bottom: 15px; text-transform: uppercase; font-size: 14px; }
-        .col p, .col a { color: #888; text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px; }
-        .social-link:hover { color: #fff; text-decoration: underline; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--preto); color: var(--texto); line-height: 1.6; }
+
+        /* CABEÇALHO */
+        header {
+            background: var(--card);
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--ouro);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+        .logo span { color: var(--ouro); }
+        .perfil-ceo { font-size: 12px; color: var(--ouro); text-align: right; }
+
+        /* HERO SECTION */
+        .hero { text-align: center; padding: 50px 20px; }
+        .hero h1 { color: var(--ouro); font-size: 2.5rem; margin-bottom: 10px; }
+        .hero p { color: var(--cinza); font-size: 1.1rem; }
+
+        /* CARD DE AUTENTICAÇÃO */
+        .auth-wrapper { display: flex; justify-content: center; padding: 20px; }
+        .auth-card {
+            background: var(--card);
+            border: 1px solid var(--ouro);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+
+        .tabs { display: flex; margin-bottom: 25px; border-bottom: 1px solid #333; }
+        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-weight: bold; color: var(--cinza); }
+        .tab.active { color: var(--ouro); border-bottom: 3px solid var(--ouro); }
+
+        /* FORMULÁRIO */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: var(--ouro); font-size: 11px; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
+        input {
+            width: 100%; padding: 12px; background: #000; border: 1px solid #444; border-radius: 6px;
+            color: #fff; font-size: 16px; outline: none;
+        }
+        input:focus { border-color: var(--ouro); }
+        .btn-gold {
+            width: 100%; padding: 15px; background: var(--ouro); color: #000; border: none;
+            border-radius: 6px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px;
+        }
+        .btn-gold:hover { background: var(--ouro-escuro); }
+
+        /* PAINEL DO ARTISTA (DASHBOARD) */
+        #dashboard { display: none; padding: 50px 5%; text-align: center; }
+        .dash-box { border: 1px dashed var(--ouro); padding: 40px; border-radius: 10px; margin-top: 20px; }
+
+        /* MENU DE INFORMAÇÃO (FOOTER) */
+        footer { background: var(--card); border-top: 1px solid var(--ouro); padding: 50px 5% 20px; margin-top: 50px; }
+        .footer-grid {
+            max-width: 1200px; margin: 0 auto; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;
+        }
+        .footer-col h4 { color: var(--ouro); margin-bottom: 20px; font-size: 14px; text-transform: uppercase; }
+        .footer-col p, .footer-col a { color: var(--cinza); text-decoration: none; font-size: 14px; margin-bottom: 10px; display: block; }
+        .footer-col a:hover { color: var(--texto); }
 
         .hidden { display: none; }
     </style>
@@ -30,48 +88,70 @@
 
     <header>
         <div class="logo">MAM <span>DISTRIBUIDORA</span></div>
-        <p style="font-size: 12px; color: #D4AF37; margin-top: 5px;">Distribuidor Oficial: Play Sean Arsenio</p>
+        <div class="perfil-ceo">
+            CEO & ARTISTA<br>
+            <b>PLAY SEAN ARSÉNIO</b>
+        </div>
     </header>
 
-    <div class="auth-container">
-        <div class="card">
-            <h3 style="text-align: center; color: #D4AF37; margin-bottom: 20px;">Área do Artista</h3>
-            <input type="email" placeholder="E-mail">
-            <input type="password" placeholder="Senha">
-            <button class="btn">ENTRAR NO PAINEL</button>
-            <p style="font-size: 12px; text-align: center; margin-top: 15px; color: #555;">Novo na MAM? Clique em Criar Conta.</p>
+    <main id="auth-screen">
+        <section class="hero">
+            <h1>Distribuição Nível Ouro</h1>
+            <p>Gerencie sua carreira com a estrutura de Play Sean Arsénio.</p>
+        </section>
+
+        <div class="auth-wrapper">
+            <div class="auth-card">
+                <div class="tabs">
+                    <div id="tab-login" class="tab active" onclick="setModo('login')">ENTRAR</div>
+                    <div id="tab-criar" class="tab" onclick="setModo('criar')">CRIAR CONTA</div>
+                </div>
+
+                <form id="mainForm">
+                    <div class="form-group">
+                        <label>E-mail Profissional</label>
+                        <input type="email" id="email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha de Acesso</label>
+                        <input type="password" id="senha" placeholder="******" required>
+                    </div>
+                    <div id="confirm-box" class="form-group hidden">
+                        <label>Confirmar Senha</label>
+                        <input type="password" id="conf-senha" placeholder="******">
+                    </div>
+                    <button type="submit" class="btn-gold" id="btn-action">Acessar Minha Conta</button>
+                </form>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <section id="dashboard">
+        <h1 style="color: var(--ouro);">Bem-vindo ao Painel MAM</h1>
+        <p>Olá, Artista! Você está conectado à rede de <b>Play Sean Arsénio</b>.</p>
+        <div class="dash-box">
+            <h3>+ Novo Lançamento</h3>
+            <p>Envie sua música para Spotify, Apple Music e Deezer.</p>
+        </div>
+        <br>
+        <button class="btn-gold" style="max-width: 200px;" onclick="location.reload()">Sair do Painel</button>
+    </section>
 
     <footer>
         <div class="footer-grid">
-            <div class="col">
-                <h4>Play Sean Arsenio</h4>
-                <p>Perfil de Distribuidor Verificado</p>
-                <p><b>Telefone:</b> 937881307</p>
-                <p><b>E-mail:</b> mamfilhos29@gmail.com</p>
+            <div class="footer-col">
+                <h4>Registro Artístico</h4>
+                <p><b>Artista:</b> Play Sean Arsénio</p>
+                <p><b>Status:</b> Distribuidor Autorizado</p>
+                <p><b>Músicas:</b> Catálogo Associado 2026</p>
             </div>
-
-            <div class="col">
+            <div class="footer-col">
+                <h4>Contatos Oficiais</h4>
+                <p>WhatsApp: 937881307</p>
+                <a href="mailto:mamfilhos29@gmail.com">mamfilhos29@gmail.com</a>
+                <a href="mailto:playseana@gmail.com">playseana@gmail.com</a>
+                <a href="mailto:produtorap6production@gmail.com">produtorap6production@gmail.com</a>
+            </div>
+            <div class="footer-col">
                 <h4>Redes Sociais</h4>
-                <a href="#" class="social-link">Instagram Oficial</a>
-                <a href="#" class="social-link">Facebook Page</a>
-                <a href="#" class="social-link">YouTube Channel</a>
-                <a href="#" class="social-link">TikTok MAM</a>
-            </div>
-
-            <div class="col">
-                <h4>Nossas Músicas</h4>
-                <a href="#" class="social-link">Ouvir no Spotify</a>
-                <a href="#" class="social-link">Apple Music</a>
-                <a href="#" class="social-link">Deezer</a>
-                <a href="#" class="social-link">Tidal</a>
-            </div>
-        </div>
-        <div style="text-align: center; margin-top: 40px; font-size: 10px; color: #333;">
-            &copy; 2026 MAM Distribuidora | Direitos Reservados a Play Sean Arsenio.
-        </div>
-    </footer>
-
-</body>
-</html>
+                <a href="#">Instagram

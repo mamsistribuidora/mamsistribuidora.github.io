@@ -3,224 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Matias Arsénio Manuel| Distribuidora Oficial</title>
+    <title>MAM - Distribuidora Oficial</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; --red: #ff4444; }
+        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--preto); color: var(--txt); min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--preto); color: var(--txt); min-height: 100vh; }
 
-        header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; }
-        .logo { font-weight: 900; color: var(--ouro); font-size: 1.3rem; }
-        
-        #side-menu { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s ease; z-index: 2000; padding: 20px; }
+        /* HEADER */
+        header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; display: none; }
+        header.active { display: flex; }
+
+        /* MENU LATERAL */
+        #side-menu { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s; z-index: 2000; padding: 20px; }
         #side-menu.active { left: 0; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; display: block; font-size: 14px; text-decoration: none; }
-        .menu-item:hover { color: var(--ouro); background: #1a1a1a; }
-
-        .container { padding: 20px; max-width: 600px; margin: auto; }
-        .page { display: none; animation: fadeIn 0.3s ease; }
-        .page.active { display: block; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; display: block; text-decoration: none; }
+        
+        /* TELAS */
+        .container { padding: 20px; max-width: 500px; margin: auto; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; position: relative; }
+        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #080808; border: 1px solid #444; color: #fff; border-radius: 10px; }
         
-        /* INPUTS E BOTOES */
-        .input-box { position: relative; margin: 10px 0; }
-        input { width: 100%; padding: 14px; background: #080808; border: 1px solid #444; color: #fff; border-radius: 10px; outline: none; }
-        input:focus { border-color: var(--ouro); }
-        .toggle-btn { position: absolute; right: 15px; top: 15px; color: var(--ouro); font-size: 10px; cursor: pointer; font-weight: bold; }
-        
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-gold { background: var(--ouro); color: #000; }
         
-        .grid-discos { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; margin-top: 15px; }
-        .disco { background: #000; border: 1px solid var(--ouro); border-radius: 12px; padding: 10px; text-align: center; }
-        .disco img { width: 100%; border-radius: 50%; border: 2px solid var(--ouro); aspect-ratio: 1/1; object-fit: cover; }
+        .disco-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--ouro); object-fit: cover; animation: rotate 10s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .hidden { display: none !important; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<nav id="side-menu">
-    <h2 style="color:var(--ouro); text-align:center; margin-bottom:20px;">MAM MENU</h2>
-    <div class="menu-item" onclick="showPage('home')">🏠 Página Inicial</div>
-    <div class="menu-item" onclick="showPage('carteira')">💰 Minha Carteira</div>
-    <div class="menu-item" id="admin-link" style="display:none; color:cyan;" onclick="showPage('admin')">⚡ ADMINISTRAÇÃO</div>
-    <div class="menu-item" onclick="doLogout()" style="color:var(--red); margin-top:30px;">🚪 Sair</div>
-</nav>
-
-<header id="app-header" class="hidden">
-    <div onclick="document.getElementById('side-menu').classList.toggle('active')" style="font-size:25px; cursor:pointer; color:var(--ouro);">☰</div>
-    <div class="logo">MAM 2026</div>
-    <div id="display-bal" style="color:var(--verde); font-weight:bold;">0 Kz</div>
+<header id="main-header">
+    <div onclick="toggleMenu()" style="font-size:25px; cursor:pointer;">☰</div>
+    <div style="color:var(--ouro); font-weight:900;">MAM SYSTEM</div>
+    <div id="user-bal" style="color:var(--verde);">0 Kz</div>
 </header>
+
+<nav id="side-menu">
+    <h2 style="color:var(--ouro); text-align:center;">MAM</h2>
+    <div class="menu-item" onclick="nav('home')">🏠 Início</div>
+    <div class="menu-item" onclick="nav('carteira')">💰 Carteira</div>
+    <div class="menu-item" id="adm-link" style="color:cyan; display:none;" onclick="nav('admin')">⚡ ADMIN</div>
+    <div class="menu-item" onclick="logout()" style="color:red; margin-top:20px;">🚪 Sair</div>
+</nav>
 
 <div class="container">
 
-    <div id="page-login" class="page active">
+    <div id="page-auth" class="page active">
         <div class="card">
-            <h2 id="auth-title" style="text-align:center; color:var(--ouro); margin-bottom:20px;">ENTRAR NA MAM</h2>
+            <h2 id="auth-title" style="text-align:center; color:var(--ouro);">ENTRAR NA MAM</h2>
             
-            <div id="box-login">
-                <input type="email" id="email-log" placeholder="E-mail (mamfilhos24@gmail.com)">
-                <div class="input-box">
-                    <input type="password" id="pass-log" placeholder="Senha">
-                    <span class="toggle-btn" onclick="verSenha('pass-log')">VER</span>
-                </div>
-                <button class="btn btn-gold" onclick="entrar()">INICIAR SESSÃO</button>
-                <p onclick="irParaRegisto(true)" style="text-align:center; margin-top:15px; cursor:pointer; color:var(--ouro); font-size:13px;">Criar nova conta</p>
+            <div id="login-fields">
+                <input type="email" id="email-in" placeholder="Email (mamfilhos24@gmail.com)">
+                <input type="password" id="pass-in" placeholder="Senha">
+                <button class="btn btn-gold" id="btn-login">ENTRAR AGORA</button>
+                <p onclick="switchAuth(true)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px;">Criar Conta Grátis</p>
             </div>
 
-            <div id="box-reg" class="hidden">
-                <input type="text" id="nome-reg" placeholder="Nome Artístico">
-                <input type="email" id="email-reg" placeholder="E-mail">
-                <div class="input-box">
-                    <input type="password" id="pass-reg" placeholder="Senha">
-                    <span class="toggle-btn" onclick="verSenha('pass-reg')">VER</span>
-                </div>
-                <button class="btn btn-gold" onclick="registar()">CONFIRMAR REGISTO</button>
-                <p onclick="irParaRegisto(false)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:13px;">Já tenho conta</p>
+            <div id="reg-fields" class="hidden">
+                <input type="text" id="name-reg" placeholder="Nome Artístico">
+                <input type="email" id="email-reg" placeholder="Seu Melhor Email">
+                <input type="password" id="pass-reg" placeholder="Criar Senha">
+                <button class="btn btn-gold" id="btn-reg">REGISTAR E ENVIAR EMAIL</button>
+                <p onclick="switchAuth(false)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px;">Voltar ao Login</p>
             </div>
-        </div>
-        
-        <div class="card">
-            <h4 style="color:var(--ouro)">APOIA MEUS PROJECTOS</h4>
-            <p style="font-size:11px;">BFA: AO06 0000 0000 0000 0000 0<br>CEO: Play Sean Arsénio</p>
         </div>
     </div>
 
     <div id="page-home" class="page">
-        <div class="card" style="border:1px dashed var(--ouro);">
-            <h4 style="color:var(--ouro)">💰 CAÇA RECOMPENSA</h4>
-            <button class="btn btn-gold" onclick="fazerTarefa()">ASSISTIR VÍDEO PAGO</button>
+        <div class="card" style="text-align:center;">
+            <img src="https://via.placeholder.com/150/D4AF37/000?text=MAM" class="disco-img">
+            <h3>Bem-vindo à MAM</h3>
+            <p style="font-size:12px; color:var(--ouro);">Música: Fé em Deus - Princesa Heliany ft. Play Sean</p>
+            <button class="btn btn-gold" style="margin-top:15px;" onclick="ganharStream()">OUVIR (+2000 Kz MAM)</button>
         </div>
-        <h3>Músicas</h3>
-        <div class="grid-discos">
-            <div class="disco" onclick="ouvir()">
-                <img src="https://via.placeholder.com/150/D4AF37/000?text=CAPA">
-                <p style="font-size:10px; margin-top:5px;">Fé em Deus - Heliany</p>
-            </div>
+        
+        <div class="card">
+            <h4>Caça Recompensa</h4>
+            <button class="btn" style="background:#222; color:#fff;" onclick="ganharTarefa()">ASSISTIR VÍDEO PAGO</button>
         </div>
     </div>
 
     <div id="page-carteira" class="page">
         <div class="card">
-            <h3>Meu Saldo</h3>
-            <h1 id="saldo-txt" style="color:var(--verde)">0.00 Kz</h1>
-        </div>
-        <button class="btn btn-gold" onclick="sacar()">SACAR (MÍNIMO 10.000 Kz)</button>
-    </div>
-
-    <div id="page-admin" class="page">
-        <div class="card" style="border:2px solid cyan;">
-            <h2 style="color:cyan">PAINEL ADMIN</h2>
-            <p>Lucro da Empresa: <b id="lucro-adm" style="color:var(--verde)">0 Kz</b></p>
+            <p>Saldo Atual</p>
+            <h1 id="wall-kz" style="color:var(--verde);">0 Kz</h1>
+            <button class="btn btn-gold" onclick="alert('Mínimo 10.000 Kz para saque.')">SACAR PARA BFA/BAI</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    let usuario = JSON.parse(localStorage.getItem('mam_user')) || null;
-    let bancoDados = JSON.parse(localStorage.getItem('mam_db')) || { lucro: 0 };
+    // Configurações Globais
+    let user = JSON.parse(localStorage.getItem('mam_session')) || null;
+    let stats = JSON.parse(localStorage.getItem('mam_stats')) || { lucroMAM: 0 };
 
-    // FUNÇÃO PARA VER SENHA
-    function verSenha(id) {
-        const x = document.getElementById(id);
-        x.type = (x.type === "password") ? "text" : "password";
-    }
+    // Iniciar Sistema
+    window.onload = () => { if(user) loginSuccess(); };
 
-    // TROCAR ENTRE LOGIN E REGISTO
-    function irParaRegisto(bool) {
-        document.getElementById('box-login').classList.toggle('hidden', bool);
-        document.getElementById('box-reg').classList.toggle('hidden', !bool);
-        document.getElementById('auth-title').innerText = bool ? "CRIAR CONTA" : "ENTRAR NA MAM";
-    }
-
-    // ACÇÃO DE REGISTAR
-    function registar() {
-        const email = document.getElementById('email-reg').value;
-        if(!email.includes('@')) return alert("E-mail inválido!");
-        
-        alert("E-mail de confirmação enviado para: " + email);
-        
-        usuario = { email: email, saldo: 0, admin: (email === 'mamfilhos24@gmail.com') };
-        bancoDados.lucro += 5000; // MAM ganha 5000 por cada conta
-        
-        save();
-        alert("Conta confirmada! Bem-vindo.");
-        entrarNoSistema();
-    }
-
-    // ACÇÃO DE ENTRAR
-    function entrar() {
-        const email = document.getElementById('email-log').value;
-        if(!email) return alert("Digite o e-mail!");
-
-        usuario = usuario || { email: email, saldo: 100, admin: (email === 'mamfilhos24@gmail.com') };
-        bancoDados.lucro += 3000; // MAM ganha 3000 por cada login
-        
-        save();
-        entrarNoSistema();
-    }
-
-    function entrarNoSistema() {
-        document.getElementById('page-login').classList.remove('active');
-        document.getElementById('app-header').classList.remove('hidden');
-        if(usuario.admin) document.getElementById('admin-link').style.display = 'block';
-        showPage('home');
-        atualizarTudo();
-    }
-
-    function showPage(id) {
+    function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
+    
+    function nav(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page-' + id).classList.add('active');
         document.getElementById('side-menu').classList.remove('active');
     }
 
-    function fazerTarefa() {
-        let ganho = 300; // 20% de 1500
-        usuario.saldo += ganho;
-        bancoDados.lucro += 1200; // MAM ganha 80%
-        save(); atualizarTudo();
-        alert("Ganhaste 300 Kz!");
+    function switchAuth(isReg) {
+        document.getElementById('login-fields').classList.toggle('hidden', isReg);
+        document.getElementById('reg-fields').classList.toggle('hidden', !isReg);
+        document.getElementById('auth-title').innerText = isReg ? "CRIAR CONTA" : "ENTRAR NA MAM";
     }
 
-    function ouvir() {
-        bancoDados.lucro += 2000; // MAM ganha 2000 por cada play
-        save(); atualizarTudo();
-        alert("Música: Fé em Deus (Colab: Play Sean Arsénio). +2000 Kz para a MAM!");
+    // BOTÃO LOGIN
+    document.getElementById('btn-login').addEventListener('click', () => {
+        const email = document.getElementById('email-in').value;
+        if(!email) return alert("Insira o email!");
+        
+        user = { email: email, bal: 500, isAdmin: (email === 'mamfilhos24@gmail.com') };
+        stats.lucroMAM += 3000;
+        loginSuccess();
+    });
+
+    // BOTÃO REGISTO + EMAIL
+    document.getElementById('btn-reg').addEventListener('click', () => {
+        const email = document.getElementById('email-reg').value;
+        const nome = document.getElementById('name-reg').value;
+        
+        if(!email || !nome) return alert("Preencha tudo!");
+
+        // SIMULAÇÃO DE ENVIO DE EMAIL REAL
+        alert("SOLICITAÇÃO ENVIADA!\nVerifique o email: " + email + "\nClique no link de confirmação que enviamos.");
+        
+        setTimeout(() => {
+            alert("Email Confirmado! Boas vindas à MAM, " + nome);
+            user = { email: email, bal: 0, isAdmin: (email === 'mamfilhos24@gmail.com') };
+            stats.lucroMAM += 5000;
+            loginSuccess();
+        }, 2000);
+    });
+
+    function loginSuccess() {
+        localStorage.setItem('mam_session', JSON.stringify(user));
+        localStorage.setItem('mam_stats', JSON.stringify(stats));
+        
+        document.getElementById('page-auth').classList.remove('active');
+        document.getElementById('main-header').classList.add('active');
+        if(user.isAdmin) document.getElementById('adm-link').style.display = 'block';
+        
+        nav('home');
+        updateUI();
     }
 
-    function sacar() {
-        if(usuario.saldo >= 10000 || usuario.admin) {
-            alert("Saque solicitado com sucesso!");
-            usuario.saldo = 0; save(); atualizarTudo();
-        } else {
-            alert("Saldo insuficiente!");
-        }
+    function ganharStream() {
+        stats.lucroMAM += 2000;
+        updateUI();
+        alert("Play Sean Arsénio agradece! +2000 Kz para a MAM.");
     }
 
-    function atualizarTudo() {
-        document.getElementById('display-bal').innerText = usuario.saldo.toFixed(2) + " Kz";
-        document.getElementById('saldo-txt').innerText = usuario.saldo.toFixed(2) + " Kz";
-        document.getElementById('lucro-adm').innerText = bancoDados.lucro + " Kz";
+    function ganharTarefa() {
+        user.bal += 300;
+        stats.lucroMAM += 1200;
+        updateUI();
+        alert("Ganhaste 300 Kz (20%). A MAM ficou com 1200 Kz (80%).");
     }
 
-    function save() {
-        localStorage.setItem('mam_user', JSON.stringify(usuario));
-        localStorage.setItem('mam_db', JSON.stringify(bancoDados));
+    function updateUI() {
+        document.getElementById('user-bal').innerText = user.bal + " Kz";
+        document.getElementById('wall-kz').innerText = user.bal + " Kz";
+        localStorage.setItem('mam_session', JSON.stringify(user));
+        localStorage.setItem('mam_stats', JSON.stringify(stats));
     }
 
-    function doLogout() {
-        localStorage.removeItem('mam_user');
+    function logout() {
+        localStorage.removeItem('mam_session');
         location.reload();
     }
-
-    // Verificar se já está logado ao abrir
-    window.onload = () => { if(usuario) entrarNoSistema(); };
 </script>
-
 </body>
 </html>

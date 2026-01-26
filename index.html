@@ -3,214 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Matias Arsénio Manuel| Plataforma Oficial</title>
+    <title>MAM - Play Sean Arsénio (Oficial)</title>
     <style>
-        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --texto: #fff; --sucesso: #28a745; }
+        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --texto: #fff; --verde: #28a745; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--preto); color: var(--texto); min-height: 100vh; display: flex; flex-direction: column; }
+        body { background: var(--preto); color: var(--texto); min-height: 100vh; }
 
-        /* HEADER */
         header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-weight: 900; color: var(--ouro); letter-spacing: 1px; }
-
-        /* MENU LATERAL */
-        #side-menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.3s; z-index: 2000; padding: 20px; }
-        #side-menu.active { left: 0; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; display: block; color: #ccc; text-decoration: none; }
-        .menu-item:hover { color: var(--ouro); background: #1a1a1a; }
-
-        /* CONTAINER PRINCIPAL */
-        .main-content { flex: 1; padding: 20px; max-width: 500px; margin: auto; width: 100%; }
-        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; position: relative; }
+        .logo { font-weight: 900; color: var(--ouro); font-size: 1.2rem; cursor: pointer; }
         
-        /* FORMULÁRIOS */
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        .pass-box { position: relative; }
-        .toggle-eye { position: absolute; right: 12px; top: 22px; cursor: pointer; color: var(--ouro); }
+        /* MENU LATERAL MELHORADO */
+        #side-menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s; z-index: 2000; padding: 20px; overflow-y: auto; }
+        #side-menu.active { left: 0; }
+        .menu-item { padding: 12px; border-bottom: 1px solid #222; cursor: pointer; display: block; color: #ccc; text-decoration: none; font-size: 14px; margin-bottom: 5px; }
+        .menu-item:hover { color: var(--ouro); background: #1a1a1a; padding-left: 20px; }
 
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+        .card { background: var(--card); border: 1px solid #333; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; }
         .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
         .btn-gold { background: var(--ouro); color: #000; }
-        .btn-link { background: none; color: var(--ouro); font-size: 12px; text-decoration: underline; margin-top: 10px; }
 
-        /* DISCOS */
-        .disco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 20px; }
-        .disco-item { background: #111; padding: 10px; border-radius: 10px; text-align: center; border-bottom: 2px solid var(--ouro); }
-        .disco-item img { width: 100%; border-radius: 50%; animation: spin 5s linear infinite; animation-play-state: paused; }
-        .disco-item:hover img { animation-play-state: running; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* SISTEMA DE DISCOS */
+        .grid-discos { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 15px; }
+        .disco { background: #1a1a1a; padding: 10px; border-radius: 10px; text-align: center; border-bottom: 3px solid var(--ouro); cursor: pointer; position: relative;}
+        .disco img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ouro); transition: 0.5s; }
+        .disco:hover img { transform: rotate(360deg); }
 
-        /* FOOTER UNIVERSAL */
-        footer { background: var(--card); padding: 30px 15px; text-align: center; border-top: 1px solid var(--ouro); font-size: 12px; color: #777; width: 100%; }
-        .footer-gold { color: var(--ouro); font-weight: bold; margin-bottom: 5px; }
-
+        /* FOOTER FIXO */
+        footer { background: var(--card); padding: 25px; text-align: center; border-top: 1px solid var(--ouro); font-size: 11px; color: #666; width: 100%; margin-top: 20px; }
+        
         .hidden { display: none !important; }
+        .status-vip { font-size: 10px; color: var(--ouro); border: 1px solid var(--ouro); padding: 2px 5px; border-radius: 4px; float: right; }
     </style>
 </head>
 <body>
 
+<div id="side-menu">
+    <h3 style="color:var(--ouro); margin-bottom:15px;">MAM DASHBOARD</h3>
+    <div class="menu-item" onclick="nav('home')">🏠 Página Inicial</div>
+    <div class="menu-item" onclick="nav('perfil')">👤 Meu Perfil</div>
+    <div class="menu-item" onclick="nav('criar-artista')">🎨 Criar Artista/Produtora</div>
+    <div class="menu-item" onclick="nav('lancar')">🎶 Lançar Música</div>
+    <div class="menu-item" onclick="nav('minhas-musicas')">📁 Minhas Músicas</div>
+    <div class="menu-item" onclick="nav('carteira')">💰 Minha Carteira (SAQUE)</div>
+    <div class="menu-item" onclick="nav('ceo')">👔 Info CEO & Projetos</div>
+    <div class="menu-item" onclick="logout()" style="color:red; font-weight:bold; margin-top:20px;">🚪 Terminar Sessão</div>
+</div>
+
 <header id="app-header" class="hidden">
-    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 24px;">☰</div>
-    <div class="logo">MAM <span>SYSTEM</span></div>
-    <div id="top-bal" style="color:var(--sucesso); font-weight:bold;">0 Kz</div>
+    <div onclick="toggleMenu()" style="cursor:pointer; font-size:25px;">☰</div>
+    <div class="logo">MAM <span>PLATFORM</span></div>
+    <div id="user-bal-header" style="color:var(--verde); font-weight:bold; font-size:12px;">0 Kz</div>
 </header>
 
-<nav id="side-menu">
-    <h3 style="color:var(--ouro); margin-bottom:20px;">MAM MENU</h3>
-    <div class="menu-item" onclick="showPage('home')">🏠 Pagina Inicial</div>
-    <div class="menu-item" onclick="showPage('perfil')">👤 Meu Perfil</div>
-    <div class="menu-item" onclick="showPage('lançar')">🎶 Lançar Musica</div>
-    <div class="menu-item" onclick="showPage('carteira')">💰 Minha Carteira</div>
-    <div class="menu-item" onclick="showPage('ceo')">👔 Info CEO</div>
-    <div class="menu-item" onclick="logout()" style="color:#ff4444; margin-top:20px;">🚪 Sair</div>
-</nav>
-
-<div class="main-content">
+<div class="container">
     
-    <div id="section-auth">
-        <div class="card" id="login-box">
-            <h2 style="text-align:center; color:var(--ouro);">ENTRAR NA MAM</h2>
-            <input type="email" id="l-email" placeholder="Seu Email">
-            <div class="pass-box">
+    <div id="view-auth">
+        <div class="card" id="box-login">
+            <h2 style="text-align:center; color:var(--ouro);">LOGIN MAM</h2>
+            <input type="email" id="l-email" placeholder="Email">
+            <div style="position:relative;">
                 <input type="password" id="l-pass" placeholder="Palavra-passe">
-                <span class="toggle-eye" onclick="togglePass('l-pass')">👁️</span>
+                <span onclick="toggleViewPass('l-pass')" style="position:absolute; right:15px; top:20px; cursor:pointer;">👁️</span>
             </div>
-            <button class="btn btn-gold" onclick="doAction('login')">INICIAR SESSÃO</button>
-            <button class="btn-link" onclick="swapAuth(true)">Não tem conta? Registe-se</button>
+            <button class="btn btn-gold" onclick="entrar()">INICIAR SESSÃO</button>
+            <p onclick="swapAuth(true)" style="text-align:center; font-size:12px; margin-top:15px; color:var(--ouro); cursor:pointer;">Não tem conta? Criar Agora</p>
         </div>
 
-        <div class="card hidden" id="reg-box">
+        <div class="card hidden" id="box-reg">
             <h2 style="text-align:center; color:var(--ouro);">CRIAR CONTA</h2>
-            <input type="text" id="r-name" placeholder="Nome do Artista/User">
+            <input type="text" id="r-name" placeholder="Nome de Usuário">
             <input type="email" id="r-email" placeholder="Email">
-            <div class="pass-box">
-                <input type="password" id="r-pass" placeholder="Senha">
-                <span class="toggle-eye" onclick="togglePass('r-pass')">👁️</span>
+            <input type="password" id="r-pass" placeholder="Senha">
+            <button class="btn btn-gold" onclick="registrar()">CONFIRMAR REGISTO</button>
+            <p onclick="swapAuth(false)" style="text-align:center; font-size:12px; margin-top:15px; cursor:pointer;">Já tenho conta</p>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+            <h4 style="color:var(--ouro)">APOIA MEUS PROJECTOS</h4>
+            <p style="font-size:11px;">IBAN BFA: AO06 0000 0000 0000 0000 0 (Play Sean)<br>Multicaixa Express: 937881307</p>
+        </div>
+    </div>
+
+    <div id="view-home" class="hidden">
+        <div class="card" style="background:#1a1100; border: 1px dashed var(--ouro);">
+            <h4 style="color:var(--ouro)">💎 CAÇA RECOMPENSA</h4>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                <span style="font-size:11px;">Assistir Vídeo Parceiro (Ganha até 70%)</span>
+                <button onclick="fazerTarefa(1000)" style="background:var(--ouro); border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;">GANHAR</button>
             </div>
-            <button class="btn btn-gold" onclick="doAction('reg')">CONFIRMAR REGISTO</button>
-            <button class="btn-link" onclick="swapAuth(false)">Já tem conta? Entrar</button>
+        </div>
+
+        <h3>Músicas MAM <span class="status-vip" id="user-lvl-tag">NORMAL</span></h3>
+        <div class="grid-discos" id="feed-musicas">
+            <div class="disco" onclick="tocarMusica('Fé em Deus', 'Princesa Heliany ft Play Sean Arsénio')">
+                <img src="https://cdn-icons-png.flaticon.com/512/3083/3083417.png">
+                <p style="font-size:10px; margin-top:5px; font-weight:bold;">Fé em Deus</p>
+                <p style="font-size:8px; color:#888;">Heliany ft Sean</p>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top:20px;">
+            <p style="font-size:11px; color:var(--ouro)">LINK DE CONVITE (+500 Kz para si)</p>
+            <input type="text" readonly id="refer-link" value="https://mam.ao/registo?ref=playsean">
         </div>
     </div>
 
-    <div id="page-home" class="hidden">
-        <div class="card" style="background:#1a1500; border:1px dashed var(--ouro);">
-            <h4 style="color:var(--ouro)">🎁 CAÇA RECOMPENSA</h4>
-            <p style="font-size:11px; margin-bottom:10px;">Assista e ganhe (MAM 80% | Você 20%)</p>
-            <button class="btn btn-gold" style="font-size:10px; padding:8px;" onclick="addMoney(500)">ASSISTIR VÍDEO PAGO</button>
-        </div>
-
-        <h3>Músicas MAM</h3>
-        <div class="disco-grid" id="feed-musica">
-            <div class="disco-item"><img src="https://cdn-icons-png.flaticon.com/512/3083/3083417.png"><p style="font-size:10px;">Viste Como</p></div>
-            <div class="disco-item"><img src="https://cdn-icons-png.flaticon.com/512/3083/3083417.png"><p style="font-size:10px;">Fé em Deus</p></div>
-        </div>
-    </div>
-
-    <div id="page-carteira" class="hidden">
+    <div id="view-carteira" class="hidden">
         <div class="card">
-            <h3>Minha Carteira</h3>
-            <h1 id="wall-kz" style="color:var(--sucesso)">0.00 Kz</h1>
-            <p id="wall-usd" style="font-size:12px; color:#888;">$ 0.00</p>
+            <h3>Minha Carteira MAM</h3>
+            <h1 id="bal-kz" style="color:var(--verde)">0.00 Kz</h1>
+            <p id="bal-conv" style="font-size:12px; color:#888;">$ 0.00 / R$ 0.00</p>
         </div>
         <div class="card">
-            <h4>Saque Bancário</h4>
-            <select id="banco">
+            <h4>Solicitar Saque</h4>
+            <select id="bank-acc">
                 <option>BFA (Angola)</option>
                 <option>BAI (Angola)</option>
-                <option>Multicaixa Express</option>
-                <option>PayPal / Visa</option>
+                <option>Millennium (Angola)</option>
+                <option>Multicaixa Express (937881307)</option>
+                <option>PayPal / Visa / Pix</option>
             </select>
-            <input type="text" placeholder="IBAN ou Número Ativo">
-            <button class="btn btn-gold">SOLICITAR LEVANTAMENTO</button>
+            <input type="text" placeholder="IBAN ou Dados de Recebimento">
+            <button class="btn btn-gold">SACAR AGORA</button>
         </div>
     </div>
 
 </div>
 
-<footer>
-    <div class="footer-gold">MAM DISTRIBUIDORA ANGOLA</div>
-    <div>CEO PLAY SEAN ARSÉNIO: 937881307</div>
-    <div>mamfilhos29@gmail.com</div>
-    <div style="margin-top:10px; font-size:10px; opacity:0.5;">&copy; 2026 Todos os direitos reservados.</div>
+<footer id="universal-footer">
+    <div style="color:var(--ouro); font-weight:bold; margin-bottom:5px;">MAM DISTRIBUIDORA ANGOLA</div>
+    <div>C.E.O Play Sean Arsénio | 937881307</div>
+    <div>mamfilhos29@gmail.com | playseana@gmail.com</div>
+    <div style="margin-top:10px; opacity:0.5;">&copy; 2026 Powered by MAM Systems</div>
 </footer>
 
 <script>
-    let session = JSON.parse(localStorage.getItem('mam_session')) || null;
+    // ESTADO DO UTILIZADOR (Sessão Guardada)
+    let user = JSON.parse(localStorage.getItem('mam_session')) || null;
 
-    window.onload = () => {
-        if(session) { startApp(); }
-    };
+    window.onload = () => { if(user) initApp(); };
 
     function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
-    
-    function togglePass(id) {
-        const input = document.getElementById(id);
-        input.type = input.type === 'password' ? 'text' : 'password';
+    function toggleViewPass(id) { const x = document.getElementById(id); x.type = x.type === "password" ? "text" : "password"; }
+    function swapAuth(reg) { 
+        document.getElementById('box-login').classList.toggle('hidden', reg); 
+        document.getElementById('box-reg').classList.toggle('hidden', !reg); 
     }
 
-    function swapAuth(isReg) {
-        document.getElementById('login-box').classList.toggle('hidden', isReg);
-        document.getElementById('reg-box').classList.toggle('hidden', !isReg);
+    function registrar() {
+        const email = document.getElementById('r-email').value;
+        if(!email) return alert("Insira o email!");
+        alert("E-mail de confirmação enviado para " + email + "! Clique no link de boas-vindas.");
+        setTimeout(() => {
+            user = { name: "User", email: email, level: 'Normal', balance: 0, songs: [] };
+            // MAM GANHA 5000 POR CONTA CRIADA
+            console.log("MAM Lucro: +5000 Kz (Novo Registro)");
+            saveAndGo();
+        }, 1500);
     }
 
-    function doAction(type) {
-        if(type === 'reg') {
-            const email = document.getElementById('r-email').value;
-            alert("Email de confirmação enviado para " + email + "!");
-            setTimeout(() => {
-                alert("Bem-vindo à MAM! Sessão iniciada com sucesso.");
-                session = { name: "User", balance: 0, level: 'Normal' };
-                localStorage.setItem('mam_session', JSON.stringify(session));
-                startApp();
-            }, 1500);
-        } else {
-            session = { name: "User", balance: 1200, level: 'Normal' };
-            localStorage.setItem('mam_session', JSON.stringify(session));
-            startApp();
-        }
+    function entrar() {
+        if(!user) user = { name: "Play Sean", email: "playseana@gmail.com", level: 'VIP Max', balance: 5000, songs: [] };
+        // MAM GANHA 3000 POR LOGIN
+        console.log("MAM Lucro: +3000 Kz (Login)");
+        saveAndGo();
     }
 
-    function startApp() {
-        document.getElementById('section-auth').classList.add('hidden');
+    function saveAndGo() {
+        localStorage.setItem('mam_session', JSON.stringify(user));
+        initApp();
+    }
+
+    function initApp() {
+        document.getElementById('view-auth').classList.add('hidden');
         document.getElementById('app-header').classList.remove('hidden');
-        showPage('home');
+        nav('home');
         updateUI();
         
-        // Sugestão TikTok CEO cada 5 min
+        // SUGESTÃO TIKTOK A CADA 5 MIN
         setInterval(() => {
-            if(confirm("Segue o CEO Play Sean Arsénio no TikTok para ganhar bónus em dobro! Ir agora?")) {
+            if(confirm("Siga o CEO Play Sean Arsénio no TikTok agora para bónus!")) {
                 window.open("https://www.tiktok.com/@playseanarsenio", "_blank");
             }
         }, 300000);
     }
 
-    function showPage(id) {
+    function nav(page) {
         const pages = ['home', 'carteira'];
         pages.forEach(p => {
-            const el = document.getElementById('page-' + p);
+            const el = document.getElementById('view-' + p);
             if(el) el.classList.add('hidden');
         });
-        document.getElementById('page-' + id).classList.remove('hidden');
+        const target = document.getElementById('view-' + page);
+        if(target) target.classList.remove('hidden');
         if(document.getElementById('side-menu').classList.contains('active')) toggleMenu();
     }
 
-    function addMoney(val) {
-        let gain = val * 0.20; // Perfil Normal ganha 20%
-        session.balance += gain;
-        localStorage.setItem('mam_session', JSON.stringify(session));
+    function fazerTarefa(val) {
+        let perc = 0.2; // Normal
+        if(user.level === 'VIP') perc = 0.5;
+        if(user.level === 'VIP Max') perc = 0.7;
+
+        let userGain = val * perc;
+        user.balance += userGain;
+        console.log("MAM Lucro Tarefa: " + (val - userGain) + " Kz");
         updateUI();
-        alert("Ganhaste " + gain + " Kz! A MAM processou a tua tarefa.");
+        alert("Ganhaste " + userGain + " Kz! A MAM recebeu a sua parte.");
+    }
+
+    function tocarMusica(nome, artista) {
+        // MAM GANHA 2000 POR CADA VEZ QUE ALGUÉM OUVE
+        console.log("MAM Lucro Stream: +2000 Kz");
+        alert("A ouvir: " + nome + " - " + artista + "\nRedes do Artista: @PlaySeanArsenio");
     }
 
     function updateUI() {
-        document.getElementById('top-bal').innerText = session.balance.toFixed(2) + " Kz";
-        document.getElementById('wall-kz').innerText = session.balance.toFixed(2) + " Kz";
-        document.getElementById('wall-usd').innerText = "$ " + (session.balance / 950).toFixed(2);
+        document.getElementById('user-bal-header').innerText = user.balance.toFixed(2) + " Kz";
+        document.getElementById('bal-kz').innerText = user.balance.toFixed(2) + " Kz";
+        document.getElementById('bal-conv').innerText = "$ " + (user.balance / 950).toFixed(2) + " / R$ " + (user.balance / 160).toFixed(2);
+        document.getElementById('user-lvl-tag').innerText = user.level;
     }
 
-    function logout() {
-        localStorage.removeItem('mam_session');
-        location.reload();
-    }
+    function logout() { localStorage.removeItem('mam_session'); location.reload(); }
 </script>
 
 </body>

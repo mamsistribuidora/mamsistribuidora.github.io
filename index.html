@@ -3,189 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Distribuidora Oficial</title>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <title>MAM - Play Sean Arsénio | Plataforma Oficial</title>
     <style>
-        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; --red: #ff4444; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: var(--preto); color: var(--txt); min-height: 100vh; }
 
-        /* HEADER */
+        /* HEADER E NAVIGATION */
         header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; display: none; }
         header.active { display: flex; }
-
-        /* MENU LATERAL */
-        #side-menu { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s; z-index: 2000; padding: 20px; }
+        
+        #side-menu { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s ease; z-index: 2000; padding: 20px; }
         #side-menu.active { left: 0; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; display: block; text-decoration: none; }
-        
-        /* TELAS */
-        .container { padding: 20px; max-width: 500px; margin: auto; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; display: block; font-size: 14px; text-decoration: none; }
+        .menu-item:hover { color: var(--ouro); background: #1a1a1a; padding-left: 25px; }
 
-        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #080808; border: 1px solid #444; color: #fff; border-radius: 10px; }
+        /* PAGINAS */
+        .container { padding: 20px; max-width: 500px; margin: auto; padding-bottom: 100px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARDS E ELEMENTOS */
+        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; background: #080808; border: 1px solid #444; color: #fff; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--ouro); }
         
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
         .btn-gold { background: var(--ouro); color: #000; }
-        
-        .disco-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--ouro); object-fit: cover; animation: rotate 10s linear infinite; }
+        .btn-gold:active { transform: scale(0.98); }
+
+        /* DISCO GIRA */
+        .disco-box { text-align: center; margin: 20px 0; }
+        .disco-img { width: 150px; height: 150px; border-radius: 50%; border: 5px solid var(--ouro); object-fit: cover; animation: rotate 12s linear infinite; box-shadow: 0 0 20px var(--ouro); }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .hidden { display: none; }
+        .stat-val { color: var(--verde); font-weight: bold; font-size: 24px; }
+        .hidden { display: none !important; }
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 1999; display:none; }
+        .overlay.active { display:block; }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
 <header id="main-header">
-    <div onclick="toggleMenu()" style="font-size:25px; cursor:pointer;">☰</div>
-    <div style="color:var(--ouro); font-weight:900;">MAM SYSTEM</div>
-    <div id="user-bal" style="color:var(--verde);">0 Kz</div>
+    <div onclick="toggleMenu()" style="font-size:28px; cursor:pointer; color:var(--ouro);">☰</div>
+    <div style="font-weight:900; letter-spacing:2px;">MAM <span style="color:var(--ouro)">2026</span></div>
+    <div id="top-balance" style="color:var(--verde); font-weight:bold;">0 Kz</div>
 </header>
 
 <nav id="side-menu">
-    <h2 style="color:var(--ouro); text-align:center;">MAM</h2>
-    <div class="menu-item" onclick="nav('home')">🏠 Início</div>
-    <div class="menu-item" onclick="nav('carteira')">💰 Carteira</div>
-    <div class="menu-item" id="adm-link" style="color:cyan; display:none;" onclick="nav('admin')">⚡ ADMIN</div>
-    <div class="menu-item" onclick="logout()" style="color:red; margin-top:20px;">🚪 Sair</div>
+    <div style="text-align:center; padding-bottom:20px; border-bottom:1px solid #333;">
+        <h2 style="color:var(--ouro)">MAM SYSTEM</h2>
+        <small id="user-email-display" style="color:#888;"></small>
+    </div>
+    <div class="menu-item" onclick="nav('home')">🏠 Página Inicial</div>
+    <div class="menu-item" onclick="nav('perfil')">👤 Meu Perfil</div>
+    <div class="menu-item" onclick="nav('artista')">🎨 Criar Artista</div>
+    <div class="menu-item" onclick="nav('lancar')">🎶 Lançar Música</div>
+    <div class="menu-item" onclick="nav('carteira')">💰 Minha Carteira</div>
+    <div class="menu-item" onclick="nav('ceo')">👔 Info CEO</div>
+    <div id="admin-only" class="menu-item" style="display:none; color:cyan; font-weight:bold;" onclick="nav('admin')">⚡ PAINEL ADMIN</div>
+    <div class="menu-item" onclick="logout()" style="color:var(--red); margin-top:20px; border-top:1px solid #333;">🚪 Terminar Sessão</div>
 </nav>
 
 <div class="container">
 
     <div id="page-auth" class="page active">
         <div class="card">
-            <h2 id="auth-title" style="text-align:center; color:var(--ouro);">ENTRAR NA MAM</h2>
-            
-            <div id="login-fields">
-                <input type="email" id="email-in" placeholder="Email (mamfilhos24@gmail.com)">
-                <input type="password" id="pass-in" placeholder="Senha">
-                <button class="btn btn-gold" id="btn-login">ENTRAR AGORA</button>
-                <p onclick="switchAuth(true)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px;">Criar Conta Grátis</p>
+            <h2 id="auth-title" style="text-align:center; color:var(--ouro); margin-bottom:20px;">INICIAR SESSÃO</h2>
+            <div id="login-box">
+                <input type="email" id="log-email" placeholder="Email (mamfilhos24@gmail.com)">
+                <div style="position:relative">
+                    <input type="password" id="log-pass" placeholder="Palavra-passe">
+                    <span style="position:absolute; right:15px; top:22px; color:var(--ouro); font-size:10px; cursor:pointer;" onclick="togglePass('log-pass')">VER</span>
+                </div>
+                <button class="btn btn-gold" onclick="processAuth('login')">ENTRAR</button>
+                <p onclick="swapAuth(true)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px; color:var(--ouro)">Criar nova conta na MAM</p>
             </div>
-
-            <div id="reg-fields" class="hidden">
-                <input type="text" id="name-reg" placeholder="Nome Artístico">
-                <input type="email" id="email-reg" placeholder="Seu Melhor Email">
-                <input type="password" id="pass-reg" placeholder="Criar Senha">
-                <button class="btn btn-gold" id="btn-reg">REGISTAR E ENVIAR EMAIL</button>
-                <p onclick="switchAuth(false)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px;">Voltar ao Login</p>
+            <div id="reg-box" class="hidden">
+                <input type="text" id="reg-name" placeholder="Nome do Artista">
+                <input type="email" id="reg-email" placeholder="Email para Confirmação">
+                <input type="password" id="reg-pass" placeholder="Criar Senha">
+                <button class="btn btn-gold" onclick="processAuth('reg')">CRIAR CONTA AGORA</button>
+                <p onclick="swapAuth(false)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px;">Já tenho uma conta</p>
             </div>
+        </div>
+        <div class="card" style="border: 1px solid #555; text-align:center;">
+            <h4 style="color:var(--ouro)">APOIA MEUS PROJECTOS</h4>
+            <p style="font-size:11px; margin-top:10px;">BFA: AO06 0000 0000 0000 0000 0<br>CEO: Play Sean Arsénio</p>
         </div>
     </div>
 
     <div id="page-home" class="page">
-        <div class="card" style="text-align:center;">
-            <img src="https://via.placeholder.com/150/D4AF37/000?text=MAM" class="disco-img">
-            <h3>Bem-vindo à MAM</h3>
-            <p style="font-size:12px; color:var(--ouro);">Música: Fé em Deus - Princesa Heliany ft. Play Sean</p>
-            <button class="btn btn-gold" style="margin-top:15px;" onclick="ganharStream()">OUVIR (+2000 Kz MAM)</button>
+        <div class="card" style="border: 2px dashed var(--ouro); background: rgba(212,175,55,0.05); text-align:center;">
+            <h4 style="color:var(--ouro)">💎 CAÇA RECOMPENSA</h4>
+            <p style="font-size:11px; margin: 10px 0;">Ganhe dinheiro assistindo vídeos. A MAM gere o lucro.</p>
+            <button class="btn btn-gold" onclick="handleTask()">ASSISTIR VÍDEO (PAGO)</button>
         </div>
-        
-        <div class="card">
-            <h4>Caça Recompensa</h4>
-            <button class="btn" style="background:#222; color:#fff;" onclick="ganharTarefa()">ASSISTIR VÍDEO PAGO</button>
+
+        <div class="disco-box">
+            <img src="https://via.placeholder.com/200/D4AF37/000?text=MAM+RECORDS" class="disco-img">
+            <h3 style="margin-top:15px;">Fé em Deus</h3>
+            <p style="color:#888; font-size:13px;">Princesa Heliany ft. Play Sean Arsénio</p>
+            <button class="btn btn-gold" style="width: auto; padding: 10px 30px;" onclick="handlePlay()">OUVIR</button>
         </div>
     </div>
 
     <div id="page-carteira" class="page">
         <div class="card">
-            <p>Saldo Atual</p>
-            <h1 id="wall-kz" style="color:var(--verde);">0 Kz</h1>
-            <button class="btn btn-gold" onclick="alert('Mínimo 10.000 Kz para saque.')">SACAR PARA BFA/BAI</button>
+            <p>Saldo em Kwanza (KZ)</p>
+            <div class="stat-val" id="val-kz">0.00 Kz</div>
+            <p id="val-usd" style="font-size:12px; color:#888; margin-top:5px;">$ 0.00</p>
+        </div>
+        <div class="card">
+            <h4>Levantamento</h4>
+            <select id="bank-select">
+                <option>Multicaixa Express</option><option>BFA</option><option>BAI</option><option>PayPal / Visa</option>
+            </select>
+            <input type="text" placeholder="IBAN ou Conta">
+            <button class="btn btn-gold" onclick="handleWithdraw()">SACAR FUNDOS</button>
+        </div>
+    </div>
+
+    <div id="page-admin" class="page">
+        <div class="card" style="border: 2px solid cyan;">
+            <h2 style="color:cyan">CEO DASHBOARD</h2>
+            <div style="margin:15px 0;">
+                <p>Lucro Total MAM: <br><span class="stat-val" id="admin-profit" style="color:var(--verde)">0 Kz</span></p>
+            </div>
+            <button class="btn" style="background:cyan; color:#000;" onclick="alert('Relatório enviado para mamfilhos24@gmail.com')">BAIXAR RELATÓRIO</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // Configurações Globais
-    let user = JSON.parse(localStorage.getItem('mam_session')) || null;
-    let stats = JSON.parse(localStorage.getItem('mam_stats')) || { lucroMAM: 0 };
+    // SISTEMA CORE
+    let u = JSON.parse(localStorage.getItem('mam_v8_user')) || null;
+    let core = JSON.parse(localStorage.getItem('mam_v8_core')) || { profit: 0 };
 
-    // Iniciar Sistema
-    window.onload = () => { if(user) loginSuccess(); };
+    window.onload = () => { if(u) setupApp(); };
 
-    function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
-    
-    function nav(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + id).classList.add('active');
-        document.getElementById('side-menu').classList.remove('active');
+    function toggleMenu() { 
+        document.getElementById('side-menu').classList.toggle('active'); 
+        document.getElementById('overlay').classList.toggle('active');
     }
 
-    function switchAuth(isReg) {
-        document.getElementById('login-fields').classList.toggle('hidden', isReg);
-        document.getElementById('reg-fields').classList.toggle('hidden', !isReg);
-        document.getElementById('auth-title').innerText = isReg ? "CRIAR CONTA" : "ENTRAR NA MAM";
+    function togglePass(id) {
+        const p = document.getElementById(id);
+        p.type = p.type === "password" ? "text" : "password";
     }
 
-    // BOTÃO LOGIN
-    document.getElementById('btn-login').addEventListener('click', () => {
-        const email = document.getElementById('email-in').value;
-        if(!email) return alert("Insira o email!");
-        
-        user = { email: email, bal: 500, isAdmin: (email === 'mamfilhos24@gmail.com') };
-        stats.lucroMAM += 3000;
-        loginSuccess();
-    });
-
-    // BOTÃO REGISTO + EMAIL
-    document.getElementById('btn-reg').addEventListener('click', () => {
-        const email = document.getElementById('email-reg').value;
-        const nome = document.getElementById('name-reg').value;
-        
-        if(!email || !nome) return alert("Preencha tudo!");
-
-        // SIMULAÇÃO DE ENVIO DE EMAIL REAL
-        alert("SOLICITAÇÃO ENVIADA!\nVerifique o email: " + email + "\nClique no link de confirmação que enviamos.");
-        
-        setTimeout(() => {
-            alert("Email Confirmado! Boas vindas à MAM, " + nome);
-            user = { email: email, bal: 0, isAdmin: (email === 'mamfilhos24@gmail.com') };
-            stats.lucroMAM += 5000;
-            loginSuccess();
-        }, 2000);
-    });
-
-    function loginSuccess() {
-        localStorage.setItem('mam_session', JSON.stringify(user));
-        localStorage.setItem('mam_stats', JSON.stringify(stats));
-        
-        document.getElementById('page-auth').classList.remove('active');
-        document.getElementById('main-header').classList.add('active');
-        if(user.isAdmin) document.getElementById('adm-link').style.display = 'block';
-        
-        nav('home');
-        updateUI();
+    function swapAuth(isReg) {
+        document.getElementById('login-box').classList.toggle('hidden', isReg);
+        document.getElementById('reg-box').classList.toggle('hidden', !isReg);
+        document.getElementById('auth-title').innerText = isReg ? "CRIAR CONTA MAM" : "INICIAR SESSÃO";
     }
 
-    function ganharStream() {
-        stats.lucroMAM += 2000;
-        updateUI();
-        alert("Play Sean Arsénio agradece! +2000 Kz para a MAM.");
-    }
+    function processAuth(type) {
+        const emailInput = type === 'login' ? document.getElementById('log-email').value : document.getElementById('reg-email').value;
+        if(!emailInput.includes('@')) return alert("Por favor, insira um e-mail válido.");
 
-    function ganharTarefa() {
-        user.bal += 300;
-        stats.lucroMAM += 1200;
-        updateUI();
-        alert("Ganhaste 300 Kz (20%). A MAM ficou com 1200 Kz (80%).");
-    }
-
-    function updateUI() {
-        document.getElementById('user-bal').innerText = user.bal + " Kz";
-        document.getElementById('wall-kz').innerText = user.bal + " Kz";
-        localStorage.setItem('mam_session', JSON.stringify(user));
-        localStorage.setItem('mam_stats', JSON.stringify(stats));
-    }
-
-    function logout() {
-        localStorage.removeItem('mam_session');
-        location.reload();
-    }
-</script>
-</body>
-</html>
+        if(type === 'reg') {
+            alert("SISTEMA MAM: E-mail de confirmação enviado para " + emailInput);
+            setTimeout(() => {
+                alert("Confirmação Concluída! Bem-vindo à sua conta MAM.");
+                u = { email: emailInput, bal: 0, level: 'Normal' };
+                core.profit += 500

@@ -3,91 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM - Matia Arsénio Manuel| Distribuição & Ganhos</title>
     <style>
-        /* DESIGN MAM OFICIAL - LEVE E MODERNO */
-        :root { --ouro: #D4AF37; --preto: #000; --cinza: #111; --texto: #fff; }
+        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --texto: #fff; --vip: #007bff; --sucesso: #28a745; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--preto); color: var(--texto); overflow-x: hidden; }
         
-        body { background: var(--preto); color: var(--texto); font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
-        
-        /* CABEÇALHO */
-        header { border-bottom: 2px solid var(--ouro); padding: 15px; text-align: center; background: var(--cinza); }
-        .logo { font-weight: 900; font-size: 22px; letter-spacing: 2px; }
-        .logo span { color: var(--ouro); }
+        /* HEADER FIXO */
+        header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: 900; color: var(--ouro); font-size: 20px; }
+        .wallet-top { font-size: 14px; color: var(--sucesso); font-weight: bold; }
 
-        /* LOGOTIPO DOURADO CIRCULAR */
-        .mam-logo-circle {
-            width: 100px; height: 100px; border: 2px solid var(--ouro); border-radius: 50%;
-            margin: 30px auto; display: flex; align-items: center; justify-content: center;
-            font-size: 50px; font-weight: bold; color: var(--ouro);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-        }
+        /* MENU LATERAL */
+        #side-menu { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: var(--card); border-right: 1px solid var(--ouro); transition: 0.3s; z-index: 2000; padding: 20px; }
+        #side-menu.active { left: 0; }
+        .menu-item { padding: 12px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; text-decoration: none; display: block; }
+        .menu-item:hover { color: var(--ouro); background: #1a1a1a; }
 
-        /* CONTEÚDO */
-        .container { padding: 20px; max-width: 400px; margin: auto; text-align: center; }
-        h1 { font-size: 24px; color: var(--ouro); margin-bottom: 5px; text-transform: uppercase; }
-        .subtitle { color: #888; font-size: 14px; margin-bottom: 35px; letter-spacing: 1px; }
-
-        /* BOTÕES E CARDS */
-        .card { background: var(--cinza); border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
-        .card h3 { margin: 0 0 8px 0; font-size: 16px; color: var(--ouro); }
-        .card p { margin: 0 0 15px 0; font-size: 13px; color: #aaa; line-height: 1.4; }
-
-        .btn {
-            display: block; width: 100%; padding: 14px 0; border-radius: 8px;
-            text-decoration: none; font-weight: bold; text-align: center; font-size: 14px;
-            transition: 0.3s; cursor: pointer; border: none;
-        }
+        /* TELA DE LOGIN / REGISTO */
+        .auth-screen { padding: 40px 20px; text-align: center; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--ouro); max-width: 400px; margin: auto; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         .btn-gold { background: var(--ouro); color: #000; }
-        .btn-gold:hover { background: #f3cf58; }
         
-        .btn-dark { background: #222; color: #fff; border: 1px solid #333; margin-top: 10px; }
+        /* SISTEMA DE DISCOS (MUSICAS) */
+        .grid-discos { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; padding: 20px; }
+        .disco { background: #1a1a1a; padding: 10px; border-radius: 10px; text-align: center; border-bottom: 3px solid var(--ouro); }
+        .disco img { width: 100%; border-radius: 50%; animation: rotate 5s linear infinite; animation-play-state: paused; }
+        .disco:hover img { animation-play-state: running; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* RODAPÉ */
-        footer { margin-top: 60px; padding: 30px; font-size: 11px; color: #555; border-top: 1px solid #111; }
-        .footer-link { color: var(--ouro); text-decoration: none; font-weight: bold; }
+        /* PUBLICIDADE & TAREFAS */
+        .ads-section { background: #1a1000; border: 1px dashed var(--ouro); margin: 20px; padding: 15px; border-radius: 10px; }
+        .task-card { background: #222; padding: 10px; margin-top: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* NÍVEIS DE PERFIL */
+        .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .badge-normal { background: #666; }
+        .badge-vip { background: var(--vip); }
+        .badge-max { background: var(--ouro); color: #000; }
+
+        /* FOOTER CEO AD */
+        .ceo-support { background: var(--card); padding: 20px; margin: 20px; border-radius: 10px; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
+<nav id="side-menu">
+    <h2 style="color:var(--ouro)">MAM MENU</h2><br>
+    <div class="menu-item" onclick="showPage('home')">🏠 Pagina Inicial</div>
+    <div class="menu-item" onclick="showPage('perfil')">👤 Meu Perfil</div>
+    <div class="menu-item" onclick="showPage('criar-artista')">🎨 Criar Artista/Produtora</div>
+    <div class="menu-item" onclick="showPage('lancamento')">🎶 Lançar Música</div>
+    <div class="menu-item" onclick="showPage('carteira')">💰 Minha Carteira</div>
+    <div class="menu-item" onclick="showPage('ceo')">👔 Informação CEO</div>
+    <div class="menu-item" onclick="logout()" style="color: #ff4444;">🚪 Terminar Sessão</div>
+</nav>
+
 <header>
-    <div class="logo">MAM <span>DISTRIBUIDORA</span></div>
+    <div onclick="toggleMenu()" style="cursor:pointer; font-size: 24px;">☰</div>
+    <div class="logo">MAM <span>SYSTEM</span></div>
+    <div id="user-balance" class="wallet-top">0.00 Kz</div>
 </header>
 
-<div class="container">
-    <div class="mam-logo-circle">M</div>
+<div id="page-auth" class="auth-screen">
+    <div class="auth-card">
+        <h2 id="auth-title">Entrar na MAM</h2>
+        <input type="email" id="auth-email" placeholder="Email">
+        <input type="password" id="auth-pass" placeholder="Palavra-passe">
+        <button class="btn btn-gold" onclick="login()">ENTRAR</button>
+        <p style="font-size:12px; margin-top:15px; color:#888" onclick="toggleAuth()">Não tens conta? Regista-te agora</p>
+    </div>
     
-    <h1>PLAY SEAN ARSÉNIO</h1>
-    <p class="subtitle">CEO & DISTRIBUIDOR OFICIAL</p>
-
-    <div class="card">
-        <h3>LANÇAR MINHA MÚSICA</h3>
-        <p>Distribua o seu som nas plataformas globais (Spotify, Apple, TikTok) através da MAM.</p>
-        <a href="mailto:mamfilhos29@gmail.com?subject=Solicitação de Distribuição - Novo Artista" class="btn btn-gold">COMEÇAR AGORA</a>
+    <div class="ceo-support">
+        <h4 style="color:var(--ouro)">APOIA MEUS PROJECTOS</h4>
+        <p style="font-size:12px;">IBAN BFA: AO06 0000 0000 0000 0000 0<br>Multicaixa Express: 937881307</p>
     </div>
-
-    <div class="card">
-        <h3>SIGA O CEO NO FACEBOOK</h3>
-        <p>Acompanhe as novidades da MAM e o trabalho de Play Sean Angel.</p>
-        <a href="https://www.facebook.com/profile.php?id=100081814587133" target="_blank" class="btn btn-dark">VER PERFIL OFICIAL</a>
-    </div>
-
-    <div class="card">
-        <h3>WHATSAPP / APOIO</h3>
-        <p>Fale diretamente com a equipa da MAM para parcerias e suporte.</p>
-        <a href="https://wa.me/244937881307" class="btn btn-dark" style="border-color: #25D366; color: #25D366;">ENVIAR MENSAGEM</a>
-    </div>
-
-    <p style="margin-top: 30px; font-size: 10px; color: #333; cursor: pointer;" onclick="alert('Use o painel administrativo para aceder.')">Área Restrita MAM</p>
 </div>
 
-<footer>
-    <div>MAM DISTRIBUIDORA ANGOLA &copy; 2026</div>
-    <div style="margin-top:10px;">
-        Email: <span class="footer-link">mamfilhos29@gmail.com</span><br>
-        Telemóvel: <span class="footer-link">937881307</span>
+<div id="page-home" class="hidden" style="display:none;">
+    <div class="ads-section">
+        <h4 style="color:var(--ouro)">🎁 CAÇA RECOMPENSA (PAGO)</h4>
+        <div class="task-card">
+            <span>Assistir Vídeo Patrocinado</span>
+            <button class="btn-gold" style="padding:5px 10px; width:auto; font-size:10px;" onclick="doTask(50)">GANHAR</button>
+        </div>
+        <div class="task-card">
+            <span>Seguir TikTok @PlaySeanArsenio</span>
+            <button class="btn-gold" style="padding:5px 10px; width:auto; font-size:10px;" onclick="doTask(100)">GANHAR</button>
+        </div>
     </div>
-</footer>
 
-</body>
-</html>
+    <h3 style="padding: 20px 20px 0;">Músicas Recentes</h3>
+    <div class="grid-discos" id="music-feed">
+        <div class="disco">
+            <img src="https://cdn-icons-png.flaticon.com/512/3083/3083417.png" alt="disco">
+            <p style="font-size:10px; margin-top:5px;">Fé em Deus</p>
+            <span style="font-size:8px; color:var(--ouro)">BAIXAR</span>
+        </div>
+    </div>
+
+    <div class="card" style="margin:20px; text-align:center;">
+        <p style="font-size:12px;">Link de Convite (Ganhe 500 Kz por cada amigo)</p>
+        <input type="text" readonly value="https://mam.com/registo?ref=playsean" style="text-align:center; color:var(--ouro)">
+    </div>
+</div>
+
+<div id="page-carteira" style="display:none; padding:20px;">
+    <h2>Minha Carteira MAM</h2>
+    <div class="card" style="background:#1a1a1a; padding:20px; margin-top:10px;">
+        <p>Saldo Total:</p>
+        <h1 id="main-balance" style="color:var(--sucesso)">0.00 Kz</h1>
+        <p style="font-size:11px; color:#888">Equivalente a: <span id="usd-balance">$ 0.00</span></p>
+    </div>
+    
+    <h4 style="margin-top:20px;">Levantamento Bancário (Angola)</h4>
+    <select>
+        <option>BFA</option>
+        <option>BAI</option>
+        <option>MILENNIUM</option>
+        <option>MULTICAIXA EXPRESS</option>
+    </select>
+    <input type="text" placeholder="IBAN ou Número de Telefone">
+    <button class="btn btn-gold">SOLICITAR SAQUE</button>
+</div>
+
+<script>
+    let user = { logged: false, level: 'Normal', balance: 0, followers: 0 };
+
+    // FUNÇÕES DE NAVEGAÇÃO
+    function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
+    
+    function showPage(pageId) {
+        const pages = ['page-auth', 'page-home', 'page-carteira'];
+        pages.forEach(p => document.getElementById(p).style.display = 'none');
+        document.getElementById('page-' + pageId).style.display = 'block';
+        toggleMenu();
+    }
+
+    // SIMULAÇÃO DE LOGIN
+    function login() {
+        alert("Email de confirmação enviado para o teu e-mail! Clica no link de boas-vindas.");
+        setTimeout(() => {
+            alert("Bem-vindo à MAM, Play Sean!");
+            document.getElementById('page-auth').style.display = 'none';
+            document.getElementById('page-home').style.display = 'block';
+            user.logged = true;
+            startTikTokAlert();
+        }, 2000);
+    }
+
+    // SISTEMA DE TAREFAS E PAGAMENTOS (Cálculo de % por Nível)
+    function doTask(val) {
+        let gain = 0;
+        if

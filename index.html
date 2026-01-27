@@ -3,203 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM & Filhos - Digital Distribution </title>
+    <title>MAM & Filhos- Elite Digital Distribution</title>
     <style>
         :root {
-            --mam-blue: #002244; /* Azul Antigo MAM */
-            --mam-gold: #c5a059; /* Dourado Oficial */
+            --mam-dark: #050a14; /* Azul Noite Quase Preto */
+            --mam-gold: #b8860b; /* Dourado Envelhecido */
+            --mam-gold-bright: #ffd700;
             --white: #ffffff;
-            --bg-gray: #f0f2f5;
-            --success: #28a745;
         }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--mam-dark); color: var(--white); margin: 0; display: flex; }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gray); margin: 0; display: flex; color: #333; }
+        /* Sidebar Luxo */
+        .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; padding: 25px; border-right: 2px solid var(--mam-gold); box-sizing: border-box; }
+        .sidebar h2 { color: var(--mam-gold); text-align: center; border-bottom: 1px solid var(--mam-gold); padding-bottom: 15px; letter-spacing: 3px; }
+        .menu-link { display: block; color: #aaa; text-decoration: none; padding: 14px; margin: 10px 0; border-radius: 5px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .menu-link:hover { color: var(--mam-gold-bright); background: rgba(184, 134, 11, 0.1); border-left: 4px solid var(--mam-gold); }
 
-        /* Sidebar Fixa */
-        .sidebar { width: 280px; background: var(--mam-blue); height: 100vh; position: fixed; color: var(--white); padding: 25px; box-sizing: border-box; overflow-y: auto; box-shadow: 4px 0 15px rgba(0,0,0,0.3); }
-        .sidebar h2 { color: var(--mam-gold); border-bottom: 2px solid var(--mam-gold); padding-bottom: 15px; text-align: center; letter-spacing: 2px; }
-        .menu-link { display: block; color: #cbd5e0; text-decoration: none; padding: 14px; margin: 8px 0; border-radius: 10px; cursor: pointer; transition: 0.4s; font-weight: 600; }
-        .menu-link:hover, .active-btn { background: var(--mam-gold); color: var(--mam-blue); transform: translateX(8px); }
-
-        /* Conteúdo Principal */
+        /* Main */
         .main-content { margin-left: 280px; width: 100%; padding: 40px; box-sizing: border-box; }
         .section { display: none; }
-        .active-section { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active-section { display: block; animation: fadeIn 0.6s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Cards e UI */
-        .card { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
-        .wallet-display { background: linear-gradient(135deg, var(--mam-blue), #004488); color: white; padding: 40px; border-radius: 25px; text-align: center; border-bottom: 6px solid var(--mam-gold); }
-        .wallet-display h1 { font-size: 3rem; margin: 15px 0; color: var(--mam-gold); }
+        /* Cards Elite */
+        .card { background: #0a111e; padding: 25px; border-radius: 12px; border: 1px solid #1a2639; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .wallet-card { background: linear-gradient(135deg, #0a111e 0%, #000 100%); border: 2px solid var(--mam-gold); padding: 35px; border-radius: 20px; text-align: center; }
+        .wallet-card h1 { font-size: 3rem; color: var(--mam-gold-bright); margin: 15px 0; text-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
 
-        /* Sistema de Convite */
-        .invite-container { display: flex; align-items: center; background: #eee; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed var(--mam-gold); }
-        .invite-url { flex-grow: 1; font-family: monospace; font-weight: bold; color: var(--mam-blue); }
-        .copy-btn { background: var(--mam-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .copy-btn:hover { background: var(--mam-gold); }
+        /* Botão de Registro / Convite */
+        .invite-box { background: #000; padding: 20px; border-radius: 10px; border: 1px solid var(--mam-gold); display: flex; justify-content: space-between; align-items: center; }
+        .btn-gold { background: var(--mam-gold); color: #000; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
+        .btn-gold:hover { background: var(--mam-gold-bright); }
 
-        /* Botão CEO */
-        .ceo-btn { background: var(--mam-gold); color: var(--mam-blue); border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4); margin-bottom: 20px; }
-
-        /* Perfil */
-        .profile-header { text-align: center; }
-        .profile-img { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--mam-gold); object-fit: cover; }
-
-        /* Formulários */
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
-        .btn-submit { background: var(--success); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; }
-
-        /* Músicas Estilo Discos */
-        .disc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
-        .disc-item { text-align: center; cursor: pointer; }
-        .disc-item img { width: 120px; height: 120px; border-radius: 50%; border: 5px solid #222; transition: 0.6s; object-fit: cover; }
-        .disc-item img:hover { transform: rotate(360deg); border-color: var(--mam-gold); }
+        /* Registro Section */
+        #registro-form input { background: #111; color: white; border: 1px solid var(--mam-gold); padding: 15px; margin: 10px 0; width: 100%; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>MAM DIGITAL</h2>
+    <h2>MAM ELITE</h2>
     <a onclick="showSection('home')" class="menu-link">🏠 Página Inicial</a>
-    <a onclick="showSection('perfil')" class="menu-link">👤 Meu Perfil / Editor</a>
+    <a onclick="showSection('registro')" class="menu-link">📝 Criar Conta / Registo</a>
     <a onclick="showSection('convite')" class="menu-link">🤝 Convidar Amigos</a>
-    <a onclick="showSection('lancar')" class="menu-link">🎵 Lançar Música</a>
     <a onclick="showSection('carteira')" class="menu-link">💰 Carteira & Saque</a>
-    <a onclick="showSection('ceo-area')" class="menu-link">⭐ Apresentação C.E.O</a>
-    <a href="#" onclick="terminarSessao()" class="menu-link" style="color: #ff6b6b; margin-top: 30px;">🚪 Terminar Sessão</a>
+    <a onclick="showSection('ceo')" class="menu-link">⭐ C.E.O Play Sean</a>
+    <a href="#" onclick="location.reload()" class="menu-link" style="color: #ff4444; margin-top: 30px;">🚪 Sair</a>
 </div>
 
 <div class="main-content">
-
+    
     <div id="home" class="section active-section">
-        <h1>Bem-vindo à Distribuidora MAM</h1>
-        <div class="card" style="border-left: 6px solid var(--mam-gold);">
-            <h3>🚀 Fé em Deus - Princesa Heliany ft. Play Sean Arsenio</h3>
-            <p>Royalties migrados e ativos. Ganhos de streaming sincronizados.</p>
+        <h1 style="color: var(--mam-gold);">🎯 Caça Recompensa MAM</h1>
+        <div class="card">
+            <p>✅ Siga o CEO no TikTok (+200 Kz) <button class="btn-gold" style="padding:5px 15px;" onclick="ganhar(200)">Ir</button></p>
+            <p>✅ Ver Anúncio (+500 Kz) <button class="btn-gold" style="padding:5px 15px;" onclick="ganhar(500)">Assistir</button></p>
         </div>
-        <h3>💿 Últimos Discos</h3>
-        <div class="disc-grid">
-            <div class="disc-item" onclick="alert('Tocando: Fé em Deus')">
-                <img src="https://via.placeholder.com/150" alt="Capa">
-                <p><strong>Fé em Deus</strong><br><small>Play Sean Arsenio</small></p>
-            </div>
+        <h2 style="color: var(--mam-gold);">💿 Royalties Resgatados: Fé em Deus</h2>
+        <div class="card" style="text-align: center;">
+            <img src="https://via.placeholder.com/150" style="border-radius: 50%; border: 4px solid var(--mam-gold); animation: spin 10s linear infinite;">
+            <p><strong>Princesa Heliany ft Play Sean Arsenio</strong></p>
         </div>
     </div>
 
-    <div id="perfil" class="section">
-        <div class="card profile-header">
-            <h2>👤 Configurações de Perfil Artístico</h2>
-            <img src="https://via.placeholder.com/130" id="user-photo" class="profile-img">
-            <input type="file" onchange="previewFile(event)" style="border:none;">
-            <input type="text" id="artista-nome" value="Play Sean Arsenio" placeholder="Seu nome de Artista">
-            <textarea placeholder="Biografia para os fãs"></textarea>
-            <button class="btn-submit" onclick="alert('Perfil Atualizado com Sucesso!')">Guardar Alterações</button>
+    <div id="registro" class="section">
+        <div class="card" id="registro-form">
+            <h2 style="color: var(--mam-gold);">CRIAR CONTA MAM</h2>
+            <p>Se veio por um convite, você receberá <strong>5.000,00 AOA</strong> de bónus!</p>
+            <input type="text" placeholder="Nome Completo">
+            <input type="email" placeholder="E-mail (ex: mamfilhos24@gmail.com)">
+            <input type="password" placeholder="Crie uma Senha">
+            <button class="btn-gold" style="width: 100%; padding: 20px;" onclick="finalizarRegisto()">CRIAR MINHA CONTA & GANHAR BÓNUS</button>
         </div>
     </div>
 
     <div id="convite" class="section">
         <div class="card">
-            <h1>🤝 Convidar Amigos</h1>
-            <p>Ganhe <strong>500,00 AOA</strong> por cada amigo. O seu convidado recebe <strong>5.000,00 AOA</strong> de bónus imediato!</p>
-            <div class="invite-container">
-                <span class="invite-url" id="linkTxt">https://mam.com/signup?ref=CEO_PLAYSEAN</span>
-                <button class="copy-btn" onclick="copyInvite()">COPIAR LINK</button>
+            <h2 style="color: var(--mam-gold);">🤝 Convide & Ganhe</h2>
+            <p>Copie o link abaixo e envie para amigos. Ao clicarem, eles serão levados à página de <strong>Criação de Conta</strong>.</p>
+            <div class="invite-box">
+                <span id="link-url">https://mam.com/link?ref=CEO_PLAYSEAN_REGISTER</span>
+                <button class="btn-gold" onclick="copyInvite()">COPIAR LINK</button>
             </div>
-            <p id="copy-msg" style="display:none; color: var(--success); font-weight: bold; margin-top: 10px;">✅ Link copiado! Envie agora.</p>
         </div>
     </div>
 
     <div id="carteira" class="section">
-        <div class="wallet-display">
-            <p>SALDO TOTAL NA CARTEIRA</p>
+        <div class="wallet-card">
+            <p style="letter-spacing: 2px;">SALDO DISPONÍVEL</p>
             <h1 id="saldo-txt">16.000,00 AOA</h1>
-            <p>🤖 IAs Alpha, Beta e Delta: <strong>ONLINE & GERANDO</strong></p>
+            <p style="color: var(--mam-gold);">🤖 Assistentes Alpha, Beta e Delta Gerando Lucro Passivo...</p>
         </div>
         <div class="card" style="margin-top: 20px;">
-            <h3>Levantamento (Saque)</h3>
-            <select id="metodo">
-                <option>VISA / WISE (Internacional)</option>
-                <option>BFA / BAI / BIC (Angola)</option>
-                <option>Multicaixa Express</option>
-                <option>PayPal</option>
+            <h3 style="color: var(--mam-gold);">Saque Internacional & Nacional</h3>
+            <select style="width: 100%; padding: 15px; background: #000; color: white; border: 1px solid var(--mam-gold);">
+                <option>VISA / WISE / PAYPAL</option>
+                <option>BFA / BAI / MULTICAIXA EXPRESS</option>
             </select>
-            <input type="number" id="valor-saque" placeholder="Valor em AOA">
-            <button class="btn-submit" style="background: var(--mam-blue);" onclick="processarSaque()">Solicitar Pagamento</button>
+            <button class="btn-gold" style="width: 100%; margin-top: 20px;" onclick="alert('Solicitação enviada ao CEO!')">Levantar Dinheiro</button>
         </div>
     </div>
 
-    <div id="ceo-area" class="section">
-        <button class="ceo-btn">⭐ VOCÊ ESTÁ COM O C.E.O PLAY SEAN</button>
-        <div class="card">
-            <img src="https://i.imgur.com/uR1GvN4.png" style="width:120px; border-radius:15px; float:left; margin-right:20px; border: 3px solid var(--mam-gold);">
-            <h3>Play Sean Arsenio</h3>
-            <p><strong>Fundador & Distribuidor Oficial</strong></p>
-            <p>Contacto: 937881307 | mamfilhos24@gmail.com</p>
-            <button class="copy-btn" onclick="window.open('https://tiktok.com/@playseanarsenio')">Seguir no TikTok</button>
-            <div style="clear:both;"></div>
+    <div id="ceo" class="section">
+        <div class="card" style="text-align: center;">
+            <img src="https://i.imgur.com/uR1GvN4.png" style="width: 150px; border-radius: 15px; border: 2px solid var(--mam-gold);">
+            <h2 style="color: var(--mam-gold);">Play Sean Arsenio</h2>
+            <p>E-mail: mamfilhos24@gmail.com | WhatsApp: 937881307</p>
+            <button class="btn-gold" onclick="window.open('https://tiktok.com/@playseanarsenio')">Seguir no TikTok</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // --- LÓGICA DE SALDO REAL ---
-    let saldo = parseFloat(localStorage.getItem('mam_final_balance')) || 16000.00;
+    let saldo = parseFloat(localStorage.getItem('mam_v6_saldo')) || 16000.00;
 
-    function refreshUI() {
+    function upd() {
         document.getElementById('saldo-txt').innerText = saldo.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' });
-        localStorage.setItem('mam_final_balance', saldo);
+        localStorage.setItem('mam_v6_saldo', saldo);
     }
 
-    // --- NAVEGAÇÃO ---
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
         document.getElementById(id).classList.add('active-section');
     }
 
-    // --- CONVITES ---
+    function ganhar(v) { saldo += v; alert(`+${v} Kz adicionados!`); upd(); }
+
     function copyInvite() {
-        const link = document.getElementById('linkTxt').innerText;
-        navigator.clipboard.writeText(link).then(() => {
-            const msg = document.getElementById('copy-msg');
-            msg.style.display = 'block';
-            setTimeout(() => msg.style.display = 'none', 3000);
-        });
+        navigator.clipboard.writeText(document.getElementById('link-url').innerText);
+        alert("Link de Registo copiado! Direcione seus amigos para a página de Criar Conta.");
     }
 
-    // --- SAQUE ---
-    function processarSaque() {
-        const val = document.getElementById('valor-saque').value;
-        if (val > saldo) { alert("Saldo insuficiente!"); return; }
-        if (val < 10000) { alert("Limite mínimo de 10.000 AOA."); return; }
-        
-        saldo -= parseFloat(val);
-        alert(`Solicitação de ${val} AOA enviada para o C.E.O. Verifique seu email.`);
-        refreshUI();
+    function finalizarRegisto() {
+        alert("Conta criada! 5.000,00 AOA foram creditados à sua nova carteira MAM.");
+        saldo += 5000;
+        upd();
+        showSection('home');
     }
 
-    // --- ASSISTENTES IA (LUCRO PASSIVO) ---
+    // Lucro Passivo IAs (15 Kz/minuto)
     setInterval(() => {
-        saldo += 25.00; // IAs gerando lucro real constante
-        refreshUI();
-    }, 60000); // A cada minuto
+        saldo += 15.00;
+        upd();
+    }, 60000);
 
-    // --- PERFIL ---
-    function previewFile(event) {
-        const reader = new FileReader();
-        reader.onload = () => document.getElementById('user-photo').src = reader.result;
-        reader.readAsDataURL(event.target.files[0]);
-    }
-
-    function terminarSessao() {
-        if(confirm("Deseja sair? Sua sessão e saldo de " + saldo + " AOA serão preservados.")) {
-            location.reload();
-        }
-    }
-
-    // Iniciar Sistema
-    refreshUI();
+    upd();
 </script>
+
+<style>
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
 
 </body>
 </html>

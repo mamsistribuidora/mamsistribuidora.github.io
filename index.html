@@ -3,218 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM & Filhos - Digital Distribution System</title>
+    <title>MAM - Digital Distribution Elite v8.0</title>
     <style>
         :root {
-            --dark: #02060c;
-            --gold: #b8860b;
+            --mam-dark: #02060c;
+            --mam-gold: #b8860b;
             --gold-bright: #ffd700;
-            --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.05);
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--white); margin: 0; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--mam-dark); color: white; margin: 0; display: flex; overflow: hidden; }
 
-        /* TELA DE LOGIN / SAÍDA */
-        #auth-screen { background: var(--dark); height: 100vh; display: flex; align-items: center; justify-content: center; position: fixed; width: 100%; z-index: 9999; }
-        .auth-card { background: #0a111e; padding: 40px; border-radius: 20px; border: 2px solid var(--gold); text-align: center; width: 350px; }
+        /* AUTENTICAÇÃO */
+        #auth-screen { background: var(--mam-dark); height: 100vh; display: flex; align-items: center; justify-content: center; position: fixed; width: 100%; z-index: 10000; }
+        .auth-card { background: #0a111e; padding: 40px; border-radius: 20px; border: 2px solid var(--mam-gold); text-align: center; width: 380px; box-shadow: 0 0 30px rgba(184,134,11,0.3); }
+        .auth-card input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid var(--mam-gold); color: white; border-radius: 5px; box-sizing: border-box; }
 
-        /* PAINEL PRINCIPAL */
-        #main-app { display: none; }
-        .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; padding: 25px; border-right: 1px solid var(--gold); box-sizing: border-box; overflow-y: auto; }
-        .sidebar h2 { color: var(--gold); text-align: center; border-bottom: 1px solid var(--gold); padding-bottom: 15px; letter-spacing: 2px; }
-        
-        .menu-link { display: block; color: #aaa; text-decoration: none; padding: 12px; margin: 5px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .menu-link:hover { color: var(--gold-bright); background: var(--glass); border-left: 4px solid var(--gold); }
-        .admin-link { color: var(--gold-bright) !important; border: 1px solid var(--gold); margin-top: 20px; text-align: center; }
+        /* SIDEBAR */
+        .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; padding: 25px; border-right: 2px solid var(--mam-gold); box-sizing: border-box; overflow-y: auto; }
+        .sidebar h2 { color: var(--mam-gold); text-align: center; border-bottom: 1px solid var(--mam-gold); padding-bottom: 15px; letter-spacing: 2px; }
+        .menu-link { display: block; color: #aaa; text-decoration: none; padding: 14px; margin: 5px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .menu-link:hover, .active-link { color: var(--gold-bright); background: rgba(184,134,11,0.1); border-left: 5px solid var(--mam-gold); }
 
-        .content { margin-left: 280px; padding: 40px; }
-        .section { display: none; }
-        .active-section { display: block; animation: fadeIn 0.5s; }
+        /* CONTEÚDO */
+        .main-content { margin-left: 280px; width: calc(100% - 280px); height: 100vh; padding: 40px; box-sizing: border-box; overflow-y: auto; }
+        .section { display: none; animation: fadeIn 0.4s; }
+        .active-section { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CARDS */
-        .card { background: #0a111e; padding: 20px; border-radius: 12px; border: 1px solid #1a2639; margin-bottom: 20px; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
-
-        /* LEITOR DE MÚSICA */
-        .player-card { display: flex; align-items: center; gap: 20px; background: linear-gradient(to right, #000, #0a111e); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
-        .disc-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); animation: rotate 5s linear infinite paused; }
-        .playing .disc-img { animation-play-state: running; }
+        /* CARDS E LEITOR */
+        .card { background: #0a111e; padding: 20px; border-radius: 15px; border: 1px solid #1a2639; margin-bottom: 25px; }
+        .player-box { display: flex; align-items: center; gap: 20px; background: linear-gradient(135deg, #000, #0a111e); padding: 25px; border: 2px solid var(--mam-gold); border-radius: 20px; }
+        .disc-art { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--mam-gold); object-fit: cover; animation: rotate 8s linear infinite paused; }
+        .playing .disc-art { animation-play-state: running; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* CHAT */
-        #chat-window { height: 250px; overflow-y: auto; background: #050a14; padding: 15px; border-radius: 10px; border: 1px solid #1a2639; margin-bottom: 10px; }
-        .msg { margin-bottom: 10px; font-size: 0.9rem; }
-        .msg-ia { color: var(--gold-bright); }
+        /* BOTÕES */
+        .btn-gold { background: var(--mam-gold); color: #000; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; margin-top: 10px; }
+        .btn-gold:hover { background: var(--gold-bright); }
+        .btn-support { background: #1a2639; color: var(--gold-bright); border: 1px solid var(--mam-gold); padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .mam-input { width: 100%; padding: 12px; margin: 10px 0; background: #050a14; border: 1px solid var(--mam-gold); color: white; border-radius: 8px; box-sizing: border-box; }
+        
+        /* ANÚNCIO OVERLAY */
+        #ad-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 20000; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
 <div id="auth-screen">
-    <div class="auth-card">
-        <h1 style="color:var(--gold)">MAM LOGIN</h1>
-        <p>Introduza os seus dados para lucrar.</p>
-        <input type="text" id="user" placeholder="Usuário" style="width:90%; padding:10px; margin-bottom:10px;">
-        <input type="password" id="pass" placeholder="Senha" style="width:90%; padding:10px; margin-bottom:20px;">
-        <button class="btn-gold" onclick="login()">ENTRAR NO SISTEMA</button>
-        <p style="font-size: 0.8rem; margin-top: 15px;">Convidado? Você ganhará 5.000 Kz de bónus!</p>
+    <div class="auth-card" id="login-panel">
+        <h1 style="color:var(--mam-gold)">MAM LOGIN</h1>
+        <input type="text" placeholder="Usuário / E-mail">
+        <input type="password" placeholder="Senha">
+        <button class="btn-gold" onclick="entrar()">ENTRAR NO PAINEL</button>
+        <p style="cursor:pointer; color:var(--gold-bright)" onclick="toggleAuth('registo')">Criar Conta (Bónus 5.000 Kz)</p>
+    </div>
+    <div class="auth-card" id="registo-panel" style="display:none">
+        <h1 style="color:var(--mam-gold)">CRIAR CONTA MAM</h1>
+        <p><small>Link de Convite Ativo! Ganhou 5.000,00 AOA.</small></p>
+        <input type="text" placeholder="Nome Artístico">
+        <input type="email" placeholder="E-mail">
+        <input type="password" placeholder="Senha">
+        <button class="btn-gold" onclick="cadastrar()">CADASTRAR & RECEBER BÓNUS</button>
+        <p style="cursor:pointer; color:var(--gold-bright)" onclick="toggleAuth('login')">Voltar ao Login</p>
     </div>
 </div>
 
-<div id="main-app">
-    <div class="sidebar">
-        <h2>MAM DIGITAL</h2>
-        <a onclick="show('home')" class="menu-link">🏠 Página Inicial</a>
-        <a onclick="show('perfil')" class="menu-link">👤 Meu Perfil</a>
-        <a onclick="show('lancar')" class="menu-link">🎵 Lançar Música</a>
-        <a onclick="show('minhas-musicas')" class="menu-link">📂 Minhas Músicas</a>
-        <a onclick="show('convite')" class="menu-link">🤝 Convidar Amigos</a>
-        <a onclick="show('carteira')" class="menu-link">💰 Carteira / Saque</a>
-        <a onclick="show('chat')" class="menu-link">💬 Mensagens IAs</a>
-        <a onclick="show('admin')" class="menu-link admin-link">🛠️ PAINEL ADMIN</a>
-        <a onclick="logout()" class="menu-link" style="color:#ff4444; margin-top:30px;">🚪 Sair da Conta</a>
+<div id="ad-overlay">
+    <h2 style="color:var(--gold-bright)">🎥 APOIANDO O PROJETO MAM</h2>
+    <div style="width: 80%; max-width: 600px; height: 350px; background: #000; border: 2px solid var(--mam-gold); display: flex; align-items: center; justify-content: center;">
+        <p>A carregar anúncio de suporte...</p>
     </div>
-
-    <div class="content">
-        <div id="home" class="section active-section">
-            <h1 style="color:var(--gold)">Destaque: Fé em Deus</h1>
-            <div class="player-card" id="player">
-                <img src="https://via.placeholder.com/150" class="disc-img" id="capa">
-                <div>
-                    <h3>Fé em Deus</h3>
-                    <p>Princesa Heliany ft Play Sean Arsenio</p>
-                    <button class="btn-gold" onclick="togglePlay()">PLAY / PAUSE</button>
-                    <p><small id="status-lucro">MAM a faturar: 0 Kz</small></p>
-                </div>
-            </div>
-            <h3>🎁 Caça Recompensa</h3>
-            <div class="card">
-                <p>Ver Vídeo (+500 Kz) <button onclick="ganhar(500)">Assistir</button></p>
-                <p>Seguir TikTok (+200 Kz) <button onclick="ganhar(200)">Seguir</button></p>
-            </div>
-        </div>
-
-        <div id="perfil" class="section">
-            <div class="card" style="text-align:center">
-                <h2>👤 Perfil Artístico</h2>
-                <img src="https://via.placeholder.com/120" style="border-radius:50%; border:2px solid var(--gold)">
-                <input type="text" value="Play Sean Arsenio" style="width:80%; padding:10px; margin:10px">
-                <button class="btn-gold" onclick="alert('Perfil Atualizado!')">Salvar</button>
-            </div>
-        </div>
-
-        <div id="minhas-musicas" class="section">
-            <h2>📂 Suas Músicas Divulgadas</h2>
-            <div class="card" style="display:flex; align-items:center; gap:15px;">
-                <img src="https://via.placeholder.com/60" style="border-radius:5px">
-                <p>Fé em Deus - <strong>Lançada via MAM</strong></p>
-            </div>
-        </div>
-
-        <div id="carteira" class="section">
-            <div class="card" style="background:linear-gradient(to right, #000, #111); border:2px solid var(--gold)">
-                <p>SALDO CARTEIRA</p>
-                <h1 id="saldo-txt" style="color:var(--gold-bright)">16.000,00 AOA</h1>
-                <p><small>Geração por Hora: Ativa (IAs Online)</small></p>
-            </div>
-            <h3>Levantamento</h3>
-            <select style="width:100%; padding:10px; background:#000; color:white; border:1px solid var(--gold)">
-                <option>VISA / WISE</option>
-                <option>BFA / BAI</option>
-            </select>
-            <button class="btn-gold" style="margin-top:10px" onclick="alert('Solicitado!')">Sacar Agora</button>
-        </div>
-
-        <div id="chat" class="section">
-            <h2>💬 Central de IAs (MAM Intelligence)</h2>
-            <div id="chat-window">
-                <p class="msg"><span class="msg-ia">Alpha IA:</span> Monitorando royalties de streaming...</p>
-                <p class="msg"><span class="msg-ia">Beta IA:</span> Gerando 150 Kz de bónus passivo agora.</p>
-                <p class="msg"><span class="msg-ia">Gemini (Eu):</span> Chefe Sean, o sistema está 100% lucrativo.</p>
-            </div>
-            <input type="text" id="chat-msg" style="width:70%; padding:10px; background:#000; color:white; border:1px solid var(--gold)">
-            <button class="btn-gold" style="width:25%" onclick="sendMsg()">Enviar</button>
-        </div>
-
-        <div id="admin" class="section">
-            <h2 style="color:var(--gold-bright)">🛠️ Painel Administrativo</h2>
-            <div class="card">
-                <h3>Estatísticas Totais da MAM</h3>
-                <p>Total Usuários: 124</p>
-                <p>Lucro Estimado: 1.500.000 Kz</p>
-                <button class="btn-gold" onclick="alert('Enviando Royalties para todos...')">Pagar Artistas</button>
-            </div>
-        </div>
-        
-        <div id="convite" class="section">
-            <div class="card">
-                <h2>🤝 Convite Lucrativo</h2>
-                <p>Link: <strong id="link-c">mam.com/register?ref=PLAYSEAN</strong></p>
-                <button class="btn-gold" onclick="copy()">COPIAR LINK DE CONVITE</button>
-            </div>
-        </div>
-    </div>
+    <p id="ad-timer" style="margin-top: 20px;">Aguarde 15 segundos para fechar e apoiar...</p>
+    <button id="close-ad-btn" class="btn-gold" style="display:none; width: 200px;" onclick="fecharAnuncio()">FECHAR E RECEBER</button>
 </div>
 
-<script>
-    let saldo = parseFloat(localStorage.getItem('mam_v7_saldo')) || 16000.00;
-    let playing = false;
-    let lucroMAM = 0;
+<div class="sidebar">
+    <h2>MAM DIGITAL</h2>
+    <a onclick="showSection('home')" class="menu-link active-link">🏠 Página Inicial</a>
+    <a onclick="showSection('perfil')" class="menu-link">👤 Meu Perfil</a>
+    <a onclick="showSection('lancar')" class="menu-link">🎵 Lançar Música</a>
+    <a onclick="showSection('minhas-musicas')" class="menu-link">📂 Minhas Músicas</a>
+    <a onclick="showSection('convite')" class="menu-link">🤝 Convidar Amigos</a>
+    <a onclick="showSection('carteira')" class="menu-link">💰 Carteira & Saque</a>
+    <a onclick="showSection('chat')" class="menu-link">💬 Mensagens (IAs)</a>
+    <a onclick="showSection('admin')" class="menu-link" style="color:var(--gold-bright); border:1px solid var(--mam-gold)">🛠️ Admin</a>
+    <a onclick="sair()" class="menu-link" style="color: #ff4444; margin-top: 30px;">🚪 Sair</a>
+</div>
 
-    function upd() {
-        document.getElementById('saldo-txt').innerText = saldo.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' });
-        localStorage.setItem('mam_v7_saldo', saldo);
-    }
+<div class="main-content">
+    
+    <button class="btn-support" onclick="mostrarAnuncio()">🚀 CLIQUE AQUI PARA APOIAR O PROJETO (GANHE 500 Kz)</button>
 
-    function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
-        document.getElementById(id).classList.add('active-section');
-    }
+    <div id="home" class="section active-section">
+        <h1 style="color:var(--mam-gold)">Tocando Agora: Fé em Deus</h1>
+        <div class="player-box" id="player-container">
+            <img src="https://i.imgur.com/vH9xR2A.jpg" class="disc-art" id="player-capa">
+            <div style="flex-grow:1">
+                <h3>Fé em Deus</h3>
+                <p>Princesa Heliany ft. Play Sean Arsenio</p>
+                <audio id="audio-player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+                <button class="btn-gold" id="playBtn" onclick="togglePlay()">PLAY / PAUSE</button>
+                <p><small style="color:var(--gold-bright)">MAM Ganhando: 5.000 Kz por Play</small></p>
+            </div>
+        </div>
+    </div>
 
-    function login() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-    }
+    <div id="lancar" class="section">
+        <div class="card">
+            <h2>🚀 Lançar Nova Obra</h2>
+            <input type="text" id="track-title" class="mam-input" placeholder="Título da Música">
+            <label>Capa:</label>
+            <input type="file" class="mam-input" accept="image/*">
+            <label>Escolha o Áudio:</label>
+            <input type="file" id="local-audio" class="mam-input" accept="audio/*">
+            <p style="text-align:center">OU</p>
+            <input type="text" id="link-audio" class="mam-input" placeholder="Cole o link (URL) do áudio">
+            <button class="btn-gold" onclick="alert('Enviado para análise do CEO!')">SUBMETER LANÇAMENTO</button>
+        </div>
+    </div>
 
-    function logout() {
-        document.getElementById('main-app').style.display = 'none';
-        document.getElementById('auth-screen').style.display = 'flex';
-    }
-
-    function togglePlay() {
-        playing = !playing;
-        const p = document.getElementById('player');
-        if(playing) {
-            p.classList.add('playing');
-            lucroMAM += 5000;
-            document.getElementById('status-lucro').innerText = "MAM a faturar: " + lucroMAM + " Kz";
-        } else {
-            p.classList.remove('playing');
-        }
-    }
-
-    function ganhar(v) { saldo += v; alert(`+${v} Kz!`); upd(); }
-
-    function sendMsg() {
-        const m = document.getElementById('chat-msg');
-        const w = document.getElementById('chat-window');
-        w.innerHTML += `<p class='msg'><strong>Você:</strong> ${m.value}</p>`;
-        m.value = "";
-    }
-
-    function copy() {
-        navigator.clipboard.writeText(document.getElementById('link-c').innerText);
-        alert("Link copiado! Seus amigos receberão 5.000 Kz no Registo.");
-    }
-
-    // Lucro Passivo IAs (Dinheiro por hora)
-    setInterval(() => {
-        saldo += 20.00;
-        upd();
-    }, 60000);
-
-    upd();
-</script>
-</body>
-</html>
+    <div id="carteira" class="section">
+        <div class="card" style="text-align:center; border: 2px solid var(--mam-gold);">
+            <p>SALDO TOTAL</p>
+            <h1 id="saldo-txt" style="color:var(--gold-bright); font-size: 3.5rem;">16.000,00 AOA</h1>
+            <p><small>3 IAs Ativas | Lucro de Reprodução Ativo</small></p>
+        </div>
+        <button class="btn-gold" onclick="mostrarAnuncio()">VER ANÚNCIO DE APOIO (+500 Kz)</button>
+    </div>

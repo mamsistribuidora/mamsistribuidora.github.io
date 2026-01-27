@@ -3,209 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Digital Distribution (Versão Final C.E.O)</title>
+    <title>MAM DIGITAL - Sistema de Faturamento Real</title>
     <style>
-        :root { --gold: #b8860b; --bright: #ffd700; --bg: #010409; --card: #0d1117; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root { --gold: #b8860b; --bg: #010409; --card: #0d1117; --text: #e6edf3; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; }
+        
+        /* Sidebar Estilo C.E.O */
+        .sidebar { width: 260px; background: #000; border-right: 2px solid var(--gold); padding: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { color: var(--gold); border-bottom: 2px solid var(--gold); padding-bottom: 10px; text-align: center; }
+        .nav-btn { padding: 15px; margin: 5px 0; background: #161b22; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: 0.3s; }
+        .nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .active { background: var(--gold); color: #000; font-weight: bold; }
 
-        /* AUTENTICAÇÃO PERSISTENTE */
-        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: var(--card); padding: 40px; border: 2px solid var(--gold); border-radius: 20px; width: 360px; text-align: center; box-shadow: 0 0 50px rgba(184, 134, 11, 0.4); }
-
-        /* SIDEBAR COMPLETA */
-        .sidebar { width: 280px; background: #000; border-right: 2px solid var(--gold); display: flex; flex-direction: column; padding: 25px; flex-shrink: 0; }
-        .sidebar h2 { color: var(--gold); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 15px; margin-bottom: 20px; }
-        .nav-link { padding: 14px; margin: 6px 0; background: rgba(184, 134, 11, 0.05); border-radius: 8px; cursor: pointer; font-weight: bold; color: #bbb; transition: 0.3s; }
-        .nav-link:hover, .active-nav { background: var(--gold); color: #000; transform: translateX(10px); }
-
-        /* CONTEÚDO DINÂMICO */
-        .main { flex-grow: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #0d1117, #010409); }
-        .section { display: none; }
-        .active-sec { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* CARDS E INPUTS */
-        .card { background: var(--card); border: 1px solid #30363d; padding: 25px; border-radius: 15px; margin-bottom: 20px; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; }
-        .btn-gold:hover { background: var(--bright); }
-        .input-mam { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid var(--gold); color: white; border-radius: 8px; box-sizing: border-box; }
-
-        #apoio-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; }
+        /* Área Principal */
+        .content { flex: 1; padding: 30px; overflow-y: auto; }
+        .card { background: var(--card); border: 1px solid #30363d; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .btn-acao { background: var(--gold); color: #000; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        .input-mam { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid var(--gold); color: #fff; border-radius: 6px; box-sizing: border-box; }
+        
+        .ganho-tag { color: #238636; font-weight: bold; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div id="auth-screen">
-    <div class="auth-box">
-        <h2 style="color:var(--gold)" id="auth-title">MAM DIGITAL LOGIN</h2>
-        <input type="email" id="u-email" class="input-mam" placeholder="Email / Usuário">
-        <input type="password" id="u-pass" class="input-mam" placeholder="Palavra-passe">
-        <button class="btn-gold" onclick="autenticar()">ENTRAR NO PAINEL</button>
-        <p onclick="mudarModo()" style="cursor:pointer; color:var(--gold); margin-top:20px;">Não tem conta? Criar conta de Artista</p>
-    </div>
-</div>
-
 <div class="sidebar">
     <h2>MAM DIGITAL</h2>
-    <div class="nav-link active-nav" onclick="ir('home', this)">🏠 Início & Tarefas</div>
-    <div class="nav-link" onclick="ir('perfil', this)">👤 Perfil Artista</div>
-    <div class="nav-link" onclick="ir('lancar', this)">🎵 Lançar Música</div>
-    <div class="nav-link" onclick="ir('minhas-musicas', this)">📂 Minhas Músicas</div>
-    <div class="nav-link" onclick="ir('carteira', this)">💰 Carteira & Saque</div>
-    <div class="nav-link" onclick="ir('convite', this)">🔗 Link de Convite</div>
-    <div class="nav-link" onclick="ir('admin', this)" style="border: 1px solid var(--gold); color:var(--bright)">🛠️ Painel Admin (MAM)</div>
-    <div class="nav-link" onclick="abrirApoio()" style="color:var(--gold)">🤝 Apoiar Projecto</div>
-    <div class="nav-link" onclick="sair()" style="color:#ff4444; margin-top: auto;">🚪 Terminar Sessão</div>
+    <div class="nav-btn active" onclick="show('feed')">📻 Player & Ganhos</div>
+    <div class="nav-btn" onclick="show('wallet')">💰 Carteira (BFA)</div>
+    <div class="nav-btn" onclick="show('upload')">🚀 Lançar Música</div>
+    <div class="nav-btn" onclick="show('admin')">🛠️ Painel Admin</div>
 </div>
 
-<div class="main">
+<div class="content">
     
-    <div id="home" class="section active-sec">
-        <h1 style="color:var(--gold)">Lista de Tarefas MAM</h1>
+    <div id="feed" class="section">
+        <h1 style="color:var(--gold)">Músicas Disponíveis</h1>
+        <p>Cada reprodução gera <span class="ganho-tag">5.000,00 Kz</span> para o sistema.</p>
+        
+        <div id="lista-musicas">
+            <div class="card">
+                <h3>Fé em Deus - Princesa Heliany ft. Play Sean Arsenio</h3>
+                <button class="btn-acao" onclick="gerarGanho('Fé em Deus')">OUVIR E FATURAR 5.000 Kz</button>
+            </div>
+            <div class="card">
+                <h3>Novo Talento MAM - Single Promocional</h3>
+                <button class="btn-acao" onclick="gerarGanho('Single Promocional')">OUVIR E FATURAR 5.000 Kz</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="wallet" class="section hidden">
+        <h1 style="color:var(--gold)">Minha Carteira</h1>
+        <div class="card" style="text-align: center;">
+            <p>SALDO TOTAL ACUMULADO</p>
+            <h1 id="saldo-txt" style="font-size: 3rem;">0,00 AOA</h1>
+        </div>
         
         <div class="card">
-            <h3>Tarefa 1: Ouvir 'Fé em Deus'</h3>
-            <p>Gere 5.000 Kz de lucro para a MAM.</p>
-            <iframe allow="autoplay" frameborder="0" height="175" style="width:100%; border-radius:12px;" src="https://embed.music.apple.com/mz/album/f%C3%A9-em-deus-single/1806105736"></iframe>
-            <button class="btn-gold" style="margin-top:15px;" onclick="addLucroMAM(5000)">CONFIRMAR REPRODUÇÃO</button>
-        </div>
-
-        <div class="card">
-            <h3>Tarefa 2: Assistir Vídeo Patrocinado</h3>
-            <p>Ganha 200 Kz para a sua carteira.</p>
-            <button class="btn-gold" style="background:#161b22; color:white; border:1px solid #333;" onclick="addLucroUser(200)">ASSISTIR AGORA</button>
-        </div>
-
-        <div class="card">
-            <h3>Tarefa 3: Convidar Novos Artistas</h3>
-            <p>Ganhe bónus por cada conta criada via seu link.</p>
-            <button class="btn-gold" onclick="ir('convite', null)">IR PARA CONVITES</button>
+            <h3>Levantamento para Angola</h3>
+            <label>IBAN BFA / BAI / BIC:</label>
+            <input type="text" id="iban" class="input-mam" placeholder="AO06 0000 0000...">
+            <label>Valor do Saque:</label>
+            <input type="number" id="valor-saque" class="input-mam" placeholder="Mínimo 10.000 Kz">
+            <button class="btn-acao" onclick="solicitarSaque()">SACAR PARA MINHA CONTA</button>
         </div>
     </div>
 
-    <div id="minhas-musicas" class="section">
-        <h2 style="color:var(--gold)">📂 Minhas Músicas</h2>
+    <div id="upload" class="section hidden">
+        <h1 style="color:var(--gold)">Lançar Música na MAM</h1>
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong>Fé em Deus</strong>
-                <span style="color:var(--bright)">Status: Online</span>
-            </div>
-            <p><small>Royalties direcionados ao faturamento administrativo.</small></p>
-        </div>
-    </div>
-
-    <div id="lancar" class="section">
-        <div class="card">
-            <h2>🚀 Novo Lançamento</h2>
-            <input type="text" class="input-mam" placeholder="Título">
-            <input type="text" class="input-mam" placeholder="Artista">
-            <select class="input-mam"><option>Kizomba</option><option>Rap</option><option>Afro</option></select>
+            <input type="text" class="input-mam" placeholder="Nome da Música">
+            <input type="text" class="input-mam" placeholder="Nome do Artista">
             <input type="file" class="input-mam">
-            <button class="btn-gold" onclick="alert('Música enviada para mamfilhos29@gmail.com')">DISTRIBUIR AGORA</button>
+            <button class="btn-acao">ENVIAR PARA DISTRIBUIÇÃO</button>
         </div>
     </div>
 
-    <div id="carteira" class="section">
-        <div class="card" style="text-align:center">
-            <p>O SEU SALDO</p>
-            <h1 id="u-bal" style="font-size:3rem; color:var(--gold)">0,00 AOA</h1>
-            <p><small>Saque permitido acima de 10.000 Kz</small></p>
-        </div>
+    <div id="admin" class="section hidden">
+        <h1 style="color:var(--gold)">Controlo C.E.O</h1>
         <div class="card">
-            <h3>Solicitar Levantamento</h3>
-            <select class="input-mam" id="u-bank">
-                <option>BFA</option><option>BAI</option><option>BIC</option><option>Multicaixa Express</option>
-                <option>PayPal</option><option>Visa/Wise</option><option>Pix</option>
-            </select>
-            <input type="number" id="u-val" class="input-mam" placeholder="Valor Kz">
-            <button class="btn-gold" onclick="saqueUser()">SOLICITAR AGORA</button>
+            <h3>Relatório de Faturamento Geral</h3>
+            <p>Total Gerado em Reproduções: <span id="admin-saldo" class="ganho-tag">0,00 Kz</span></p>
+            <hr border="1" color="#333">
+            <p>E-mail: <strong>mamfilhos29@gmail.com</strong></p>
+            <p>Telemóvel: <strong>937881307</strong></p>
         </div>
     </div>
 
-    <div id="admin" class="section">
-        <div class="card" style="border: 2px solid var(--gold); background:#000;">
-            <h2 style="color:var(--gold)">LUCRO ADMINISTRATIVO (MAM)</h2>
-            <h1 id="m-bal" style="font-size:4rem">0,00 AOA</h1>
-            <p>Destino: <strong>BFA / Express (937881307)</strong></p>
-            <button class="btn-gold" onclick="saqueCEO()">SACAR LUCRO (ILIMITADO)</button>
-        </div>
-    </div>
-
-    <div id="convite" class="section">
-        <div class="card">
-            <h2>🔗 Link de Convite</h2>
-            <input type="text" class="input-mam" readonly value="https://mam-digital.com/registo?ref=ceo_playsean">
-            <button class="btn-gold" onclick="alert('Link Copiado!')">COPIAR LINK</button>
-        </div>
-    </div>
-</div>
-
-<div id="apoio-modal">
-    <div class="auth-box" style="width:450px; text-align:left;">
-        <h2 style="color:var(--gold); text-align:center">APOIO AO PROJECTO MAM</h2>
-        <p><strong>Titular:</strong> Play Sean Arsenio</p>
-        <p><strong>Bancos:</strong> BFA / BAI / BIC / Express</p>
-        <p><strong>IBAN:</strong> AO06 0000 0000 0000 0000 0000 0</p>
-        <p><strong>Contacto:</strong> 937881307</p>
-        <button class="btn-gold" onclick="fecharApoio()">FECHAR</button>
-    </div>
 </div>
 
 <script>
-    let mCash = parseFloat(localStorage.getItem('m_money')) || 5000;
-    let uCash = parseFloat(localStorage.getItem('u_money')) || 0;
-    let loginMode = true;
+    // Inicialização de Dados Reais (Persistentes)
+    let saldoTotal = parseFloat(localStorage.getItem('mam_saldo')) || 16000;
 
-    window.onload = function() {
-        if(localStorage.getItem('mam_session') === 'true') document.getElementById('auth-screen').style.display = 'none';
-        sync();
-    };
-
-    function mudarModo() {
-        loginMode = !loginMode;
-        document.getElementById('auth-title').innerText = loginMode ? "MAM DIGITAL LOGIN" : "CRIAR CONTA MAM";
+    function atualizarDisplay() {
+        const formatado = saldoTotal.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' });
+        document.getElementById('saldo-txt').innerText = formatado;
+        document.getElementById('admin-saldo').innerText = formatado;
+        localStorage.setItem('mam_saldo', saldoTotal);
     }
 
-    function autenticar() {
-        if(!loginMode) { mCash += 5000; uCash = 2000; }
-        localStorage.setItem('mam_session', 'true');
-        document.getElementById('auth-screen').style.display = 'none';
-        sync();
+    // Lógica de Ganho de 5.000 Kz por qualquer música
+    function gerarGanho(nome) {
+        saldoTotal += 5000;
+        alert(`Sucesso! A reprodução de "${nome}" rendeu 5.000 Kz à MAM.`);
+        atualizarDisplay();
     }
 
-    function ir(id, el) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-sec'));
-        document.getElementById(id).classList.add('active-sec');
-        if(el) {
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active-nav'));
-            el.classList.add('active-nav');
+    function solicitarSaque() {
+        const valor = document.getElementById('valor-saque').value;
+        const iban = document.getElementById('iban').value;
+
+        if (valor < 10000) {
+            alert("Erro: O valor mínimo para transferência bancária em Angola é 10.000 Kz.");
+            return;
         }
+        if (valor > saldoTotal) {
+            alert("Saldo insuficiente.");
+            return;
+        }
+
+        alert(`Saque de ${valor} Kz solicitado para o IBAN ${iban}. O C.E.O Play Sean processará o pagamento no BFA.`);
+        saldoTotal -= valor;
+        atualizarDisplay();
     }
 
-    function addLucroMAM(v) { mCash += v; alert("Lucro MAM de " + v + " Kz Confirmado!"); sync(); }
-    function addLucroUser(v) { uCash += v; alert("Você ganhou " + v + " Kz!"); sync(); }
-
-    function sync() {
-        document.getElementById('m-bal').innerText = mCash.toLocaleString('pt-AO') + ",00 AOA";
-        document.getElementById('u-bal').innerText = uCash.toLocaleString('pt-AO') + ",00 AOA";
-        localStorage.setItem('m_money', mCash);
-        localStorage.setItem('u_money', uCash);
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
     }
 
-    function saqueUser() {
-        let v = document.getElementById('u-val').value;
-        if(v < 10000) alert("Saque mínimo de 10.000 Kz!");
-        else alert("Pedido enviado para mamfilhos29@gmail.com!");
-    }
-
-    function saqueCEO() {
-        alert("Transferência de " + mCash + " Kz processada para BFA / Express 937881307");
-        mCash = 0; sync();
-    }
-
-    function abrirApoio() { document.getElementById('apoio-modal').style.display = 'flex'; }
-    function fecharApoio() { document.getElementById('apoio-modal').style.display = 'none'; }
-    function sair() { localStorage.clear(); location.reload(); }
+    // Iniciar com os valores guardados
+    atualizarDisplay();
 </script>
+
 </body>
 </html>

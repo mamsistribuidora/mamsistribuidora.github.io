@@ -2,143 +2,59 @@
 <html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM DIGITAL - Sistema de Faturamento Real</title>
+    <title>MAM DIGITAL - Hub do C.E.O</title>
     <style>
-        :root { --gold: #b8860b; --bg: #010409; --card: #0d1117; --text: #e6edf3; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; }
-        
-        /* Sidebar Estilo C.E.O */
-        .sidebar { width: 260px; background: #000; border-right: 2px solid var(--gold); padding: 20px; display: flex; flex-direction: column; }
-        .sidebar h2 { color: var(--gold); border-bottom: 2px solid var(--gold); padding-bottom: 10px; text-align: center; }
-        .nav-btn { padding: 15px; margin: 5px 0; background: #161b22; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: 0.3s; }
-        .nav-btn:hover { border-color: var(--gold); color: var(--gold); }
-        .active { background: var(--gold); color: #000; font-weight: bold; }
-
-        /* Área Principal */
-        .content { flex: 1; padding: 30px; overflow-y: auto; }
-        .card { background: var(--card); border: 1px solid #30363d; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .btn-acao { background: var(--gold); color: #000; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
-        .input-mam { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid var(--gold); color: #fff; border-radius: 6px; box-sizing: border-box; }
-        
-        .ganho-tag { color: #238636; font-weight: bold; }
-        .hidden { display: none; }
+        :root { --gold: #b8860b; --bg: #010409; --card: #0d1117; }
+        body { font-family: sans-serif; background: var(--bg); color: white; margin: 0; }
+        .nav { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; }
+        .container { padding: 30px; max-width: 800px; margin: auto; }
+        .perfil-artista { text-align: center; margin-bottom: 40px; }
+        .perfil-artista img { width: 120px; border-radius: 50%; border: 3px solid var(--gold); }
+        .legal-box { background: var(--card); border: 1px solid #333; padding: 25px; border-radius: 15px; }
+        .status-badge { background: #238636; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>MAM DIGITAL</h2>
-    <div class="nav-btn active" onclick="show('feed')">📻 Player & Ganhos</div>
-    <div class="nav-btn" onclick="show('wallet')">💰 Carteira (BFA)</div>
-    <div class="nav-btn" onclick="show('upload')">🚀 Lançar Música</div>
-    <div class="nav-btn" onclick="show('admin')">🛠️ Painel Admin</div>
+<div class="nav">
+    <span style="font-weight:bold; color:var(--gold)">MAM DIGITAL SYSTEM</span>
+    <span>ID: MAM-OFFICIAL</span>
 </div>
 
-<div class="content">
+<div class="container">
     
-    <div id="feed" class="section">
-        <h1 style="color:var(--gold)">Músicas Disponíveis</h1>
-        <p>Cada reprodução gera <span class="ganho-tag">5.000,00 Kz</span> para o sistema.</p>
+    <div class="perfil-artista">
+        <h1 style="margin-bottom: 5px;">Play Sean Arsénio</h1>
+        <p style="color:var(--gold); margin-top: 0;">Artista & Distribuidor Oficial</p>
+        <div style="font-size: 0.9rem; color: #888;">
+            Instagram: @play_sean_arsenio | YouTube: Play Sean Arsénio
+        </div>
+    </div>
+
+    <div class="legal-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="color:var(--gold); margin:0;">DADOS DE LEGALIZAÇÃO (BFA)</h3>
+            <span class="status-badge">CONTA VERIFICADA</span>
+        </div>
+        <hr border="1" color="#222" style="margin: 15px 0;">
         
-        <div id="lista-musicas">
-            <div class="card">
-                <h3>Fé em Deus - Princesa Heliany ft. Play Sean Arsenio</h3>
-                <button class="btn-acao" onclick="gerarGanho('Fé em Deus')">OUVIR E FATURAR 5.000 Kz</button>
-            </div>
-            <div class="card">
-                <h3>Novo Talento MAM - Single Promocional</h3>
-                <button class="btn-acao" onclick="gerarGanho('Single Promocional')">OUVIR E FATURAR 5.000 Kz</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="wallet" class="section hidden">
-        <h1 style="color:var(--gold)">Minha Carteira</h1>
-        <div class="card" style="text-align: center;">
-            <p>SALDO TOTAL ACUMULADO</p>
-            <h1 id="saldo-txt" style="font-size: 3rem;">0,00 AOA</h1>
-        </div>
+        <p><strong>Titular Legal:</strong> Matias Arsénio Manuel</p>
+        <p><strong>NIF:</strong> 106498285HO0400</p>
+        <p><strong>IBAN:</strong> AO06 0000 8631 6866 301 52</p>
         
-        <div class="card">
-            <h3>Levantamento para Angola</h3>
-            <label>IBAN BFA / BAI / BIC:</label>
-            <input type="text" id="iban" class="input-mam" placeholder="AO06 0000 0000...">
-            <label>Valor do Saque:</label>
-            <input type="number" id="valor-saque" class="input-mam" placeholder="Mínimo 10.000 Kz">
-            <button class="btn-acao" onclick="solicitarSaque()">SACAR PARA MINHA CONTA</button>
+        <div style="background:#000; padding:15px; border-radius:8px; margin-top:20px;">
+            <p style="margin:0; font-size:0.8rem; color:#888;">SALDO PARA LIQUIDAÇÃO</p>
+            <h2 style="margin:5px 0; color:var(--gold);">31.000,00 AOA</h2>
+            <button style="width:100%; padding:12px; background:var(--gold); border:none; font-weight:bold; cursor:pointer; border-radius:5px;">
+                SOLICITAR SAQUE BFA
+            </button>
         </div>
     </div>
 
-    <div id="upload" class="section hidden">
-        <h1 style="color:var(--gold)">Lançar Música na MAM</h1>
-        <div class="card">
-            <input type="text" class="input-mam" placeholder="Nome da Música">
-            <input type="text" class="input-mam" placeholder="Nome do Artista">
-            <input type="file" class="input-mam">
-            <button class="btn-acao">ENVIAR PARA DISTRIBUIÇÃO</button>
-        </div>
-    </div>
-
-    <div id="admin" class="section hidden">
-        <h1 style="color:var(--gold)">Controlo C.E.O</h1>
-        <div class="card">
-            <h3>Relatório de Faturamento Geral</h3>
-            <p>Total Gerado em Reproduções: <span id="admin-saldo" class="ganho-tag">0,00 Kz</span></p>
-            <hr border="1" color="#333">
-            <p>E-mail: <strong>mamfilhos29@gmail.com</strong></p>
-            <p>Telemóvel: <strong>937881307</strong></p>
-        </div>
-    </div>
-
+    <p style="text-align:center; font-size:0.8rem; color:#444; margin-top:30px;">
+        © 2026 MAM Digital Distribution - Gestão por Matias Arsénio Manuel
+    </p>
 </div>
-
-<script>
-    // Inicialização de Dados Reais (Persistentes)
-    let saldoTotal = parseFloat(localStorage.getItem('mam_saldo')) || 16000;
-
-    function atualizarDisplay() {
-        const formatado = saldoTotal.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' });
-        document.getElementById('saldo-txt').innerText = formatado;
-        document.getElementById('admin-saldo').innerText = formatado;
-        localStorage.setItem('mam_saldo', saldoTotal);
-    }
-
-    // Lógica de Ganho de 5.000 Kz por qualquer música
-    function gerarGanho(nome) {
-        saldoTotal += 5000;
-        alert(`Sucesso! A reprodução de "${nome}" rendeu 5.000 Kz à MAM.`);
-        atualizarDisplay();
-    }
-
-    function solicitarSaque() {
-        const valor = document.getElementById('valor-saque').value;
-        const iban = document.getElementById('iban').value;
-
-        if (valor < 10000) {
-            alert("Erro: O valor mínimo para transferência bancária em Angola é 10.000 Kz.");
-            return;
-        }
-        if (valor > saldoTotal) {
-            alert("Saldo insuficiente.");
-            return;
-        }
-
-        alert(`Saque de ${valor} Kz solicitado para o IBAN ${iban}. O C.E.O Play Sean processará o pagamento no BFA.`);
-        saldoTotal -= valor;
-        atualizarDisplay();
-    }
-
-    function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
-
-    // Iniciar com os valores guardados
-    atualizarDisplay();
-</script>
 
 </body>
 </html>

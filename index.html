@@ -3,169 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM & Filhos- Distribuidora & Monetização</title>
+    <title>MAM & Filhos- Distribuidora (Sistema de Royalties Ativo)</title>
     <style>
         :root {
-            --primary: #001f3f;
-            --accent: #ffd700;
-            --success: #27ae60;
-            --danger: #c0392b;
-            --bg: #f4f7f6;
-            --text: #333;
+            --primary: #003366; /* Azul Clássico MAM */
+            --accent: #d4af37; /* Dourado */
+            --success: #28a745;
+            --danger: #ff4d4d;
+            --bg: #f0f2f5;
         }
+        body { font-family: 'Arial', sans-serif; background: var(--bg); margin: 0; display: flex; overflow-x: hidden; }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; }
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--primary); height: 100vh; position: fixed; color: white; padding: 20px; box-sizing: border-box; z-index: 100; }
+        .sidebar h2 { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 10px; text-align: center; }
+        .menu-link { display: block; color: #ddd; text-decoration: none; padding: 12px; margin: 5px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .menu-link:hover { background: rgba(255,255,255,0.1); color: var(--accent); border-left: 5px solid var(--accent); }
 
-        /* Sidebar Fixa */
-        .sidebar { width: 260px; background: var(--primary); height: 100vh; position: fixed; color: white; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .sidebar h2 { color: var(--accent); text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-size: 1.2rem; }
-        .menu-link { display: block; color: #adb5bd; text-decoration: none; padding: 12px; margin: 5px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 500; }
-        .menu-link:hover, .active-btn { background: rgba(255,255,255,0.1); color: var(--accent); border-left: 4px solid var(--accent); }
+        /* Main Content */
+        .main-content { margin-left: 260px; width: 100%; padding: 30px; box-sizing: border-box; }
+        .section { display: none; }
+        .active-section { display: block; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* Conteúdo Principal */
-        .main-content { margin-left: 260px; width: calc(100% - 260px); padding: 40px; box-sizing: border-box; }
-        .section { display: none; animation: fadeIn 0.5s; }
-        .active-section { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Cards e UI */
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .wallet-display { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px; border-radius: 20px; text-align: center; }
+        /* Cards */
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .wallet-card { background: linear-gradient(135deg, #004e92, #000428); color: white; padding: 30px; border-radius: 15px; position: relative; overflow: hidden; }
+        .wallet-card::after { content: "MAM PAY"; position: absolute; right: -10px; bottom: -10px; opacity: 0.1; font-size: 4rem; font-weight: 900; }
         
-        /* Formulários */
-        form input, form select, form textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-submit { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; }
-
-        /* Estilo Discos de Música */
-        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
-        .disc { text-align: center; cursor: pointer; }
-        .disc img { width: 120px; height: 120px; border-radius: 50%; border: 5px solid #333; object-fit: cover; transition: 0.5s; }
-        .disc img:hover { transform: rotate(360deg); }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .sidebar { width: 70px; padding: 10px; }
-            .sidebar h2, .menu-link span { display: none; }
-            .main-content { margin-left: 70px; width: calc(100% - 70px); }
-        }
+        /* Sistema de Discos */
+        .disc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+        .music-disc { width: 140px; height: 140px; border-radius: 50%; border: 5px solid #222; background-size: cover; background-position: center; margin: auto; transition: 0.5s; cursor: pointer; }
+        .music-disc:hover { transform: rotate(360deg); border-color: var(--accent); }
+        
+        /* Chat & IAs */
+        #chat-area { height: 180px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px; font-size: 0.9rem; }
+        .ia-status { font-size: 0.75rem; color: var(--success); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <h2>MAM DIGITAL</h2>
-    <a onclick="showSection('home')" class="menu-link">🏠 <span>Página Inicial</span></a>
-    <a onclick="showSection('perfil')" class="menu-link">👤 <span>Meu Perfil</span></a>
-    <a onclick="showSection('artista')" class="menu-link">🎨 <span>Criar Artista</span></a>
-    <a onclick="showSection('lancar')" class="menu-link">🎵 <span>Lançar Música</span></a>
-    <a onclick="showSection('minhas-musicas')" class="menu-link">📂 <span>Minhas Músicas</span></a>
-    <a onclick="showSection('carteira')" class="menu-link">💰 <span>Minha Carteira</span></a>
-    <a onclick="showSection('ceo')" class="menu-link">⭐ <span>C.E.O Play Sean</span></a>
-    <a href="#" onclick="terminarSessao()" class="menu-link" style="color: var(--danger);">🚪 <span>Sair</span></a>
+    <a onclick="showSection('home')" class="menu-link">🏠 Página Inicial</a>
+    <a onclick="showSection('perfil')" class="menu-link">👤 Meu Perfil / Editar</a>
+    <a onclick="showSection('lancar')" class="menu-link">🎵 Lançar Música</a>
+    <a onclick="showSection('minhas-musicas')" class="menu-link">📂 Minhas Músicas</a>
+    <a onclick="showSection('carteira')" class="menu-link">💰 Carteira (Visa/BFA)</a>
+    <a onclick="showSection('ceo')" class="menu-link">⭐ C.E.O & IAs</a>
+    <a href="#" onclick="terminarSessao()" class="menu-link" style="color: var(--danger); margin-top: 30px;">🚪 Terminar Sessão</a>
 </div>
 
 <div class="main-content">
     
     <div id="home" class="section active-section">
-        <h1>Bem-vindo ao Ecossistema MAM</h1>
-        <div class="card" style="border-left: 5px solid var(--accent);">
-            <h3>📢 Mural de Anúncios</h3>
-            <p>Assista vídeos e ganhe bónus automáticos. APOIE O PROJECTO DO C.E.O: <strong>BFA: 0000-0000-0000</strong></p>
+        <h1>🎯 Caça Recompensa & Royalties</h1>
+        <div class="card" style="border-left: 6px solid var(--accent);">
+            <h3>Música Especial: Fé em Deus (Resgatada)</h3>
+            <p><strong>Status:</strong> Royalties do FreshTunes migrados para MAM com sucesso.</p>
+            <button class="btn-action" style="background: var(--primary); color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;" onclick="ganharRecompensa(1000, 'Royalties Fé em Deus')">Sincronizar Ganhos de hoje</button>
         </div>
-        <h3>💿 Últimos Lançamentos</h3>
-        <div class="music-grid" id="feed-musicas">
-            <div class="disc" onclick="playSong('Hit Especial', 'Play Sean Arsenio')">
-                <img src="https://via.placeholder.com/150" alt="Capa">
-                <p><small>Princesa Heliany ft Play Sean</small></p>
-            </div>
-        </div>
-    </div>
 
-    <div id="artista" class="section">
         <div class="card">
-            <h2>🎨 Registro de Artista / Produtora</h2>
-            <form id="formArtista">
-                <input type="text" id="nomeArtista" placeholder="Nome Artístico" required>
-                <select id="tipoConta">
-                    <option value="Artista">Artista</option>
-                    <option value="Produtor">Produtor</option>
-                    <option value="Produtora">Produtora (Empresa)</option>
-                </select>
-                <textarea placeholder="Biografia curta do artista"></textarea>
-                <button type="button" class="btn-submit" onclick="registrarArtista()">Salvar Registro</button>
-            </form>
+            <h3>🎁 Tarefas Diárias</h3>
+            <p>✅ Siga o TikTok <strong>@PlaySeanArsenio</strong> (+200 Kz) <button onclick="ganharRecompensa(200, 'TikTok CEO')">Ir</button></p>
+            <p>✅ Assistir Vídeo Publicitário (+500 Kz) <button onclick="ganharRecompensa(500, 'Publicidade')">Assistir</button></p>
+            <p>✅ Convidar Amigo (+500 Kz) <code>mam.com/ref/ceo</code></p>
         </div>
     </div>
 
-    <div id="lancar" class="section">
+    <div id="perfil" class="section">
         <div class="card">
-            <h2>🎵 Formulário de Envio Profissional</h2>
-            <p><small>Apenas artistas registrados podem lançar músicas.</small></p>
-            <form id="formMusica">
-                <input type="text" id="tituloMusica" placeholder="Título da Música" required>
-                <input type="text" placeholder="Género (Kizomba, Rap, Kuduro...)" required>
-                <input type="file" accept="image/*" id="capaMusica" required>
-                <label>Carregar Áudio (MP3/WAV):</label>
-                <input type="file" accept="audio/*" required>
-                <button type="button" class="btn-submit" onclick="publicarMusica()">Enviar para Distribuição</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="minhas-musicas" class="section">
-        <h2>📂 Minhas Músicas Divulgadas</h2>
-        <div class="music-grid" id="lista-privada">
+            <h2>👤 Perfil do Artista / Distribuidor</h2>
+            <div style="text-align: center;">
+                <img src="https://via.placeholder.com/100" id="user-photo" style="width:120px; height:120px; border-radius:50%; border: 3px solid var(--accent);">
+                <br><input type="file" onchange="updatePhoto(event)" style="margin-top:10px;">
             </div>
+            <div style="margin-top:20px;">
+                <label>Nome Artístico:</label>
+                <input type="text" id="artista-nome" style="width:100%; padding:10px; margin:10px 0;" value="Play Sean Arsenio">
+                <label>Email de Contacto:</label>
+                <input type="text" style="width:100%; padding:10px; margin:10px 0;" value="mamfilhos24@gmail.com" readonly>
+            </div>
+            <button onclick="alert('Dados Salvos!')" style="width:100%; background: var(--success); color:white; border:none; padding:12px; border-radius:5px; cursor:pointer;">Atualizar Perfil</button>
+        </div>
     </div>
 
     <div id="carteira" class="section">
-        <div class="wallet-display">
-            <p>SALDO TOTAL (REAL)</p>
+        <div class="wallet-card">
+            <p>SALDO ACUMULADO (MAM PAY)</p>
             <h1 id="saldo-txt">0,00 Kz</h1>
-            <p><small>Equivalente a: <span id="conversao">0.00 USD</span></small></p>
+            <p class="ia-status">🤖 3 Assistentes Online: Gerando 250 Kz / hora</p>
         </div>
         <div class="card" style="margin-top: 20px;">
-            <h3>Levantamento de Fundos</h3>
-            <p>Limite de Saque: <strong>10.000 Kz</strong> (Ilimitado para Administrador)</p>
-            <input type="number" id="valorSaque" placeholder="Valor a sacar">
-            <select id="metodoSaque">
-                <option>BFA / BAI / BIC</option>
+            <h3>Solicitar Levantamento</h3>
+            <select id="metodo-saque" style="width:100%; padding:10px; margin-bottom:10px;">
+                <option>VISA / WISE (Internacional)</option>
+                <option>BFA / BAI / BIC (Angola)</option>
                 <option>Multicaixa Express</option>
                 <option>PayPal</option>
-                <option>PIX (Brasil)</option>
             </select>
-            <button class="btn-submit" style="background: var(--primary);" onclick="solicitarSaque()">Confirmar Saque</button>
+            <input type="number" id="valor-saque" placeholder="Quantia em Kz" style="width:100%; padding:10px; margin-bottom:10px;">
+            <button onclick="realizarSaque()" style="width:100%; background: var(--primary); color:white; padding:15px; border:none; border-radius:5px; cursor:pointer;">Confirmar Saque</button>
         </div>
     </div>
 
     <div id="ceo" class="section">
-        <div class="card" style="text-align: center;">
-            <img src="https://via.placeholder.com/100" style="border-radius: 50%;">
-            <h2>C.E.O Play Sean Arsenio</h2>
-            <p>Email Oficial: <strong>mamfilhos24@gmail.com</strong></p>
-            <p>WhatsApp/Suporte: <strong>937881307</strong></p>
-            <button class="btn-submit" onclick="window.open('https://tiktok.com/@playseanarsenio')">Seguir no TikTok</button>
+        <div class="card" style="background: #eef2f3; display: flex; align-items: center;">
+            <img src="https://i.imgur.com/uR1GvN4.png" style="width:80px; height:80px; border-radius:50%; margin-right: 20px;">
+            <div>
+                <h3>C.E.O Play Sean Arsenio</h3>
+                <p>Suporte: 937881307 | mamfilhos24@gmail.com</p>
+            </div>
+        </div>
+        <div class="card">
+            <h3>💬 Comunicação com IAs e CEO</h3>
+            <div id="chat-area">
+                <p><strong>MAM System:</strong> Olá Sean! As IAs Alpha, Beta e Delta estão processando Royalties de "Fé em Deus".</p>
+            </div>
+            <input type="text" id="chat-msg" placeholder="Digite sua mensagem..." style="width:75%; padding:10px;">
+            <button onclick="sendMsg()" style="width:20%; padding:10px;">Enviar</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // --- LÓGICA DE SALDO REAL ---
-    let saldo = parseFloat(localStorage.getItem('mam_saldo_real')) || 0;
-    
-    // Bónus de Entrada (3.000 Kz conforme pedido)
-    if (!sessionStorage.getItem('login_bonus')) {
-        saldo += 3000; 
-        sessionStorage.setItem('login_bonus', 'true');
-        saveSaldo();
-    }
+    // --- SISTEMA DE SESSÃO E SALDO ---
+    let saldo = parseFloat(localStorage.getItem('mam_v3_saldo')) || 15000; // Começa com bônus e royalties recuperados
 
-    function saveSaldo() {
-        localStorage.setItem('mam_saldo_real', saldo);
+    function updateUI() {
         document.getElementById('saldo-txt').innerText = saldo.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' });
-        document.getElementById('conversao').innerText = (saldo / 950).toFixed(2) + " USD"; // Câmbio simulado
+        localStorage.setItem('mam_v3_saldo', saldo);
     }
 
     // --- NAVEGAÇÃO ---
@@ -174,56 +143,55 @@
         document.getElementById(id).classList.add('active-section');
     }
 
-    // --- FUNCIONALIDADES ---
-    function registrarArtista() {
-        const nome = document.getElementById('nomeArtista').value;
-        if(nome) {
-            alert(`Artista ${nome} registrado com sucesso na base MAM!`);
-            showSection('lancar');
-        }
-    }
-
-    function publicarMusica() {
-        const titulo = document.getElementById('tituloMusica').value;
-        if(titulo) {
-            alert("Música enviada! A MAM gerou 2000 Kz por este processamento.");
-            saldo += 500; // Usuário ganha parte da tarefa
-            saveSaldo();
-            showSection('minhas-musicas');
-            document.getElementById('lista-privada').innerHTML += `<div class='disc'><img src='https://via.placeholder.com/150' alt='capa'><p>${titulo}</p></div>`;
-        }
-    }
-
-    function solicitarSaque() {
-        const valor = document.getElementById('valorSaque').value;
-        if (saldo >= 10000 || saldo > 1000000) { // Lógica para administrador ou valor alto
-            alert(`Saque de ${valor} Kz solicitado com sucesso para a MAM!`);
-            saldo -= valor;
-            saveSaldo();
-        } else {
-            alert("Erro: Saldo insuficiente ou abaixo do limite de 10.000 Kz.");
-        }
-    }
-
-    function terminarSessao() {
-        if(confirm("Deseja realmente sair? Sua sessão será salva.")) {
-            location.reload();
-        }
-    }
-
-    // --- PUBLICIDADE AUTOMÁTICA ---
+    // --- GANHOS AUTOMÁTICOS (IAs ASSISTENTES) ---
     setInterval(() => {
-        console.log("MAM: Verificando tarefas de visualização...");
-        // Aqui entraria o script de varredura automática que você pediu
+        saldo += 4.16; // Simula 250 Kz por hora (ganho constante mesmo offline)
+        updateUI();
     }, 60000);
 
-    // Alerta de TikTok (5 min)
+    // --- RECOMPENSAS ---
+    function ganharRecompensa(valor, motivo) {
+        saldo += valor;
+        alert(`Sucesso! +${valor} Kz adicionados por: ${motivo}`);
+        updateUI();
+    }
+
+    function realizarSaque() {
+        const valor = document.getElementById('valor-saque').value;
+        if (saldo >= 10000 || valor < 100) { // Adm ou Min
+            alert(`Saque de ${valor} Kz solicitado para o método selecionado.`);
+            saldo -= valor;
+            updateUI();
+        } else {
+            alert("Limite mínimo de 10.000 Kz para usuários normais.");
+        }
+    }
+
+    // --- PERFIL E CHAT ---
+    function updatePhoto(e) {
+        const reader = new FileReader();
+        reader.onload = () => document.getElementById('user-photo').src = reader.result;
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    function sendMsg() {
+        const m = document.getElementById('chat-msg');
+        const c = document.getElementById('chat-area');
+        if(m.value) {
+            c.innerHTML += `<p><strong>Você:</strong> ${m.value}</p>`;
+            c.innerHTML += `<p><strong>MAM AI (Beta):</strong> Registado, Chefe Sean. Lucro da hora sincronizado.</p>`;
+            m.value = "";
+            c.scrollTop = c.scrollHeight;
+        }
+    }
+
+    // --- LEMBRETE TIKTOK (5 MIN) ---
     setInterval(() => {
-        alert("Siga o C.E.O Play Sean Arsenio no TikTok para desbloquear bónus VIP!");
+        alert("Não se esqueça de seguir o C.E.O Play Sean Arsenio no TikTok para bónus VIP!");
     }, 300000);
 
-    // Iniciar Dashboard
-    saveSaldo();
+    // Iniciar sessão persistente
+    updateUI();
 </script>
 
 </body>

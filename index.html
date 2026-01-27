@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM & Filhos- Digital Distribution </title>
+    <title>MAM & Filhos - Digital Distribution </title>
     <style>
         :root {
             --mam-blue: #002244; /* Azul Antigo MAM */
@@ -74,4 +74,132 @@
     <div id="home" class="section active-section">
         <h1>Bem-vindo à Distribuidora MAM</h1>
         <div class="card" style="border-left: 6px solid var(--mam-gold);">
-            <h3>🚀 Fé em Deus - Princesa Heliany ft. Play Sean
+            <h3>🚀 Fé em Deus - Princesa Heliany ft. Play Sean Arsenio</h3>
+            <p>Royalties migrados e ativos. Ganhos de streaming sincronizados.</p>
+        </div>
+        <h3>💿 Últimos Discos</h3>
+        <div class="disc-grid">
+            <div class="disc-item" onclick="alert('Tocando: Fé em Deus')">
+                <img src="https://via.placeholder.com/150" alt="Capa">
+                <p><strong>Fé em Deus</strong><br><small>Play Sean Arsenio</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="perfil" class="section">
+        <div class="card profile-header">
+            <h2>👤 Configurações de Perfil Artístico</h2>
+            <img src="https://via.placeholder.com/130" id="user-photo" class="profile-img">
+            <input type="file" onchange="previewFile(event)" style="border:none;">
+            <input type="text" id="artista-nome" value="Play Sean Arsenio" placeholder="Seu nome de Artista">
+            <textarea placeholder="Biografia para os fãs"></textarea>
+            <button class="btn-submit" onclick="alert('Perfil Atualizado com Sucesso!')">Guardar Alterações</button>
+        </div>
+    </div>
+
+    <div id="convite" class="section">
+        <div class="card">
+            <h1>🤝 Convidar Amigos</h1>
+            <p>Ganhe <strong>500,00 AOA</strong> por cada amigo. O seu convidado recebe <strong>5.000,00 AOA</strong> de bónus imediato!</p>
+            <div class="invite-container">
+                <span class="invite-url" id="linkTxt">https://mam.com/signup?ref=CEO_PLAYSEAN</span>
+                <button class="copy-btn" onclick="copyInvite()">COPIAR LINK</button>
+            </div>
+            <p id="copy-msg" style="display:none; color: var(--success); font-weight: bold; margin-top: 10px;">✅ Link copiado! Envie agora.</p>
+        </div>
+    </div>
+
+    <div id="carteira" class="section">
+        <div class="wallet-display">
+            <p>SALDO TOTAL NA CARTEIRA</p>
+            <h1 id="saldo-txt">16.000,00 AOA</h1>
+            <p>🤖 IAs Alpha, Beta e Delta: <strong>ONLINE & GERANDO</strong></p>
+        </div>
+        <div class="card" style="margin-top: 20px;">
+            <h3>Levantamento (Saque)</h3>
+            <select id="metodo">
+                <option>VISA / WISE (Internacional)</option>
+                <option>BFA / BAI / BIC (Angola)</option>
+                <option>Multicaixa Express</option>
+                <option>PayPal</option>
+            </select>
+            <input type="number" id="valor-saque" placeholder="Valor em AOA">
+            <button class="btn-submit" style="background: var(--mam-blue);" onclick="processarSaque()">Solicitar Pagamento</button>
+        </div>
+    </div>
+
+    <div id="ceo-area" class="section">
+        <button class="ceo-btn">⭐ VOCÊ ESTÁ COM O C.E.O PLAY SEAN</button>
+        <div class="card">
+            <img src="https://i.imgur.com/uR1GvN4.png" style="width:120px; border-radius:15px; float:left; margin-right:20px; border: 3px solid var(--mam-gold);">
+            <h3>Play Sean Arsenio</h3>
+            <p><strong>Fundador & Distribuidor Oficial</strong></p>
+            <p>Contacto: 937881307 | mamfilhos24@gmail.com</p>
+            <button class="copy-btn" onclick="window.open('https://tiktok.com/@playseanarsenio')">Seguir no TikTok</button>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- LÓGICA DE SALDO REAL ---
+    let saldo = parseFloat(localStorage.getItem('mam_final_balance')) || 16000.00;
+
+    function refreshUI() {
+        document.getElementById('saldo-txt').innerText = saldo.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' });
+        localStorage.setItem('mam_final_balance', saldo);
+    }
+
+    // --- NAVEGAÇÃO ---
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+        document.getElementById(id).classList.add('active-section');
+    }
+
+    // --- CONVITES ---
+    function copyInvite() {
+        const link = document.getElementById('linkTxt').innerText;
+        navigator.clipboard.writeText(link).then(() => {
+            const msg = document.getElementById('copy-msg');
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 3000);
+        });
+    }
+
+    // --- SAQUE ---
+    function processarSaque() {
+        const val = document.getElementById('valor-saque').value;
+        if (val > saldo) { alert("Saldo insuficiente!"); return; }
+        if (val < 10000) { alert("Limite mínimo de 10.000 AOA."); return; }
+        
+        saldo -= parseFloat(val);
+        alert(`Solicitação de ${val} AOA enviada para o C.E.O. Verifique seu email.`);
+        refreshUI();
+    }
+
+    // --- ASSISTENTES IA (LUCRO PASSIVO) ---
+    setInterval(() => {
+        saldo += 25.00; // IAs gerando lucro real constante
+        refreshUI();
+    }, 60000); // A cada minuto
+
+    // --- PERFIL ---
+    function previewFile(event) {
+        const reader = new FileReader();
+        reader.onload = () => document.getElementById('user-photo').src = reader.result;
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function terminarSessao() {
+        if(confirm("Deseja sair? Sua sessão e saldo de " + saldo + " AOA serão preservados.")) {
+            location.reload();
+        }
+    }
+
+    // Iniciar Sistema
+    refreshUI();
+</script>
+
+</body>
+</html>

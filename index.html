@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Digital Distribution Elite v8.0</title>
+    <title>MAM & Filhos - Digital Distribution Elite v8.5</title>
     <style>
         :root {
             --mam-dark: #02060c;
@@ -19,9 +19,9 @@
 
         /* SIDEBAR */
         .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; padding: 25px; border-right: 2px solid var(--mam-gold); box-sizing: border-box; overflow-y: auto; }
-        .sidebar h2 { color: var(--mam-gold); text-align: center; border-bottom: 1px solid var(--mam-gold); padding-bottom: 15px; letter-spacing: 2px; }
+        .sidebar h2 { color: var(--mam-gold); text-align: center; border-bottom: 1px solid var(--mam-gold); padding-bottom: 15px; }
         .menu-link { display: block; color: #aaa; text-decoration: none; padding: 14px; margin: 5px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .menu-link:hover, .active-link { color: var(--gold-bright); background: rgba(184,134,11,0.1); border-left: 5px solid var(--mam-gold); }
+        .menu-link:hover { color: var(--gold-bright); background: rgba(184, 134, 11, 0.1); border-left: 5px solid var(--mam-gold); }
 
         /* CONTEÚDO */
         .main-content { margin-left: 280px; width: calc(100% - 280px); height: 100vh; padding: 40px; box-sizing: border-box; overflow-y: auto; }
@@ -29,22 +29,19 @@
         .active-section { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CARDS E LEITOR */
+        /* CARDS E BOTÕES */
         .card { background: #0a111e; padding: 20px; border-radius: 15px; border: 1px solid #1a2639; margin-bottom: 25px; }
-        .player-box { display: flex; align-items: center; gap: 20px; background: linear-gradient(135deg, #000, #0a111e); padding: 25px; border: 2px solid var(--mam-gold); border-radius: 20px; }
-        .disc-art { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--mam-gold); object-fit: cover; animation: rotate 8s linear infinite paused; }
-        .playing .disc-art { animation-play-state: running; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* BOTÕES */
         .btn-gold { background: var(--mam-gold); color: #000; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; margin-top: 10px; }
         .btn-gold:hover { background: var(--gold-bright); }
         .btn-support { background: #1a2639; color: var(--gold-bright); border: 1px solid var(--mam-gold); padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px; }
 
         .mam-input { width: 100%; padding: 12px; margin: 10px 0; background: #050a14; border: 1px solid var(--mam-gold); color: white; border-radius: 8px; box-sizing: border-box; }
         
-        /* ANÚNCIO OVERLAY */
-        #ad-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 20000; flex-direction: column; align-items: center; justify-content: center; }
+        /* PLAYER */
+        .player-box { display: flex; align-items: center; gap: 20px; background: linear-gradient(135deg, #000, #0a111e); padding: 25px; border: 2px solid var(--mam-gold); border-radius: 20px; }
+        .disc-art { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--mam-gold); object-fit: cover; animation: rotate 8s linear infinite paused; }
+        .playing .disc-art { animation-play-state: running; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -52,14 +49,13 @@
 <div id="auth-screen">
     <div class="auth-card" id="login-panel">
         <h1 style="color:var(--mam-gold)">MAM LOGIN</h1>
-        <input type="text" placeholder="Usuário / E-mail">
-        <input type="password" placeholder="Senha">
-        <button class="btn-gold" onclick="entrar()">ENTRAR NO PAINEL</button>
+        <input type="text" id="login-user" placeholder="Usuário / E-mail">
+        <input type="password" id="login-pass" placeholder="Senha">
+        <button class="btn-gold" onclick="entrar()">ENTRAR</button>
         <p style="cursor:pointer; color:var(--gold-bright)" onclick="toggleAuth('registo')">Criar Conta (Bónus 5.000 Kz)</p>
     </div>
     <div class="auth-card" id="registo-panel" style="display:none">
         <h1 style="color:var(--mam-gold)">CRIAR CONTA MAM</h1>
-        <p><small>Link de Convite Ativo! Ganhou 5.000,00 AOA.</small></p>
         <input type="text" placeholder="Nome Artístico">
         <input type="email" placeholder="E-mail">
         <input type="password" placeholder="Senha">
@@ -68,65 +64,100 @@
     </div>
 </div>
 
-<div id="ad-overlay">
-    <h2 style="color:var(--gold-bright)">🎥 APOIANDO O PROJETO MAM</h2>
-    <div style="width: 80%; max-width: 600px; height: 350px; background: #000; border: 2px solid var(--mam-gold); display: flex; align-items: center; justify-content: center;">
-        <p>A carregar anúncio de suporte...</p>
-    </div>
-    <p id="ad-timer" style="margin-top: 20px;">Aguarde 15 segundos para fechar e apoiar...</p>
-    <button id="close-ad-btn" class="btn-gold" style="display:none; width: 200px;" onclick="fecharAnuncio()">FECHAR E RECEBER</button>
-</div>
-
 <div class="sidebar">
     <h2>MAM DIGITAL</h2>
-    <a onclick="showSection('home')" class="menu-link active-link">🏠 Página Inicial</a>
-    <a onclick="showSection('perfil')" class="menu-link">👤 Meu Perfil</a>
+    <a onclick="showSection('home')" class="menu-link">🏠 Página Inicial</a>
     <a onclick="showSection('lancar')" class="menu-link">🎵 Lançar Música</a>
-    <a onclick="showSection('minhas-musicas')" class="menu-link">📂 Minhas Músicas</a>
-    <a onclick="showSection('convite')" class="menu-link">🤝 Convidar Amigos</a>
     <a onclick="showSection('carteira')" class="menu-link">💰 Carteira & Saque</a>
-    <a onclick="showSection('chat')" class="menu-link">💬 Mensagens (IAs)</a>
     <a onclick="showSection('admin')" class="menu-link" style="color:var(--gold-bright); border:1px solid var(--mam-gold)">🛠️ Admin</a>
-    <a onclick="sair()" class="menu-link" style="color: #ff4444; margin-top: 30px;">🚪 Sair</a>
+    <a onclick="sair()" class="menu-link" style="color: #ff4444; margin-top: 50px;">🚪 Sair</a>
 </div>
 
 <div class="main-content">
-    
-    <button class="btn-support" onclick="mostrarAnuncio()">🚀 CLIQUE AQUI PARA APOIAR O PROJETO (GANHE 500 Kz)</button>
+    <button class="btn-support" onclick="alert('Funcionalidade de Apoio!')">🚀 APOIAR PROJETO MAM</button>
 
     <div id="home" class="section active-section">
         <h1 style="color:var(--mam-gold)">Tocando Agora: Fé em Deus</h1>
         <div class="player-box" id="player-container">
-            <img src="https://i.imgur.com/vH9xR2A.jpg" class="disc-art" id="player-capa">
-            <div style="flex-grow:1">
+            <img src="https://i.imgur.com/vH9xR2A.jpg" class="disc-art">
+            <div>
                 <h3>Fé em Deus</h3>
-                <p>Princesa Heliany ft. Play Sean Arsenio</p>
+                <p>Princesa Heliany ft. Play Sean</p>
                 <audio id="audio-player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-                <button class="btn-gold" id="playBtn" onclick="togglePlay()">PLAY / PAUSE</button>
-                <p><small style="color:var(--gold-bright)">MAM Ganhando: 5.000 Kz por Play</small></p>
+                <button class="btn-gold" onclick="togglePlay()">PLAY / PAUSE</button>
             </div>
         </div>
     </div>
 
     <div id="lancar" class="section">
         <div class="card">
-            <h2>🚀 Lançar Nova Obra</h2>
-            <input type="text" id="track-title" class="mam-input" placeholder="Título da Música">
-            <label>Capa:</label>
-            <input type="file" class="mam-input" accept="image/*">
-            <label>Escolha o Áudio:</label>
-            <input type="file" id="local-audio" class="mam-input" accept="audio/*">
-            <p style="text-align:center">OU</p>
-            <input type="text" id="link-audio" class="mam-input" placeholder="Cole o link (URL) do áudio">
-            <button class="btn-gold" onclick="alert('Enviado para análise do CEO!')">SUBMETER LANÇAMENTO</button>
+            <h2>🚀 Lançar Música</h2>
+            <input type="text" class="mam-input" placeholder="Título">
+            <label>Carregar Arquivo:</label>
+            <input type="file" class="mam-input" accept="audio/*">
+            <button class="btn-gold">SUBMETER</button>
         </div>
     </div>
 
     <div id="carteira" class="section">
-        <div class="card" style="text-align:center; border: 2px solid var(--mam-gold);">
-            <p>SALDO TOTAL</p>
-            <h1 id="saldo-txt" style="color:var(--gold-bright); font-size: 3.5rem;">16.000,00 AOA</h1>
-            <p><small>3 IAs Ativas | Lucro de Reprodução Ativo</small></p>
+        <div class="card" style="text-align:center">
+            <p>SALDO</p>
+            <h1 id="saldo-txt" style="color:var(--gold-bright)">16.000,00 AOA</h1>
         </div>
-        <button class="btn-gold" onclick="mostrarAnuncio()">VER ANÚNCIO DE APOIO (+500 Kz)</button>
     </div>
+</div>
+
+<script>
+    // --- LÓGICA DE PERSISTÊNCIA DE SESSÃO ---
+    window.onload = function() {
+        const sessaoAtiva = localStorage.getItem('mam_sessao_ativa');
+        if (sessaoAtiva === 'true') {
+            document.getElementById('auth-screen').style.display = 'none';
+        }
+        upd();
+    };
+
+    function entrar() {
+        localStorage.setItem('mam_sessao_ativa', 'true');
+        document.getElementById('auth-screen').style.display = 'none';
+    }
+
+    function sair() {
+        localStorage.removeItem('mam_sessao_ativa');
+        document.getElementById('auth-screen').style.display = 'flex';
+    }
+
+    // --- RESTANTE DAS FUNÇÕES ---
+    let saldo = parseFloat(localStorage.getItem('mam_v8_saldo')) || 16000.00;
+    let playing = false;
+
+    function upd() {
+        document.getElementById('saldo-txt').innerText = saldo.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' });
+        localStorage.setItem('mam_v8_saldo', saldo);
+    }
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+        document.getElementById(id).classList.add('active-section');
+    }
+
+    function toggleAuth(type) {
+        document.getElementById('login-panel').style.display = type === 'login' ? 'block' : 'none';
+        document.getElementById('registo-panel').style.display = type === 'registo' ? 'block' : 'none';
+    }
+
+    function cadastrar() { 
+        saldo += 5000; 
+        upd(); 
+        entrar(); 
+    }
+
+    function togglePlay() {
+        const a = document.getElementById('audio-player');
+        if (playing) { a.pause(); } else { a.play(); }
+        playing = !playing;
+        document.getElementById('player-container').classList.toggle('playing');
+    }
+</script>
+</body>
+</html>

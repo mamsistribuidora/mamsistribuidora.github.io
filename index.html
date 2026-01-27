@@ -3,245 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Música Além da Mente | CEO Play Sean Arsénio</title>
+    <title>MAM - Digital Distribution & Profit System</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; --red: #ff4444; --azul: #3498db; }
+        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; --red: #ff4444; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--preto); color: var(--txt); min-height: 100vh; overflow-x: hidden; }
 
-        /* NAVEGAÇÃO */
+        /* HEADER E MENU */
         header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: none; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; }
         header.active { display: flex; }
-        
         #side-menu { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s; z-index: 2000; padding: 20px; }
         #side-menu.active { left: 0; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; display: block; text-decoration: none; border-radius: 8px; margin-bottom: 5px; }
-        .menu-item:hover { background: #1a1a1a; color: var(--ouro); }
+        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; text-decoration: none; display: block; }
 
-        .container { padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
-        .page { display: none; animation: slideUp 0.4s ease; }
-        .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* CONTAINER PRINCIPAL */
+        .container { padding: 20px; max-width: 500px; margin: auto; padding-bottom: 80px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* COMPONENTES */
-        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #080808; border: 1px solid #444; color: #fff; border-radius: 8px; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        /* DESIGN DE CARDS E INPUTS */
+        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
         .btn-gold { background: var(--ouro); color: #000; }
-        .btn-gold:hover { background: #b8952e; }
-
-        /* CONTRATO MODAL */
-        #modal-contrato { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 3000; display:none; padding: 20px; overflow-y: auto; }
-        .ct-paper { background: #fff; color: #000; padding: 30px; border-radius: 5px; max-width: 500px; margin: auto; font-family: 'Times New Roman', serif; font-size: 13px; line-height: 1.4; }
-
-        .hidden { display: none; }
+        .btn-green { background: var(--verde); color: #fff; }
+        
+        /* TAREFAS */
+        .task-card { background: #1a1a1a; padding: 15px; border-radius: 10px; border-left: 5px solid var(--ouro); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
         .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 1999; display:none; }
         .overlay.active { display:block; }
+        .logo-txt { font-weight: 900; letter-spacing: 2px; color: var(--ouro); }
     </style>
 </head>
 <body>
 
-<div id="modal-contrato">
-    <div class="ct-paper">
-        <h2 style="text-align:center; border-bottom: 1px solid #000; margin-bottom: 10px;">CONTRATO DE DISTRIBUIÇÃO</h2>
-        <p><b>DISTRIBUIDORA:</b> MAM - Música Além da Mente (CEO Play Sean Arsénio)</p>
-        <p><b>ARTISTA:</b> <span id="ct-artista"></span></p>
-        <p><b>OBRA:</b> <span id="ct-titulo"></span></p>
-        <br>
-        <p>Ao aceitar, o artista autoriza a MAM a distribuir esta obra globalmente. Os royalties serão pagos conforme o nível da conta selecionado.</p>
-        <br>
-        <p>Assinado em: <span id="ct-data"></span></p>
-        <button class="btn btn-gold" onclick="confirmarSubmissao()">ASSINAR E ENVIAR AGORA</button>
-        <button class="btn" style="background:#ddd; color:#000;" onclick="fecharContrato()">CANCELAR</button>
-    </div>
-</div>
-
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <header id="main-header">
-    <div onclick="toggleMenu()" style="font-size:25px; cursor:pointer; color:var(--ouro);">☰</div>
-    <div style="font-weight:900;">MAM <span style="color:var(--ouro)">PLATFORM</span></div>
-    <div id="top-bal" style="color:var(--verde); font-weight:bold;">0 Kz</div>
+    <div onclick="toggleMenu()" style="font-size:25px; cursor:pointer;">☰</div>
+    <div class="logo-txt">MAM</div>
+    <div id="user-bal" style="color:var(--verde); font-weight:bold;">0 Kz</div>
 </header>
 
 <nav id="side-menu">
-    <h3 style="color:var(--ouro); text-align:center; margin-bottom:20px;">MENU MAM</h3>
+    <h2 style="color:var(--ouro); margin-bottom:20px;">MAM MENU</h2>
     <div class="menu-item" onclick="nav('home')">🏠 Início</div>
+    <div class="menu-item" onclick="nav('tarefas')">💰 Ganhar Dinheiro</div>
     <div class="menu-item" onclick="nav('lancar')">🎶 Lançar Música</div>
     <div class="menu-item" onclick="nav('stats')">📈 Estatísticas</div>
-    <div class="menu-item" onclick="nav('suporte')">🛠️ Suporte</div>
-    <div id="admin-link" class="menu-item" style="display:none; color:cyan; font-weight:bold;" onclick="nav('admin')">👔 PAINEL CEO</div>
-    <div class="menu-item" onclick="logout()" style="color:var(--red); margin-top:20px;">🚪 Sair</div>
+    <div id="admin-link" class="menu-item" style="display:none; color:cyan;" onclick="nav('admin')">👔 ADMIN CEO</div>
+    <div class="menu-item" onclick="logout()" style="color:red; margin-top:30px;">🚪 Sair</div>
 </nav>
 
 <div class="container">
 
-    <div id="page-auth" class="page active">
+    <div id="page-landing" class="page active">
+        <div style="text-align:center; padding-top: 50px;">
+            <h1 class="logo-txt" style="font-size: 3em;">MAM</h1>
+            <p style="color:var(--ouro); font-weight:bold;">Música Além da Mente</p>
+            <p style="margin: 20px 0; color:#888;">A primeira distribuidora em Angola que te paga para cresceres.</p>
+            <button class="btn btn-gold" onclick="nav('auth-choice')">COMEÇAR AGORA</button>
+        </div>
+    </div>
+
+    <div id="page-auth-choice" class="page">
         <div class="card" style="text-align:center;">
-            <h2 style="color:var(--ouro); margin-bottom:20px;">BEM-VINDO À MAM</h2>
-            <input type="email" id="email-in" placeholder="Teu Email">
-            <button class="btn btn-gold" onclick="auth()">ENTRAR</button>
-            <p style="font-size:10px; color:#666; margin-top:15px;">MAM Distributor - Play Sean Arsénio</p>
+            <h3>Bem-vindo à Família</h3>
+            <button class="btn btn-gold" onclick="nav('login')">JÁ TENHO CONTA</button>
+            <button class="btn" style="background:#222; color:#fff;" onclick="nav('register')">CRIAR NOVA CONTA</button>
+        </div>
+    </div>
+
+    <div id="page-register" class="page">
+        <div class="card">
+            <h3>Criar Conta MAM</h3>
+            <input type="text" id="reg-name" placeholder="Nome Artístico">
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-pass" placeholder="Palavra-passe">
+            <button class="btn btn-gold" onclick="handleRegister()">CRIAR CONTA</button>
+            <p style="font-size:12px; text-align:center; margin-top:10px;" onclick="nav('login')">Já tens conta? Login</p>
+        </div>
+    </div>
+
+    <div id="page-login" class="page">
+        <div class="card">
+            <h3>Login VIP</h3>
+            <input type="email" id="log-email" placeholder="Teu Email">
+            <input type="password" id="log-pass" placeholder="Palavra-passe">
+            <button class="btn btn-gold" onclick="handleLogin()">ENTRAR</button>
         </div>
     </div>
 
     <div id="page-home" class="page">
         <div class="card" style="text-align:center;">
-            <h3>Olá, <span id="user-display">Artista</span>!</h3>
-            <p style="font-size:12px; margin: 10px 0;">O teu som não tem limites.</p>
-            <button class="btn btn-gold" onclick="nav('lancar')">NOVA DISTRIBUIÇÃO</button>
+            <h3>Olá, <span id="dash-name">Artista</span>!</h3>
+            <p style="font-size:12px; margin-top:5px;">Saldo Atual: <b id="dash-bal" style="color:var(--verde)">0 Kz</b></p>
         </div>
-        <div class="card" style="text-align:center; border: 1px solid var(--ouro);">
-            <h4 style="color:var(--ouro)">Sugestão MAM</h4>
-            <p style="font-size:13px; margin:10px 0;"><b>Fé em Deus</b><br>Princesa Heliany ft. Play Sean Arsénio</p>
-            <button class="btn" style="background:#333; color:#fff;" onclick="window.open('https://youtube.com')">OUVIR AGORA</button>
+        <div class="card" style="border: 1px solid var(--ouro); text-align:center;">
+            <p style="font-size:11px;">Música em Destaque:</p>
+            <p><b>Fé em Deus</b> - Princesa Heliany ft. Play Sean Arsénio</p>
+        </div>
+        <button class="btn btn-gold" onclick="nav('tarefas')">💰 GANHAR SALDO HOJE</button>
+    </div>
+
+    <div id="page-tarefas" class="page">
+        <h3>Centro de Recompensas</h3>
+        <p style="font-size:12px; color:#888; margin-bottom:15px;">Cumpre tarefas para pagar os teus lançamentos.</p>
+        
+        <div class="task-card">
+            <div>
+                <b>Assistir Anúncio</b><br>
+                <small style="color:var(--verde)">+50 Kz</small>
+            </div>
+            <button class="btn btn-gold" style="width:80px; padding:5px; font-size:10px;" onclick="doTask(50)">VER</button>
+        </div>
+
+        <div class="task-card">
+            <div>
+                <b>Seguir no Instagram</b><br>
+                <small style="color:var(--verde)">+100 Kz</small>
+            </div>
+            <button class="btn btn-gold" style="width:80px; padding:5px; font-size:10px;" onclick="doTask(100)">ABRIR</button>
         </div>
     </div>
 
     <div id="page-lancar" class="page">
         <div class="card">
-            <h3>Detalhes da Música</h3>
-            <input type="text" id="m-title" placeholder="Título">
-            <input type="text" id="m-artist" placeholder="Artista Principal">
-            
-            <div style="background:#1a1a1a; padding:15px; border-radius:10px; margin:10px 0;">
-                <label style="font-size:12px;">Deseja que a MAM gere ISRC/UPC?</label>
-                <select id="m-isrc-choice" onchange="toggleIsrcFields()">
-                    <option value="sim">Sim (Gerar automaticamente)</option>
-                    <option value="nao">Não (Eu tenho os meus códigos)</option>
-                </select>
-                <div id="manual-isrc" class="hidden">
-                    <input type="text" id="cust-isrc" placeholder="Teu ISRC">
-                </div>
-            </div>
-            
-            <button class="btn btn-gold" onclick="abrirContrato()">GERAR CONTRATO</button>
-        </div>
-    </div>
-
-    <div id="page-stats" class="page">
-        <div class="card">
-            <h4>Streams Totais: <span style="color:var(--verde)">12.540</span></h4>
-            <div style="height:200px; margin-top:15px;">
-                <canvas id="chartStreams"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div id="page-suporte" class="page">
-        <div class="card">
-            <h4>Ajuda Directa</h4>
-            <button class="btn" style="background:#25D366; color:white;" onclick="window.open('https://wa.me/244937881307')">WHATSAPP CEO</button>
-            <p style="font-size:11px; margin-top:10px; text-align:center; color:#888;">mamfilhos29@gmail.com</p>
+            <h3>Novo Lançamento</h3>
+            <p style="font-size:11px; color:var(--red);">Custo: 500 Kz (Podes usar o saldo das tarefas)</p>
+            <input type="text" id="m-title" placeholder="Título da Música">
+            <button class="btn btn-gold" onclick="checkBalanceAndLaunch()">SUBMETER MÚSICA</button>
         </div>
     </div>
 
     <div id="page-admin" class="page">
-        <div class="card" style="border: 2px solid cyan;">
-            <h2 style="color:cyan">Aprovações Pendentes</h2>
-            <div id="admin-list"></div>
+        <div class="card">
+            <h2 style="color:cyan">Painel do CEO</h2>
+            <p>Total de Usuários: <b id="admin-users">1</b></p>
+            <p>Total de Músicas: <b id="admin-musics">0</b></p>
         </div>
     </div>
 
 </div>
 
 <script>
-    let u = JSON.parse(localStorage.getItem('mam_v17_user')) || null;
-    let db = JSON.parse(localStorage.getItem('mam_v17_db')) || [];
-    const admins = ['mamfilhos24@gmail.com', 'playseana@gmail.com', 'produtorap6production@gmail.com', 'mamfilhos29@gmail.com'];
+    let u = JSON.parse(localStorage.getItem('mam_v18_user')) || null;
+    let usersDB = JSON.parse(localStorage.getItem('mam_v18_users_list')) || [];
+    const admins = ['mamfilhos29@gmail.com', 'playseana@gmail.com', 'produtorap6production@gmail.com', 'mamfilhos24@gmail.com'];
 
     window.onload = () => { if(u) init(); };
-
-    function auth() {
-        const mail = document.getElementById('email-in').value;
-        if(!mail.includes('@')) return alert("Email Inválido");
-        u = { email: mail, name: mail.split('@')[0], bal: 0 };
-        init();
-    }
-
-    function init() {
-        localStorage.setItem('mam_v17_user', JSON.stringify(u));
-        document.getElementById('page-auth').classList.remove('active');
-        document.getElementById('main-header').classList.add('active');
-        document.getElementById('user-display').innerText = u.name;
-        if(admins.includes(u.email)) {
-            document.getElementById('admin-link').style.display = 'block';
-            renderAdmin();
-        }
-        nav('home');
-    }
 
     function nav(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('page-' + id).classList.add('active');
         document.getElementById('side-menu').classList.remove('active');
         document.getElementById('overlay').classList.remove('active');
-        if(id === 'stats') setTimeout(renderStats, 100);
     }
 
-    function toggleIsrcFields() {
-        const choice = document.getElementById('m-isrc-choice').value;
-        document.getElementById('manual-isrc').classList.toggle('hidden', choice === 'sim');
-    }
-
-    function abrirContrato() {
-        const t = document.getElementById('m-title').value;
-        const a = document.getElementById('m-artist').value;
-        if(!t || !a) return alert("Preencha os campos!");
-        document.getElementById('ct-artista').innerText = a;
-        document.getElementById('ct-titulo').innerText = t;
-        document.getElementById('ct-data').innerText = new Date().toLocaleString();
-        document.getElementById('modal-contrato').style.display = 'block';
-    }
-
-    function fecharContrato() { document.getElementById('modal-contrato').style.display = 'none'; }
-
-    function confirmarSubmissao() {
-        const t = document.getElementById('m-title').value;
-        const a = document.getElementById('m-artist').value;
-        const choice = document.getElementById('m-isrc-choice').value;
-        const code = choice === 'sim' ? "MAM-" + Math.random().toString(36).substr(2,7).toUpperCase() : document.getElementById('cust-isrc').value;
-
-        db.push({ id: Date.now(), title: t, artist: a, user: u.email, isrc: code });
-        localStorage.setItem('mam_v17_db', JSON.stringify(db));
+    function handleRegister() {
+        const n = document.getElementById('reg-name').value;
+        const e = document.getElementById('reg-email').value;
+        const p = document.getElementById('reg-pass').value;
+        if(!n || !e || !p) return alert("Preencha tudo!");
         
-        fecharContrato();
-        alert("Submetido com sucesso para análise do CEO Play Sean!");
+        const newUser = { name: n, email: e, pass: p, bal: 0 };
+        usersDB.push(newUser);
+        localStorage.setItem('mam_v18_users_list', JSON.stringify(usersDB));
+        u = newUser;
+        init();
+    }
+
+    function handleLogin() {
+        const e = document.getElementById('log-email').value;
+        const p = document.getElementById('log-pass').value;
+        const userFound = usersDB.find(x => x.email === e && x.pass === p);
+        
+        if(userFound) {
+            u = userFound;
+            init();
+        } else {
+            alert("Email ou Palavra-passe errada!");
+        }
+    }
+
+    function init() {
+        localStorage.setItem('mam_v18_user', JSON.stringify(u));
+        document.getElementById('main-header').classList.add('active');
+        document.getElementById('dash-name').innerText = u.name;
+        updateBalUI();
+        
+        if(admins.includes(u.email)) {
+            document.getElementById('admin-link').style.display = 'block';
+            document.getElementById('admin-users').innerText = usersDB.length;
+        }
         nav('home');
     }
 
-    function renderAdmin() {
-        const list = document.getElementById('admin-list');
-        list.innerHTML = db.length === 0 ? '<p style="font-size:12px; color:#666;">Sem pedidos.</p>' : '';
-        db.forEach(m => {
-            list.innerHTML += `
-                <div class="card" style="background:#000;">
-                    <p><b>${m.title}</b> - ${m.artist}</p>
-                    <p style="font-size:10px; color:var(--ouro);">ISRC: ${m.isrc}</p>
-                    <button class="btn btn-gold" style="font-size:10px;" onclick="approve(${m.id})">APROVAR LANÇAMENTO</button>
-                </div>
-            `;
-        });
+    function updateBalUI() {
+        document.getElementById('user-bal').innerText = u.bal + " Kz";
+        if(document.getElementById('dash-bal')) document.getElementById('dash-bal').innerText = u.bal + " Kz";
     }
 
-    function approve(id) {
-        db = db.filter(m => m.id !== id);
-        localStorage.setItem('mam_v17_db', JSON.stringify(db));
-        alert("Lançamento Aprovado!");
-        renderAdmin();
+    function doTask(val) {
+        alert("Tarefa iniciada... Aguarde 5 segundos.");
+        setTimeout(() => {
+            u.bal += val;
+            updateBalUI();
+            localStorage.setItem('mam_v18_user', JSON.stringify(u));
+            // Atualizar na DB global também
+            usersDB = usersDB.map(x => x.email === u.email ? u : x);
+            localStorage.setItem('mam_v18_users_list', JSON.stringify(usersDB));
+            alert("Parabéns! Ganhaste " + val + " Kz");
+        }, 5000);
     }
 
-    function renderStats() {
-        const ctx = document.getElementById('chartStreams').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Fev', 'Mar', 'Abr'],
-                datasets: [{ label: 'Streams', data: [1200, 3100, 2500, 5800], borderColor: '#D4AF37', tension: 0.3 }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
+    function checkBalanceAndLaunch() {
+        if(u.bal < 500) return alert("Saldo insuficiente! Faz mais tarefas para ganhar 500 Kz.");
+        const t = document.getElementById('m-title').value;
+        if(!t) return alert("Título necessário!");
+        
+        u.bal -= 500;
+        updateBalUI();
+        alert("Música '" + t + "' enviada! 500 Kz foram deduzidos do teu saldo.");
+        nav('home');
     }
 
     function toggleMenu() {
@@ -249,7 +236,10 @@
         document.getElementById('overlay').classList.toggle('active');
     }
 
-    function logout() { localStorage.clear(); location.reload(); }
+    function logout() {
+        localStorage.removeItem('mam_v18_user');
+        location.reload();
+    }
 </script>
 </body>
 </html>

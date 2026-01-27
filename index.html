@@ -3,173 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Play Sean Arsénio | Plataforma Oficial</title>
+    <title>MAM - Música Além da Mente | CEO Play Sean Arsénio</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; --red: #ff4444; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: var(--preto); color: var(--txt); min-height: 100vh; }
+        :root { --ouro: #D4AF37; --preto: #000; --card: #121212; --verde: #2ecc71; --txt: #ffffff; --red: #ff4444; --azul: #3498db; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--preto); color: var(--txt); min-height: 100vh; overflow-x: hidden; }
 
-        /* HEADER E NAVIGATION */
-        header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; display: none; }
+        /* NAVEGAÇÃO */
+        header { background: var(--card); padding: 15px; border-bottom: 2px solid var(--ouro); display: none; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; }
         header.active { display: flex; }
         
-        #side-menu { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s ease; z-index: 2000; padding: 20px; }
+        #side-menu { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--card); border-right: 2px solid var(--ouro); transition: 0.4s; z-index: 2000; padding: 20px; }
         #side-menu.active { left: 0; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; display: block; font-size: 14px; text-decoration: none; }
-        .menu-item:hover { color: var(--ouro); background: #1a1a1a; padding-left: 25px; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; display: block; text-decoration: none; border-radius: 8px; margin-bottom: 5px; }
+        .menu-item:hover { background: #1a1a1a; color: var(--ouro); }
 
-        /* PAGINAS */
-        .container { padding: 20px; max-width: 500px; margin: auto; padding-bottom: 100px; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .container { padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
+        .page { display: none; animation: slideUp 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CARDS E ELEMENTOS */
-        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; background: #080808; border: 1px solid #444; color: #fff; border-radius: 10px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--ouro); }
-        
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        /* COMPONENTES */
+        .card { background: var(--card); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #080808; border: 1px solid #444; color: #fff; border-radius: 8px; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
         .btn-gold { background: var(--ouro); color: #000; }
-        .btn-gold:active { transform: scale(0.98); }
+        .btn-gold:hover { background: #b8952e; }
 
-        /* DISCO GIRA */
-        .disco-box { text-align: center; margin: 20px 0; }
-        .disco-img { width: 150px; height: 150px; border-radius: 50%; border: 5px solid var(--ouro); object-fit: cover; animation: rotate 12s linear infinite; box-shadow: 0 0 20px var(--ouro); }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* CONTRATO MODAL */
+        #modal-contrato { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 3000; display:none; padding: 20px; overflow-y: auto; }
+        .ct-paper { background: #fff; color: #000; padding: 30px; border-radius: 5px; max-width: 500px; margin: auto; font-family: 'Times New Roman', serif; font-size: 13px; line-height: 1.4; }
 
-        .stat-val { color: var(--verde); font-weight: bold; font-size: 24px; }
-        .hidden { display: none !important; }
+        .hidden { display: none; }
         .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 1999; display:none; }
         .overlay.active { display:block; }
     </style>
 </head>
 <body>
 
+<div id="modal-contrato">
+    <div class="ct-paper">
+        <h2 style="text-align:center; border-bottom: 1px solid #000; margin-bottom: 10px;">CONTRATO DE DISTRIBUIÇÃO</h2>
+        <p><b>DISTRIBUIDORA:</b> MAM - Música Além da Mente (CEO Play Sean Arsénio)</p>
+        <p><b>ARTISTA:</b> <span id="ct-artista"></span></p>
+        <p><b>OBRA:</b> <span id="ct-titulo"></span></p>
+        <br>
+        <p>Ao aceitar, o artista autoriza a MAM a distribuir esta obra globalmente. Os royalties serão pagos conforme o nível da conta selecionado.</p>
+        <br>
+        <p>Assinado em: <span id="ct-data"></span></p>
+        <button class="btn btn-gold" onclick="confirmarSubmissao()">ASSINAR E ENVIAR AGORA</button>
+        <button class="btn" style="background:#ddd; color:#000;" onclick="fecharContrato()">CANCELAR</button>
+    </div>
+</div>
+
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <header id="main-header">
-    <div onclick="toggleMenu()" style="font-size:28px; cursor:pointer; color:var(--ouro);">☰</div>
-    <div style="font-weight:900; letter-spacing:2px;">MAM <span style="color:var(--ouro)">2026</span></div>
-    <div id="top-balance" style="color:var(--verde); font-weight:bold;">0 Kz</div>
+    <div onclick="toggleMenu()" style="font-size:25px; cursor:pointer; color:var(--ouro);">☰</div>
+    <div style="font-weight:900;">MAM <span style="color:var(--ouro)">PLATFORM</span></div>
+    <div id="top-bal" style="color:var(--verde); font-weight:bold;">0 Kz</div>
 </header>
 
 <nav id="side-menu">
-    <div style="text-align:center; padding-bottom:20px; border-bottom:1px solid #333;">
-        <h2 style="color:var(--ouro)">MAM SYSTEM</h2>
-        <small id="user-email-display" style="color:#888;"></small>
-    </div>
-    <div class="menu-item" onclick="nav('home')">🏠 Página Inicial</div>
-    <div class="menu-item" onclick="nav('perfil')">👤 Meu Perfil</div>
-    <div class="menu-item" onclick="nav('artista')">🎨 Criar Artista</div>
+    <h3 style="color:var(--ouro); text-align:center; margin-bottom:20px;">MENU MAM</h3>
+    <div class="menu-item" onclick="nav('home')">🏠 Início</div>
     <div class="menu-item" onclick="nav('lancar')">🎶 Lançar Música</div>
-    <div class="menu-item" onclick="nav('carteira')">💰 Minha Carteira</div>
-    <div class="menu-item" onclick="nav('ceo')">👔 Info CEO</div>
-    <div id="admin-only" class="menu-item" style="display:none; color:cyan; font-weight:bold;" onclick="nav('admin')">⚡ PAINEL ADMIN</div>
-    <div class="menu-item" onclick="logout()" style="color:var(--red); margin-top:20px; border-top:1px solid #333;">🚪 Terminar Sessão</div>
+    <div class="menu-item" onclick="nav('stats')">📈 Estatísticas</div>
+    <div class="menu-item" onclick="nav('suporte')">🛠️ Suporte</div>
+    <div id="admin-link" class="menu-item" style="display:none; color:cyan; font-weight:bold;" onclick="nav('admin')">👔 PAINEL CEO</div>
+    <div class="menu-item" onclick="logout()" style="color:var(--red); margin-top:20px;">🚪 Sair</div>
 </nav>
 
 <div class="container">
 
     <div id="page-auth" class="page active">
-        <div class="card">
-            <h2 id="auth-title" style="text-align:center; color:var(--ouro); margin-bottom:20px;">INICIAR SESSÃO</h2>
-            <div id="login-box">
-                <input type="email" id="log-email" placeholder="Email (mamfilhos24@gmail.com)">
-                <div style="position:relative">
-                    <input type="password" id="log-pass" placeholder="Palavra-passe">
-                    <span style="position:absolute; right:15px; top:22px; color:var(--ouro); font-size:10px; cursor:pointer;" onclick="togglePass('log-pass')">VER</span>
-                </div>
-                <button class="btn btn-gold" onclick="processAuth('login')">ENTRAR</button>
-                <p onclick="swapAuth(true)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px; color:var(--ouro)">Criar nova conta na MAM</p>
-            </div>
-            <div id="reg-box" class="hidden">
-                <input type="text" id="reg-name" placeholder="Nome do Artista">
-                <input type="email" id="reg-email" placeholder="Email para Confirmação">
-                <input type="password" id="reg-pass" placeholder="Criar Senha">
-                <button class="btn btn-gold" onclick="processAuth('reg')">CRIAR CONTA AGORA</button>
-                <p onclick="swapAuth(false)" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px;">Já tenho uma conta</p>
-            </div>
-        </div>
-        <div class="card" style="border: 1px solid #555; text-align:center;">
-            <h4 style="color:var(--ouro)">APOIA MEUS PROJECTOS</h4>
-            <p style="font-size:11px; margin-top:10px;">BFA: AO06 0000 0000 0000 0000 0<br>CEO: Play Sean Arsénio</p>
+        <div class="card" style="text-align:center;">
+            <h2 style="color:var(--ouro); margin-bottom:20px;">BEM-VINDO À MAM</h2>
+            <input type="email" id="email-in" placeholder="Teu Email">
+            <button class="btn btn-gold" onclick="auth()">ENTRAR</button>
+            <p style="font-size:10px; color:#666; margin-top:15px;">MAM Distributor - Play Sean Arsénio</p>
         </div>
     </div>
 
     <div id="page-home" class="page">
-        <div class="card" style="border: 2px dashed var(--ouro); background: rgba(212,175,55,0.05); text-align:center;">
-            <h4 style="color:var(--ouro)">💎 CAÇA RECOMPENSA</h4>
-            <p style="font-size:11px; margin: 10px 0;">Ganhe dinheiro assistindo vídeos. A MAM gere o lucro.</p>
-            <button class="btn btn-gold" onclick="handleTask()">ASSISTIR VÍDEO (PAGO)</button>
+        <div class="card" style="text-align:center;">
+            <h3>Olá, <span id="user-display">Artista</span>!</h3>
+            <p style="font-size:12px; margin: 10px 0;">O teu som não tem limites.</p>
+            <button class="btn btn-gold" onclick="nav('lancar')">NOVA DISTRIBUIÇÃO</button>
         </div>
-
-        <div class="disco-box">
-            <img src="https://via.placeholder.com/200/D4AF37/000?text=MAM+RECORDS" class="disco-img">
-            <h3 style="margin-top:15px;">Fé em Deus</h3>
-            <p style="color:#888; font-size:13px;">Princesa Heliany ft. Play Sean Arsénio</p>
-            <button class="btn btn-gold" style="width: auto; padding: 10px 30px;" onclick="handlePlay()">OUVIR</button>
+        <div class="card" style="text-align:center; border: 1px solid var(--ouro);">
+            <h4 style="color:var(--ouro)">Sugestão MAM</h4>
+            <p style="font-size:13px; margin:10px 0;"><b>Fé em Deus</b><br>Princesa Heliany ft. Play Sean Arsénio</p>
+            <button class="btn" style="background:#333; color:#fff;" onclick="window.open('https://youtube.com')">OUVIR AGORA</button>
         </div>
     </div>
 
-    <div id="page-carteira" class="page">
+    <div id="page-lancar" class="page">
         <div class="card">
-            <p>Saldo em Kwanza (KZ)</p>
-            <div class="stat-val" id="val-kz">0.00 Kz</div>
-            <p id="val-usd" style="font-size:12px; color:#888; margin-top:5px;">$ 0.00</p>
+            <h3>Detalhes da Música</h3>
+            <input type="text" id="m-title" placeholder="Título">
+            <input type="text" id="m-artist" placeholder="Artista Principal">
+            
+            <div style="background:#1a1a1a; padding:15px; border-radius:10px; margin:10px 0;">
+                <label style="font-size:12px;">Deseja que a MAM gere ISRC/UPC?</label>
+                <select id="m-isrc-choice" onchange="toggleIsrcFields()">
+                    <option value="sim">Sim (Gerar automaticamente)</option>
+                    <option value="nao">Não (Eu tenho os meus códigos)</option>
+                </select>
+                <div id="manual-isrc" class="hidden">
+                    <input type="text" id="cust-isrc" placeholder="Teu ISRC">
+                </div>
+            </div>
+            
+            <button class="btn btn-gold" onclick="abrirContrato()">GERAR CONTRATO</button>
         </div>
+    </div>
+
+    <div id="page-stats" class="page">
         <div class="card">
-            <h4>Levantamento</h4>
-            <select id="bank-select">
-                <option>Multicaixa Express</option><option>BFA</option><option>BAI</option><option>PayPal / Visa</option>
-            </select>
-            <input type="text" placeholder="IBAN ou Conta">
-            <button class="btn btn-gold" onclick="handleWithdraw()">SACAR FUNDOS</button>
+            <h4>Streams Totais: <span style="color:var(--verde)">12.540</span></h4>
+            <div style="height:200px; margin-top:15px;">
+                <canvas id="chartStreams"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-suporte" class="page">
+        <div class="card">
+            <h4>Ajuda Directa</h4>
+            <button class="btn" style="background:#25D366; color:white;" onclick="window.open('https://wa.me/244937881307')">WHATSAPP CEO</button>
+            <p style="font-size:11px; margin-top:10px; text-align:center; color:#888;">mamfilhos29@gmail.com</p>
         </div>
     </div>
 
     <div id="page-admin" class="page">
         <div class="card" style="border: 2px solid cyan;">
-            <h2 style="color:cyan">CEO DASHBOARD</h2>
-            <div style="margin:15px 0;">
-                <p>Lucro Total MAM: <br><span class="stat-val" id="admin-profit" style="color:var(--verde)">0 Kz</span></p>
-            </div>
-            <button class="btn" style="background:cyan; color:#000;" onclick="alert('Relatório enviado para mamfilhos24@gmail.com')">BAIXAR RELATÓRIO</button>
+            <h2 style="color:cyan">Aprovações Pendentes</h2>
+            <div id="admin-list"></div>
         </div>
     </div>
 
 </div>
 
 <script>
-    // SISTEMA CORE
-    let u = JSON.parse(localStorage.getItem('mam_v8_user')) || null;
-    let core = JSON.parse(localStorage.getItem('mam_v8_core')) || { profit: 0 };
+    let u = JSON.parse(localStorage.getItem('mam_v17_user')) || null;
+    let db = JSON.parse(localStorage.getItem('mam_v17_db')) || [];
+    const admins = ['mamfilhos24@gmail.com', 'playseana@gmail.com', 'produtorap6production@gmail.com', 'mamfilhos29@gmail.com'];
 
-    window.onload = () => { if(u) setupApp(); };
+    window.onload = () => { if(u) init(); };
 
-    function toggleMenu() { 
-        document.getElementById('side-menu').classList.toggle('active'); 
+    function auth() {
+        const mail = document.getElementById('email-in').value;
+        if(!mail.includes('@')) return alert("Email Inválido");
+        u = { email: mail, name: mail.split('@')[0], bal: 0 };
+        init();
+    }
+
+    function init() {
+        localStorage.setItem('mam_v17_user', JSON.stringify(u));
+        document.getElementById('page-auth').classList.remove('active');
+        document.getElementById('main-header').classList.add('active');
+        document.getElementById('user-display').innerText = u.name;
+        if(admins.includes(u.email)) {
+            document.getElementById('admin-link').style.display = 'block';
+            renderAdmin();
+        }
+        nav('home');
+    }
+
+    function nav(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + id).classList.add('active');
+        document.getElementById('side-menu').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+        if(id === 'stats') setTimeout(renderStats, 100);
+    }
+
+    function toggleIsrcFields() {
+        const choice = document.getElementById('m-isrc-choice').value;
+        document.getElementById('manual-isrc').classList.toggle('hidden', choice === 'sim');
+    }
+
+    function abrirContrato() {
+        const t = document.getElementById('m-title').value;
+        const a = document.getElementById('m-artist').value;
+        if(!t || !a) return alert("Preencha os campos!");
+        document.getElementById('ct-artista').innerText = a;
+        document.getElementById('ct-titulo').innerText = t;
+        document.getElementById('ct-data').innerText = new Date().toLocaleString();
+        document.getElementById('modal-contrato').style.display = 'block';
+    }
+
+    function fecharContrato() { document.getElementById('modal-contrato').style.display = 'none'; }
+
+    function confirmarSubmissao() {
+        const t = document.getElementById('m-title').value;
+        const a = document.getElementById('m-artist').value;
+        const choice = document.getElementById('m-isrc-choice').value;
+        const code = choice === 'sim' ? "MAM-" + Math.random().toString(36).substr(2,7).toUpperCase() : document.getElementById('cust-isrc').value;
+
+        db.push({ id: Date.now(), title: t, artist: a, user: u.email, isrc: code });
+        localStorage.setItem('mam_v17_db', JSON.stringify(db));
+        
+        fecharContrato();
+        alert("Submetido com sucesso para análise do CEO Play Sean!");
+        nav('home');
+    }
+
+    function renderAdmin() {
+        const list = document.getElementById('admin-list');
+        list.innerHTML = db.length === 0 ? '<p style="font-size:12px; color:#666;">Sem pedidos.</p>' : '';
+        db.forEach(m => {
+            list.innerHTML += `
+                <div class="card" style="background:#000;">
+                    <p><b>${m.title}</b> - ${m.artist}</p>
+                    <p style="font-size:10px; color:var(--ouro);">ISRC: ${m.isrc}</p>
+                    <button class="btn btn-gold" style="font-size:10px;" onclick="approve(${m.id})">APROVAR LANÇAMENTO</button>
+                </div>
+            `;
+        });
+    }
+
+    function approve(id) {
+        db = db.filter(m => m.id !== id);
+        localStorage.setItem('mam_v17_db', JSON.stringify(db));
+        alert("Lançamento Aprovado!");
+        renderAdmin();
+    }
+
+    function renderStats() {
+        const ctx = document.getElementById('chartStreams').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr'],
+                datasets: [{ label: 'Streams', data: [1200, 3100, 2500, 5800], borderColor: '#D4AF37', tension: 0.3 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function toggleMenu() {
+        document.getElementById('side-menu').classList.toggle('active');
         document.getElementById('overlay').classList.toggle('active');
     }
 
-    function togglePass(id) {
-        const p = document.getElementById(id);
-        p.type = p.type === "password" ? "text" : "password";
-    }
-
-    function swapAuth(isReg) {
-        document.getElementById('login-box').classList.toggle('hidden', isReg);
-        document.getElementById('reg-box').classList.toggle('hidden', !isReg);
-        document.getElementById('auth-title').innerText = isReg ? "CRIAR CONTA MAM" : "INICIAR SESSÃO";
-    }
-
-    function processAuth(type) {
-        const emailInput = type === 'login' ? document.getElementById('log-email').value : document.getElementById('reg-email').value;
-        if(!emailInput.includes('@')) return alert("Por favor, insira um e-mail válido.");
-
-        if(type === 'reg') {
-            alert("SISTEMA MAM: E-mail de confirmação enviado para " + emailInput);
-            setTimeout(() => {
-                alert("Confirmação Concluída! Bem-vindo à sua conta MAM.");
-                u = { email: emailInput, bal: 0, level: 'Normal' };
-                core.profit += 500
+    function logout() { localStorage.clear(); location.reload(); }
+</script>
+</body>
+</html>

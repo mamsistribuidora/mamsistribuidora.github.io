@@ -3,86 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM - Digital Distribution C.E.O</title>
+    <title>MAM - Digital Distribution (Versão Final C.E.O)</title>
     <style>
-        :root { --gold: #b8860b; --dark: #010409; --card: #0d1117; }
-        body { font-family: 'Arial', sans-serif; background: var(--dark); color: white; margin: 0; display: flex; overflow: hidden; }
-        
-        /* Sidebar */
-        .sidebar { width: 280px; background: #000; height: 100vh; border-right: 2px solid var(--gold); padding: 20px; box-sizing: border-box; }
-        .menu-item { padding: 15px; margin: 10px 0; background: rgba(184, 134, 11, 0.05); border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .menu-item:hover { background: var(--gold); color: #000; }
-        
-        /* Content */
-        .main { flex-grow: 1; height: 100vh; overflow-y: auto; padding: 40px; box-sizing: border-box; }
-        .section { display: none; }
-        .active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        :root { --gold: #b8860b; --bright: #ffd700; --bg: #010409; --card: #0d1117; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
+        /* AUTENTICAÇÃO PERSISTENTE */
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .auth-box { background: var(--card); padding: 40px; border: 2px solid var(--gold); border-radius: 20px; width: 360px; text-align: center; box-shadow: 0 0 50px rgba(184, 134, 11, 0.4); }
+
+        /* SIDEBAR COMPLETA */
+        .sidebar { width: 280px; background: #000; border-right: 2px solid var(--gold); display: flex; flex-direction: column; padding: 25px; flex-shrink: 0; }
+        .sidebar h2 { color: var(--gold); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 15px; margin-bottom: 20px; }
+        .nav-link { padding: 14px; margin: 6px 0; background: rgba(184, 134, 11, 0.05); border-radius: 8px; cursor: pointer; font-weight: bold; color: #bbb; transition: 0.3s; }
+        .nav-link:hover, .active-nav { background: var(--gold); color: #000; transform: translateX(10px); }
+
+        /* CONTEÚDO DINÂMICO */
+        .main { flex-grow: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #0d1117, #010409); }
+        .section { display: none; }
+        .active-sec { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARDS E INPUTS */
         .card { background: var(--card); border: 1px solid #30363d; padding: 25px; border-radius: 15px; margin-bottom: 20px; }
-        .btn { background: var(--gold); color: #000; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; box-sizing: border-box; }
-        
-        /* Player */
-        #player-dock { background: #000; border: 1px solid var(--gold); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 20px; }
-        
-        /* Ad Overlay */
-        #ad-box { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; }
+        .btn-gold:hover { background: var(--bright); }
+        .input-mam { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid var(--gold); color: white; border-radius: 8px; box-sizing: border-box; }
+
+        #apoio-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-<div id="auth-screen" style="position:fixed; width:100%; height:100%; background:var(--dark); z-index:2000; display:flex; align-items:center; justify-content:center;">
-    <div class="card" id="auth-box" style="width:350px; text-align:center;">
-        <h2 style="color:var(--gold)">MAM DIGITAL</h2>
-        <div id="login-fields">
-            <input type="text" class="input" placeholder="Usuário">
-            <input type="password" class="input" placeholder="Senha">
-            <button class="btn" onclick="auth()">ENTRAR</button>
-            <p onclick="toggleAuth()" style="cursor:pointer; color:var(--gold)">Criar Conta</p>
-        </div>
-        <div id="reg-fields" style="display:none">
-            <input type="text" class="input" id="reg-name" placeholder="Nome Artístico">
-            <input type="email" class="input" placeholder="Email">
-            <button class="btn" onclick="registrar()">CRIAR CONTA & GANHAR 2.000 Kz</button>
-        </div>
+<div id="auth-screen">
+    <div class="auth-box">
+        <h2 style="color:var(--gold)" id="auth-title">MAM DIGITAL LOGIN</h2>
+        <input type="email" id="u-email" class="input-mam" placeholder="Email / Usuário">
+        <input type="password" id="u-pass" class="input-mam" placeholder="Palavra-passe">
+        <button class="btn-gold" onclick="autenticar()">ENTRAR NO PAINEL</button>
+        <p onclick="mudarModo()" style="cursor:pointer; color:var(--gold); margin-top:20px;">Não tem conta? Criar conta de Artista</p>
     </div>
 </div>
 
 <div class="sidebar">
-    <h2 style="color:var(--gold); text-align:center;">MAM PANEL</h2>
-    <div class="menu-item" onclick="show('home')">🏠 Início / Tarefas</div>
-    <div class="menu-item" onclick="show('perfil')">👤 Perfil</div>
-    <div class="menu-item" onclick="show('lancar')">🎵 Lançamento Profissional</div>
-    <div class="menu-item" onclick="show('carteira')">💰 Carteira / Saque</div>
-    <div class="menu-item" onclick="show('admin')">🛠️ Admin (C.E.O)</div>
-    <div class="menu-item" onclick="abrirAd()">🤝 Apoiar Projecto</div>
-    <div class="menu-item" onclick="show('convite')">🔗 Link de Convite</div>
-    <div class="menu-item" onclick="logout()" style="color:red; margin-top:20px;">🚪 Sair</div>
+    <h2>MAM DIGITAL</h2>
+    <div class="nav-link active-nav" onclick="ir('home', this)">🏠 Início & Tarefas</div>
+    <div class="nav-link" onclick="ir('perfil', this)">👤 Perfil Artista</div>
+    <div class="nav-link" onclick="ir('lancar', this)">🎵 Lançar Música</div>
+    <div class="nav-link" onclick="ir('minhas-musicas', this)">📂 Minhas Músicas</div>
+    <div class="nav-link" onclick="ir('carteira', this)">💰 Carteira & Saque</div>
+    <div class="nav-link" onclick="ir('convite', this)">🔗 Link de Convite</div>
+    <div class="nav-link" onclick="ir('admin', this)" style="border: 1px solid var(--gold); color:var(--bright)">🛠️ Painel Admin (MAM)</div>
+    <div class="nav-link" onclick="abrirApoio()" style="color:var(--gold)">🤝 Apoiar Projecto</div>
+    <div class="nav-link" onclick="sair()" style="color:#ff4444; margin-top: auto;">🚪 Terminar Sessão</div>
 </div>
 
 <div class="main">
-    <div id="home" class="section active">
-        <h1 style="color:var(--gold)">Painel de Tarefas</h1>
+    
+    <div id="home" class="section active-sec">
+        <h1 style="color:var(--gold)">Lista de Tarefas MAM</h1>
+        
         <div class="card">
-            <h3>Tarefa 1: Ouvir "Fé em Deus"</h3>
-            <p>Ganha 500 Kz (Usuário) | MAM fatura 5.000 Kz</p>
-            <div id="player-dock">
-                <img src="https://i.imgur.com/vH9xR2A.jpg" width="60" style="border-radius:5px;">
-                <div>
-                    <strong>Fé em Deus</strong><br><small>Princesa Heliany ft. Play Sean Arsenio</small>
-                </div>
-                <button class="btn" style="width:auto" onclick="tocarMusica()">REPRODUZIR</button>
-            </div>
-            <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;margin-top:15px;" sandbox="allow-forms allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin" src="https://embed.music.apple.com/mz/album/f%C3%A9-em-deus-single/1806105736"></iframe>
+            <h3>Tarefa 1: Ouvir 'Fé em Deus'</h3>
+            <p>Gere 5.000 Kz de lucro para a MAM.</p>
+            <iframe allow="autoplay" frameborder="0" height="175" style="width:100%; border-radius:12px;" src="https://embed.music.apple.com/mz/album/f%C3%A9-em-deus-single/1806105736"></iframe>
+            <button class="btn-gold" style="margin-top:15px;" onclick="addLucroMAM(5000)">CONFIRMAR REPRODUÇÃO</button>
         </div>
+
         <div class="card">
-            <h3>Tarefa 2: Ver Vídeo Patrocinado</h3>
-            <button class="btn" onclick="alert('Vídeo a carregar...')">VER VÍDEO (+200 Kz)</button>
+            <h3>Tarefa 2: Assistir Vídeo Patrocinado</h3>
+            <p>Ganha 200 Kz para a sua carteira.</p>
+            <button class="btn-gold" style="background:#161b22; color:white; border:1px solid #333;" onclick="addLucroUser(200)">ASSISTIR AGORA</button>
+        </div>
+
+        <div class="card">
+            <h3>Tarefa 3: Convidar Novos Artistas</h3>
+            <p>Ganhe bónus por cada conta criada via seu link.</p>
+            <button class="btn-gold" onclick="ir('convite', null)">IR PARA CONVITES</button>
+        </div>
+    </div>
+
+    <div id="minhas-musicas" class="section">
+        <h2 style="color:var(--gold)">📂 Minhas Músicas</h2>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong>Fé em Deus</strong>
+                <span style="color:var(--bright)">Status: Online</span>
+            </div>
+            <p><small>Royalties direcionados ao faturamento administrativo.</small></p>
         </div>
     </div>
 
     <div id="lancar" class="section">
         <div class="card">
-            <h2>🎵 Lançamento de Obra</h2>
-            <input type="text" class="input" placeholder="Título da
+            <h2>🚀 Novo Lançamento</h2>
+            <input type="text" class="input-mam" placeholder="Título">
+            <input type="text" class="input-mam" placeholder="Artista">
+            <select class="input-mam"><option>Kizomba</option><option>Rap</option><option>Afro</option></select>
+            <input type="file" class="input-mam">
+            <button class="btn-gold" onclick="alert('Música enviada para mamfilhos29@gmail.com')">DISTRIBUIR AGORA</button>
+        </div>
+    </div>
+
+    <div id="carteira" class="section">
+        <div class="card" style="text-align:center">
+            <p>O SEU SALDO</p>
+            <h1 id="u-bal" style="font-size:3rem; color:var(--gold)">0,00 AOA</h1>
+            <p><small>Saque permitido acima de 10.000 Kz</small></p>
+        </div>
+        <div class="card">
+            <h3>Solicitar Levantamento</h3>
+            <select class="input-mam" id="u-bank">
+                <option>BFA</option><option>BAI</option><option>BIC</option><option>Multicaixa Express</option>
+                <option>PayPal</option><option>Visa/Wise</option><option>Pix</option>
+            </select>
+            <input type="number" id="u-val" class="input-mam" placeholder="Valor Kz">
+            <button class="btn-gold" onclick="saqueUser()">SOLICITAR AGORA</button>
+        </div>
+    </div>
+
+    <div id="admin" class="section">
+        <div class="card" style="border: 2px solid var(--gold); background:#000;">
+            <h2 style="color:var(--gold)">LUCRO ADMINISTRATIVO (MAM)</h2>
+            <h1 id="m-bal" style="font-size:4rem">0,00 AOA</h1>
+            <p>Destino: <strong>BFA / Express (937881307)</strong></p>
+            <button class="btn-gold" onclick="saqueCEO()">SACAR LUCRO (ILIMITADO)</button>
+        </div>
+    </div>
+
+    <div id="convite" class="section">
+        <div class="card">
+            <h2>🔗 Link de Convite</h2>
+            <input type="text" class="input-mam" readonly value="https://mam-digital.com/registo?ref=ceo_playsean">
+            <button class="btn-gold" onclick="alert('Link Copiado!')">COPIAR LINK</button>
+        </div>
+    </div>
+</div>
+
+<div id="apoio-modal">
+    <div class="auth-box" style="width:450px; text-align:left;">
+        <h2 style="color:var(--gold); text-align:center">APOIO AO PROJECTO MAM</h2>
+        <p><strong>Titular:</strong> Play Sean Arsenio</p>
+        <p><strong>Bancos:</strong> BFA / BAI / BIC / Express</p>
+        <p><strong>IBAN:</strong> AO06 0000 0000 0000 0000 0000 0</p>
+        <p><strong>Contacto:</strong> 937881307</p>
+        <button class="btn-gold" onclick="fecharApoio()">FECHAR</button>
+    </div>
+</div>
+
+<script>
+    let mCash = parseFloat(localStorage.getItem('m_money')) || 5000;
+    let uCash = parseFloat(localStorage.getItem('u_money')) || 0;
+    let loginMode = true;
+
+    window.onload = function() {
+        if(localStorage.getItem('mam_session') === 'true') document.getElementById('auth-screen').style.display = 'none';
+        sync();
+    };
+
+    function mudarModo() {
+        loginMode = !loginMode;
+        document.getElementById('auth-title').innerText = loginMode ? "MAM DIGITAL LOGIN" : "CRIAR CONTA MAM";
+    }
+
+    function autenticar() {
+        if(!loginMode) { mCash += 5000; uCash = 2000; }
+        localStorage.setItem('mam_session', 'true');
+        document.getElementById('auth-screen').style.display = 'none';
+        sync();
+    }
+
+    function ir(id, el) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-sec'));
+        document.getElementById(id).classList.add('active-sec');
+        if(el) {
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active-nav'));
+            el.classList.add('active-nav');
+        }
+    }
+
+    function addLucroMAM(v) { mCash += v; alert("Lucro MAM de " + v + " Kz Confirmado!"); sync(); }
+    function addLucroUser(v) { uCash += v; alert("Você ganhou " + v + " Kz!"); sync(); }
+
+    function sync() {
+        document.getElementById('m-bal').innerText = mCash.toLocaleString('pt-AO') + ",00 AOA";
+        document.getElementById('u-bal').innerText = uCash.toLocaleString('pt-AO') + ",00 AOA";
+        localStorage.setItem('m_money', mCash);
+        localStorage.setItem('u_money', uCash);
+    }
+
+    function saqueUser() {
+        let v = document.getElementById('u-val').value;
+        if(v < 10000) alert("Saque mínimo de 10.000 Kz!");
+        else alert("Pedido enviado para mamfilhos29@gmail.com!");
+    }
+
+    function saqueCEO() {
+        alert("Transferência de " + mCash + " Kz processada para BFA / Express 937881307");
+        mCash = 0; sync();
+    }
+
+    function abrirApoio() { document.getElementById('apoio-modal').style.display = 'flex'; }
+    function fecharApoio() { document.getElementById('apoio-modal').style.display = 'none'; }
+    function sair() { localStorage.clear(); location.reload(); }
+</script>
+</body>
+</html>

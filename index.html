@@ -3,52 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Oficial v2.0</title>
     <style>
-        :root { --gold: #FFD700; --blue: #001f3f; --black: #050505; --card: rgba(15, 15, 15, 0.9); --text: #f0f0f0; }
+        :root { --gold: #FFD700; --blue: #001f3f; --black: #050505; --card: rgba(15, 15, 15, 0.95); --text: #f0f0f0; }
         
-        /* AJUSTE CONSOANTE DISPOSITIVO & FUNDO EMPRESA */
+        * { box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', sans-serif; 
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop'); 
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
             background-size: cover; background-attachment: fixed; background-position: center;
             color: var(--text); margin: 0; display: flex; flex-direction: column; min-height: 100vh;
         }
 
         /* SIDEBAR RESPONSIVA */
         .sidebar { 
-            width: 280px; background: rgba(0,0,0,0.95); height: 100vh; position: fixed; 
-            border-right: 1px solid var(--blue); display: none; flex-direction: column; 
-            padding: 20px; box-sizing: border-box; z-index: 1000; transition: 0.3s;
+            width: 280px; background: #000; height: 100vh; position: fixed; 
+            border-right: 2px solid var(--blue); display: none; flex-direction: column; 
+            padding: 20px; z-index: 1000; 
         }
 
         .main { width: 100%; transition: 0.3s; flex: 1; padding-bottom: 60px; }
-        .logged-main { margin-left: 280px; width: calc(100% - 280px); }
+        .logged-main { margin-left: 280px; }
 
-        /* MOBILE FIX */
         @media (max-width: 850px) {
-            .logged-main { margin-left: 0; width: 100%; }
-            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--blue); }
-            .sidebar-logo { font-size: 1.4em; }
+            .logged-main { margin-left: 0; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid var(--blue); }
         }
 
         /* UI ELEMENTS */
-        .section { padding: 30px; display: none; animation: fadeIn 0.4s; max-width: 1000px; margin: auto; }
+        .section { padding: 30px; display: none; animation: fadeIn 0.4s; max-width: 1100px; margin: auto; }
         .active-section { display: block; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #333; border-top: 3px solid var(--gold); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card { background: var(--card); padding: 25px; border-radius: 12px; border-left: 5px solid var(--gold); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         
-        .btn-gold { background: var(--gold); color: black; padding: 14px; border: none; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-gold:hover { background: #e6c200; transform: scale(1.02); }
+        .nav-item { padding: 12px; border-radius: 8px; cursor: pointer; color: white; display: flex; align-items: center; gap: 12px; margin-bottom: 5px; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background: var(--blue); color: var(--gold); }
 
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #444; color: white; border-radius: 6px; box-sizing: border-box; }
-        
-        .grid-carteira { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        
-        /* RODAPÉ INFORMATIVO */
-        footer { background: rgba(0,0,0,0.9); color: #888; padding: 30px; text-align: center; font-size: 0.9em; border-top: 1px solid #222; }
-        .footer-links { margin-bottom: 10px; }
-        .footer-links a { color: var(--gold); text-decoration: none; margin: 0 10px; }
+        .btn-gold { background: var(--gold); color: black; padding: 14px; border: none; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        .btn-gold:hover { transform: scale(1.02); opacity: 0.9; }
 
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: white; border-radius: 6px; }
+
+        footer { background: #000; color: #888; padding: 30px; text-align: center; border-top: 1px solid var(--blue); margin-top: auto; }
         .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -56,75 +51,24 @@
 <body>
 
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-logo" style="color:var(--gold); font-weight:bold; text-align:center; font-size:1.8em; margin-bottom:20px;">MAM DISTRIBUIDORA</div>
-        <div class="nav-item" onclick="showSec('home')">🏠 Início</div>
-        <div class="nav-item" onclick="showSec('perfil')">👤 Editar Perfil</div>
-        <div class="nav-item" onclick="showSec('artista')">🎤 Criar Artista/Label</div>
-        <div class="nav-item" onclick="showSec('lancar')">🚀 Enviar Música</div>
-        <div class="nav-item" onclick="showSec('carteira')">💰 Minhas Carteiras</div>
-        <div class="nav-item" onclick="showSec('ceo')">👔 C.E.O Matias</div>
-        <div id="adminBtn" class="nav-item" onclick="showSec('admin')" style="display:none; color:var(--gold); font-weight:bold;">🛡️ ADMINISTRAÇÃO</div>
-        <div class="nav-item" onclick="logout()" style="color:#ff4444; margin-top:20px;">🚪 Sair</div>
+        <div class="sidebar-logo" style="color:var(--gold); font-weight:bold; text-align:center; font-size:1.6em; margin-bottom:25px;">MAM DISTRIBUIDORA</div>
+        <div class="nav-item active" onclick="showSec('home')">🏠 Início</div>
+        <div class="nav-item" onclick="showSec('perfil')">👤 Perfil / Editar</div>
+        <div class="nav-item" onclick="showSec('lancar')">🚀 Lançar Música</div>
+        <div class="nav-item" onclick="showSec('carteira')">💰 Carteira Dupla</div>
+        <div class="nav-item" onclick="showSec('ceo')">👔 C.E.O Info</div>
+        <div id="adminBtn" class="nav-item" onclick="showSec('admin')" style="display:none; color:var(--gold); border:1px solid var(--gold); margin-top:10px;">🛡️ PAINEL DIRETOR</div>
+        <div class="nav-item" onclick="logout()" style="color:#ff4444; margin-top:auto">🚪 Sair da Conta</div>
     </div>
 
     <div id="mainContent" class="main">
-        <div id="authPage" style="height:90vh; display:flex; align-items:center; justify-content:center; padding: 20px;">
-            <div class="card" style="width:100%; max-width:400px; text-align:center; background: rgba(0,0,0,0.85);">
+        
+        <div id="authPage" style="min-height:90vh; display:flex; align-items:center; justify-content:center; padding: 20px;">
+            <div class="card" style="width:100%; max-width:400px; text-align:center; border-left:none; border-top: 5px solid var(--gold);">
                 <h1 style="color:var(--gold); margin-top:0;">MAM SYSTEM</h1>
-                <p>Acesso Restrito à Curadoria</p>
-                <input type="email" id="lEmail" placeholder="Email (mamfilhos29@gmail.com)">
-                <input type="password" id="lPass" placeholder="Palavra-passe">
-                <button class="btn-gold" onclick="execLogin()">Entrar no Painel</button>
-            </div>
-        </div>
-
-        <div id="app" class="hidden">
-            <div id="home" class="section active-section">
-                <h2 id="welcomeTitle">Olá, Matias</h2>
-                <div class="card">
-                    <h3>Destaque da Semana</h3>
-                    <p><b>Princesa Heliany ft Play Sean Arsénio</b> - Fé em Deus</p>
-                    <button class="btn-gold" style="width:auto" onclick="window.open('https://tiktok.com/@playseanarsenio')">Ver no TikTok</button>
-                </div>
-            </div>
-
-            <div id="perfil" class="section">
-                <h1>Gerir Conta</h1>
-                <div class="card">
-                    <h4>Informações Pessoais</h4>
-                    <input type="text" id="pNome" placeholder="Novo Nome Completo">
-                    <input type="text" id="pFoto" placeholder="URL da Foto de Perfil">
-                    <input type="email" id="pEmail" placeholder="Alterar Email">
-                    <button class="btn-gold" onclick="alert('Dados atualizados com sucesso!')">Atualizar Perfil</button>
-                </div>
-            </div>
-
-            <div id="lancar" class="section">
-                <h1>Lançamento de Obra</h1>
-                <div class="card">
-                    <input type="text" placeholder="Título da Música/Álbum">
-                    <input type="text" placeholder="Artistas (Ex: Play Sean Arsenio, Princesa Heliany)">
-                    
-                    <select>
-                        <option value="">Escolher Categoria...</option>
-                        <option>Kizomba / Semba</option>
-                        <option>Rap / Hip Hop / Trap</option>
-                        <option>Afro House / Kuduro</option>
-                        <option>Gospel</option>
-                        <option>World Music</option>
-                    </select>
-
-                    <label>Data Oficial de Lançamento:</label>
-                    <input type="date">
-                    
-                    <p>Ficheiro de Áudio (WAV/MP3): <input type="file"></p>
-                    <p>Capa em Alta Definição: <input type="file"></p>
-                    <button class="btn-gold">Submeter para Distribuição</button>
-                </div>
-            </div>
-
-            <div id="carteira" class="section">
-                <h1>Painel Financeiro</h1>
-                <div class="grid-carteira">
-                    <div class="card" style="border-top-color: #00ff00;">
-                        <h4>Carteira Artista (Seu Lucro)</h4>
+                
+                <div id="loginBox">
+                    <input type="email" id="lEmail" placeholder="Seu Email">
+                    <input type="password" id="lPass" placeholder="Sua Senha">
+                    <button class="btn-gold" onclick="execLogin()">Entrar</button>
+                    <p style="font-size:0.9em">Não tem conta? <a href="#" onclick="toggle

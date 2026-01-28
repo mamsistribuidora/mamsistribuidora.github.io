@@ -110,4 +110,157 @@
                 <div class="card" style="margin-top:20px;">
                     <h4>Convide Amigos</h4>
                     <p>Link: <code id="refLink">mam.distribuidora/ref/123</code></p>
-                    <button class="btn-gold" style="width:auto" onclick="copiarLink()">Cop
+                    <button class="btn-gold" style="width:auto" onclick="copiarLink()">Copiar Link (500 KZ p/ amigo)</button>
+                </div>
+            </div>
+
+            <div id="carteira" class="section">
+                <h1>Minha Carteira</h1>
+                <div class="card">
+                    <h3>Saldo Disponível</h3>
+                    <div class="value" id="valAKZ">0,00 KZ</div>
+                    <small id="valUSD">0,00 USD | 0,00 EUR</small>
+                </div>
+                <h3>Efectuar Saque</h3>
+                <p style="font-size:0.8em">Mínimo: 10.000 KZ (Ilimitado para Diretor)</p>
+                <form onsubmit="event.preventDefault(); alert('Pedido enviado ao Banco!');">
+                    <select><option>BFA</option><option>BAI</option><option>BIC</option><option>Multicaixa Express</option><option>PayPal</option></select>
+                    <input type="text" placeholder="IBAN ou E-mail do Banco" required>
+                    <input type="number" placeholder="Valor a Sacar" required>
+                    <button class="btn-gold">Confirmar Saque Real</button>
+                </form>
+            </div>
+
+            <div id="admin" class="section">
+                <h1 style="color:var(--dourado)">Painel Administrativo</h1>
+                <div class="grid-discos" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="card"><h3>Lucro Total MAM</h3><div class="value" id="lucroTotal">0 KZ</div></div>
+                    <div class="card"><h3>Total Contas</h3><div class="value" id="totalUsers">0</div></div>
+                </div>
+            </div>
+
+            <div id="lançar" class="section">
+                <h1>Formulário de Lançamento Profissional</h1>
+                <input type="text" placeholder="Título da Obra">
+                <input type="text" placeholder="Artista (Deve estar registrado)">
+                <input type="text" placeholder="Colaboradores (Princesa Heliany ft Play Sean Arsenio)">
+                <input type="file" title="Capa do Disco">
+                <input type="file" title="Ficheiro Audio">
+                <button class="btn-gold">Lançar via MAM Distribuidora</button>
+            </div>
+
+            <div id="ceo" class="section" style="text-align: center;">
+                <h1 style="color:var(--dourado)">MATIAS ARSÉNIO MANUEL</h1>
+                <p>Diretor Geral - MAM Distribuidora</p>
+                <div class="card">
+                    <p>Redes Sociais & Portfólio</p>
+                    <a href="https://tiktok.com/@playseanarsenio" target="_blank" style="color:var(--dourado)">TikTok: Play Sean Arsenio</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE DADOS LOCAL (REAL)
+        let db = JSON.parse(localStorage.getItem('mam_database')) || { users: [], totalLucro: 0 };
+        let user = JSON.parse(localStorage.getItem('mam_session')) || null;
+
+        function toggleAuth() {
+            document.getElementById('loginForm').classList.toggle('hidden');
+            document.getElementById('registerForm').classList.toggle('hidden');
+        }
+
+        function cadastrar() {
+            const email = document.getElementById('rEmail').value;
+            const nome = document.getElementById('rNome').value;
+            if(!email || !nome) return alert("Preencha tudo!");
+
+            alert("E-mail de confirmação enviado! Confirme para ativar seus 5.000 KZ.");
+            
+            setTimeout(() => {
+                let newUser = {
+                    nome: nome,
+                    email: email,
+                    pass: document.getElementById('rPass').value,
+                    saldo: 5000,
+                    nivel: 'Normal',
+                    admin: false
+                };
+                db.users.push(newUser);
+                db.totalLucro += 5000; // MAM ganha pelo registro
+                save();
+                alert("Confirmação Concluída! Ganhou 5.000 KZ.");
+                location.reload();
+            }, 1500);
+        }
+
+        function login() {
+            const email = document.getElementById('lEmail').value;
+            const pass = document.getElementById('lPass').value;
+
+            if(email === 'mamfilhos24@gmail.com') {
+                user = { nome: "Matias CEO", email: email, saldo: 5000000, admin: true, nivel: 'Diretor' };
+            } else {
+                let u = db.users.find(x => x.email === email && x.pass === pass);
+                if(!u) return alert("Dados Incorretos!");
+                user = u;
+                user.saldo += 3000; // Bónus de login
+                db.totalLucro += 3000;
+            }
+            saveSession();
+            location.reload();
+        }
+
+        function startApp() {
+            if(!user) return;
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            document.getElementById('sidebar').style.display = 'flex';
+            document.getElementById('mainContent').classList.add('logged-main');
+            
+            if(user.admin) document.getElementById('adminItem').style.display = 'flex';
+            
+            updateUI();
+            
+            // Sugestão TikTok 5min
+            setInterval(() => { alert("Sugestão: Siga Play Sean Arsenio no TikTok para bónus extras!"); }, 300000);
+        }
+
+        function updateUI() {
+            document.getElementById('valAKZ').innerText = user.saldo.toLocaleString() + " KZ";
+            document.getElementById('valUSD').innerText = (user.saldo/915).toFixed(2) + " USD | " + (user.saldo/980).toFixed(2) + " EUR";
+            document.getElementById('lucroTotal').innerText = db.totalLucro.toLocaleString();
+            document.getElementById('totalUsers').innerText = db.users.length;
+            document.getElementById('refLink').innerText = "mam.distribuidora/ref/" + btoa(user.email).substring(0,8);
+        }
+
+        function assistirTask() {
+            let base = 2000;
+            let share = 0.2; // 20% Normal
+            if(user.nivel === 'Vip') share = 0.5;
+            if(user.nivel === 'Diretor') share = 1;
+
+            let ganhoUser = base * share;
+            user.saldo += ganhoUser;
+            db.totalLucro += (base - ganhoUser);
+            saveSession(); save();
+            alert(`Vídeo assistido! Ganhou ${ganhoUser} KZ. A MAM processou a comissão.`);
+            updateUI();
+        }
+
+        function showSec(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+            document.getElementById(id).classList.add('active-section');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function save() { localStorage.setItem('mam_database', JSON.stringify(db)); }
+        function saveSession() { localStorage.setItem('mam_session', JSON.stringify(user)); }
+        function logout() { localStorage.removeItem('mam_session'); location.reload(); }
+
+        startApp();
+    </script>
+</body>
+</html>

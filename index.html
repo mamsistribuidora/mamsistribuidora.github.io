@@ -3,104 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Painel Oficial</title>
+    <title>MAM Distribuidora | Curadoria de Elite</title>
     <style>
-        :root { --dourado: #FFD700; --azul: #001f3f; --preto: #050505; --card: #111; --texto: #eee; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--preto); color: var(--texto); margin: 0; display: flex; }
-        
-        /* Sidebar Êxodo */
-        .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; border-right: 1px solid var(--azul); display: none; flex-direction: column; padding: 20px; z-index: 1000; }
-        .sidebar-logo { color: var(--dourado); font-size: 1.8em; font-weight: bold; text-align: center; margin-bottom: 30px; }
-        .nav-item { padding: 12px; border-radius: 8px; cursor: pointer; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
-        .nav-item:hover, .nav-item.active { background: var(--azul); color: var(--dourado); }
-        
-        /* Layout */
-        .main { width: 100%; transition: 0.3s; }
-        .logged-main { margin-left: 280px; width: calc(100% - 280px); }
-        .section { padding: 30px; display: none; animation: fadeIn 0.4s; }
-        .active { display: block; }
+        :root {
+            --dourado: #FFD700;
+            --azul-marinho: #001f3f;
+            --preto: #0a0a0a;
+            --branco: #ffffff;
+        }
 
-        /* Vitrine de Discos */
-        .grid-discos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .disco { background: #111; padding: 10px; border-radius: 10px; border: 1px solid #333; text-align: center; cursor: pointer; transition: 0.3s; }
-        .disco:hover { border-color: var(--dourado); transform: scale(1.05); }
-        .capa { width: 100%; aspect-ratio: 1/1; background: #222; border-radius: 5px; margin-bottom: 8px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--preto);
+            color: var(--branco);
+            line-height: 1.6;
+        }
 
-        /* Auth v1.0 */
-        .auth-hero { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1000&q=80'); background-size: cover; }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 15px; border: 2px solid var(--azul); width: 400px; text-align: center; }
+        header {
+            background-color: var(--azul-marinho);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--dourado);
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--dourado);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero {
+            padding: 100px 20px;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+        }
+
+        .hero h1 {
+            color: var(--dourado);
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-button {
+            background-color: var(--dourado);
+            color: var(--preto);
+            padding: 15px 40px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background-color: var(--branco);
+            transform: scale(1.1);
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 50px 20px;
+            background-color: #111;
+        }
+
+        .feature-box {
+            flex: 1;
+            min-width: 300px;
+            margin: 20px;
+            padding: 30px;
+            background-color: var(--azul-marinho);
+            border-radius: 10px;
+            border: 1px solid var(--dourado);
+            text-align: center;
+        }
+
+        .feature-box h3 {
+            color: var(--dourado);
+        }
+
+        .contact-section {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        footer {
+            background-color: #000;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #333;
+            font-size: 0.9em;
+        }
+
+        .highlight { color: var(--dourado); font-weight: bold; }
         
-        /* UI Elements */
-        .btn-gold { background: var(--dourado); color: black; padding: 12px; border: none; border-radius: 5px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
-        .card { background: #111; padding: 20px; border-radius: 10px; border-left: 4px solid var(--dourado); margin-bottom: 20px; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .login-link {
+            display: block;
+            margin-top: 15px;
+            color: var(--branco);
+            text-decoration: none;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-logo">MAM SYSTEM</div>
-        <div class="nav-item active" onclick="show('home')">🏠 Pagina Inicial</div>
-        <div class="nav-item" onclick="show('perfil')">👤 Meu Perfil</div>
-        <div class="nav-item" onclick="show('registro')">🎤 Criar Artista/Produtor</div>
-        <div class="nav-item" onclick="show('lançar')">🚀 Lança Musica</div>
-        <div class="nav-item" onclick="show('minhas')">🎶 Minhas Musicas</div>
-        <div class="nav-item" onclick="show('carteira')">💰 Minha Carteira</div>
-        <div class="nav-item" onclick="show('ceo')">👔 Informação CEO</div>
-        <div class="nav-item" id="adminLink" style="display:none; color:var(--dourado)" onclick="show('admin')">🛡️ Administrativo</div>
-        <div class="nav-item" onclick="logout()" style="color:red; margin-top:auto">🚪 Terminar Sessão</div>
-    </div>
+    <header>
+        <div class="logo">MAM Distribuidora</div>
+        <p style="margin:0; font-size: 0.8em; color: var(--branco);">Música | Angola | Global</p>
+    </header>
 
-    <div id="main" class="main">
-        <div id="authPage" class="auth-hero">
-            <div class="auth-card">
-                <h2 style="color: var(--dourado);">MAM DISTRIBUIDORA</h2>
-                <div id="loginForm">
-                    <input type="email" id="logEmail" placeholder="Email">
-                    <input type="password" id="logPass" placeholder="Palavra-passe">
-                    <button class="btn-gold" onclick="login()">Inicia Sessão</button>
-                    <p onclick="toggleAuth()" style="cursor:pointer; font-size:0.8em">Cadastre-se</p>
-                </div>
-                <div id="registerForm" style="display:none">
-                    <input type="text" id="regNome" placeholder="Nome Completo">
-                    <input type="email" id="regEmail" placeholder="Email">
-                    <input type="password" id="regPass" placeholder="Senha">
-                    <button class="btn-gold" onclick="cadastrar()">Cadastre-se</button>
-                    <p onclick="toggleAuth()" style="cursor:pointer; font-size:0.8em">Já tenho conta</p>
-                </div>
-            </div>
+    <section class="hero">
+        <h1>O teu talento merece curadoria real.</h1>
+        <p>Ao contrário das grandes plataformas automáticas, na <span class="highlight">MAM</span> cada artista é tratado com exclusividade por <span class="highlight">Matias Arsénio Manuel (Play Sean Arsénio)</span>.</p>
+        <a href="#cadastro" class="cta-button">Cadastre-se</a>
+        <a onclick="alert('Sistema de Login Ativo: Insira os dados no formulário abaixo para validar seu acesso.')" class="login-link">Já tem uma conta? Inicia sessão</a>
+    </section>
+
+    <section class="features">
+        <div class="feature-box">
+            <h3>Curadoria Personalizada</h3>
+            <p>Não somos robôs. Ouvimos a tua música e criamos a melhor estratégia para o teu lançamento.</p>
         </div>
+        <div class="feature-box">
+            <h3>Distribuição Global</h3>
+            <p>Spotify, Apple Music, YouTube e TikTok. Levamos o som de Angola para o mundo inteiro.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Proteção & Ganhos</h3>
+            <p>Gestão transparente de Royalties e Content ID ativo para proteger os teus direitos.</p>
+        </div>
+    </section>
 
-        <div id="app" style="display:none">
-            
-            <div id="home" class="section active">
-                <div class="card">
-                    <h3>Apoia meus projectos</h3>
-                    <p>IBAN: AO06 0000 0000 0000 0000 0 | Carteira MAM: 937881307</p>
-                </div>
-                
-                <h3>Lançamentos MAM</h3>
-                <div class="grid-discos" id="vitrine">
-                    <div class="disco" onclick="play('Princesa Heliany ft Play Sean')">
-                        <div class="capa">💿</div>
-                        <small>Fé em Deus</small><br><small style="font-size:9px">P. Heliany ft Play Sean</small>
-                    </div>
-                </div>
+    <section id="cadastro" class="contact-section">
+        <h2 style="color: var(--dourado);">Inicia sessão ou Cadastre-se</h2>
+        <p>Acede à tua conta ou cria uma nova na MAM Distribuidora.</p>
+        <form action="mailto:mamfilhos29@gmail.com" method="post" enctype="text/plain">
+            <input type="text" name="Nome" placeholder="Nome Completo / Artístico" required>
+            <input type="email" name="Email" placeholder="E-mail" required>
+            <input type="password" name="Senha" placeholder="Palavra-passe" required>
+            <button type="submit" class="cta-button">Entrar / Criar Conta</button>
+        </form>
+    </section>
 
-                <div class="card" style="margin-top:20px; background:#001226">
-                    <h4>💎 Caça Recompensa</h4>
-                    <p>Assista e ganhe. Nível <span id="userLevel">Normal</span></p>
-                    <button class="btn-gold" style="width:auto" onclick="assistirVideo()">Assistir Vídeo Pago</button>
-                </div>
-            </div>
+    <footer>
+        <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
+        <p>Direção: <span class="highlight">Matias Arsénio Manuel</span> | E-mail: mamfilhos29@gmail.com</p>
+        <p>Telefone: 937881307</p>
+    </footer>
 
-            <div id="carteira" class="section">
-                <h1>Minha Carteira</h1>
-                <div class="card">
-                    <h3>Saldo Real: <span id="saldo">0.00</span> KZ</h3>
-                    <small id="conversao">0.00 USD | 0.00 EUR</small>
-                </div>
-                <h3>Levantamento (Mínimo 10.000 KZ)</h3>
-                <select
+</body>
+</html>

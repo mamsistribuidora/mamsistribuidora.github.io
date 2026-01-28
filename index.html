@@ -3,183 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Curadoria de Elite</title>
+    <title>MAM Distribuidora | Painel de Elite v1.0</title>
     <style>
-        :root {
-            --dourado: #FFD700;
-            --azul-marinho: #001f3f;
-            --preto: #0a0a0a;
-            --branco: #ffffff;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: var(--preto);
-            color: var(--branco);
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: var(--azul-marinho);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--dourado);
-        }
-
-        .logo {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: var(--dourado);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .hero {
-            padding: 100px 20px;
-            text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-        }
-
-        .hero h1 {
-            color: var(--dourado);
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 1.2em;
-            max-width: 800px;
-            margin: 0 auto 30px;
-        }
-
-        .cta-button {
-            background-color: var(--dourado);
-            color: var(--preto);
-            padding: 15px 40px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            display: inline-block;
-            border: none;
-            cursor: pointer;
-        }
-
-        .cta-button:hover {
-            background-color: var(--branco);
-            transform: scale(1.1);
-        }
-
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            padding: 50px 20px;
-            background-color: #111;
-        }
-
-        .feature-box {
-            flex: 1;
-            min-width: 300px;
-            margin: 20px;
-            padding: 30px;
-            background-color: var(--azul-marinho);
-            border-radius: 10px;
-            border: 1px solid var(--dourado);
-            text-align: center;
-        }
-
-        .feature-box h3 {
-            color: var(--dourado);
-        }
-
-        .contact-section {
-            padding: 50px 20px;
-            text-align: center;
-        }
-
-        form {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        input {
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        footer {
-            background-color: #000;
-            padding: 30px;
-            text-align: center;
-            border-top: 1px solid #333;
-            font-size: 0.9em;
-        }
-
-        .highlight { color: var(--dourado); font-weight: bold; }
+        :root { --dourado: #FFD700; --azul: #001f3f; --preto: #050505; --card: #121212; --texto: #e0e0e0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--preto); color: var(--texto); margin: 0; display: flex; overflow-x: hidden; }
         
-        .login-link {
-            display: block;
-            margin-top: 15px;
-            color: var(--branco);
-            text-decoration: none;
-            font-size: 0.9em;
-            cursor: pointer;
-        }
+        /* SIDEBAR ÊXODO */
+        .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; border-right: 2px solid var(--azul); display: none; flex-direction: column; padding: 25px; box-sizing: border-box; z-index: 1000; }
+        .sidebar-logo { color: var(--dourado); font-size: 1.8em; font-weight: bold; text-align: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .nav-item { padding: 12px; border-radius: 8px; cursor: pointer; color: white; text-decoration: none; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background: var(--azul); color: var(--dourado); }
+
+        /* ÁREA PRINCIPAL */
+        .main { width: 100%; min-height: 100vh; transition: 0.3s; }
+        .logged-main { margin-left: 280px; width: calc(100% - 280px); }
+        .section { padding: 40px; display: none; animation: fadeIn 0.5s; }
+        .active-section { display: block; }
+
+        /* VITRINE DE DISCOS (TAMANHO PEQUENO) */
+        .grid-discos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 20px; }
+        .disco { background: #111; padding: 12px; border-radius: 12px; border: 1px solid #333; text-align: center; cursor: pointer; transition: 0.3s; position: relative; }
+        .disco:hover { border-color: var(--dourado); transform: scale(1.05); }
+        .capa-disco { width: 100%; aspect-ratio: 1/1; background: linear-gradient(45deg, #222, #050505); border-radius: 50%; margin-bottom: 10px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 2em; }
+
+        /* AUTH (V1.0 STYLE) */
+        .auth-hero { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80'); background-size: cover; width: 100%; }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 15px; border: 2px solid var(--azul); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0,212,255,0.1); }
+        
+        /* UI ELEMENTS */
+        .btn-gold { background: var(--dourado); color: black; padding: 14px; border: none; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
+        .card { background: #111; padding: 25px; border-radius: 12px; border-left: 5px solid var(--dourado); margin-bottom: 25px; }
+        .value { font-size: 2em; font-weight: bold; color: #fff; margin: 10px 0; }
+
+        /* PUBLICIDADE CAÇA RECOMPENSA */
+        .ads-box { background: #001226; padding: 20px; border-radius: 12px; border: 1px dashed var(--dourado); margin-top: 30px; display: flex; justify-content: space-between; align-items: center; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">MAM Distribuidora</div>
-        <p style="margin:0; font-size: 0.8em; color: var(--branco);">Música | Angola | Global</p>
-    </header>
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-logo">MAM SYSTEM</div>
+        <div class="nav-item active" onclick="showSec('home')">🏠 Pagina Inicial</div>
+        <div class="nav-item" onclick="showSec('perfil')">👤 Meu Perfil</div>
+        <div class="nav-item" onclick="showSec('artista')">🎤 Criar Artista</div>
+        <div class="nav-item" onclick="showSec('lançar')">🚀 Lança Musica</div>
+        <div class="nav-item" onclick="showSec('minhas')">🎶 Minhas Musicas</div>
+        <div class="nav-item" onclick="showSec('carteira')">💰 Minha Carteira</div>
+        <div class="nav-item" onclick="showSec('ceo')">👔 Informação CEO</div>
+        <div id="adminItem" class="nav-item" onclick="showSec('admin')" style="display:none; color: var(--dourado);">🛡️ Administrativo</div>
+        <div class="nav-item" onclick="logout()" style="color: #ff4444; margin-top: auto;">🚪 Terminar Sessão</div>
+    </div>
 
-    <section class="hero">
-        <h1>O teu talento merece curadoria real.</h1>
-        <p>Ao contrário das grandes plataformas automáticas, na <span class="highlight">MAM</span> cada artista é tratado com exclusividade por <span class="highlight">Matias Arsénio Manuel (Play Sean Arsénio)</span>.</p>
-        <a href="#cadastro" class="cta-button">Cadastre-se</a>
-        <a onclick="alert('Sistema de Login Ativo: Insira os dados no formulário abaixo para validar seu acesso.')" class="login-link">Já tem uma conta? Inicia sessão</a>
-    </section>
+    <div id="mainContent" class="main">
+        
+        <div id="authPage" class="auth-hero">
+            <div class="auth-card" id="authBox">
+                <h1 style="color: var(--dourado); margin: 0;">MAM DISTRIBUIDORA</h1>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 25px;">Curadoria Real por Matias Arsénio Manuel</p>
+                
+                <div id="loginForm">
+                    <input type="email" id="lEmail" placeholder="Email">
+                    <input type="password" id="lPass" placeholder="Palavra-passe">
+                    <button class="btn-gold" onclick="login()">Inicia Sessão</button>
+                    <p onclick="toggleAuth()" style="cursor:pointer; font-size: 0.8em; margin-top:15px;">Novo aqui? <b>Cadastre-se</b></p>
+                </div>
 
-    <section class="features">
-        <div class="feature-box">
-            <h3>Curadoria Personalizada</h3>
-            <p>Não somos robôs. Ouvimos a tua música e criamos a melhor estratégia para o teu lançamento.</p>
+                <div id="registerForm" class="hidden">
+                    <input type="text" id="rNome" placeholder="Nome Completo">
+                    <input type="email" id="rEmail" placeholder="Email">
+                    <input type="password" id="rPass" placeholder="Crie uma Senha">
+                    <button class="btn-gold" onclick="cadastrar()">Cadastre-se</button>
+                    <p onclick="toggleAuth()" style="cursor:pointer; font-size: 0.8em; margin-top:15px;">Já tem conta? <b>Login</b></p>
+                </div>
+            </div>
         </div>
-        <div class="feature-box">
-            <h3>Distribuição Global</h3>
-            <p>Spotify, Apple Music, YouTube e TikTok. Levamos o som de Angola para o mundo inteiro.</p>
-        </div>
-        <div class="feature-box">
-            <h3>Proteção & Ganhos</h3>
-            <p>Gestão transparente de Royalties e Content ID ativo para proteger os teus direitos.</p>
-        </div>
-    </section>
 
-    <section id="cadastro" class="contact-section">
-        <h2 style="color: var(--dourado);">Inicia sessão ou Cadastre-se</h2>
-        <p>Acede à tua conta ou cria uma nova na MAM Distribuidora.</p>
-        <form action="mailto:mamfilhos29@gmail.com" method="post" enctype="text/plain">
-            <input type="text" name="Nome" placeholder="Nome Completo / Artístico" required>
-            <input type="email" name="Email" placeholder="E-mail" required>
-            <input type="password" name="Senha" placeholder="Palavra-passe" required>
-            <button type="submit" class="cta-button">Entrar / Criar Conta</button>
-        </form>
-    </section>
+        <div id="app" class="hidden">
+            
+            <div id="home" class="section active-section">
+                <div class="card">
+                    <h3>Apoia meus projectos</h3>
+                    <p>IBAN: AO06 0000 0000 0000 0000 0 | CEO: Matias Arsénio Manuel</p>
+                </div>
 
-    <footer>
-        <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
-        <p>Direção: <span class="highlight">Matias Arsénio Manuel</span> | E-mail: mamfilhos29@gmail.com</p>
-        <p>Telefone: 937881307</p>
-    </footer>
+                <h2>Lançamentos MAM (Vitrine)</h2>
+                <div class="grid-discos" id="vitrine">
+                    <div class="disco" onclick="alert('Tocando: Princesa Heliany ft Play Sean Arsenio - Fé em Deus\nDistribuição: MAM')">
+                        <div class="capa-disco">💿</div>
+                        <small><b>Fé em Deus</b></small><br>
+                        <small style="font-size: 10px; color:var(--dourado)">P. Heliany ft Play Sean</small>
+                    </div>
+                </div>
 
-</body>
-</html>
+                <div class="ads-box">
+                    <div>
+                        <strong>💎 Caça Recompensa (Ganha Assistindo)</strong>
+                        <p style="font-size: 0.8em; margin: 5px 0 0;">Vídeos patrocinados pela MAM.</p>
+                    </div>
+                    <button class="btn-gold" style="width:auto" onclick="assistirTask()">Assistir e Ganhar</button>
+                </div>
+
+                <div class="card" style="margin-top:20px;">
+                    <h4>Convide Amigos</h4>
+                    <p>Link: <code id="refLink">mam.distribuidora/ref/123</code></p>
+                    <button class="btn-gold" style="width:auto" onclick="copiarLink()">Cop

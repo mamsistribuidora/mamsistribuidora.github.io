@@ -3,192 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Curadoria de Elite</title>
+    <title>MAM Distribuidora | Sistema Real v3.0</title>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    
     <style>
-        :root {
-            --dourado: #FFD700;
-            --azul-marinho: #001f3f;
-            --preto: #0a0a0a;
-            --branco: #ffffff;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: var(--preto);
-            color: var(--branco);
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: var(--azul-marinho);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--dourado);
-        }
-
-        .logo {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: var(--dourado);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .hero {
-            padding: 100px 20px;
-            text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-        }
-
-        .hero h1 {
-            color: var(--dourado);
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-
-        .cta-button {
-            background-color: var(--dourado);
-            color: var(--preto);
-            padding: 15px 40px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            display: inline-block;
-            cursor: pointer;
-            border: none;
-        }
-
-        .cta-button:hover {
-            background-color: var(--branco);
-            transform: scale(1.05);
-        }
-
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            padding: 50px 20px;
-            background-color: #111;
-        }
-
-        .feature-box {
-            flex: 1;
-            min-width: 300px;
-            margin: 20px;
-            padding: 30px;
-            background-color: var(--azul-marinho);
-            border-radius: 10px;
-            border: 1px solid var(--dourado);
-            text-align: center;
-        }
-
-        .feature-box h3 {
-            color: var(--dourado);
-        }
-
-        .section-form {
-            padding: 80px 20px;
-            text-align: center;
-            border-top: 1px solid var(--dourado);
-        }
-
-        form {
-            max-width: 500px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        input {
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: 1px solid var(--dourado);
-            background: #111;
-            color: white;
-        }
-
-        footer {
-            background-color: #000;
-            padding: 30px;
-            text-align: center;
-            border-top: 1px solid #333;
-            font-size: 0.9em;
-        }
-
-        .highlight { color: var(--dourado); font-weight: bold; }
+        :root { --dourado: #FFD700; --azul: #001f3f; --preto: #050505; --card: #111; --texto: #eee; }
+        body { font-family: 'Inter', sans-serif; background: var(--preto); color: var(--texto); margin: 0; }
         
-        .nav-links {
-            margin-top: 20px;
-        }
+        nav { background: var(--azul); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--dourado); position: sticky; top: 0; z-index: 100;}
+        .logo { font-size: 1.6em; font-weight: 800; color: var(--dourado); text-decoration: none; }
+        .menu a { color: white; text-decoration: none; margin-left: 20px; cursor: pointer; font-weight: 500; }
+
+        .container { padding: 40px 5%; display: none; animation: fadeIn 0.4s; }
+        .active { display: block; }
+
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #222; border-left: 4px solid var(--dourado); }
+        .value { font-size: 2em; font-weight: bold; color: var(--branco); margin: 10px 0; }
+
+        form { max-width: 400px; margin: 40px auto; background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--azul); }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box;}
+        .btn-gold { background: var(--dourado); color: black; width: 100%; padding: 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-        }
-        
-        .nav-links a:hover { color: var(--dourado); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">MAM Distribuidora</div>
-        <p style="margin:0; font-size: 0.8em; color: var(--branco);">Música | Angola | Global</p>
-    </header>
-
-    <section class="hero">
-        <h1>O teu talento merece curadoria real.</h1>
-        <p>Na <span class="highlight">MAM</span> cada artista é tratado com exclusividade por <span class="highlight">Matias Arsénio Manuel</span>.</p>
-        
-        <div class="nav-links">
-            <a href="#cadastro" class="cta-button">Cadastre-se</a>
-            <a href="#login" style="display:block; margin-top:20px;">Já tem conta? Inicia sessão</a>
+    <nav>
+        <a class="logo">MAM SYSTEM</a>
+        <div class="menu" id="navLinks">
+            <a onclick="show('home')">Dashboard</a>
+            <a onclick="show('tasks')">Tarefas</a>
+            <a onclick="show('wallet')">Carteira</a>
+            <a onclick="logout()" style="color: #ff4444;">Sair</a>
         </div>
-    </section>
+    </nav>
 
-    <section class="features">
-        <div class="feature-box">
-            <h3>Curadoria Personalizada</h3>
-            <p>Estratégia humana para o teu lançamento crescer.</p>
-        </div>
-        <div class="feature-box">
-            <h3>Distribuição Global</h3>
-            <p>Spotify, Apple Music, YouTube e TikTok.</p>
-        </div>
-    </section>
-
-    <section id="cadastro" class="section-form">
-        <h2 style="color: var(--dourado);">Cadastre-se</h2>
-        <p>Cria a tua conta para começar a distribuir.</p>
-        <form action="mailto:mamfilhos29@gmail.com" method="post" enctype="text/plain">
-            <input type="text" placeholder="Nome Artístico" required>
-            <input type="email" placeholder="E-mail" required>
-            <input type="password" placeholder="Crie uma Palavra-passe" required>
-            <button type="submit" class="cta-button">Criar Conta</button>
+    <div id="loginSection" class="active" style="padding: 50px 5%; text-align: center;">
+        <h1 style="color: var(--dourado);">MAM Distribuidora</h1>
+        <p>Acesse sua conta oficial de curadoria.</p>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Teu E-mail" required>
+            <input type="password" id="loginPass" placeholder="Palavra-passe" required>
+            <button type="submit" class="btn-gold">Entrar no Sistema</button>
+            <p onclick="showRegister()" style="cursor:pointer; font-size: 0.8em; margin-top: 15px;">Novo artista? Cadastre-se aqui</p>
         </form>
-    </section>
+    </div>
 
-    <section id="login" class="section-form" style="background-color: #050505;">
-        <h2 style="color: var(--dourado);">Inicia sessão</h2>
-        <p>Acede ao teu painel de artista.</p>
-        <form action="#" method="post">
-            <input type="email" placeholder="Teu E-mail" required>
-            <input type="password" placeholder="Tua Palavra-passe" required>
-            <button type="submit" class="cta-button">Entrar</button>
-        </form>
-    </section>
+    <div id="home" class="container">
+        <h1 id="welcomeUser">Bem-vindo, Diretor</h1>
+        <div class="grid-stats">
+            <div class="card"><h3>Saldo em Carteira</h3><div class="value" id="balance">0,00 AKZ</div></div>
+            <div class="card"><h3>Status Curadoria</h3><div class="value" style="color: #00ff00;">ATIVO</div></div>
+        </div>
+        <h2>Anúncios & Novidades</h2>
+        <div class="card" style="border-left-color: var(--azul);">
+            <p><strong>Campanha 2026:</strong> Lançamento oficial de "Fé em Deus" disponível em todas as plataformas.</p>
+        </div>
+    </div>
 
-    <footer>
-        <p>&copy; 2026 MAM Distribuidora. Direção: <span class="highlight">Matias Arsénio Manuel</span></p>
-        <p>Email: mamfilhos29@gmail.com | Tel: 937881307</p>
-    </footer>
+    <div id="wallet" class="container">
+        <h1>Minha Carteira MAM</h1>
+        <div class="card">
+            <p>Total Gerado em Royalties</p>
+            <div class="value" id="totalGanhos">0,00 AKZ</div>
+            <button class="btn-gold" onclick="alert('Pedido enviado para Matias Arsénio Manuel')">Solicitar Levantamento</button>
+        </div>
+    </div>
 
+    <script>
+        // 1. CONFIGURAÇÃO DO FIREBASE (Substitui pelos teus dados do console)
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_PROJETO.firebaseapp.com",
+            databaseURL: "https://SEU_PROJETO.firebaseio.com",
+            projectId: "SEU_PROJETO",
+            storageBucket: "SEU_PROJETO.appspot.com",
+            messagingSenderId: "SEU_ID",
+            appId: "SEU_APP_ID"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // 2. FUNÇÃO DE LOGIN REAL
+        document.getElementById('loginForm').onsubmit = (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            auth.signInWithEmailAndPassword(email, pass)
+                .then((userCredential) => {
+                    alert('Acesso Concedido!');
+                    initDashboard(userCredential.user);
+                })
+                .catch((error) => alert('Erro: ' + error.message));
+        };
+
+        function initDashboard(user) {
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('home').classList.add('active');
+            document.getElementById('navLinks').style.display = 'flex';
+            document.getElementById('welcomeUser').innerText = "Painel: " + user.email;
+            
+            // Buscar Ganhos Reais no Banco de Dados
+            db.ref('users/' + user.uid).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if(data) {
+                    document.getElementById('balance').innerText = data.saldo + " AKZ";
+                }
+            });
+        }
+
+        function show(id) {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function logout() {
+            auth.signOut().then(() => location.reload());
+        }
+    </script>
 </body>
 </html>

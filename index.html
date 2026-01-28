@@ -3,66 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Angolana </title>
+    <title>MAM Distribuidora | Plataforma Profissional</title>
     <style>
-        :root { --gold: #FFD700; --blue: #002d5a; --card: rgba(0, 0, 0, 0.92); }
-        
+        :root { --gold: #FFD700; --blue: #002d5a; --card: rgba(10, 10, 10, 0.98); }
         body { 
             font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; color: #fff;
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1470&auto=format&fit=crop'); 
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1470&q=80'); 
             background-size: cover; background-attachment: fixed; background-position: center;
         }
-
-        /* AJUSTE DISPOSITIVO (RESPONSIVO) */
         .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; border-right: 2px solid var(--blue); display: none; flex-direction: column; padding: 20px; box-sizing: border-box; z-index: 1000; overflow-y: auto; }
         .main { width: 100%; box-sizing: border-box; }
         .logged-main { padding-left: 280px; }
-
-        @media (max-width: 900px) {
-            .logged-main { padding-left: 0; }
-            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid var(--blue); }
-        }
-
-        .section { padding: 25px; display: none; max-width: 1200px; margin: auto; animation: fadeIn 0.4s; }
+        @media (max-width: 900px) { .logged-main { padding-left: 0; } .sidebar { width: 100%; height: auto; position: relative; } }
+        .section { padding: 25px; display: none; max-width: 1200px; margin: auto; }
         .active-section { display: block; }
-        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; backdrop-filter: blur(15px); }
-        .card h3 { color: var(--gold); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: rgba(20,20,20,0.8); border: 1px solid var(--gold); color: #fff; border-radius: 6px; box-sizing: border-box; }
-        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
-        .btn-gold:hover { background: #e6c200; transform: scale(1.02); }
-        
-        .nav-item { padding: 14px; cursor: pointer; border-bottom: 1px solid #222; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .nav-item:hover { color: var(--gold); background: rgba(255,215,0,0.05); }
-
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; border-left: 4px solid var(--gold); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; }
+        input:focus { border-color: var(--gold); outline: none; }
+        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .nav-item { padding: 14px; cursor: pointer; border-bottom: 1px solid #222; transition: 0.3s; }
+        .nav-item:hover { background: var(--blue); color: #fff; }
         .profile-pic { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; display: block; margin: auto; }
-        footer { background: #000; padding: 40px 20px; text-align: center; border-top: 2px solid var(--blue); }
+        footer { background: #000; padding: 30px; text-align: center; border-top: 2px solid var(--blue); }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
+        .pendente { background: #ffae00; color: #000; }
         .hidden { display: none !important; }
-        .grid-tarefas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .tarefa-item { background: #111; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #222; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="authPage" style="height:95vh; display:flex; align-items:center; justify-content:center; padding:20px;">
-        <div class="card" style="width:100%; max-width:400px; text-align:center; border: 2px solid var(--blue);">
-            <h1 style="color:var(--gold); font-size:3em; margin:0; letter-spacing: 5px;">MAM</h1>
-            <p style="text-transform: uppercase; font-size: 0.8em; color: #888;">Distribuição & Curadoria</p>
-            
+        <div class="card" style="width:100%; max-width:400px; text-align:center;">
+            <h1 style="color:var(--gold); margin:0;">MAM</h1>
             <div id="loginBox">
-                <input type="email" id="lEmail" placeholder="Teu E-mail">
+                <input type="email" id="lEmail" placeholder="E-mail da Conta">
                 <input type="password" id="lPass" placeholder="Palavra-passe">
-                <button class="btn-gold" onclick="entrar()">Iniciar Sessão</button>
-                <p style="margin-top:15px; font-size: 0.9em;">Ainda não fazes parte? <br><span onclick="irParaRegisto()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Criar Conta Profissional</span></p>
+                <button class="btn-gold" onclick="autenticar()">Aceder ao Painel</button>
+                <p onclick="irParaRegisto()" style="color:var(--gold); cursor:pointer; margin-top:15px;">Criar nova conta de Artista</p>
             </div>
-
             <div id="regBox" class="hidden">
-                <input type="text" id="rNome" placeholder="Nome Completo">
+                <input type="text" id="rNome" placeholder="Nome Artístico/Completo">
                 <input type="email" id="rEmail" placeholder="E-mail">
-                <input type="password" id="rPass" placeholder="Criar Palavra-passe">
-                <button class="btn-gold" onclick="cadastrar()">Finalizar Cadastro</button>
-                <p style="margin-top:15px;">Já tens conta? <span onclick="irParaLogin()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Entrar</span></p>
+                <input type="password" id="rPass" placeholder="Criar Senha">
+                <button class="btn-gold" onclick="registrar()">Finalizar Registo</button>
+                <p onclick="irParaLogin()" style="color:var(--gold); cursor:pointer; margin-top:15px;">Já tenho conta</p>
             </div>
         </div>
     </div>
@@ -70,16 +54,15 @@
     <nav id="sidebar" class="sidebar">
         <div style="text-align:center; margin-bottom:20px;">
             <img id="sidePic" src="https://via.placeholder.com/100" class="profile-pic">
-            <p id="sideNome" style="color:var(--gold); font-weight:bold; margin-top:12px; font-size: 1.1em;"></p>
+            <p id="sideNome" style="color:var(--gold); font-weight:bold; margin-top:12px;"></p>
         </div>
-        <div class="nav-item" onclick="mostrarSec('home')">🏠 Início / Home</div>
-        <div class="nav-item" onclick="mostrarSec('perfil')">👤 Editar Perfil</div>
-        <div class="nav-item" onclick="mostrarSec('lancar')">🚀 Lança Música</div>
-        <div class="nav-item" onclick="mostrarSec('minhas_musicas')">🎶 Minhas Músicas</div>
-        <div class="nav-item" onclick="mostrarSec('carteira')">💰 Carteira Dupla</div>
-        <div class="nav-item" onclick="mostrarSec('satelite')">🛰️ MAM Satélite (Auto)</div>
-        <div id="adminBtn" class="nav-item" onclick="mostrarSec('admin')" style="display:none; color:var(--gold); border: 1px solid var(--gold); margin-top: 10px;">🛡️ PAINEL DIRETOR (MAM)</div>
-        <div class="nav-item" onclick="sair()" style="color:#ff4d4d; margin-top:auto; font-weight: bold;">🚪 Sair</div>
+        <div class="nav-item" onclick="navegar('home')">🏠 Página Inicial</div>
+        <div class="nav-item" onclick="navegar('perfil')">👤 Gerir Perfil</div>
+        <div class="nav-item" onclick="navegar('lancar')">🚀 Enviar Música</div>
+        <div class="nav-item" onclick="navegar('minhas_musicas')">🎶 Minhas Músicas</div>
+        <div class="nav-item" onclick="navegar('carteira')">💰 Carteira & Saques</div>
+        <div id="adminBtn" class="nav-item" onclick="navegar('admin')" style="display:none; color:var(--gold); border: 1px solid var(--gold);">🛡️ PAINEL CEO</div>
+        <div class="nav-item" onclick="sair()" style="color:#ff4d4d; margin-top:auto;">🚪 Terminar Sessão</div>
     </nav>
 
     <div id="app" class="hidden">
@@ -87,205 +70,225 @@
             
             <div id="home" class="section active-section">
                 <div class="card">
-                    <h3>Bem-vindo à Família MAM</h3>
-                    <p id="msgBoasVindas">Olá! Estamos prontos para elevar a tua carreira ao próximo nível.</p>
+                    <h3>Notas de Boas-Vindas</h3>
+                    <p id="boasVindasText"></p>
                 </div>
-
                 <div class="card">
                     <h3>📀 Música em Destaque</h3>
-                    <div style="display: flex; gap: 15px; align-items: center;">
-                        <img src="https://via.placeholder.com/80" style="border-radius: 8px;">
-                        <div>
-                            <p style="margin:0; font-weight:bold;">Fé em Deus</p>
-                            <small>Princesa Heliany ft Play Sean Arsénio</small>
-                        </div>
-                    </div>
+                    <p><b>Fé em Deus</b> - Princesa Heliany ft Play Sean Arsénio</p>
                 </div>
-
                 <div class="card">
-                    <h3>🚀 Ganhar Dinheiro (Tarefas)</h3>
-                    <div class="grid-tarefas">
-                        <div class="tarefa-item"><p>📹 Assistir Vídeos</p><small>+50 KZ p/vídeo</small></div>
-                        <div class="tarefa-item"><p>🎮 Jogar</p><small>Ganhe por nível</small></div>
-                        <div class="tarefa-item"><p>🤝 Convidar Amigo</p><small>+500 KZ bónus</small></div>
-                        <div class="tarefa-item"><p>📱 Seguir TikTok C.E.O</p><small>Bónus de %</small></div>
+                    <h3>💰 Centro de Ganhos (Tarefas Ativas)</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <button class="btn-gold" style="font-size:0.7em;" onclick="execTarefa(50, 'Assistir Vídeo')">📹 Vídeo Pago (+50 KZ)</button>
+                        <button class="btn-gold" style="font-size:0.7em;" onclick="execTarefa(150, 'Follow TikTok')">📱 TikTok CEO (+150 KZ)</button>
                     </div>
                 </div>
-
-                <div class="card">
-                    <h3>📦 Pacotes de Perfil (% de Ganho)</h3>
-                    <div class="grid-tarefas">
-                        <div class="tarefa-item" style="border-color: #888;"><b>GRÁTIS</b><br><small>20% Lucro Artista</small></div>
-                        <div class="tarefa-item" style="border-color: var(--gold);"><b>MAM SILVER</b><br><small>40% Lucro Artista</small></div>
-                        <div class="tarefa-item" style="border-color: #00ff00;"><b>MAM DIAMOND</b><br><small>70% Lucro Artista</small></div>
-                    </div>
-                </div>
-
-                <div class="card" style="border: 1px dashed var(--gold);">
-                    <h3>📢 Apoie este Projeto</h3>
-                    <p>MAM Distribuidora - Curadoria que as grandes plataformas não oferecem.</p>
-                    <p><b>IBAN MAM (BAI):</b> AO06 0040 0000 1234 5678 1012 3<br>
-                    <b>Titular:</b> Matias Arsénio Manuel</p>
+                <div class="card" style="border-left: 4px solid var(--blue);">
+                    <h3>📢 Informações Bancárias MAM</h3>
+                    <p>Apoie a curadoria independente: <br><b>IBAN:</b> AO06 0040 0000 1234 5678 1012 3 <br><b>Titular:</b> Matias Manuel</p>
                 </div>
             </div>
 
             <div id="perfil" class="section">
-                <h3>Gerir Perfil</h3>
                 <div class="card">
-                    <img id="viewPic" src="https://via.placeholder.com/100" class="profile-pic">
-                    <p>Mudar Foto:</p> <input type="file" accept="image/*" onchange="upFoto(this)">
-                    <p>Nome Artístico/Completo:</p> <input type="text" id="upNome" placeholder="Introduz o nome">
-                    <button class="btn-gold" onclick="savePerfil()">Salvar Dados</button>
+                    <h3>Configurações de Perfil</h3>
+                    <p>Nome de Exibição:</p>
+                    <input type="text" id="editNome">
+                    <p>Alterar Foto (URL):</p>
+                    <input type="text" id="editFoto" placeholder="Link da imagem">
+                    <button class="btn-gold" onclick="salvarPerfil()">Atualizar Dados</button>
                 </div>
             </div>
 
             <div id="lancar" class="section">
-                <h3>Lançamento Profissional (ISRC/UPC)</h3>
                 <div class="card">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <input type="text" placeholder="Título da Música">
-                        <input type="text" placeholder="Artista Principal">
-                        <input type="text" placeholder="Compositores">
-                        <select>
-                            <option>Selecione a Categoria</option>
-                            <option>Kizomba / Semba</option><option>Rap / Hip Hop</option>
-                            <option>Gospel</option><option>Afro House</option><option>Kuduro</option>
-                        </select>
-                        <label>Data de Lançamento Oficial:</label>
-                        <input type="date">
-                    </div>
-                    <p>Capa da Obra (3000x3000px):</p> <input type="file">
-                    <p>Ficheiro de Áudio (WAV/MP3 320kbps):</p> <input type="file">
-                    <button class="btn-gold">Enviar para Curadoria MAM</button>
+                    <h3>Formulário de Lançamento ISRC</h3>
+                    <input type="text" id="musicaTitulo" placeholder="Título da Obra">
+                    <input type="text" id="musicaArtista" placeholder="Artista Principal">
+                    <select id="musicaCat">
+                        <option>Kizomba / Semba</option><option>Rap / Hip-Hop</option><option>Gospel</option><option>Kuduro</option>
+                    </select>
+                    <p>Data de Lançamento:</p>
+                    <input type="date" id="musicaData">
+                    <p>Capa (JPG) e Áudio (WAV):</p>
+                    <input type="file" multiple>
+                    <button class="btn-gold" onclick="enviarLancamento()">Submeter para Distribuição</button>
                 </div>
             </div>
 
             <div id="minhas_musicas" class="section">
-                <h3>Minha Biblioteca</h3>
-                <div class="card"><p>Ainda não tens lançamentos aprovados pela MAM.</p></div>
+                <h3>O Meu Catálogo</h3>
+                <div id="containerMusicas"></div>
             </div>
 
             <div id="carteira" class="section">
-                <h3>Minha Carteira</h3>
-                <div class="card">
-                    <small>Saldo Disponível:</small>
-                    <h1 id="sUser" style="color:var(--gold)">0 KZ</h1>
-                </div>
-                <div id="cardAdmin" class="card" style="display:none; background:var(--blue);">
-                    <small>Lucro Empresa (80% Direção):</small>
-                    <h1 id="sMAM">0 KZ</h1>
+                <div class="card" style="text-align:center;">
+                    <small>Saldo Total Acumulado</small>
+                    <h1 id="saldoExibido" style="font-size:3em; color:var(--gold); margin:10px 0;">0 KZ</h1>
                 </div>
                 <div class="card">
-                    <h3>Solicitar Saque</h3>
-                    <select id="metodoSaque">
-                        <option>Selecione o Método</option>
-                        <optgroup label="Angola">
-                            <option>BFA</option><option>BAI</option><option>BIC</option><option>Multicaixa Express</option>
-                        </optgroup>
-                        <optgroup label="Internacional">
-                            <option>Visa / Wise</option><option>PayPal</option><option>Payoneer</option><option>Pix (Brasil)</option>
-                        </optgroup>
+                    <h3>Solicitar Levantamento</h3>
+                    <select id="saqueBanco">
+                        <option>BAI</option><option>BFA</option><option>BIC</option><option>Multicaixa Express</option>
+                        <option>PayPal</option><option>Wise/Visa</option><option>Pix</option>
                     </select>
-                    <input type="text" placeholder="Nº da Conta / IBAN / Chave Pix / E-mail PayPal">
-                    <button class="btn-gold">Confirmar Levantamento</button>
+                    <input type="number" id="saqueValor" placeholder="Quantia em KZ">
+                    <input type="text" id="saqueDestino" placeholder="IBAN ou E-mail de destino">
+                    <button class="btn-gold" onclick="executarSaque()">Confirmar Saque</button>
                 </div>
-            </div>
-
-            <div id="satelite" class="section">
-                <div class="card"><h3>🛰️ Ganhos Satélite</h3><p>O sistema MAM está a processar os teus ganhos em background...</p></div>
             </div>
 
             <div id="admin" class="section">
-                <div class="card"><h3>👑 Painel Diretor (Matias)</h3><p>Gestão de artistas e controle dos 80% de lucro global.</p></div>
+                <div class="card">
+                    <h3>Gestão Administrativa (MAM)</h3>
+                    <div id="adminStats"></div>
+                </div>
             </div>
-        </div>
 
-        <footer>
-            <p><b>MAM DISTRIBUIDORA</b> | C.E.O Matias Arsénio Manuel</p>
-            <p>mamfilhos29@gmail.com | Luanda, Angola | © 2026</p>
-        </footer>
+        </div>
+        <footer><b>MAM DISTRIBUIDORA</b> | C.E.O Matias Arsénio Manuel | Angola 2026</footer>
     </div>
 
     <script>
-        const CEO = "mamfilhos29@gmail.com";
-        let db = JSON.parse(localStorage.getItem('mam_v7_db')) || [];
-        let sess = JSON.parse(localStorage.getItem('mam_v7_sess')) || null;
+        // BASE DE DADOS REAL EM LOCALSTORAGE
+        let usuarios = JSON.parse(localStorage.getItem('mam_users')) || [];
+        let logado = JSON.parse(localStorage.getItem('mam_session')) || null;
+        let catalogo = JSON.parse(localStorage.getItem('mam_catalogo')) || [];
 
         function irParaRegisto() { document.getElementById('loginBox').classList.add('hidden'); document.getElementById('regBox').classList.remove('hidden'); }
         function irParaLogin() { document.getElementById('regBox').classList.add('hidden'); document.getElementById('loginBox').classList.remove('hidden'); }
 
-        function cadastrar() {
+        function registrar() {
             const n = document.getElementById('rNome').value;
             const e = document.getElementById('rEmail').value;
             const p = document.getElementById('rPass').value;
-            if(!n || !e || !p) return alert("Preencha todos os campos!");
-            db.push({nome: n, email: e, pass: p, saldo: 5000, foto: "https://via.placeholder.com/100"});
-            localStorage.setItem('mam_v7_db', JSON.stringify(db));
-            alert("Cadastro realizado com sucesso!"); irParaLogin();
+            if(!n || !e || !p) return alert("Erro: Todos os campos são obrigatórios.");
+            if(usuarios.find(u => u.email === e)) return alert("Erro: E-mail já registado.");
+            
+            usuarios.push({nome: n, email: e, pass: p, saldo: 5000, foto: "https://via.placeholder.com/100", role: 'USER'});
+            localStorage.setItem('mam_users', JSON.stringify(usuarios));
+            alert("Registo concluído! Bem-vindo à MAM.");
+            irParaLogin();
         }
 
-        function entrar() {
+        function autenticar() {
             const e = document.getElementById('lEmail').value;
             const p = document.getElementById('lPass').value;
-            if(e === CEO) {
-                sess = {nome: "Matias CEO (MAM)", email: e, role: "ADMIN", saldo: 500000, foto: "https://via.placeholder.com/100"};
+            
+            if(e === "mamfilhos29@gmail.com") { // ACESSO DIRETOR
+                logado = {nome: "Matias CEO", email: e, role: "ADMIN", saldo: 999999, foto: "https://via.placeholder.com/100"};
             } else {
-                let u = db.find(x => x.email === e && x.pass === p);
-                if(!u) return alert("Erro: E-mail ou Palavra-passe incorretos!");
-                sess = u; sess.role = "USER";
+                let user = usuarios.find(u => u.email === e && u.pass === p);
+                if(!user) return alert("Credenciais Inválidas.");
+                logado = user;
             }
-            localStorage.setItem('mam_v7_sess', JSON.stringify(sess));
+            
+            localStorage.setItem('mam_session', JSON.stringify(logado));
             location.reload();
         }
 
-        function bootstrap() {
-            if(!sess) return;
+        function carregarPainel() {
+            if(!logado) return;
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('mainDiv').classList.add('logged-main');
-            document.getElementById('sideNome').innerText = sess.nome;
-            document.getElementById('sidePic').src = sess.foto;
-            document.getElementById('viewPic').src = sess.foto;
-            document.getElementById('sUser').innerText = sess.saldo.toLocaleString() + " KZ";
-            document.getElementById('msgBoasVindas').innerText = "Olá, " + sess.nome + "! Estamos prontos para elevar a tua carreira ao próximo nível.";
             
-            if(sess.role === "ADMIN") {
-                document.getElementById('adminBtn').style.display = 'flex';
-                document.getElementById('cardAdmin').style.display = 'block';
-                document.getElementById('sMAM').innerText = "2,500,000 KZ";
-            }
+            document.getElementById('sideNome').innerText = logado.nome;
+            document.getElementById('sidePic').src = logado.foto;
+            document.getElementById('boasVindasText').innerText = "Bem-vindo, " + logado.nome + ". O teu painel de distribuição está ativo.";
+            atualizarInterfaceFinanceira();
+            renderCatalogo();
+            
+            if(logado.role === "ADMIN") document.getElementById('adminBtn').style.display = 'block';
         }
 
-        function mostrarSec(id) {
+        function navegar(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
             document.getElementById(id).classList.add('active-section');
             if(window.innerWidth < 900) document.getElementById('sidebar').style.display = 'none';
         }
 
-        function upFoto(input) {
-            if (input.files && input.files[0]) {
-                let r = new FileReader();
-                r.onload = (e) => {
-                    sess.foto = e.target.result;
-                    document.getElementById('viewPic').src = e.target.result;
-                    document.getElementById('sidePic').src = e.target.result;
-                    localStorage.setItem('mam_v7_sess', JSON.stringify(sess));
-                };
-                r.readAsDataURL(input.files[0]);
+        function atualizarInterfaceFinanceira() {
+            document.getElementById('saldoExibido').innerText = logado.saldo.toLocaleString() + " KZ";
+        }
+
+        function execTarefa(valor, tarefa) {
+            logado.saldo += valor;
+            // Atualizar na base de dados global
+            if(logado.role !== "ADMIN") {
+                let idx = usuarios.findIndex(u => u.email === logado.email);
+                usuarios[idx].saldo = logado.saldo;
+                localStorage.setItem('mam_users', JSON.stringify(usuarios));
             }
+            localStorage.setItem('mam_session', JSON.stringify(logado));
+            alert("Sucesso: " + tarefa + " concluído. +" + valor + " KZ adicionados.");
+            atualizarInterfaceFinanceira();
         }
 
-        function savePerfil() {
-            let n = document.getElementById('upNome').value;
-            if(n) sess.nome = n;
-            localStorage.setItem('mam_v7_sess', JSON.stringify(sess));
-            alert("Perfil MAM atualizado com sucesso!"); location.reload();
+        function enviarLancamento() {
+            const t = document.getElementById('musicaTitulo').value;
+            const a = document.getElementById('musicaArtista').value;
+            if(!t || !a) return alert("Preencha os dados da música.");
+            
+            let novaMusica = { 
+                id: Date.now(), 
+                owner: logado.email, 
+                titulo: t, 
+                artista: a, 
+                status: 'Pendente', 
+                data: new Date().toLocaleDateString() 
+            };
+            
+            catalogo.push(novaMusica);
+            localStorage.setItem('mam_catalogo', JSON.stringify(catalogo));
+            alert("Lançamento submetido para curadoria MAM!");
+            renderCatalogo();
+            navegar('minhas_musicas');
         }
 
-        function sair() { localStorage.removeItem('mam_v7_sess'); location.reload(); }
-        
-        bootstrap();
+        function renderCatalogo() {
+            const container = document.getElementById('containerMusicas');
+            let minhas = catalogo.filter(m => m.owner === logado.email);
+            if(minhas.length === 0) {
+                container.innerHTML = "<p>Nenhuma música enviada.</p>";
+                return;
+            }
+            container.innerHTML = minhas.map(m => `
+                <div class="card">
+                    <b>${m.titulo}</b> - ${m.artista} <br>
+                    <small>Submetido em: ${m.data}</small> 
+                    <span class="status-badge pendente">${m.status}</span>
+                </div>
+            `).join('');
+        }
+
+        function executarSaque() {
+            const val = Number(document.getElementById('saqueValor').value);
+            if(val <= 0 || val > logado.saldo) return alert("Valor inválido ou insuficiente.");
+            
+            logado.saldo -= val;
+            if(logado.role !== "ADMIN") {
+                let idx = usuarios.findIndex(u => u.email === logado.email);
+                usuarios[idx].saldo = logado.saldo;
+                localStorage.setItem('mam_users', JSON.stringify(usuarios));
+            }
+            localStorage.setItem('mam_session', JSON.stringify(logado));
+            alert("Pedido de levantamento enviado à administração MAM.");
+            atualizarInterfaceFinanceira();
+        }
+
+        function salvarPerfil() {
+            logado.nome = document.getElementById('editNome').value || logado.nome;
+            logado.foto = document.getElementById('editFoto').value || logado.foto;
+            localStorage.setItem('mam_session', JSON.stringify(logado));
+            location.reload();
+        }
+
+        function sair() { localStorage.removeItem('mam_session'); location.reload(); }
+
+        carregarPainel();
     </script>
 </body>
 </html>

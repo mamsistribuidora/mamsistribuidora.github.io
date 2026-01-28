@@ -8,15 +8,14 @@
         :root { --gold: #FFD700; --blue: #002d5a; --card: rgba(0, 0, 0, 0.9); }
         
         body { 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; color: #fff;
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1470&auto=format&fit=crop'); 
             background-size: cover; background-attachment: fixed; background-position: center;
-            color: #fff; margin: 0; min-height: 100vh;
         }
 
-        /* MENU SIDEBAR COMPLETO */
+        /* AJUSTE DISPOSITIVO */
         .sidebar { width: 260px; background: #000; height: 100vh; position: fixed; border-right: 2px solid var(--blue); display: none; flex-direction: column; padding: 20px; box-sizing: border-box; z-index: 1000; }
-        .main { width: 100%; box-sizing: border-box; }
+        .main { width: 100%; box-sizing: border-box; transition: 0.3s; }
         .logged-main { padding-left: 260px; }
 
         @media (max-width: 850px) {
@@ -28,86 +27,189 @@
         .active-section { display: block; }
         .card { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; backdrop-filter: blur(10px); }
         
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid var(--gold); color: #fff; border-radius: 5px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); color: #fff; border-radius: 5px; box-sizing: border-box; }
         .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 5px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
         
-        .nav-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #111; display: flex; align-items: center; gap: 10px; }
-        .nav-item:hover, .active-nav { color: var(--gold); background: rgba(255,215,0,0.1); }
+        .nav-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #222; }
+        .nav-item:hover { color: var(--gold); background: rgba(255,215,0,0.1); }
 
-        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin: auto; display: block; }
-        footer { background: #000; padding: 20px; text-align: center; border-top: 2px solid var(--blue); }
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; display: block; margin: auto; }
+        footer { background: #000; padding: 30px; text-align: center; border-top: 2px solid var(--blue); margin-top: 50px; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <nav id="sidebar" class="sidebar">
-        <div style="text-align:center; margin-bottom:20px;">
-            <img id="sidePic" src="https://via.placeholder.com/80" class="profile-pic">
-            <p id="sideNome" style="color:var(--gold); font-weight:bold; margin-top:10px;">---</p>
-        </div>
-        <div class="nav-item active-nav" onclick="showSec('home', this)">🏠 Início</div>
-        <div class="nav-item" onclick="showSec('perfil', this)">👤 Perfil & Foto</div>
-        <div class="nav-item" onclick="showSec('artista', this)">🎤 Criar Artista/Label</div>
-        <div class="nav-item" onclick="showSec('lancar', this)">🚀 Lançar Música</div>
-        <div class="nav-item" onclick="showSec('minhas', this)">🎶 Minhas Músicas</div>
-        <div class="nav-item" onclick="showSec('carteira', this)">💰 Carteira Dupla</div>
-        <div class="nav-item" onclick="showSec('ceo', this)">👔 Informação C.E.O</div>
-        <div id="adminBtn" class="nav-item" onclick="showSec('admin', this)" style="display:none; color:var(--gold); font-weight:bold; border:1px solid var(--gold);">🛡️ ADMIN DIRETOR</div>
-        <div class="nav-item" onclick="logout()" style="color:red; margin-top:20px; border:none;">🚪 Sair</div>
-    </nav>
+    <div id="authPage" style="height:95vh; display:flex; align-items:center; justify-content:center; padding:20px;">
+        <div class="card" style="width:100%; max-width:400px; text-align:center;">
+            <h1 style="color:var(--gold); font-size:2.5em; margin:0;">MAM</h1>
+            <p>Distribuidora Profissional</p>
+            
+            <div id="loginBox">
+                <input type="email" id="lEmail" placeholder="Email">
+                <input type="password" id="lPass" placeholder="Senha">
+                <button class="btn-gold" onclick="entrar()">Iniciar Sessão</button>
+                <p style="margin-top:15px;">Novo aqui? <span onclick="irParaRegisto()" style="color:var(--gold); cursor:pointer; font-weight:bold; text-decoration:underline;">Criar Conta</span></p>
+            </div>
 
-    <div id="mainContent" class="main">
-        
-        <div id="authPage" style="min-height:95vh; display:flex; align-items:center; justify-content:center; padding:20px;">
-            <div class="card" style="width:100%; max-width:400px; text-align:center;">
-                <h1 style="color:var(--gold); font-size:2.5em; margin:0;">MAM</h1>
-                <p>Distribuidora Musical</p>
-                
-                <div id="loginForm">
-                    <input type="email" id="lEmail" placeholder="Teu Email">
-                    <input type="password" id="lPass" placeholder="Tua Senha">
-                    <button class="btn-gold" onclick="execLogin()">Entrar</button>
-                    <p style="margin-top:15px; font-size:0.9em;">Novo aqui? <span onclick="mudarParaRegisto()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Criar Conta</span></p>
-                </div>
-
-                <div id="registerForm" class="hidden">
-                    <input type="text" id="rNome" placeholder="Nome Completo">
-                    <input type="email" id="rEmail" placeholder="Email">
-                    <input type="password" id="rPass" placeholder="Senha">
-                    <button class="btn-gold" onclick="execRegisto()">Registrar e Ganhar 5.000 KZ</button>
-                    <p style="margin-top:15px; font-size:0.9em;">Já tens conta? <span onclick="mudarParaLogin()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Fazer Login</span></p>
-                </div>
+            <div id="regBox" class="hidden">
+                <input type="text" id="rNome" placeholder="Nome Completo">
+                <input type="email" id="rEmail" placeholder="Email">
+                <input type="password" id="rPass" placeholder="Criar Senha">
+                <button class="btn-gold" onclick="cadastrar()">Finalizar Cadastro</button>
+                <p style="margin-top:15px;">Já tem conta? <span onclick="irParaLogin()" style="color:var(--gold); cursor:pointer; font-weight:bold; text-decoration:underline;">Fazer Login</span></p>
             </div>
         </div>
+    </div>
 
-        <div id="app" class="hidden">
+    <nav id="sidebar" class="sidebar">
+        <div style="text-align:center; margin-bottom:20px;">
+            <img id="sidePic" src="https://via.placeholder.com/100" class="profile-pic">
+            <p id="sideNome" style="color:var(--gold); font-weight:bold; margin-top:10px;"></p>
+        </div>
+        <div class="nav-item" onclick="mostrarSec('home')">🏠 Início</div>
+        <div class="nav-item" onclick="mostrarSec('perfil')">👤 Perfil & Foto</div>
+        <div class="nav-item" onclick="mostrarSec('lancar')">🚀 Lançar Música</div>
+        <div class="nav-item" onclick="mostrarSec('carteira')">💰 Carteira Dupla</div>
+        <div class="nav-item" onclick="mostrarSec('satelite')">🛰️ MAM Satélite (Auto)</div>
+        <div id="adminBtn" class="nav-item" onclick="mostrarSec('admin')" style="display:none; color:var(--gold);">🛡️ ADMIN DIRETOR</div>
+        <div class="nav-item" onclick="sair()" style="color:red; margin-top:20px;">🚪 Sair</div>
+    </nav>
+
+    <div id="app" class="hidden">
+        <div id="mainDiv" class="main">
             <div id="home" class="section active-section">
-                <div class="card">
-                    <h2>Novidades</h2>
-                    <p>💿 Fé em Deus - Princesa Heliany ft Play Sean Arsénio</p>
-                </div>
+                <div class="card"><h2>Destaque</h2><p>💿 Fé em Deus - P. Heliany ft Play Sean Arsénio</p></div>
             </div>
 
             <div id="perfil" class="section">
-                <h2>O Meu Perfil</h2>
+                <h2>Editar Perfil</h2>
                 <div class="card">
-                    <img id="viewPic" src="https://via.placeholder.com/100" class="profile-pic" style="width:100px; height:100px;">
+                    <img id="viewPic" src="https://via.placeholder.com/100" class="profile-pic">
                     <input type="file" accept="image/*" onchange="upFoto(this)">
-                    <input type="text" id="edNome" placeholder="Mudar Nome">
-                    <input type="text" id="edIban" placeholder="Teu IBAN">
-                    <button class="btn-gold" onclick="salvarP()">Atualizar Perfil</button>
-                </div>
-            </div>
-
-            <div id="artista" class="section">
-                <h2>Criar Artista ou Label</h2>
-                <div class="card">
-                    <input type="text" placeholder="Nome Artístico">
-                    <select><option>Artista Solo</option><option>Produtora / Label</option></select>
-                    <button class="btn-gold">Registrar Artista</button>
+                    <input type="text" id="upNome" placeholder="Mudar Nome">
+                    <button class="btn-gold" onclick="savePerfil()">Salvar</button>
                 </div>
             </div>
 
             <div id="lancar" class="section">
-                <h2>Lançamento Profissional</h2>
+                <h2>Lançamento</h2>
+                <div class="card">
+                    <input type="text" placeholder="Título">
+                    <select><option>Kizomba</option><option>Rap</option><option>Gospel</option></select>
+                    <input type="date">
+                    <button class="btn-gold">Submeter</button>
+                </div>
+            </div>
+
+            <div id="carteira" class="section">
+                <h2>Carteira</h2>
+                <div class="card"><h3>Saldo Artista</h3><h1 id="sUser" style="color:var(--gold)">0 KZ</h1></div>
+                <div id="cardAdmin" class="card" style="display:none; background:var(--blue);"><h3>Saldo MAM</h3><h1 id="sMAM">0 KZ</h1></div>
+                <select><option>BAI</option><option>BFA</option><option>Express</option></select>
+                <button class="btn-gold">Sacar</button>
+            </div>
+
+            <div id="satelite" class="section">
+                <div class="card"><h2>🛰️ Satélite</h2><p>Ganhos em tempo real ativos.</p></div>
+            </div>
+
+            <div id="admin" class="section">
+                <div class="card"><h2>Direção</h2><p>Controle de 80% do lucro.</p></div>
+            </div>
+        </div>
+
+        <footer>
+            <p><b>MAM DISTRIBUIDORA</b> | C.E.O Matias Arsénio Manuel</p>
+            <p>mamfilhos29@gmail.com | Luanda, Angola | 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        const CEO = "mamfilhos29@gmail.com";
+        let db = JSON.parse(localStorage.getItem('mam_db')) || [];
+        let sess = JSON.parse(localStorage.getItem('mam_sess')) || null;
+
+        // FUNÇÕES DE BOTÃO - RESOLVIDO
+        function irParaRegisto() { 
+            document.getElementById('loginBox').classList.add('hidden'); 
+            document.getElementById('regBox').classList.remove('hidden'); 
+        }
+        function irParaLogin() { 
+            document.getElementById('regBox').classList.add('hidden'); 
+            document.getElementById('loginBox').classList.remove('hidden'); 
+        }
+
+        function cadastrar() {
+            const n = document.getElementById('rNome').value;
+            const e = document.getElementById('rEmail').value;
+            const p = document.getElementById('rPass').value;
+            if(!n || !e || !p) return alert("Preencha tudo!");
+            db.push({nome: n, email: e, pass: p, saldo: 5000, foto: "https://via.placeholder.com/100"});
+            localStorage.setItem('mam_db', JSON.stringify(db));
+            alert("Conta criada!"); irParaLogin();
+        }
+
+        function entrar() {
+            const e = document.getElementById('lEmail').value;
+            const p = document.getElementById('lPass').value;
+            if(e === CEO) {
+                sess = {nome: "Matias CEO", email: e, role: "ADMIN", saldo: 200000, foto: "https://via.placeholder.com/100"};
+            } else {
+                let u = db.find(x => x.email === e && x.pass === p);
+                if(!u) return alert("Dados incorretos!");
+                sess = u; sess.role = "USER";
+            }
+            localStorage.setItem('mam_sess', JSON.stringify(sess));
+            location.reload();
+        }
+
+        function iniciarApp() {
+            if(!sess) return;
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            document.getElementById('sidebar').style.display = 'flex';
+            document.getElementById('mainDiv').classList.add('logged-main');
+            document.getElementById('sideNome').innerText = sess.nome;
+            document.getElementById('sidePic').src = sess.foto;
+            document.getElementById('viewPic').src = sess.foto;
+            document.getElementById('sUser').innerText = sess.saldo.toLocaleString() + " KZ";
+            if(sess.role === "ADMIN") {
+                document.getElementById('adminBtn').style.display = 'block';
+                document.getElementById('cardAdmin').style.display = 'block';
+                document.getElementById('sMAM').innerText = "1,500,000 KZ";
+            }
+        }
+
+        function mostrarSec(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+            document.getElementById(id).classList.add('active-section');
+            if(window.innerWidth < 850) document.getElementById('sidebar').style.display = 'none';
+        }
+
+        function upFoto(input) {
+            if (input.files && input.files[0]) {
+                let r = new FileReader();
+                r.onload = (e) => {
+                    sess.foto = e.target.result;
+                    document.getElementById('viewPic').src = e.target.result;
+                    document.getElementById('sidePic').src = e.target.result;
+                    localStorage.setItem('mam_sess', JSON.stringify(sess));
+                };
+                r.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function savePerfil() {
+            let n = document.getElementById('upNome').value;
+            if(n) sess.nome = n;
+            localStorage.setItem('mam_sess', JSON.stringify(sess));
+            alert("Atualizado!"); location.reload();
+        }
+
+        function sair() { localStorage.removeItem('mam_sess'); location.reload(); }
+        
+        iniciarApp();
+    </script>
+</body>
+</html>

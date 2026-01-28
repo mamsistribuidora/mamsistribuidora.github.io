@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial v1.1</title>
+    <title>MAM Distribuidora | Oficial</title>
     <style>
-        :root { --gold: #FFD700; --blue: #001f3f; --black: #050505; --card: rgba(15, 15, 15, 0.96); --text: #f0f0f0; }
+        :root { --gold: #FFD700; --blue: #001f3f; --black: #050505; --card: rgba(15, 15, 15, 0.95); --text: #f0f0f0; }
         
         body { 
             font-family: 'Segoe UI', sans-serif; 
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1470&auto=format&fit=crop'); 
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
             background-size: cover; background-attachment: fixed; background-position: center;
             color: var(--text); margin: 0; display: flex; flex-direction: column; min-height: 100vh;
         }
@@ -21,28 +21,30 @@
             padding: 20px; box-sizing: border-box; z-index: 1000; 
         }
 
-        .main { width: 100%; transition: 0.3s; flex: 1; padding-bottom: 60px; }
-        .logged-main { margin-left: 260px; width: calc(100% - 260px); }
+        .main { width: 100%; transition: 0.3s; flex: 1; }
+        .logged-main { margin-left: 260px; }
 
         @media (max-width: 850px) {
-            .logged-main { margin-left: 0; width: 100%; }
+            .logged-main { margin-left: 0; }
             .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid var(--blue); }
-            .section { padding: 20px; }
         }
 
-        /* ESTILOS DE UI */
-        .section { padding: 40px; display: none; animation: fadeIn 0.4s; max-width: 1000px; margin: auto; }
+        /* UI ELEMENTS */
+        .section { padding: 30px; display: none; animation: fadeIn 0.4s; max-width: 1000px; margin: auto; }
         .active-section { display: block; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; border-left: 5px solid var(--gold); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        .card { background: var(--card); padding: 25px; border-radius: 12px; border-left: 5px solid var(--gold); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        .grid-carteira { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .btn-gold { background: var(--gold); color: black; padding: 14px; border: none; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        .btn-gold:hover { background: #fff; }
         
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; font-size: 1em; }
-        .btn-gold { background: var(--gold); color: black; padding: 14px; border: none; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-gold:hover { background: #fff; transform: scale(1.02); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; }
 
-        /* RODAPÉ */
-        footer { background: #000; color: #888; padding: 30px 20px; text-align: center; font-size: 0.9em; border-top: 1px solid var(--blue); }
+        /* NAV ITEMS */
+        .nav-item { padding: 12px; border-radius: 8px; cursor: pointer; color: white; display: flex; align-items: center; gap: 12px; margin-bottom: 5px; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background: var(--blue); color: var(--gold); }
+
+        /* FOOTER */
+        footer { background: #000; color: #888; padding: 25px; text-align: center; font-size: 0.85em; border-top: 1px solid #222; }
         
         .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -51,19 +53,16 @@
 <body>
 
     <div id="sidebar" class="sidebar">
-        <div style="color:var(--gold); font-weight:bold; text-align:center; font-size:1.6em; margin-bottom:30px;">MAM SYSTEM</div>
-        <div class="nav-item" style="padding:12px; cursor:pointer;" onclick="showSec('home')">🏠 Início</div>
-        <div class="nav-item" style="padding:12px; cursor:pointer;" onclick="showSec('perfil')">👤 Editar Perfil</div>
-        <div class="nav-item" style="padding:12px; cursor:pointer;" onclick="showSec('artista')">🎤 Criar Artista/Label</div>
-        <div class="nav-item" style="padding:12px; cursor:pointer;" onclick="showSec('lancar')">🚀 Enviar Música</div>
-        <div class="nav-item" style="padding:12px; cursor:pointer;" onclick="showSec('carteira')">💰 Finanças & Saques</div>
-        <div id="adminBtn" class="nav-item" style="display:none; color:var(--gold); font-weight:bold; border:1px solid var(--gold); padding:10px; margin-top:10px;" onclick="showSec('admin')">🛡️ DIRETOR GERAL</div>
-        <div class="nav-item" style="padding:12px; cursor:pointer; color:red; margin-top:auto" onclick="logout()">🚪 Sair</div>
+        <div class="sidebar-logo" style="color:var(--gold); font-weight:bold; text-align:center; font-size:1.6em; margin-bottom:20px;">MAM SYSTEM</div>
+        <div class="nav-item active" onclick="showSec('home')">🏠 Início</div>
+        <div class="nav-item" onclick="showSec('perfil')">👤 Perfil & Editar</div>
+        <div class="nav-item" onclick="showSec('artista')">🎤 Criar Artista/Label</div>
+        <div class="nav-item" onclick="showSec('lancar')">🚀 Enviar Música</div>
+        <div class="nav-item" onclick="showSec('carteira')">💰 Carteiras</div>
+        <div class="nav-item" onclick="showSec('ceo')">👔 C.E.O Info</div>
+        <div id="adminBtn" class="nav-item" onclick="showSec('admin')" style="display:none; color:var(--gold); border:1px solid var(--gold);">🛡️ PAINEL DIRETOR</div>
+        <div class="nav-item" onclick="logout()" style="color:#ff4d4d; margin-top:auto">🚪 Sair</div>
     </div>
 
     <div id="mainContent" class="main">
-        
-        <div id="authPage" style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding: 20px; box-sizing: border-box;">
-            <div class="card" style="width:100%; max-width:400px; text-align:center; border-left:none; border-top:5px solid var(--gold);">
-                <h1 style="color:var(--gold); margin-bottom:5px;">MAM DISTRIBUIDORA</h1>
-                <p id="authTitle" style="font-size:0.9em; color:#ccc;">Bem-vindo
+        <div id="authPage" style="

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Plataforma Oficial</title>
+    <title>MAM Distribuidora | Oficial</title>
     <style>
-        :root { --gold: #FFD700; --blue: #002d5a; --card: rgba(0, 0, 0, 0.95); }
+        :root { --gold: #FFD700; --blue: #002d5a; --card: rgba(10, 10, 10, 0.95); }
         body { 
             font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; color: #fff;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1470&q=80'); 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1470&auto=format&fit=crop'); 
             background-size: cover; background-attachment: fixed; background-position: center;
         }
         .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; border-right: 2px solid var(--blue); display: none; flex-direction: column; padding: 20px; box-sizing: border-box; z-index: 1000; overflow-y: auto; }
@@ -18,11 +18,10 @@
         .section { padding: 25px; display: none; max-width: 1200px; margin: auto; }
         .active-section { display: block; }
         .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; border-left: 4px solid var(--gold); }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid var(--gold); color: #fff; border-radius: 6px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--gold); color: #fff; border-radius: 6px; }
         .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
         .nav-item { padding: 14px; cursor: pointer; border-bottom: 1px solid #222; }
         .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; display: block; margin: auto; background: #222; }
-        .pacote-card { border: 1px solid #444; padding: 15px; border-radius: 8px; text-align: center; background: rgba(255,215,0,0.05); }
         .hidden { display: none !important; }
         footer { background: #000; padding: 30px; text-align: center; border-top: 2px solid var(--blue); }
     </style>
@@ -32,35 +31,36 @@
     <div id="authPage" style="height:95vh; display:flex; align-items:center; justify-content:center; padding:20px;">
         <div class="card" style="width:100%; max-width:400px; text-align:center;">
             <h1 style="color:var(--gold); font-size:3em; margin:0;">MAM</h1>
+            <p>Distribuidora Profissional</p>
+            
             <div id="loginBox">
-                <input type="email" id="lEmail" placeholder="Teu E-mail">
+                <input type="email" id="lEmail" placeholder="E-mail">
                 <input type="password" id="lPass" placeholder="Senha">
                 <button class="btn-gold" onclick="entrar()">Iniciar Sessão</button>
-                <p onclick="irRegisto()" style="color:var(--gold); cursor:pointer; margin-top:15px;">Criar Conta Profissional</p>
+                <p style="margin-top:15px;">É novo? <b onclick="abrirReg()" style="color:var(--gold); cursor:pointer;">Criar Conta</b></p>
             </div>
+
             <div id="regBox" class="hidden">
                 <input type="text" id="rNome" placeholder="Nome Completo">
                 <input type="email" id="rEmail" placeholder="E-mail">
                 <input type="password" id="rPass" placeholder="Criar Senha">
-                <button class="btn-gold" onclick="cadastrar()">Registrar e Ganhar 5.000 KZ</button>
-                <p onclick="irLogin()" style="color:var(--gold); cursor:pointer; margin-top:15px;">Já tenho conta</p>
+                <button class="btn-gold" onclick="cadastrar()">Finalizar Cadastro</button>
+                <p style="margin-top:15px;">Já tem conta? <b onclick="abrirLog()" style="color:var(--gold); cursor:pointer;">Fazer Login</b></p>
             </div>
         </div>
     </div>
 
     <nav id="sidebar" class="sidebar">
         <div style="text-align:center; margin-bottom:20px;">
-            <label for="upFotoInput" style="cursor:pointer;">
-                <img id="sidePic" src="https://via.placeholder.com/100" class="profile-pic">
-            </label>
+            <img id="sidePic" src="https://via.placeholder.com/100" class="profile-pic">
             <p id="sideNome" style="color:var(--gold); font-weight:bold; margin-top:12px;"></p>
         </div>
-        <div class="nav-item" onclick="show('home')">🏠 Início / Home</div>
-        <div class="nav-item" onclick="show('perfil')">👤 Editar Perfil</div>
-        <div class="nav-item" onclick="show('lancar')">🚀 Lançamento Profissional</div>
-        <div class="nav-item" onclick="show('minhas_musicas')">🎶 Minhas Músicas</div>
-        <div class="nav-item" onclick="show('carteira')">💰 Carteira Dupla</div>
-        <div id="adminBtn" class="nav-item" onclick="show('admin')" style="display:none; color:var(--gold); border: 1px solid var(--gold);">🛡️ PAINEL CEO (MAM)</div>
+        <div class="nav-item" onclick="navegar('home')">🏠 Início</div>
+        <div class="nav-item" onclick="navegar('perfil')">👤 Editar Perfil (Foto/Nome)</div>
+        <div class="nav-item" onclick="navegar('lancar')">🚀 Lançamento Profissional</div>
+        <div class="nav-item" onclick="navegar('minhas_musicas')">🎶 Minhas Músicas</div>
+        <div class="nav-item" onclick="navegar('carteira')">💰 Carteira Dupla</div>
+        <div id="adminBtn" class="nav-item" onclick="navegar('admin')" style="display:none; color:var(--gold); border: 1px solid var(--gold);">🛡️ PAINEL CEO</div>
         <div class="nav-item" onclick="sair()" style="color:#ff4d4d; margin-top:20px;">🚪 Sair</div>
     </nav>
 
@@ -70,186 +70,189 @@
             <div id="home" class="section active-section">
                 <div class="card">
                     <h3>Bem-vindo à MAM</h3>
-                    <p>Olá, <span id="userNomeBoas"></span>! Curadoria independente para o teu sucesso.</p>
+                    <p>Olá, <span id="welcomeName"></span>! Gerimos a tua música com curadoria real.</p>
                 </div>
-
                 <div class="card">
-                    <h3>📀 Música em Destaque</h3>
-                    <p><b>Fé em Deus</b> - Princesa Heliany ft Play Sean Arsénio</p>
+                    <h3>📀 Destaque: Fé em Deus</h3>
+                    <p>Princesa Heliany ft Play Sean Arsénio</p>
                 </div>
-
                 <div class="card">
-                    <h3>🚀 Ganhar Dinheiro (Tarefas Reais)</h3>
-                    <button class="btn-gold" style="font-size:0.8em; width:auto; padding:10px;" onclick="addSaldo(100, 'Vídeo Assistido')">📹 Assistir Vídeo (+100 KZ)</button>
-                    <button class="btn-gold" style="font-size:0.8em; width:auto; padding:10px;" onclick="addSaldo(200, 'Seguiu TikTok')">📱 Seguir TikTok C.E.O (+200 KZ)</button>
+                    <h3>🚀 Ganhar Dinheiro (Tarefas)</h3>
+                    <button class="btn-gold" style="width:auto; padding:8px;" onclick="ganhar(100)">📹 Ver Vídeo (+100 KZ)</button>
+                    <button class="btn-gold" style="width:auto; padding:8px;" onclick="ganhar(250)">📱 Seguir TikTok CEO (+250 KZ)</button>
                 </div>
-
-                <div class="card">
-                    <h3>📦 Pacotes e Benefícios (Escolha o seu Nível)</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <div class="pacote-card"><b>GRÁTIS</b><br><small>20% Lucro</small><button class="btn-gold" style="padding:5px; font-size:0.7em;">Ativo</button></div>
-                        <div class="pacote-card" style="border-color:var(--gold)"><b>PREMIUM</b><br><small>80% Lucro</small><button class="btn-gold" style="padding:5px; font-size:0.7em;" onclick="pagarPacote(15000)">15.000 KZ</button></div>
-                    </div>
-                </div>
-
                 <div class="card" style="border-left:4px solid var(--blue);">
-                    <h3>📢 Apoio ao Projeto (Contas Bancárias)</h3>
-                    <p><b>IBAN BAI:</b> AO06 0040 0000 1234 5678 1012 3<br><b>Titular:</b> Matias Arsénio Manuel</p>
+                    <h3>📢 Apoio ao Projeto</h3>
+                    <p><b>IBAN:</b> AO06 0040 0000 1234 5678 1012 3 (Matias Manuel)</p>
                 </div>
             </div>
 
             <div id="perfil" class="section">
                 <div class="card">
-                    <h3>Gerir Perfil</h3>
-                    <p>Carregar Foto do Dispositivo:</p>
-                    <input type="file" id="upFotoInput" accept="image/*" onchange="processarFoto(this)">
+                    <h3>Editar Perfil</h3>
+                    <p>Carregar Foto Real:</p>
+                    <input type="file" accept="image/*" onchange="subirFoto(this)">
                     <p>Nome Artístico:</p>
-                    <input type="text" id="editNome" placeholder="Mudar nome">
-                    <button class="btn-gold" onclick="salvarPerfil()">Atualizar Perfil</button>
+                    <input type="text" id="novoNomeInput" placeholder="Novo nome">
+                    <button class="btn-gold" onclick="mudarNome()">Salvar Alterações</button>
                 </div>
             </div>
 
             <div id="lancar" class="section">
                 <div class="card">
                     <h3>Lançamento Profissional</h3>
-                    <input type="text" id="mTit" placeholder="Título da Música">
-                    <select id="mCat"><option>Kizomba</option><option>Rap</option><option>Gospel</option></select>
-                    <p>Capa e Áudio:</p>
+                    <input type="text" id="trackTitle" placeholder="Título da Música">
+                    <select><option>Kizomba</option><option>Gospel</option><option>Rap</option></select>
                     <input type="file" multiple>
-                    <button class="btn-gold" onclick="enviarMusica()">Enviar para Distribuição</button>
+                    <button class="btn-gold" onclick="enviarTrack()">Submeter Música</button>
                 </div>
             </div>
 
             <div id="minhas_musicas" class="section">
                 <h3>Minhas Músicas</h3>
-                <div id="listaMusicas"></div>
+                <div id="trackList"></div>
             </div>
 
             <div id="carteira" class="section">
                 <div class="card">
                     <small>Teu Saldo Artista:</small>
-                    <h1 id="sArtista" style="color:var(--gold); font-size:3em;">0 KZ</h1>
+                    <h1 id="artistaSaldo" style="color:var(--gold); font-size:2.5em;">0 KZ</h1>
                 </div>
                 <div id="cardCEO" class="card" style="display:none; background:var(--blue);">
                     <small>Lucro Empresa MAM (80%):</small>
-                    <h1 id="sCEO" style="color:#fff; font-size:2em;">0 KZ</h1>
+                    <h1 id="ceoSaldo" style="color:#fff;">0 KZ</h1>
                 </div>
                 <div class="card">
-                    <h3>Levantamento Real</h3>
-                    <select id="saqueMetodo">
-                        <option>BAI</option><option>BFA</option><option>Express</option><option>PayPal</option><option>Wise</option><option>Pix</option>
-                    </select>
-                    <input type="number" id="saqueValor" placeholder="Valor a sacar">
-                    <button class="btn-gold" onclick="sacar()">Confirmar Saque</button>
+                    <h3>Levantamento</h3>
+                    <select id="bancoSelect"><option>BAI</option><option>BFA</option><option>PayPal</option><option>Wise</option></select>
+                    <input type="number" id="valorSacar" placeholder="Valor">
+                    <button class="btn-gold" onclick="sacarReal()">Solicitar Saque</button>
                 </div>
             </div>
 
             <div id="admin" class="section">
-                <div class="card"><h3>Gestão de Direção</h3><p>Matias, aqui controlas todos os pagamentos e artistas.</p></div>
+                <div class="card"><h3>Gestão CEO</h3><p>Painel de controlo de Matias Arsénio Manuel.</p></div>
             </div>
-
         </div>
-        <footer><b>MAM DISTRIBUIDORA</b> | C.E.O Matias Arsénio Manuel | Luanda, 2026</footer>
+        <footer><b>MAM DISTRIBUIDORA</b> | C.E.O Matias Arsénio Manuel | 2026</footer>
     </div>
 
     <script>
-        const CEO_MAIL = "mamfilhos29@gmail.com";
-        let usuarios = JSON.parse(localStorage.getItem('mam_db_vFinal')) || [];
-        let sessao = JSON.parse(localStorage.getItem('mam_sess_vFinal')) || null;
-        let musicas = JSON.parse(localStorage.getItem('mam_musicas_vFinal')) || [];
-        let lucroMAM = Number(localStorage.getItem('mam_lucro_ceo')) || 2500000;
+        const CEO_EMAIL = "mamfilhos29@gmail.com";
+        let db = JSON.parse(localStorage.getItem('mam_final_db')) || [];
+        let user = JSON.parse(localStorage.getItem('mam_final_sess')) || null;
+        let musicas = JSON.parse(localStorage.getItem('mam_final_musicas')) || [];
+        let lucroGeral = Number(localStorage.getItem('mam_final_lucro')) || 1500000;
 
-        function irRegisto() { document.getElementById('loginBox').classList.add('hidden'); document.getElementById('regBox').classList.remove('hidden'); }
-        function irLogin() { document.getElementById('regBox').classList.add('hidden'); document.getElementById('loginBox').classList.remove('hidden'); }
+        function abrirReg() { document.getElementById('loginBox').classList.add('hidden'); document.getElementById('regBox').classList.remove('hidden'); }
+        function abrirLog() { document.getElementById('regBox').classList.add('hidden'); document.getElementById('loginBox').classList.remove('hidden'); }
 
         function cadastrar() {
             const n = document.getElementById('rNome').value, e = document.getElementById('rEmail').value, p = document.getElementById('rPass').value;
             if(!n || !e || !p) return alert("Preencha tudo!");
-            usuarios.push({nome: n, email: e, pass: p, saldo: 5000, foto: ""});
-            localStorage.setItem('mam_db_vFinal', JSON.stringify(usuarios));
-            alert("Bem-vindo à MAM! Ganhaste 5.000 KZ de bónus."); irLogin();
+            db.push({nome: n, email: e, pass: p, saldo: 5000, foto: ""});
+            localStorage.setItem('mam_final_db', JSON.stringify(db));
+            alert("Registado com bónus de 5.000 KZ!"); abrirLog();
         }
 
         function entrar() {
             const e = document.getElementById('lEmail').value, p = document.getElementById('lPass').value;
-            if(e === CEO_MAIL) {
-                sessao = {nome: "Matias CEO", email: e, role: "ADMIN", saldo: 500000, foto: ""};
+            if(e === CEO_EMAIL) {
+                user = {nome: "Matias CEO", email: e, role: "ADMIN", saldo: 500000, foto: ""};
             } else {
-                let u = usuarios.find(x => x.email === e && x.pass === p);
-                if(!u) return alert("Dados incorretos!");
-                sessao = u;
+                let u = db.find(x => x.email === e && x.pass === p);
+                if(!u) return alert("Login Inválido!");
+                user = u;
             }
-            localStorage.setItem('mam_sess_vFinal', JSON.stringify(sessao));
+            localStorage.setItem('mam_final_sess', JSON.stringify(user));
             location.reload();
         }
 
-        function bootstrap() {
-            if(!sessao) return;
+        function carregar() {
+            if(!user) return;
             document.getElementById('authPage').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('mainDiv').classList.add('logged-main');
+            document.getElementById('sideNome').innerText = user.nome;
+            document.getElementById('welcomeName').innerText = user.nome;
+            if(user.foto) document.getElementById('sidePic').src = user.foto;
             
-            document.getElementById('sideNome').innerText = sessao.nome;
-            document.getElementById('userNomeBoas').innerText = sessao.nome;
-            if(sessao.foto) document.getElementById('sidePic').src = sessao.foto;
-            
-            updateSaldos();
-            renderMusicas();
-
-            if(sessao.role === "ADMIN") {
+            if(user.role === "ADMIN") {
                 document.getElementById('adminBtn').style.display = 'block';
                 document.getElementById('cardCEO').style.display = 'block';
             }
+            refresh();
         }
 
-        function updateSaldos() {
-            document.getElementById('sArtista').innerText = sessao.saldo.toLocaleString() + " KZ";
-            document.getElementById('sCEO').innerText = lucroMAM.toLocaleString() + " KZ";
+        function navegar(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+            document.getElementById(id).classList.add('active-section');
+            if(window.innerWidth < 900) document.getElementById('sidebar').style.display = 'none';
         }
 
-        function addSaldo(qtd, motivo) {
-            sessao.saldo += qtd;
-            lucroMAM += (qtd * 0.8); // Empresa ganha 80% sobre movimentação de tarefas
-            alert("Sucesso: +" + qtd + " KZ por " + motivo);
-            save();
-        }
-
-        function pagarPacote(valor) {
-            if(sessao.saldo < valor) return alert("Saldo insuficiente. Faça tarefas ou carregue a conta.");
-            sessao.saldo -= valor;
-            lucroMAM += valor;
-            alert("Pacote Premium Ativado! Agora ganhas 80% nas tuas músicas.");
-            save();
-        }
-
-        function processarFoto(input) {
+        function subirFoto(input) {
             if (input.files && input.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    sessao.foto = e.target.result;
+                let r = new FileReader();
+                r.onload = function(e) {
+                    user.foto = e.target.result;
                     document.getElementById('sidePic').src = e.target.result;
-                    save();
+                    salvar();
                 };
-                reader.readAsDataURL(input.files[0]);
+                r.readAsDataURL(input.files[0]);
             }
         }
 
-        function enviarMusica() {
-            const t = document.getElementById('mTit').value;
-            if(!t) return alert("Qual o título?");
-            musicas.push({titulo: t, dono: sessao.email, status: "Em Distribuição"});
-            localStorage.setItem('mam_musicas_vFinal', JSON.stringify(musicas));
-            alert("Música enviada com sucesso!");
-            renderMusicas();
-            show('minhas_musicas');
+        function mudarNome() {
+            const n = document.getElementById('novoNomeInput').value;
+            if(n) { user.nome = n; salvar(); location.reload(); }
         }
 
-        function renderMusicas() {
-            const lista = document.getElementById('listaMusicas');
-            let minhas = musicas.filter(m => m.dono === sessao.email);
-            lista.innerHTML = minhas.map(m => `<div class="card"><b>${m.titulo}</b><br><small>Status: ${m.status}</small></div>`).join('');
+        function ganhar(q) {
+            user.saldo += q;
+            lucroGeral += (q * 0.8);
+            alert("Ganhaste " + q + " KZ!");
+            salvar();
         }
 
-        function sacar() {
-            const v = Number(document.getElementById('saqueValor').value
+        function enviarTrack() {
+            const t = document.getElementById('trackTitle').value;
+            if(!t) return alert("Título vazio!");
+            musicas.push({titulo: t, dono: user.email, status: "Distribuindo"});
+            localStorage.setItem('mam_final_musicas', JSON.stringify(musicas));
+            alert("Música enviada!");
+            refresh(); navegar('minhas_musicas');
+        }
+
+        function refresh() {
+            document.getElementById('artistaSaldo').innerText = user.saldo.toLocaleString() + " KZ";
+            document.getElementById('ceoSaldo').innerText = lucroGeral.toLocaleString() + " KZ";
+            const lista = document.getElementById('trackList');
+            let minhas = musicas.filter(m => m.dono === user.email);
+            lista.innerHTML = minhas.map(m => `<div class="card"><b>${m.titulo}</b> - ${m.status}</div>`).join('');
+        }
+
+        function sacarReal() {
+            const v = Number(document.getElementById('valorSacar').value);
+            if(v > user.saldo || v <= 0) return alert("Saldo insuficiente.");
+            user.saldo -= v;
+            alert("Pedido de saque enviado ao Diretor Matias.");
+            salvar();
+        }
+
+        function salvar() {
+            localStorage.setItem('mam_final_sess', JSON.stringify(user));
+            localStorage.setItem('mam_final_lucro', lucroGeral);
+            if(user.role !== "ADMIN") {
+                let idx = db.findIndex(u => u.email === user.email);
+                db[idx] = user;
+                localStorage.setItem('mam_final_db', JSON.stringify(db));
+            }
+            refresh();
+        }
+
+        function sair() { localStorage.removeItem('mam_final_sess'); location.reload(); }
+        carregar();
+    </script>
+</body>
+</html>

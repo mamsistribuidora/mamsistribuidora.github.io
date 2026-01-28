@@ -5,149 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
     <style>
-        :root { --gold: #FFD700; --blue: #002d5a; --black: #050505; --card: rgba(20, 20, 20, 0.98); --text: #ffffff; }
+        :root { --gold: #FFD700; --blue: #002d5a; --card: rgba(0, 0, 0, 0.9); }
         
         body { 
             font-family: 'Segoe UI', sans-serif; 
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1514525253361-bee87380cf40?q=80&w=1470&auto=format&fit=crop'); 
-            background-size: cover; background-attachment: fixed; color: var(--text); margin: 0; min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1470&auto=format&fit=crop'); 
+            background-size: cover; background-attachment: fixed; background-position: center;
+            color: #fff; margin: 0; min-height: 100vh;
         }
 
-        /* NAVEGAÇÃO */
-        .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; border-right: 2px solid var(--blue); display: none; flex-direction: column; padding: 20px; box-sizing: border-box; z-index: 1000; }
+        /* MENU SIDEBAR COMPLETO */
+        .sidebar { width: 260px; background: #000; height: 100vh; position: fixed; border-right: 2px solid var(--blue); display: none; flex-direction: column; padding: 20px; box-sizing: border-box; z-index: 1000; }
         .main { width: 100%; box-sizing: border-box; }
-        .logged-main { padding-left: 280px; }
+        .logged-main { padding-left: 260px; }
 
-        @media (max-width: 900px) {
+        @media (max-width: 850px) {
             .logged-main { padding-left: 0; }
-            .sidebar { width: 100%; height: auto; position: relative; display: none !important; }
-            .sidebar.mobile-open { display: flex !important; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid var(--blue); }
         }
 
-        /* COMPONENTES */
-        .section { padding: 30px; display: none; max-width: 1000px; margin: auto; animation: fadeIn 0.3s; }
+        .section { padding: 25px; display: none; max-width: 1100px; margin: auto; }
         .active-section { display: block; }
-        .card { background: var(--card); padding: 25px; border-radius: 12px; border-left: 5px solid var(--gold); margin-bottom: 20px; }
+        .card { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; backdrop-filter: blur(10px); }
         
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #444; color: #fff; border-radius: 6px; box-sizing: border-box; }
-        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid var(--gold); color: #fff; border-radius: 5px; box-sizing: border-box; }
+        .btn-gold { background: var(--gold); color: #000; padding: 14px; border: none; border-radius: 5px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
         
-        .nav-item { padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .nav-item:hover, .active-nav { background: var(--blue); color: var(--gold); }
+        .nav-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #111; display: flex; align-items: center; gap: 10px; }
+        .nav-item:hover, .active-nav { color: var(--gold); background: rgba(255,215,0,0.1); }
 
-        .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin: 0 auto; display: block; }
-        footer { background: #000; padding: 20px; text-align: center; font-size: 0.8em; color: #777; border-top: 1px solid #222; }
+        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin: auto; display: block; }
+        footer { background: #000; padding: 20px; text-align: center; border-top: 2px solid var(--blue); }
         .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <nav id="sidebar" class="sidebar">
-        <div style="text-align:center; margin-bottom:30px;">
-            <img id="userImg" src="https://via.placeholder.com/80" class="profile-img">
-            <p id="userName" style="color:var(--gold); font-weight:bold; margin-top:10px;">Matias MAM</p>
+        <div style="text-align:center; margin-bottom:20px;">
+            <img id="sidePic" src="https://via.placeholder.com/80" class="profile-pic">
+            <p id="sideNome" style="color:var(--gold); font-weight:bold; margin-top:10px;">---</p>
         </div>
         <div class="nav-item active-nav" onclick="showSec('home', this)">🏠 Início</div>
-        <div class="nav-item" onclick="showSec('perfil', this)">👤 Editar Perfil</div>
+        <div class="nav-item" onclick="showSec('perfil', this)">👤 Perfil & Foto</div>
+        <div class="nav-item" onclick="showSec('artista', this)">🎤 Criar Artista/Label</div>
         <div class="nav-item" onclick="showSec('lancar', this)">🚀 Lançar Música</div>
+        <div class="nav-item" onclick="showSec('minhas', this)">🎶 Minhas Músicas</div>
         <div class="nav-item" onclick="showSec('carteira', this)">💰 Carteira Dupla</div>
-        <div class="nav-item" onclick="showSec('satelite', this)">🛰️ MAM Satélite (Auto)</div>
-        <div id="adminBtn" class="nav-item" onclick="showSec('admin', this)" style="display:none; color:var(--gold); border:1px solid var(--gold);">🛡️ ADMIN</div>
-        <div class="nav-item" onclick="logout()" style="color:#ff4d4d; margin-top:auto;">🚪 Sair</div>
+        <div class="nav-item" onclick="showSec('ceo', this)">👔 Informação C.E.O</div>
+        <div id="adminBtn" class="nav-item" onclick="showSec('admin', this)" style="display:none; color:var(--gold); font-weight:bold; border:1px solid var(--gold);">🛡️ ADMIN DIRETOR</div>
+        <div class="nav-item" onclick="logout()" style="color:red; margin-top:20px; border:none;">🚪 Sair</div>
     </nav>
 
     <div id="mainContent" class="main">
         
-        <div id="authPage" style="height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;">
+        <div id="authPage" style="min-height:95vh; display:flex; align-items:center; justify-content:center; padding:20px;">
             <div class="card" style="width:100%; max-width:400px; text-align:center;">
-                <h1 style="color:var(--gold); margin:0;">MAM</h1>
-                <p style="font-size:0.8em; color:#888; margin-bottom:25px;">SISTEMA DE GESTÃO MUSICAL</p>
+                <h1 style="color:var(--gold); font-size:2.5em; margin:0;">MAM</h1>
+                <p>Distribuidora Musical</p>
                 
                 <div id="loginForm">
-                    <input type="email" id="lEmail" placeholder="Seu Email">
-                    <input type="password" id="lPass" placeholder="Sua Senha">
-                    <button class="btn-gold" onclick="execLogin()">Entrar no Sistema</button>
-                    <p style="font-size:0.9em; margin-top:20px;">Não tem conta? <br>
-                        <a href="javascript:void(0)" onclick="mostrarRegisto()" style="color:var(--gold); font-weight:bold;">Criar Conta Agora</a>
-                    </p>
+                    <input type="email" id="lEmail" placeholder="Teu Email">
+                    <input type="password" id="lPass" placeholder="Tua Senha">
+                    <button class="btn-gold" onclick="execLogin()">Entrar</button>
+                    <p style="margin-top:15px; font-size:0.9em;">Novo aqui? <span onclick="mudarParaRegisto()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Criar Conta</span></p>
                 </div>
 
                 <div id="registerForm" class="hidden">
                     <input type="text" id="rNome" placeholder="Nome Completo">
-                    <input type="email" id="rEmail" placeholder="Email para Registo">
-                    <input type="password" id="rPass" placeholder="Escolha uma Senha">
-                    <button class="btn-gold" onclick="execRegisto()">Finalizar e Ganhar 5.000 KZ</button>
-                    <p style="font-size:0.9em; margin-top:20px;">Já tem conta? <br>
-                        <a href="javascript:void(0)" onclick="mostrarLogin()" style="color:var(--gold); font-weight:bold;">Voltar ao Login</a>
-                    </p>
+                    <input type="email" id="rEmail" placeholder="Email">
+                    <input type="password" id="rPass" placeholder="Senha">
+                    <button class="btn-gold" onclick="execRegisto()">Registrar e Ganhar 5.000 KZ</button>
+                    <p style="margin-top:15px; font-size:0.9em;">Já tens conta? <span onclick="mudarParaLogin()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Fazer Login</span></p>
                 </div>
             </div>
         </div>
 
         <div id="app" class="hidden">
-            
             <div id="home" class="section active-section">
-                <h2>Novidades MAM</h2>
                 <div class="card">
-                    <p>💿 <b>Lançamento:</b> Fé em Deus - P. Heliany ft Play Sean Arsénio</p>
-                    <p>Status: Ativo em 150 plataformas.</p>
+                    <h2>Novidades</h2>
+                    <p>💿 Fé em Deus - Princesa Heliany ft Play Sean Arsénio</p>
                 </div>
             </div>
 
             <div id="perfil" class="section">
-                <h2>Editar Perfil Profissional</h2>
+                <h2>O Meu Perfil</h2>
                 <div class="card">
-                    <div style="text-align:center; margin-bottom:15px;">
-                        <img id="perfilPreview" src="https://via.placeholder.com/100" class="profile-img" style="width:100px; height:100px;">
-                        <input type="file" accept="image/*" onchange="upFoto(this)" style="margin-top:10px;">
-                    </div>
-                    <input type="text" id="upNome" placeholder="Novo Nome de Artista">
-                    <input type="text" id="upIban" placeholder="Seu IBAN (Angola ou Online)">
-                    <button class="btn-gold" onclick="salvarP()">Guardar Alterações</button>
+                    <img id="viewPic" src="https://via.placeholder.com/100" class="profile-pic" style="width:100px; height:100px;">
+                    <input type="file" accept="image/*" onchange="upFoto(this)">
+                    <input type="text" id="edNome" placeholder="Mudar Nome">
+                    <input type="text" id="edIban" placeholder="Teu IBAN">
+                    <button class="btn-gold" onclick="salvarP()">Atualizar Perfil</button>
+                </div>
+            </div>
+
+            <div id="artista" class="section">
+                <h2>Criar Artista ou Label</h2>
+                <div class="card">
+                    <input type="text" placeholder="Nome Artístico">
+                    <select><option>Artista Solo</option><option>Produtora / Label</option></select>
+                    <button class="btn-gold">Registrar Artista</button>
                 </div>
             </div>
 
             <div id="lancar" class="section">
-                <h2>Lançamento Profissional (ISRC/UPC)</h2>
-                <div class="card">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                        <input type="text" placeholder="Título da Música">
-                        <input type="text" placeholder="Artista Principal">
-                        <input type="text" placeholder="Compositor">
-                        <select>
-                            <option>Kizomba</option><option>Rap</option><option>Gospel</option>
-                        </select>
-                        <input type="date">
-                        <input type="text" placeholder="UPC (Opcional)">
-                    </div>
-                    <p>Capa do Álbum:</p> <input type="file">
-                    <p>Ficheiro de Áudio:</p> <input type="file">
-                    <button class="btn-gold">Submeter para Curadoria MAM</button>
-                </div>
-            </div>
-
-            <div id="carteira" class="section">
-                <h2>Gestão de Lucros 20/80</h2>
-                <div class="card">
-                    <small>Seu Saldo Pessoal:</small>
-                    <h1 id="sUser" style="color:var(--gold); margin:10px 0;">0 KZ</h1>
-                </div>
-                <div id="cardAdmin" class="card" style="display:none; background:var(--blue);">
-                    <small>Lucro Empresa (MAM Admin):</small>
-                    <h1 id="sEmpresa" style="margin:10px 0;">0 KZ</h1>
-                </div>
-                <button class="btn-gold">Solicitar Levantamento (BAI/BFA/Express)</button>
-            </div>
-
-            <div id="satelite" class="section">
-                <h2>🛰️ Ganhos Satélite (MAM Cloud)</h2>
-                <div class="card" style="text-align:center;">
-                    <p>Ferramentas automáticas em execução...</p>
-                    <h2 id="minando" style="color:var(--gold)">0.00 KZ</h2>
-                    <small>Ganhos distribuídos automaticamente vindo do servidor.</small>
-                </div>
-            </div>
-
-            <div id="admin" class="section">
-                <h2>
+                <h2>Lançamento Profissional</h2>

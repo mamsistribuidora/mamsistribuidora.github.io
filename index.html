@@ -18,13 +18,12 @@
     </style>
 </head>
 <body>
-
     <div id="authArea" class="card">
         <h1>MAM</h1>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Senha">
+        <input type="email" id="email" placeholder="Teu E-mail">
+        <input type="password" id="pass" placeholder="Palavra-passe">
         <button class="btn" onclick="login()">Entrar</button>
-        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px;">Criar Conta de Artista</p>
+        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px; font-size:14px;">Criar Conta de Artista</p>
     </div>
 
     <div id="mainArea" class="card hidden">
@@ -33,7 +32,7 @@
         <span id="userSaldo">0 KZ</span>
         <button class="btn" onclick="ganharDinheiro()">Assistir Anúncio (+500 KZ)</button>
         <br><br>
-        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none;">Sair</button>
+        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none; cursor:pointer;">Sair da Conta</button>
     </div>
 
     <script>
@@ -56,14 +55,14 @@
             try {
                 const res = await auth.createUserWithEmailAndPassword(e, p);
                 await db.collection('usuarios').doc(res.user.uid).set({ saldo: 0, nome: e.split('@')[0] });
-                alert("Conta Criada!");
-            } catch(err) { alert(err.message); }
+                alert("Conta Criada no Sistema!");
+            } catch(err) { alert("Erro: " + err.message); }
         }
 
         async function login() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('pass').value;
-            try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert(err.message); }
+            try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert("Dados incorretos!"); }
         }
 
         auth.onAuthStateChanged(user => {
@@ -80,6 +79,7 @@
             await db.collection('usuarios').doc(auth.currentUser.uid).update({
                 saldo: firebase.firestore.FieldValue.increment(500)
             });
+            alert("500 KZ adicionados com sucesso!");
         }
     </script>
 </body>

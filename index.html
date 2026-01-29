@@ -14,21 +14,20 @@
         * { box-sizing: border-box; }
 
         body { 
-            margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif;
+            margin: 0; padding: 0; font-family: sans-serif;
             background: #000 url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1000&q=80') no-repeat center center fixed;
-            background-size: cover;
-            color: #fff; display: flex; flex-direction: column; min-height: 100vh;
+            background-size: cover; color: #fff;
         }
 
-        .overlay { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.6); }
+        .overlay { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.7); min-height: 100vh; }
 
         .card { 
             background: rgba(10, 10, 10, 0.95); border: 2px solid var(--gold); 
-            padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; 
-            text-align: center; box-shadow: 0 0 30px rgba(0,0,0,1);
+            padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; 
+            text-align: center; box-shadow: 0 0 30px #000; margin-bottom: 20px;
         }
 
-        h1 { color: var(--bright); font-size: 2.2rem; margin: 0; letter-spacing: 3px; font-weight: 900; }
+        h1 { color: var(--bright); font-size: 2.2rem; margin: 0; letter-spacing: 4px; }
         .tagline { color: #888; font-size: 0.7rem; margin-bottom: 20px; text-transform: uppercase; }
         
         input { 
@@ -41,18 +40,17 @@
             width: 100%; padding: 16px; 
             background: linear-gradient(45deg, var(--gold), var(--bright)); 
             border: none; border-radius: 10px; color: #000; 
-            font-weight: bold; font-size: 1rem; cursor: pointer; margin-bottom: 10px;
+            font-weight: bold; font-size: 1rem; cursor: pointer; text-transform: uppercase;
         }
 
-        .btn-reg { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+        .btn-reg { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 10px; }
 
-        #userSaldo { font-size: 3rem; color: var(--bright); font-weight: bold; display: block; margin: 10px 0; }
+        #userSaldo { font-size: 3.5rem; color: var(--bright); font-weight: bold; display: block; margin: 15px 0; }
 
-        /* RODAPÉ COMPLETO */
-        footer { background: rgba(0,0,0,0.98); border-top: 2px solid var(--gold); padding: 25px 20px; text-align: left; }
-        .footer-item { margin-bottom: 15px; max-width: 500px; margin-left: auto; margin-right: auto; }
-        .footer-item strong { color: var(--gold); display: block; margin-bottom: 5px; font-size: 1rem; }
-        .footer-item p { margin: 0; color: #aaa; font-size: 0.85rem; line-height: 1.4; }
+        footer { background: #000; border-top: 2px solid var(--gold); padding: 30px 20px; width: 100%; }
+        .footer-item { max-width: 500px; margin: auto; text-align: left; margin-bottom: 15px; }
+        .footer-item strong { color: var(--gold); display: block; margin-bottom: 5px; }
+        .footer-item p { margin: 0; color: #aaa; font-size: 0.9rem; line-height: 1.5; }
 
         .hidden { display: none !important; }
     </style>
@@ -62,26 +60,27 @@
 <div class="overlay">
     <div id="authArea" class="card">
         <h1>MAM</h1>
-        <p class="tagline">INDÚSTRIA & DISTRIBUIÇÃO</p>
+        <p class="tagline">Musical Industry</p>
         
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Senha (mín. 6 dígitos)">
+        <input type="email" id="email" placeholder="E-mail do Artista">
+        <input type="password" id="pass" placeholder="Palavra-passe (6+ dígitos)">
         
-        <button class="btn" onclick="fazerLogin()">ENTRAR NO PAINEL</button>
-        <button class="btn btn-reg" onclick="fazerRegisto()">CRIAR NOVA CONTA</button>
+        <button class="btn" onclick="entrar()">ENTRAR NO PAINEL</button>
+        <button class="btn btn-reg" onclick="cadastrar()">CRIAR NOVA CONTA</button>
     </div>
 
     <div id="mainArea" class="card hidden">
         <h2 style="color:var(--gold); margin:0;">Olá, <span id="uNome">Artista</span></h2>
         <span id="userSaldo">0 KZ</span>
-        <button class="btn" onclick="ganharDinheiro()">ASSISTIR ANÚNCIO (+500 KZ)</button>
+        <button class="btn" onclick="ganhar()">ASSISTIR ANÚNCIO (+500 KZ)</button>
         
-        <div id="adminTools" class="hidden" style="margin-top:15px; padding-top:15px; border-top:1px solid #333;">
-            <p style="color:var(--bright); font-size:0.8rem;">PAINEL GESTOR ATIVO</p>
-            <button class="btn" style="background:#fff; color:#000; font-size:0.8rem;">GERIR ARTISTAS</button>
+        <div id="adminTools" class="hidden" style="margin-top:20px; padding:15px; border:1px dashed var(--gold);">
+            <p style="color:var(--bright); font-weight:bold;">MODO CEO ATIVO 🛠️</p>
+            <button class="btn" style="background:#fff; font-size:0.8rem; margin-bottom:10px;">LISTA DE ARTISTAS</button>
+            <button class="btn" style="background:#fff; font-size:0.8rem;">PAGAMENTOS</button>
         </div>
 
-        <p style="color:#ff4444; cursor:pointer; margin-top:20px; font-weight:bold;" onclick="sair()">SAIR</p>
+        <p style="color:red; cursor:pointer; margin-top:25px; font-weight:bold;" onclick="sair()">SAIR DA CONTA</p>
     </div>
 </div>
 
@@ -92,9 +91,9 @@
     </div>
     <div class="footer-item">
         <strong>🚀 CEO & DIRECÇÃO</strong>
-        <p>Matias Arsénio Manuel (Play Sean Arsénio)<br>E-mail: mamfilhos29@gmail.com</p>
+        <p>Matias Arsénio Manuel (Play Sean Arsénio)<br>E-mail Oficial: <strong>mamfilhos29@gmail.com</strong></p>
     </div>
-    <center style="font-size:0.7rem; color:#444; margin-top:10px;">© 2026 MAM DISTRIBUIDORA - ANGOLA</center>
+    <center style="font-size:0.7rem; color:#444; margin-top:15px;">© 2026 MAM DISTRIBUIDORA - LUANDA, ANGOLA</center>
 </footer>
 
 <script>
@@ -111,49 +110,58 @@
     var auth = firebase.auth();
     var db = firebase.firestore();
 
-    function fazerRegisto() {
+    function cadastrar() {
         var e = document.getElementById('email').value;
         var p = document.getElementById('pass').value;
-        if(p.length < 6) { alert("Senha deve ter no mínimo 6 dígitos!"); return; }
+        if(!e || p.length < 6) { alert("Preencha o e-mail e use 6 dígitos na senha!"); return; }
 
-        auth.createUserWithEmailAndPassword(e, p).then(res => {
-            db.collection("usuarios").doc(res.user.uid).set({ nome: e.split('@')[0], saldo: 0 });
-            alert("Conta Criada! Bem-vindo à MAM.");
-        }).catch(err => alert("Erro ao criar: " + err.message));
+        auth.createUserWithEmailAndPassword(e, p).then(function(res) {
+            db.collection("usuarios").doc(res.user.uid).set({
+                nome: e.split('@')[0],
+                saldo: 0,
+                email: e
+            }).then(function() {
+                alert("CONTA MAM CRIADA COM SUCESSO!");
+            });
+        }).catch(function(err) { alert("Erro ao registar: " + err.message); });
     }
 
-    function fazerLogin() {
+    function entrar() {
         var e = document.getElementById('email').value;
         var p = document.getElementById('pass').value;
-        auth.signInWithEmailAndPassword(e, p).catch(err => alert("E-mail ou senha incorretos."));
+        auth.signInWithEmailAndPassword(e, p).catch(function(err) {
+            alert("E-mail ou senha incorretos.");
+        });
     }
 
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(function(user) {
         if (user) {
             document.getElementById('authArea').classList.add('hidden');
             document.getElementById('mainArea').classList.remove('hidden');
 
-            // VERIFICA SE É O MATIAS (ADMIN)
             if(user.email === "mamfilhos29@gmail.com") {
                 document.getElementById('adminTools').classList.remove('hidden');
             }
 
-            db.collection("usuarios").doc(user.uid).onSnapshot(doc => {
+            db.collection("usuarios").doc(user.uid).onSnapshot(function(doc) {
                 if(doc.exists) {
                     document.getElementById('uNome').innerText = doc.data().nome;
                     document.getElementById('userSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
                 }
             });
+        } else {
+            document.getElementById('authArea').classList.remove('hidden');
+            document.getElementById('mainArea').classList.add('hidden');
         }
     });
 
-    function ganharDinheiro() {
+    function ganhar() {
         db.collection("usuarios").doc(auth.currentUser.uid).update({
             saldo: firebase.firestore.FieldValue.increment(500)
         });
     }
 
-    function sair() { auth.signOut().then(() => location.reload()); }
+    function sair() { auth.signOut().then(function() { location.reload(); }); }
 </script>
 </body>
 </html>

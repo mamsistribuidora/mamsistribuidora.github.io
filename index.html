@@ -3,57 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Painel Oficial</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <style>
         :root { --gold: #D4AF37; --bright: #FFD700; }
-        body { margin: 0; padding: 0; background: #000 url('https://images.unsplash.com/photo-1514525253361-bee8718a300c?q=80&w=1000') no-repeat center center fixed; background-size: cover; font-family: sans-serif; color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
-        .main-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .card { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--gold); padding: 30px 20px; border-radius: 15px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); backdrop-filter: blur(8px); }
-        h1 { color: var(--bright); font-size: 2.3rem; margin: 0; letter-spacing: 4px; }
-        input { width: 100%; padding: 15px; margin-bottom: 12px; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 16px; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 8px; color: #000; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 5px; }
-        .admin-box { background: rgba(212, 175, 55, 0.1); border: 1px dashed var(--gold); padding: 10px; margin-top: 15px; border-radius: 10px; }
-        footer { background: rgba(0,0,0,0.95); border-top: 2px solid var(--gold); padding: 30px 20px; }
+        * { box-sizing: border-box; }
+
+        body { 
+            margin: 0; padding: 0;
+            background: #000 url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1500') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card { 
+            background: rgba(0, 0, 0, 0.92); 
+            border: 1px solid var(--gold); 
+            padding: 35px 20px; 
+            border-radius: 20px; 
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        h1 { color: var(--bright); font-size: 2.6rem; margin: 0; letter-spacing: 5px; font-weight: 900; }
+        .tagline { color: #888; font-size: 0.75rem; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        input { 
+            width: 100%; padding: 16px; margin-bottom: 12px; 
+            background: #111; border: 1px solid #333; 
+            color: #fff; border-radius: 12px; font-size: 16px; 
+            outline: none;
+        }
+
+        .btn { 
+            width: 100%; padding: 18px; 
+            background: linear-gradient(45deg, var(--gold), var(--bright)); 
+            border: none; border-radius: 12px; 
+            color: #000; font-weight: bold; font-size: 1.1rem; 
+            cursor: pointer; text-transform: uppercase;
+        }
+
+        .btn:active { transform: scale(0.96); }
+
+        .btn-outline { 
+            background: transparent; border: 1px solid var(--gold); 
+            color: var(--gold); margin-top: 12px; 
+        }
+
+        #userSaldo { font-size: 3.5rem; color: var(--bright); font-weight: bold; display: block; margin: 15px 0; }
+        
+        /* Estilo Admin */
+        .admin-tag { background: red; color: white; padding: 4px 10px; border-radius: 5px; font-size: 10px; position: absolute; top: 10px; right: 10px; font-weight: bold; }
+
+        footer { 
+            background: rgba(0,0,0,0.96); border-top: 3px solid var(--gold); 
+            padding: 30px 20px; font-size: 0.9rem;
+        }
+
+        .footer-item { margin-bottom: 20px; text-align: left; max-width: 500px; margin: auto; }
+        .footer-item strong { color: var(--gold); display: block; margin-bottom: 5px; }
+        .footer-item p { margin: 0; color: #bbb; line-height: 1.5; }
+
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="main-content">
+<div class="main-container">
     <div id="authArea" class="card">
         <h1>MAM</h1>
-        <p style="color:#888; font-size:0.7rem;">DISTRIBUIDORA PROFISSIONAL</p>
+        <p class="tagline">Indústria & Distribuição</p>
         <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Palavra-passe">
+        <input type="password" id="pass" placeholder="Palavra-passe (6+ dígitos)">
         <button class="btn" id="loginBtn">ENTRAR</button>
-        <button class="btn" style="background:none; border:1px solid var(--gold); color:var(--gold); margin-top:10px;" id="regBtn">CRIAR CONTA</button>
+        <button class="btn btn-outline" id="regBtn">CRIAR CONTA</button>
     </div>
 
     <div id="mainArea" class="card hidden">
-        <h2 id="tituloPainel" style="color:var(--gold); margin:0;">Olá, Artista</h2>
-        <span id="userSaldo" style="font-size:3rem; color:var(--bright); font-weight:bold; display:block; margin:10px 0;">0 KZ</span>
-        
+        <div id="tagAdmin" class="admin-tag hidden">ADMINISTRADOR</div>
+        <h2 style="color:var(--gold); margin:0;">Olá, <span id="uNome">Artista</span></h2>
+        <span id="userSaldo">0 KZ</span>
         <button class="btn" id="workBtn">ASSISTIR ANÚNCIO (+500 KZ)</button>
-
-        <div id="adminArea" class="admin-box hidden">
-            <p style="color:var(--bright); font-weight:bold; margin:0;">PAINEL ADMIN ATIVO 🛠️</p>
-            <button class="btn" style="background:#fff; margin-top:10px; font-size:0.8rem;" onclick="alert('A carregar lista de artistas...')">VER TODOS OS ARTISTAS</button>
-            <button class="btn" style="background:#fff; margin-top:10px; font-size:0.8rem;" onclick="alert('A abrir gestor de pagamentos...')">GESTÃO DE PAGAMENTOS</button>
+        
+        <div id="areaAdmin" class="hidden" style="margin-top:20px; border-top:1px solid #333; padding-top:15px;">
+            <button class="btn" style="background:white; font-size:0.8rem;" onclick="alert('Gerir artistas...')">GERIR ARTISTAS</button>
         </div>
 
-        <p style="color:#ff4444; cursor:pointer; margin-top:25px; font-size:0.8rem;" id="logoutBtn">SAIR</p>
+        <p style="color:#ff4444; cursor:pointer; margin-top:25px; font-weight:bold; font-size:0.8rem;" id="logoutBtn">SAIR DO SISTEMA</p>
     </div>
 </div>
 
 <footer>
-    <div style="text-align:left; max-width:500px; margin:auto;">
-        <strong style="color:var(--gold)">💎 CURAÇÃO EXCLUSIVA</strong>
-        <p style="color:#bbb; font-size:0.8rem;">Análise humana que as grandes plataformas não oferecem.</p>
-        <strong style="color:var(--gold); display:block; margin-top:10px;">🚀 CEO: Matias Arsénio Manuel</strong>
+    <div class="footer-item">
+        <strong>💎 CURAÇÃO EXCLUSIVA</strong>
+        <p>A MAM Distribuidora oferece a curadoria personalizada que as grandes plataformas automáticas não dão. Analisamos a tua arte como única.</p>
     </div>
+    <div class="footer-item">
+        <strong>🚀 CEO & DIRECÇÃO</strong>
+        <p>Matias Arsénio Manuel (Play Sean Arsénio)<br>Contacto: mamfilhos29@gmail.com</p>
+    </div>
+    <center style="font-size:0.7rem; color:#444; margin-top:15px;">© 2026 MAM DISTRIBUIDORA - ANGOLA</center>
 </footer>
 
 <script>
@@ -66,22 +135,31 @@
         appId: "1:670857002452:web:404822b5376075e520ea41"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     var auth = firebase.auth();
     var db = firebase.firestore();
 
-    // LOGIN
-    document.getElementById('loginBtn').onclick = function() {
-        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value)
-        .catch(function(err) { alert("Dados incorretos!"); });
-    };
-
-    // REGISTO
+    // BOTÃO REGISTAR
     document.getElementById('regBtn').onclick = function() {
         var e = document.getElementById('email').value;
         var p = document.getElementById('pass').value;
+        if(p.length < 6) { alert("Senha deve ter no mínimo 6 dígitos!"); return; }
+        
         auth.createUserWithEmailAndPassword(e, p).then(function(res) {
-            db.collection("usuarios").doc(res.user.uid).set({ nome: e.split('@')[0], saldo: 0, cargo: "artista" });
+            db.collection("usuarios").doc(res.user.uid).set({
+                nome: e.split('@')[0],
+                saldo: 0,
+                email: e
+            }).then(function() { alert("Conta MAM Criada!"); });
+        }).catch(function(err) { alert(err.message); });
+    };
+
+    // BOTÃO ENTRAR
+    document.getElementById('loginBtn').onclick = function() {
+        var e = document.getElementById('email').value;
+        var p = document.getElementById('pass').value;
+        auth.signInWithEmailAndPassword(e, p).catch(function(err) {
+            alert("Erro: E-mail ou senha incorretos.");
         });
     };
 
@@ -93,24 +171,29 @@
 
             // VERIFICA SE É O MATIAS (ADMIN)
             if(user.email === "mamfilhos29@gmail.com") {
-                document.getElementById('adminArea').classList.remove('hidden');
-                document.getElementById('tituloPainel').innerText = "Painel Gestor MAM";
+                document.getElementById('tagAdmin').classList.remove('hidden');
+                document.getElementById('areaAdmin').classList.remove('hidden');
             }
 
             db.collection("usuarios").doc(user.uid).onSnapshot(function(doc) {
                 if(doc.exists) {
+                    document.getElementById('uNome').innerText = doc.data().nome;
                     document.getElementById('userSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
                 }
             });
         }
     });
 
+    // BOTÃO GANHAR
     document.getElementById('workBtn').onclick = function() {
-        db.collection("usuarios").doc(auth.currentUser.uid).update({ saldo: firebase.firestore.FieldValue.increment(500) });
+        db.collection("usuarios").doc(auth.currentUser.uid).update({
+            saldo: firebase.firestore.FieldValue.increment(500)
+        });
     };
 
+    // BOTÃO SAIR
     document.getElementById('logoutBtn').onclick = function() {
-        auth.signOut().then(function() { location.reload(); });
+        auth.signOut().then(function() { window.location.reload(); });
     };
 </script>
 </body>

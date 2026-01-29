@@ -3,79 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Indústria Musical</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --bright: #FFD700; --bg: #000000; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 0; line-height: 1.6; }
-        .wrapper { padding: 15px; max-width: 450px; margin: 0 auto; }
+        :root { --gold: #D4AF37; --bright: #FFD700; }
         
-        /* Design Premium */
-        .card { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 30px 20px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); margin-top: 20px; text-align: center; }
-        h1 { color: var(--bright); font-size: 2.2rem; margin: 0 0 10px; letter-spacing: 3px; }
-        .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 25px; }
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            margin: 0; padding: 0;
+            background: #000;
+            /* FUNDO INDÚSTRIA MUSICAL */
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .container { padding: 20px; max-width: 450px; margin: auto; }
         
-        /* Inputs e Botões para todos os dedos */
-        input { width: 100%; padding: 15px; margin-bottom: 12px; background: #111; border: 1px solid #333; color: #fff; border-radius: 10px; font-size: 16px; outline: none; }
-        input:focus { border-color: var(--gold); }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--gold), var(--bright)); border: none; border-radius: 10px; color: #000; font-weight: bold; font-size: 1rem; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
-        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+        .card { 
+            background: rgba(10, 10, 10, 0.9); 
+            border: 1px solid rgba(212, 175, 55, 0.3); 
+            padding: 35px 20px; 
+            border-radius: 25px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,1); 
+            text-align: center;
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 { color: var(--bright); font-size: 2.8rem; letter-spacing: 5px; margin: 0; font-weight: 900; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .tagline { color: #ccc; font-size: 0.75rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
         
-        /* Saldo em destaque */
-        #userSaldo { font-size: 3.5rem; color: var(--bright); font-weight: bold; display: block; margin: 15px 0; text-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+        input { 
+            width: 100%; padding: 16px; margin-bottom: 15px; 
+            background: rgba(255,255,255,0.05); border: 1px solid #333; 
+            color: #fff; border-radius: 12px; font-size: 16px; 
+            outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+        .btn { 
+            width: 100%; padding: 18px; 
+            background: linear-gradient(45deg, var(--gold), var(--bright)); 
+            border: none; border-radius: 12px; 
+            color: #000; font-weight: bold; font-size: 1rem; 
+            cursor: pointer; text-transform: uppercase; 
+            margin-top: 5px; box-shadow: 0 5px 20px rgba(212,175,55,0.3);
+        }
+        .btn:active { transform: scale(0.97); }
         
-        /* Menu de Informação (Rodapé) */
-        footer { margin-top: 40px; padding: 25px; border-top: 1px solid #1a1a1a; background: #050505; text-align: left; }
-        .info-box { margin-bottom: 20px; }
-        .info-box strong { color: var(--gold); display: block; margin-bottom: 5px; font-size: 1rem; }
-        .info-box p { margin: 0; font-size: 0.85rem; color: #aaa; }
-        .contact { text-align: center; border-top: 1px solid #111; padding-top: 15px; font-size: 0.8rem; color: #444; }
-
-        .hidden { display: none !important; }
-    </style>
-</head>
-<body>
-
-<div class="wrapper">
-    <div id="authArea" class="card">
-        <h1>MAM</h1>
-        <p class="subtitle">Curadoria de Elite para Artistas</p>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Palavra-passe (6+ dígitos)">
-        <button class="btn" id="loginBtn" onclick="fazerLogin()">Entrar</button>
-        <button class="btn btn-outline" id="regBtn" onclick="fazerRegisto()">Criar Nova Conta</button>
-    </div>
-
-    <div id="mainArea" class="card hidden">
-        <h2 style="color:var(--gold); margin-bottom:0;">Bem-vindo</h2>
-        <p id="uNome" style="margin-top:5px; color:#666;"></p>
-        <p style="font-size:0.8rem; margin-bottom:0;">SALDO ACUMULADO</p>
-        <span id="userSaldo">0 KZ</span>
-        <button class="btn" onclick="ganharDinheiro()">Assistir Anúncio (+500 KZ)</button>
-        <p style="color:red; cursor:pointer; font-size:0.9rem; margin-top:20px;" onclick="fazerSair()">Sair da Conta</p>
-    </div>
-</div>
-
-<footer>
-    <div class="info-box">
-        <strong>💎 CURAÇÃO MAM</strong>
-        <p>Oferecemos a curadoria humana que as grandes plataformas automáticas ignoram. Elevamos a tua música ao nível profissional.</p>
-    </div>
-    <div class="info-box">
-        <strong>🚀 CEO & DIRECÇÃO</strong>
-        <p>Matias Arsénio Manuel (Play Sean Arsénio)<br>E-mail: mamfilhos29@gmail.com</p>
-    </div>
-    <div class="contact">
-        © 2026 MAM DISTRIBUIDORA - LUANDA, ANGOLA
-    </div>
-</footer>
-
-<script>
-    // Configuração oficial extraída das tuas imagens
-    var firebaseConfig = {
-        apiKey:
+        .btn-outline { 
+            background: transparent; border: 2px solid var(--gold); 
+            color: var(--gold); margin-top: 15px; box-shadow: none;
+        }

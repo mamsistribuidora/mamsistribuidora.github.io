@@ -10,36 +10,32 @@
     <style>
         :root { --gold: #FFD700; --dark: #050505; }
         body { font-family: sans-serif; background: var(--dark); color: white; text-align: center; padding: 20px; margin: 0; }
-        .card { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #222; max-width: 400px; margin: 20px auto; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        h1 { color: var(--gold); margin-bottom: 10px; }
+        .card { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #222; max-width: 400px; margin: 20px auto; }
+        h1 { color: var(--gold); }
         input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        #userSaldo { font-size: 2.5em; color: var(--gold); margin: 15px 0; display: block; font-weight: bold; }
+        .btn { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #userSaldo { font-size: 2.5em; color: var(--gold); margin: 15px 0; display: block; }
         .hidden { display: none; }
-        .footer { margin-top: 20px; font-size: 12px; color: #555; }
     </style>
 </head>
 <body>
     <div id="authArea" class="card">
         <h1>MAM</h1>
-        <p>Distribuidora & Curadoria</p>
+        <p>Curação que as grandes não dão.</p>
         <input type="email" id="email" placeholder="Teu E-mail">
         <input type="password" id="pass" placeholder="Palavra-passe">
         <button class="btn" onclick="login()">ENTRAR</button>
-        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px; font-size:14px;">Novo Artista? Criar Conta</p>
+        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px; font-size:14px;">Criar Conta MAM</p>
     </div>
 
     <div id="mainArea" class="card hidden">
         <h1>Painel MAM</h1>
-        <p>Olá, <span id="uNome">Artista</span>!</p>
-        <p>Teu Saldo Atual:</p>
+        <p>Olá, <span id="uNome">...</span></p>
         <span id="userSaldo">0 KZ</span>
         <button class="btn" onclick="ganharDinheiro()">ASSISTIR ANÚNCIO (+500 KZ)</button>
         <br><br>
-        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">SAIR DA CONTA</button>
+        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none; cursor:pointer;">SAIR</button>
     </div>
-
-    <div class="footer">© 2026 MAM Distribuidora - Luanda, Angola</div>
 
     <script>
         const firebaseConfig = {
@@ -50,7 +46,6 @@
             messagingSenderId: "670857002452",
             appId: "1:670857002452:web:404822b5376075e520ea41"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -58,22 +53,17 @@
         async function registrar() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('pass').value;
-            if(!e || p.length < 6) return alert("Email inválido ou senha muito curta!");
             try {
                 const res = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection('usuarios').doc(res.user.uid).set({
-                    saldo: 0,
-                    nome: e.split('@')[0],
-                    criadoEm: new Date()
-                });
-                alert("Conta MAM Criada com Sucesso!");
-            } catch(err) { alert("Erro ao registar: " + err.message); }
+                await db.collection('usuarios').doc(res.user.uid).set({ saldo: 0, nome: e.split('@')[0] });
+                alert("Conta MAM criada!");
+            } catch(err) { alert(err.message); }
         }
 
         async function login() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('pass').value;
-            try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert("Dados incorretos!"); }
+            try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert("Dados errados!"); }
         }
 
         auth.onAuthStateChanged(user => {
@@ -82,22 +72,17 @@
                 document.getElementById('mainArea').classList.remove('hidden');
                 db.collection('usuarios').doc(user.uid).onSnapshot(doc => {
                     if(doc.exists) {
-                        const data = doc.data();
-                        document.getElementById('uNome').innerText = data.nome;
-                        document.getElementById('userSaldo').innerText = data.saldo.toLocaleString() + " KZ";
+                        document.getElementById('uNome').innerText = doc.data().nome;
+                        document.getElementById('userSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
                     }
                 });
             }
         });
 
         async function ganharDinheiro() {
-            const user = auth.currentUser;
-            if(user) {
-                await db.collection('usuarios').doc(user.uid).update({
-                    saldo: firebase.firestore.FieldValue.increment(500)
-                });
-                alert("Parabéns! +500 KZ no teu saldo MAM.");
-            }
+            await db.collection('usuarios').doc(auth.currentUser.uid).update({
+                saldo: firebase.firestore.FieldValue.increment(500)
+            });
         }
     </script>
 </body>

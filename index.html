@@ -3,292 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Plataforma Real</title>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <title>MAM Distribuidora | Painel Oficial</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
     <style>
-        :root { --gold: #FFD700; --blue: #002d5a; --bg: #050505; }
-        body { 
-            font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: #fff;
-            background-image: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1470&q=80');
-            background-size: cover; background-attachment: fixed;
-        }
-        .sidebar { width: 280px; background: #000; height: 100vh; position: fixed; border-right: 2px solid var(--blue); display: none; flex-direction: column; padding: 20px; box-sizing: border-box; z-index: 1000; }
-        .main { width: 100%; box-sizing: border-box; transition: 0.3s; }
-        .logged-in { padding-left: 280px; }
-        .section { padding: 30px; display: none; max-width: 1000px; margin: auto; }
-        .active { display: block; }
-        .card { background: rgba(20,20,20,0.95); padding: 20px; border-radius: 10px; border-left: 5px solid var(--gold); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 5px; }
-        .btn { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 5px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; }
-        .btn:hover { background: #fff; transform: translateY(-2px); }
-        .nav-item { padding: 15px; cursor: pointer; border-bottom: 1px solid #222; transition: 0.3s; }
-        .nav-item:hover { background: var(--blue); }
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); display: block; margin: auto; object-fit: cover; background: #222; }
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
-        .status-sucesso { background: #00ff00; color: #000; }
-        footer { text-align: center; padding: 20px; font-size: 0.8em; color: #666; }
-        .hidden { display: none !important; }
+        :root { --gold: #FFD700; --dark-bg: #050505; --card-bg: #121212; --blue: #0047ab; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding: 15px; }
+        .container { max-width: 500px; margin: auto; }
+        .card { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid #222; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1, h2 { color: var(--gold); text-align: center; margin-top: 0; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
+        .btn { background: var(--gold); color: black; border: none; padding: 16px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn:active { transform: scale(0.98); }
+        .btn-blue { background: var(--blue); color: white; margin-top: 10px; }
+        .saldo-box { text-align: center; padding: 20px; border: 2px solid var(--gold); border-radius: 15px; margin: 15px 0; }
+        #userSaldo { font-size: 2.8em; font-weight: bold; color: var(--gold); display: block; }
+        .hidden { display: none; }
+        .footer-link { text-align: center; color: #666; font-size: 14px; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="authPage" style="height:100vh; display:flex; align-items:center; justify-content:center;">
-        <div class="card" style="width:350px; text-align:center;">
-            <h1 style="color:var(--gold); margin:0;">MAM</h1>
-            <div id="loginBox">
-                <input type="email" id="lEmail" placeholder="E-mail">
-                <input type="password" id="lPass" placeholder="Palavra-passe">
-                <button class="btn" onclick="executarLogin()">Entrar</button>
-                <p onclick="toggleAuth(true)" style="cursor:pointer; font-size:0.9em; margin-top:15px;">Criar Conta Profissional</p>
-            </div>
-            <div id="regBox" class="hidden">
-                <input type="text" id="rNome" placeholder="Nome Completo">
-                <input type="email" id="rEmail" placeholder="E-mail">
-                <input type="password" id="rPass" placeholder="Criar Senha">
-                <button class="btn" onclick="executarRegisto()">Finalizar e Ganhar 5.000 KZ</button>
-                <p onclick="toggleAuth(false)" style="cursor:pointer; font-size:0.9em; margin-top:15px;">Já tenho conta</p>
-            </div>
+<div class="container">
+    <div id="authArea">
+        <div class="card">
+            <h1>MAM</h1>
+            <p style="text-align:center; color: #aaa;">Distribuição & Curadoria</p>
+            <input type="email" id="email" placeholder="E-mail do Artista">
+            <input type="password" id="pass" placeholder="Palavra-passe">
+            <button class="btn" onclick="login()">Entrar no Painel</button>
+            <button class="btn btn-blue" onclick="registrar()">Criar Nova Conta</button>
+            <p class="footer-link">Esqueceu a senha? Contacte o suporte MAM</p>
         </div>
     </div>
 
-    <nav id="sidebar" class="sidebar">
-        <div style="text-align:center; margin-bottom:30px;">
-            <img id="userImg" src="" class="profile-pic">
-            <h3 id="userName" style="color:var(--gold); margin-top:15px;"></h3>
-            <span id="userLevel" class="badge status-sucesso">Nível Grátis</span>
+    <div id="mainArea" class="hidden">
+        <div class="card">
+            <p>Olá, <strong id="uNome">Artista</strong>!</p>
+            <div class="saldo-box">
+                <small>SALDO ACUMULADO</small>
+                <span id="userSaldo">0 KZ</span>
+            </div>
+            <button class="btn" onclick="ganharDinheiro()">Assistir Anúncio (+500 KZ)</button>
         </div>
-        <div class="nav-item" onclick="nav('home')">🏠 Página Inicial</div>
-        <div class="nav-item" onclick="nav('perfil')">👤 Editar Perfil</div>
-        <div class="nav-item" onclick="nav('lancar')">🚀 Envio Profissional</div>
-        <div class="nav-item" onclick="nav('musicas')">🎶 Minhas Músicas</div>
-        <div class="nav-item" onclick="nav('carteira')">💰 Carteira Dupla</div>
-        <div class="nav-item" onclick="sair()" style="color:red; margin-top:auto;">🚪 Sair</div>
-    </nav>
 
-    <div id="app" class="hidden">
-        <div id="content" class="main">
-            
-            <div id="home" class="section active">
-                <div class="card">
-                    <h2>Bem-vindo à MAM Distribuidora</h2>
-                    <p>Olá, <b id="welcome"></b>! Estás pronto para faturar?</p>
-                </div>
-
-                <div class="card">
-                    <h3>🏆 Níveis de Perfil e Benefícios Reais</h3>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <div style="border:1px solid #333; padding:10px; border-radius:5px;">
-                            <b>Grátis</b><br><small>20% de Ganhos</small><br>
-                            <button class="btn" style="padding:5px; margin-top:5px; font-size:0.7em;">Ativo</button>
-                        </div>
-                        <div style="border:1px solid var(--gold); padding:10px; border-radius:5px;">
-                            <b>MAM PRO</b><br><small>80% de Ganhos</small><br>
-                            <button class="btn" style="padding:5px; margin-top:5px; font-size:0.7em;" onclick="comprarNivel(25000)">25.000 KZ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>💰 Tarefas Reais (Ganhos Imediatos)</h3>
-                    <button class="btn" style="width:auto; margin-bottom:10px;" onclick="fazerTarefa(100, 'Vídeo Assistido')">📹 Ver Vídeo Pago (+100 KZ)</button>
-                    <button class="btn" style="width:auto;" onclick="fazerTarefa(300, 'TikTok Follow')">📱 Seguir TikTok CEO (+300 KZ)</button>
-                </div>
-
-                <div class="card" style="border-left-color: var(--blue);">
-                    <h3>💳 Dados para Pagamento de Nível</h3>
-                    <p>IBAN BAI: <b>AO06 0040 0000 1234 5678 1012 3</b><br>Titular: Matias Manuel</p>
-                </div>
-            </div>
-
-            <div id="perfil" class="section">
-                <div class="card">
-                    <h3>Editar Perfil Profissional</h3>
-                    <p>Foto de Perfil (Carregar do Dispositivo):</p>
-                    <input type="file" id="inputFoto" accept="image/*" onchange="salvarFoto(this)">
-                    <p>Nome Artístico:</p>
-                    <input type="text" id="novoNome" placeholder="Novo Nome">
-                    <button class="btn" onclick="atualizarDados()">Guardar Alterações</button>
-                </div>
-            </div>
-
-            <div id="lancar" class="section">
-                <div class="card">
-                    <h3>Upload Profissional (ISRC/UPC)</h3>
-                    <input type="text" id="mTitulo" placeholder="Título da Música">
-                    <input type="text" id="mArtista" placeholder="Nome do Artista/Banda">
-                    <select id="mGenero"><option>Kizomba</option><option>Gospel</option><option>Rap</option><option>Outro</option></select>
-                    <textarea id="mDesc" placeholder="Letra ou Créditos da Música"></textarea>
-                    <p>Ficheiro Áudio (WAV/MP3) e Capa (JPG):</p>
-                    <input type="file" multiple id="mFiles">
-                    <button class="btn" onclick="enviarParaMAM()">Enviar para o E-mail da MAM</button>
-                </div>
-            </div>
-
-            <div id="carteira" class="section">
-                <div class="card" style="text-align:center;">
-                    <small>Teu Saldo Disponível</small>
-                    <h1 id="saldoUser" style="color:var(--gold); font-size:3.5em;">0 KZ</h1>
-                </div>
-                
-                <div id="painelCEO" class="card" style="display:none; background:var(--blue);">
-                    <small>LUCRO EMPRESA (MAM 80%):</small>
-                    <h1 id="saldoCEO" style="color:#fff;">0 KZ</h1>
-                </div>
-
-                <div class="card">
-                    <h3>Levantamento Real (Sem Limites)</h3>
-                    <select id="metodoSaque">
-                        <option>BAI</option><option>BFA</option><option>BIC</option><option>Express</option><option>PayPal</option><option>Wise</option>
-                    </select>
-                    <input type="number" id="valorSaque" placeholder="Quanto queres sacar?">
-                    <input type="text" id="contaSaque" placeholder="IBAN ou E-mail da conta destino">
-                    <button class="btn" onclick="solicitarSaque()">Confirmar Saque Imediato</button>
-                </div>
-            </div>
-
-            <div id="musicas" class="section">
-                <h3>Minha Biblioteca</h3>
-                <div id="listaMusicas"></div>
-            </div>
-
+        <div class="card">
+            <h3>🎵 Curação de Conteúdo</h3>
+            <p style="font-size: 14px; color: #bbb;">A MAM oferece a curadoria que as grandes plataformas não oferecem. Envie sua obra para análise.</p>
+            <button class="btn btn-blue" onclick="solicitarCuradoria()">Solicitar Distribuição</button>
         </div>
-        <footer>MAM DISTRIBUIDORA &copy; 2026 | C.E.O Matias Arsénio Manuel</footer>
+
+        <div style="text-align:center;">
+            <button onclick="logout()" style="background:none; border:none; color:red; cursor:pointer;">Sair da Conta</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        // CONFIGURAÇÃO REAL
-        const EMAIL_MAM = "mamfilhos29@gmail.com";
-        let usuarios = JSON.parse(localStorage.getItem('MAM_DATABASE')) || [];
-        let sessao = JSON.parse(localStorage.getItem('MAM_SESSAO')) || null;
-        let lucroMAM = Number(localStorage.getItem('MAM_LUCRO')) || 5000000;
+<script>
+    // CONFIGURAÇÃO REAL DA TUA IMAGEM
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo",
+        authDomain: "mam-distribuidora.firebaseapp.com",
+        projectId: "mam-distribuidora",
+        storageBucket: "mam-distribuidora.firebasestorage.app",
+        messagingSenderId: "670857002452",
+        appId: "1:670857002452:web:404822b5376075e520ea41"
+    };
 
-        function toggleAuth(reg) {
-            document.getElementById('loginBox').classList.toggle('hidden', reg);
-            document.getElementById('regBox').classList.toggle('hidden', !reg);
-        }
+    // Inicialização
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        function executarRegisto() {
-            const n = document.getElementById('rNome').value, e = document.getElementById('rEmail').value, p = document.getElementById('rPass').value;
-            if(!n || !e || !p) return alert("Preencha todos os campos!");
-            usuarios.push({nome: n, email: e, pass: p, saldo: 5000, foto: "", nivel: "Grátis", musicas: []});
-            localStorage.setItem('MAM_DATABASE', JSON.stringify(usuarios));
-            alert("Conta Criada! Bónus de 5.000 KZ creditado.");
-            toggleAuth(false);
-        }
-
-        function executarLogin() {
-            const e = document.getElementById('lEmail').value, p = document.getElementById('lPass').value;
-            if(e === EMAIL_MAM) {
-                sessao = {nome: "Matias CEO", email: e, role: "ADMIN", saldo: 999999, foto: "", nivel: "DIRETOR", musicas: []};
-            } else {
-                let u = usuarios.find(x => x.email === e && x.pass === p);
-                if(!u) return alert("E-mail ou Senha incorretos!");
-                sessao = u;
-            }
-            localStorage.setItem('MAM_SESSAO', JSON.stringify(sessao));
-            location.reload();
-        }
-
-        function carregarApp() {
-            if(!sessao) return;
-            document.getElementById('authPage').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-            document.getElementById('sidebar').style.display = 'flex';
-            document.getElementById('content').classList.add('logged-in');
-            
-            atualizarUI();
-        }
-
-        function atualizarUI() {
-            document.getElementById('userName').innerText = sessao.nome;
-            document.getElementById('welcome').innerText = sessao.nome;
-            document.getElementById('userLevel').innerText = "Nível " + sessao.nivel;
-            document.getElementById('userImg').src = sessao.foto || "https://via.placeholder.com/100";
-            document.getElementById('saldoUser').innerText = sessao.saldo.toLocaleString() + " KZ";
-            
-            if(sessao.role === "ADMIN") {
-                document.getElementById('painelCEO').style.display = 'block';
-                document.getElementById('saldoCEO').innerText = lucroMAM.toLocaleString() + " KZ";
-            }
-            renderMusicas();
-        }
-
-        function salvarFoto(input) {
-            if (input.files && input.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    sessao.foto = e.target.result;
-                    salvarSessao();
-                    atualizarUI();
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function fazerTarefa(valor, tarefa) {
-            sessao.saldo += valor;
-            lucroMAM += (valor * 0.8);
-            alert("Ganhaste " + valor + " KZ!");
-            salvarSessao();
-            atualizarUI();
-        }
-
-        function enviarParaMAM() {
-            const t = document.getElementById('mTitulo').value;
-            if(!t) return alert("Insere o título da música!");
-            
-            // Simulação de Envio Real - Aqui integrarias com o EmailJS para cair no teu e-mail
-            alert("SISTEMA MAM: A música '" + t + "' foi enviada com sucesso para " + EMAIL_MAM + ". O Diretor Matias irá analisar os ficheiros.");
-            
-            sessao.musicas.push({titulo: t, status: "Em Analise"});
-            salvarSessao();
-            nav('musicas');
-        }
-
-        function solicitarSaque() {
-            const v = Number(document.getElementById('valorSaque').value);
-            const conta = document.getElementById('contaSaque').value;
-            if(v > sessao.saldo || v <= 0 || !conta) return alert("Dados de saque inválidos!");
-            
-            sessao.saldo -= v;
-            alert("PEDIDO DE SAQUE REAL: " + v + " KZ enviados para " + conta + ". O pagamento cairá na tua conta em minutos.");
-            salvarSessao();
-            atualizarUI();
-        }
-
-        function comprarNivel(preco) {
-            if(sessao.saldo < preco) return alert("Saldo insuficiente. Faz tarefas ou envia comprovativo de pagamento ao C.E.O.");
-            sessao.saldo -= preco;
-            sessao.nivel = "PRO (80%)";
-            alert("PARABÉNS! Agora és um Artista MAM PRO.");
-            salvarSessao();
-            atualizarUI();
-        }
-
-        function renderMusicas() {
-            const list = document.getElementById('listaMusicas');
-            list.innerHTML = sessao.musicas.map(m => `<div class="card"><b>${m.titulo}</b> <span class="badge" style="background:orange;">${m.status}</span></div>`).join('');
-        }
-
-        function nav(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(window.innerWidth < 900) document.getElementById('sidebar').style.display = 'none';
-        }
-
-        function salvarSessao() {
-            localStorage.setItem('MAM_SESSAO', JSON.stringify(sessao));
-            localStorage.setItem('MAM_LUCRO', lucroMAM);
-            if(sessao.role !== "ADMIN") {
-                let idx = usuarios.findIndex(u => u.email === sessao.email);
-                usuarios[idx] = sessao;
-                localStorage.setItem('MAM_DATABASE', JSON.stringify(usuarios));
-            }
-        }
-
-        function sair() { localStorage.removeItem('MAM_SESSAO'); location.reload(); }
+    // Função Criar Conta
+    async function registrar() {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('pass').value;
+        if(p.length < 6) return alert("A senha deve ter pelo menos 6 dígitos!");
         
-        carregarApp();
-    </script>
+        try {
+            const res = await auth.createUserWithEmailAndPassword(e, p);
+            // Cria a ficha do artista no banco de dados
+            await db.collection('usuarios').doc(res.user.uid).set({
+                email: e,
+                nome: e.split('@')[0],
+                saldo: 0,
+                cadastro: new Date()
+            });
+            alert("Sucesso! Conta MAM criada no servidor.");
+        } catch(err) { alert("Erro: " + err.message); }
+    }
+
+    // Função Entrar
+    async function login() {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('pass').value;
+        try {
+            await auth.signInWithEmailAndPassword(e, p);
+        } catch(err) { alert("Dados incorretos!"); }
+    }
+
+    // Observador de Login (Mantém o artista logado)
+    auth.onAuthStateChanged(user => {
+        if(user) {
+            document.getElementById('authArea').classList.add('hidden');
+            document.getElementById('mainArea').classList.remove('hidden');
+            
+            // Escuta o saldo em tempo real do banco de dados
+            db.collection('usuarios').doc(user.uid).onSnapshot(doc => {
+                if(doc.exists) {
+                    const d = doc.data();
+                    document.getElementById('uNome').innerText = d.nome;
+                    document.getElementById('userSaldo').innerText = d.saldo.toLocaleString() + " KZ";
+                }
+            });
+        }
+    });
+
+    // Função de Ganhar Dinheiro (Guarda no Servidor)
+    async function ganharDinheiro() {
+        const user = auth.currentUser;
+        if(user) {
+            await db.collection('usuarios').doc(user.uid).update({
+                saldo: firebase.firestore.FieldValue.increment(500)
+            });
+            alert("Parabéns! 500 KZ foram adicionados à sua conta MAM.");
+        }
+    }
+
+    function solicitarCuradoria() {
+        alert("Direcionando para a Curadoria MAM...\nE-mail: mamfilhos29@gmail.com");
+    }
+
+    function logout() {
+        auth.signOut().then(() => location.reload());
+    }
+</script>
+
 </body>
 </html>

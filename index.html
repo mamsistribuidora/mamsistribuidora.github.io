@@ -9,9 +9,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
     <style>
         :root { --gold: #FFD700; --dark: #050505; }
-        body { font-family: sans-serif; background: var(--dark); color: white; text-align: center; padding: 20px; margin: 0; }
-        .card { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #222; max-width: 400px; margin: 20px auto; }
-        h1 { color: var(--gold); }
+        body { font-family: sans-serif; background: var(--dark); color: white; text-align: center; padding: 20px; }
+        .card { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #222; max-width: 400px; margin: auto; }
         input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
         .btn { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
         #userSaldo { font-size: 2.5em; color: var(--gold); margin: 15px 0; display: block; }
@@ -21,23 +20,24 @@
 <body>
     <div id="authArea" class="card">
         <h1>MAM</h1>
-        <p>Curação que as grandes não dão.</p>
-        <input type="email" id="email" placeholder="Teu E-mail">
-        <input type="password" id="pass" placeholder="Palavra-passe">
+        <p>Distribuição Profissional</p>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Senha (mínimo 6 dígitos)">
         <button class="btn" onclick="login()">ENTRAR</button>
-        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px; font-size:14px;">Criar Conta MAM</p>
+        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px; font-size:14px;">Criar minha conta MAM</p>
     </div>
 
     <div id="mainArea" class="card hidden">
-        <h1>Painel MAM</h1>
-        <p>Olá, <span id="uNome">...</span></p>
+        <h2>Painel MAM</h2>
+        <p>Olá, <span id="uNome">Artista</span></p>
         <span id="userSaldo">0 KZ</span>
         <button class="btn" onclick="ganharDinheiro()">ASSISTIR ANÚNCIO (+500 KZ)</button>
         <br><br>
-        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none; cursor:pointer;">SAIR</button>
+        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none; cursor:pointer;">Sair</button>
     </div>
 
     <script>
+        // Configurações da tua imagem
         const firebaseConfig = {
             apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo",
             authDomain: "mam-distribuidora.firebaseapp.com",
@@ -46,6 +46,7 @@
             messagingSenderId: "670857002452",
             appId: "1:670857002452:web:404822b5376075e520ea41"
         };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -53,23 +54,31 @@
         async function registrar() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('pass').value;
+            if (p.length < 6) return alert("A senha precisa de 6 números ou letras!");
             try {
                 const res = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection('usuarios').doc(res.user.uid).set({ saldo: 0, nome: e.split('@')[0] });
-                alert("Conta MAM criada!");
-            } catch(err) { alert(err.message); }
+                // Grava o nome e saldo inicial no Banco de Dados
+                await db.collection('usuarios').doc(res.user.uid).set({
+                    nome: e.split('@')[0],
+                    saldo: 0
+                });
+                alert("Conta MAM Criada com Sucesso!");
+            } catch(err) { alert("Erro ao criar: " + err.message); }
         }
 
         async function login() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('pass').value;
-            try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert("Dados errados!"); }
+            try {
+                await auth.signInWithEmailAndPassword(e, p);
+            } catch(err) { alert("Dados incorretos ou conta não existe!"); }
         }
 
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('authArea').classList.add('hidden');
                 document.getElementById('mainArea').classList.remove('hidden');
+                // Puxa o saldo do Banco de Dados
                 db.collection('usuarios').doc(user.uid).onSnapshot(doc => {
                     if(doc.exists) {
                         document.getElementById('uNome').innerText = doc.data().nome;
@@ -80,9 +89,12 @@
         });
 
         async function ganharDinheiro() {
-            await db.collection('usuarios').doc(auth.currentUser.uid).update({
-                saldo: firebase.firestore.FieldValue.increment(500)
-            });
+            const user = auth.currentUser;
+            if(user) {
+                await db.collection('usuarios').doc(user.uid).update({
+                    saldo: firebase.firestore.FieldValue.increment(500)
+                });
+            }
         }
     </script>
 </body>

@@ -56,3 +56,84 @@
 
     <div id="cardPainel" class="card hidden">
         <h2 style="color:var(--gold);">Olá, <span id="uNome">...</span></h2>
+        <span id="uSaldo" style="font-size:3.5rem; color:var(--bright); font-weight:bold; display:block; margin:20px 0;">0 KZ</span>
+        <button class="btn" onclick="ganhar()">GERAR CRÉDITO (+500 KZ)</button>
+        <p style="color:red; cursor:pointer; margin-top:30px; font-weight:bold;" onclick="sair()">SAIR</p>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-item">
+        <strong>💎 CURADORIA EXCLUSIVA</strong>
+        <p>A MAM Distribuidora oferece a curadoria personalizada que as grandes plataformas automáticas não dão [cite: 2026-01-28].</p>
+    </div>
+    <div class="footer-item">
+        <strong>🚀 CEO & DIRECÇÃO</strong>
+        <p>Matias Arsénio Manuel (Play Sean Arsénio) [cite: 2026-01-27]. E-mail: mamfilhos29@gmail.com [cite: 2023-01-23].</p>
+    </div>
+</footer>
+
+<script>
+    var firebaseConfig = {
+        apiKey: "SUA_NOVA_CHAVE_AQUI", 
+        authDomain: "mam-distribuidora.firebaseapp.com",
+        projectId: "mam-distribuidora",
+        storageBucket: "mam-distribuidora.firebasestorage.app",
+        messagingSenderId: "670857002452",
+        appId: "1:670857002452:web:404822b5376075e520ea41"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function abrirCadastro() { document.getElementById('cardLogin').classList.add('hidden'); document.getElementById('cardReg').classList.remove('hidden'); }
+    function abrirLogin() { document.getElementById('cardReg').classList.add('hidden'); document.getElementById('cardLogin').classList.remove('hidden'); }
+
+    function fazerRegisto() {
+        const n = document.getElementById('regNome').value;
+        const e = document.getElementById('regEmail').value;
+        const p = document.getElementById('regPass').value;
+        if(!n || !e || p.length < 6) return alert("Preencha tudo corretamente.");
+        
+        auth.createUserWithEmailAndPassword(e, p).then(userCredential => {
+            db.collection("usuarios").doc(userCredential.user.uid).set({ nome: n, saldo: 0 });
+            alert("Conta criada!");
+            location.reload();
+        }).catch(err => alert(err.message));
+    }
+
+    function fazerLogin() {
+        const e = document.getElementById('loginEmail').value;
+        const p = document.getElementById('loginPass').value;
+        auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+    }
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('cardLogin').classList.add('hidden');
+            document.getElementById('cardReg').classList.add('hidden');
+            document.getElementById('cardPainel').classList.remove('hidden');
+            db.collection("usuarios").doc(user.uid).onSnapshot(doc => {
+                if(doc.exists) {
+                    document.getElementById('uNome').innerText = doc.data().nome;
+                    document.getElementById('uSaldo').innerText = doc.data().saldo + " KZ";
+                }
+            });
+        }
+    });
+
+    function ganhar() {
+        const user = auth.currentUser;
+        if(user) {
+            const ref = db.collection("usuarios").doc(user.uid);
+            ref.get().then(doc => {
+                ref.update({ saldo: (doc.data().saldo || 0) + 500 });
+            });
+        }
+    }
+
+    function sair() { auth.signOut().then(() => location.reload()); }
+</script>
+</body>
+</html>

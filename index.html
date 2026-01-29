@@ -3,65 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora | Indústria Musical</title>
+    <title>MAM Distribuidora</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --bright: #FFD700; }
+        :root { --gold: #D4AF37; --bright: #FFD700; --black: #050505; }
         
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
             margin: 0; padding: 0;
-            background: #000;
-            /* FUNDO INDÚSTRIA MUSICAL */
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-color: var(--black);
+            /* Gradiente que simula iluminação de estúdio (Leve) */
+            background-image: radial-gradient(circle at top, #1a1a1a 0%, #000000 100%);
             color: #fff;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
         }
 
-        .container { padding: 20px; max-width: 450px; margin: auto; }
-        
-        .card { 
-            background: rgba(10, 10, 10, 0.9); 
-            border: 1px solid rgba(212, 175, 55, 0.3); 
-            padding: 35px 20px; 
-            border-radius: 25px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,1); 
-            text-align: center;
-            margin-top: 40px;
-            backdrop-filter: blur(10px);
+        .content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
         }
 
-        h1 { color: var(--bright); font-size: 2.8rem; letter-spacing: 5px; margin: 0; font-weight: 900; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .tagline { color: #ccc; font-size: 0.75rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
+        .card { 
+            background: #0f0f0f;
+            border: 1px solid #222;
+            border-top: 4px solid var(--gold);
+            padding: 30px 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 { color: var(--bright); font-size: 2.2rem; margin: 0; letter-spacing: 4px; font-weight: bold; }
+        .tagline { color: #666; font-size: 0.75rem; margin-bottom: 25px; text-transform: uppercase; }
         
         input { 
-            width: 100%; padding: 16px; margin-bottom: 15px; 
-            background: rgba(255,255,255,0.05); border: 1px solid #333; 
-            color: #fff; border-radius: 12px; font-size: 16px; 
-            outline: none; transition: 0.3s;
+            width: 100%; padding: 14px; margin-bottom: 12px; 
+            background: #1a1a1a; border: 1px solid #333; 
+            color: #fff; border-radius: 8px; font-size: 16px; 
+            outline: none;
         }
-        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
 
         .btn { 
-            width: 100%; padding: 18px; 
-            background: linear-gradient(45deg, var(--gold), var(--bright)); 
-            border: none; border-radius: 12px; 
+            width: 100%; padding: 15px; 
+            background: var(--gold); 
+            border: none; border-radius: 8px; 
             color: #000; font-weight: bold; font-size: 1rem; 
-            cursor: pointer; text-transform: uppercase; 
-            margin-top: 5px; box-shadow: 0 5px 20px rgba(212,175,55,0.3);
+            cursor: pointer; transition: 0.2s;
         }
-        .btn:active { transform: scale(0.97); }
+
+        .btn:active { opacity: 0.8; transform: scale(0.98); }
+
+        .btn-reg { 
+            background: transparent; border: 1px solid var(--gold); 
+            color: var(--gold); margin-top: 10px; 
+        }
+
+        #userSaldo { font-size: 3rem; color: var(--bright); font-weight: bold; display: block; margin: 15px 0; }
         
-        .btn-outline { 
-            background: transparent; border: 2px solid var(--gold); 
-            color: var(--gold); margin-top: 15px; box-shadow: none;
+        footer { 
+            background: #000; border-top: 1px solid #111; 
+            padding: 25px 20px; color: #888; font-size: 0.8rem;
         }
+
+        .footer-item { margin-bottom: 15px; }
+        .footer-item strong { color: var(--gold); display: block; margin-bottom: 4px; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <div id="authArea" class="card">
+        <h1>MAM</h1>
+        <p class="tagline">Curadoria Musical</p>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Senha (6+ dígitos)">
+        <button class="btn" id="loginBtn">ENTRAR</button>
+        <button class="btn btn-reg" id="regBtn">CRIAR CONTA</button>
+    </div>
+
+    <div id="mainArea" class="card hidden">
+        <h2 style="color:var(--gold); margin:0;">Olá, <span id="uNome">Artista</span></h2>
+        <span id="userSaldo">0 KZ</span>
+        <button class="btn" id="workBtn">ASSISTIR ANÚNCIO (+500 KZ)</button>
+        <p style="color:#ff4444; cursor:pointer; margin-top:25px; font-size:0.8rem;" id="logoutBtn">SAIR DA CONTA</p>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-item">
+        <strong>💎 CURAÇÃO MAM</strong>
+        Análise humana e curadoria que as grandes plataformas não oferecem.
+    </div>
+    <div class="footer-item">
+        <strong>🚀 CEO & SUPORTE</strong>
+        Matias Arsénio Manuel (Play Sean Arsénio)<br>
+        Email: mamfilhos29@gmail.com
+    </div>
+    <div style="text-align:center; font-size:0.7rem; margin-top:20px; border-top:1px solid #111; padding-top:10px;">
+        © 2026 MAM DISTRIBUIDORA - ANGOLA
+    </div>
+</footer>
+
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo",
+        authDomain: "mam-distribuidora.firebaseapp.com",
+        projectId: "mam-distribuidora",
+        storageBucket: "mam-distribuidora.firebasestorage.app",
+        messagingSenderId: "670857002452",
+        appId: "1:670857002452:web:404822b5376075e520ea41"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    var auth = firebase.auth();
+    var db = firebase.firestore();
+
+    // Registo
+    document.getElementById('regBtn').onclick = function() {
+        var e = document.getElementById('email').value;
+        var p = document.getElementById('pass').value;
+        if(p.length < 6) { alert("Senha curta!"); return; }
+        auth.createUserWithEmailAndPassword(e, p).then(function(res) {
+            db.collection("usuarios").doc(res.user.uid).set({ nome: e.split('@')[0], saldo: 0 });
+            alert("Conta Criada!");
+        }).catch(function(err) { alert(err.message); });
+    };
+
+    // Login
+    document.getElementById('loginBtn').onclick = function() {
+        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value)
+        .catch(function(err) { alert("Dados incorretos!"); });
+    };
+
+    // Sessão
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            document.getElementById('authArea').classList.add('hidden');
+            document.getElementById('mainArea').classList.remove('hidden');
+            db.collection("usuarios").doc(user.uid).onSnapshot(function(doc) {
+                if(doc.exists) {
+                    document.getElementById('uNome').innerText = doc.data().nome;
+                    document.getElementById('userSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
+                }
+            });
+        }
+    });
+
+    // Ganhar
+    document.getElementById('workBtn').onclick = function() {
+        db.collection("usuarios").doc(auth.currentUser.uid).update({
+            saldo: firebase.firestore.FieldValue.increment(500)
+        });
+    };
+
+    // Sair
+    document.getElementById('logoutBtn').onclick = function() {
+        auth.signOut().then(function() { location.reload(); });
+    };
+</script>
+</body>
+</html>

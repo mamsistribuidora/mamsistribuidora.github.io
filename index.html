@@ -3,70 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora | Painel Oficial</title>
+    <title>MAM Distribuidora | Oficial</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <style>
         :root { --gold: #D4AF37; --bright: #FFD700; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
-            margin: 0; font-family: sans-serif; 
+            font-family: sans-serif; 
             background: #000 url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1000&q=80') no-repeat center center fixed;
             background-size: cover; color: #fff; min-height: 100vh;
         }
         .overlay { display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.8); min-height: 100vh; }
-        .card { background: rgba(10, 10, 10, 0.98); border: 2px solid var(--gold); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
-        h1 { color: var(--bright); letter-spacing: 4px; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; margin-bottom: 12px; background: #111; border: 1px solid #444; color: #fff; border-radius: 10px; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; }
-        .link { color: var(--gold); display: block; margin-top: 15px; cursor: pointer; text-decoration: underline; }
-        footer { background: #000; border-top: 2px solid var(--gold); padding: 30px 20px; }
+        .card { background: rgba(15, 15, 15, 0.98); border: 2px solid var(--gold); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 0 40px #000; }
+        h1 { color: var(--bright); letter-spacing: 4px; margin-bottom: 5px; }
+        .tagline { color: #888; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 25px; }
+        input { width: 100%; padding: 16px; margin-bottom: 15px; background: #000; border: 1px solid #444; color: #fff; border-radius: 12px; font-size: 16px; outline: none; }
+        .btn { width: 100%; padding: 18px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 12px; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .link { color: var(--gold); display: block; margin-top: 20px; cursor: pointer; text-decoration: underline; font-size: 0.9rem; }
+        footer { background: #000; border-top: 2px solid var(--gold); padding: 35px 20px; width: 100%; }
+        .footer-item { max-width: 600px; margin: auto; text-align: left; margin-bottom: 20px; }
+        .footer-item strong { color: var(--gold); display: block; margin-bottom: 8px; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="overlay">
-    <div id="boxLogin" class="card">
+    <div id="cardLogin" class="card">
         <h1>MAM</h1>
-        <p style="color:var(--gold)">INICIAR SESSÃO</p><br>
-        <input type="email" id="lEmail" placeholder="E-mail">
-        <input type="password" id="lPass" placeholder="Senha">
-        <button class="btn" onclick="entrar()">ENTRAR</button>
-        <span class="link" onclick="mostrarReg()">Criar novo Cadastro de Artista</span>
+        <p class="tagline">Indústria & Distribuição</p>
+        <p style="margin-bottom:15px; font-weight:bold;">ENTRAR NO PAINEL</p>
+        <input type="email" id="loginEmail" placeholder="Teu E-mail">
+        <input type="password" id="loginPass" placeholder="Tua Senha">
+        <button class="btn" onclick="fazerLogin()">ACEDER</button>
+        <span class="link" onclick="abrirCadastro()">Criar novo Cadastro de Artista</span>
     </div>
 
-    <div id="boxReg" class="card hidden">
+    <div id="cardReg" class="card hidden">
         <h1>MAM</h1>
-        <p style="color:var(--gold)">CADASTRO PROFISSIONAL</p><br>
-        <input type="text" id="rNome" placeholder="Nome Artístico">
-        <input type="email" id="rEmail" placeholder="E-mail do Artista">
-        <input type="password" id="rPass" placeholder="Senha (6+ dígitos)">
-        <button class="btn" onclick="registar()">CRIAR MINHA CONTA</button>
-        <span class="link" onclick="mostrarLogin()">Voltar para o Login</span>
+        <p class="tagline">Novo Artista</p>
+        <p style="margin-bottom:15px; font-weight:bold; color:var(--gold);">FICHA DE REGISTO</p>
+        <input type="text" id="regNome" placeholder="Nome Artístico">
+        <input type="email" id="regEmail" placeholder="E-mail">
+        <input type="password" id="regPass" placeholder="Senha (6+ dígitos)">
+        <button class="btn" onclick="fazerRegisto()">FINALIZAR CADASTRO</button>
+        <span class="link" onclick="abrirLogin()">Já tem conta? Fazer Login</span>
     </div>
 
-    <div id="boxPainel" class="card hidden">
-        <h2 style="color:var(--gold)">Olá, <span id="uNome">Artista</span></h2>
-        <span id="uSaldo" style="font-size:3rem; color:var(--bright); font-weight:bold; display:block; margin:15px 0;">0 KZ</span>
+    <div id="cardPainel" class="card hidden">
+        <h2 style="color:var(--gold);">Olá, <span id="uNome">...</span></h2>
+        <span id="uSaldo" style="font-size:3.5rem; color:var(--bright); font-weight:bold; display:block; margin:20px 0;">0 KZ</span>
         <button class="btn" onclick="ganhar()">GERAR CRÉDITO (+500 KZ)</button>
-        <div id="adminArea" class="hidden" style="margin-top:20px; border-top:1px solid #333; padding-top:10px;">
-            <p style="color:var(--bright)">MODO GESTOR ATIVO</p>
-        </div>
-        <p style="color:red; cursor:pointer; margin-top:20px;" onclick="sair()">Sair</p>
+        <p style="color:red; cursor:pointer; margin-top:30px; font-weight:bold;" onclick="sair()">SAIR</p>
     </div>
 </div>
 
 <footer>
-    <strong>💎 CURAÇÃO EXCLUSIVA</strong>
-    <p style="color:#888; font-size:0.9rem;">A MAM oferece a curadoria personalizada que as grandes plataformas não dão.</p>
-    <p style="margin-top:10px;">🚀 CEO: Matias Arsénio Manuel (Play Sean Arsénio)<br>E-mail: mamfilhos29@gmail.com</p>
+    <div class="footer-item">
+        <strong>💎 CURAÇÃO EXCLUSIVA</strong>
+        <p>A MAM Distribuidora oferece a curadoria personalizada que as grandes plataformas automáticas não dão.</p>
+    </div>
+    <div class="footer-item">
+        <strong>🚀 CEO & DIRECÇÃO</strong>
+        <p>Matias Arsénio Manuel (Play Sean Arsénio). E-mail: mamfilhos29@gmail.com</p>
+    </div>
 </footer>
 
 <script>
-    // COLA A TUA CHAVE AQUI EM BAIXO SE O ERRO PERSISTIR
     var firebaseConfig = {
-        apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo", 
+        apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo",
         authDomain: "mam-distribuidora.firebaseapp.com",
         projectId: "mam-distribuidora",
         storageBucket: "mam-distribuidora.firebasestorage.app",
@@ -78,32 +87,31 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function mostrarReg() { document.getElementById('boxLogin').classList.add('hidden'); document.getElementById('boxReg').classList.remove('hidden'); }
-    function mostrarLogin() { document.getElementById('boxReg').classList.add('hidden'); document.getElementById('boxLogin').classList.remove('hidden'); }
+    function abrirCadastro() { document.getElementById('cardLogin').classList.add('hidden'); document.getElementById('cardReg').classList.remove('hidden'); }
+    function abrirLogin() { document.getElementById('cardReg').classList.add('hidden'); document.getElementById('cardLogin').classList.remove('hidden'); }
 
-    function registar() {
-        const n = document.getElementById('rNome').value;
-        const e = document.getElementById('rEmail').value;
-        const p = document.getElementById('rPass').value;
-        if(!n || !e || p.length < 6) return alert("Preencha tudo! Senha mínima 6 dígitos.");
-        
+    function fazerRegisto() {
+        const n = document.getElementById('regNome').value;
+        const e = document.getElementById('regEmail').value;
+        const p = document.getElementById('regPass').value;
+        if(!n || !e || p.length < 6) return alert("Preencha tudo corretamente (Senha mín. 6 dígitos).");
+
         auth.createUserWithEmailAndPassword(e, p).then(res => {
             db.collection("usuarios").doc(res.user.uid).set({ nome: n, saldo: 0 });
             alert("CONTA CRIADA!");
-        }).catch(err => alert("Erro no Firebase: " + err.message));
+        }).catch(err => alert("Erro técnico: " + err.message));
     }
 
-    function entrar() {
-        auth.signInWithEmailAndPassword(document.getElementById('lEmail').value, document.getElementById('lPass').value)
+    function fazerLogin() {
+        auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPass').value)
         .catch(err => alert("E-mail ou senha incorretos."));
     }
 
     auth.onAuthStateChanged(user => {
         if(user) {
-            document.getElementById('boxLogin').classList.add('hidden');
-            document.getElementById('boxReg').classList.add('hidden');
-            document.getElementById('boxPainel').classList.remove('hidden');
-            if(user.email === "mamfilhos29@gmail.com") document.getElementById('adminArea').classList.remove('hidden');
+            document.getElementById('cardLogin').classList.add('hidden');
+            document.getElementById('cardReg').classList.add('hidden');
+            document.getElementById('cardPainel').classList.remove('hidden');
             db.collection("usuarios").doc(user.uid).onSnapshot(doc => {
                 if(doc.exists) {
                     document.getElementById('uNome').innerText = doc.data().nome;

@@ -3,143 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Painel Oficial</title>
+    <title>MAM Distribuidora | Oficial</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
     <style>
-        :root { --gold: #FFD700; --dark-bg: #050505; --card-bg: #121212; --blue: #0047ab; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding: 15px; }
-        .container { max-width: 500px; margin: auto; }
-        .card { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid #222; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1, h2 { color: var(--gold); text-align: center; margin-top: 0; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
-        .btn { background: var(--gold); color: black; border: none; padding: 16px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); }
-        .btn-blue { background: var(--blue); color: white; margin-top: 10px; }
-        .saldo-box { text-align: center; padding: 20px; border: 2px solid var(--gold); border-radius: 15px; margin: 15px 0; }
-        #userSaldo { font-size: 2.8em; font-weight: bold; color: var(--gold); display: block; }
+        :root { --gold: #FFD700; --dark: #050505; }
+        body { font-family: sans-serif; background: var(--dark); color: white; text-align: center; padding: 20px; }
+        .card { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #222; max-width: 400px; margin: auto; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #userSaldo { font-size: 2.5em; color: var(--gold); margin: 15px 0; display: block; }
         .hidden { display: none; }
-        .footer-link { text-align: center; color: #666; font-size: 14px; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="authArea">
-        <div class="card">
-            <h1>MAM</h1>
-            <p style="text-align:center; color: #aaa;">Distribuição & Curadoria</p>
-            <input type="email" id="email" placeholder="E-mail do Artista">
-            <input type="password" id="pass" placeholder="Palavra-passe">
-            <button class="btn" onclick="login()">Entrar no Painel</button>
-            <button class="btn btn-blue" onclick="registrar()">Criar Nova Conta</button>
-            <p class="footer-link">Esqueceu a senha? Contacte o suporte MAM</p>
-        </div>
+    <div id="authArea" class="card">
+        <h1>MAM</h1>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Senha">
+        <button class="btn" onclick="login()">Entrar</button>
+        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px;">Criar Conta de Artista</p>
     </div>
 
-    <div id="mainArea" class="hidden">
-        <div class="card">
-            <p>Olá, <strong id="uNome">Artista</strong>!</p>
-            <div class="saldo-box">
-                <small>SALDO ACUMULADO</small>
-                <span id="userSaldo">0 KZ</span>
-            </div>
-            <button class="btn" onclick="ganharDinheiro()">Assistir Anúncio (+500 KZ)</button>
-        </div>
-
-        <div class="card">
-            <h3>🎵 Curação de Conteúdo</h3>
-            <p style="font-size: 14px; color: #bbb;">A MAM oferece a curadoria que as grandes plataformas não oferecem. Envie sua obra para análise.</p>
-            <button class="btn btn-blue" onclick="solicitarCuradoria()">Solicitar Distribuição</button>
-        </div>
-
-        <div style="text-align:center;">
-            <button onclick="logout()" style="background:none; border:none; color:red; cursor:pointer;">Sair da Conta</button>
-        </div>
+    <div id="mainArea" class="card hidden">
+        <h2>Painel MAM</h2>
+        <p>Saldo do Artista:</p>
+        <span id="userSaldo">0 KZ</span>
+        <button class="btn" onclick="ganharDinheiro()">Assistir Anúncio (+500 KZ)</button>
+        <br><br>
+        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none;">Sair</button>
     </div>
-</div>
 
-<script>
-    // CONFIGURAÇÃO REAL DA TUA IMAGEM
-    const firebaseConfig = {
-        apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo",
-        authDomain: "mam-distribuidora.firebaseapp.com",
-        projectId: "mam-distribuidora",
-        storageBucket: "mam-distribuidora.firebasestorage.app",
-        messagingSenderId: "670857002452",
-        appId: "1:670857002452:web:404822b5376075e520ea41"
-    };
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo",
+            authDomain: "mam-distribuidora.firebaseapp.com",
+            projectId: "mam-distribuidora",
+            storageBucket: "mam-distribuidora.firebasestorage.app",
+            messagingSenderId: "670857002452",
+            appId: "1:670857002452:web:404822b5376075e520ea41"
+        };
 
-    // Inicialização
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-    // Função Criar Conta
-    async function registrar() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('pass').value;
-        if(p.length < 6) return alert("A senha deve ter pelo menos 6 dígitos!");
-        
-        try {
-            const res = await auth.createUserWithEmailAndPassword(e, p);
-            // Cria a ficha do artista no banco de dados
-            await db.collection('usuarios').doc(res.user.uid).set({
-                email: e,
-                nome: e.split('@')[0],
-                saldo: 0,
-                cadastro: new Date()
-            });
-            alert("Sucesso! Conta MAM criada no servidor.");
-        } catch(err) { alert("Erro: " + err.message); }
-    }
-
-    // Função Entrar
-    async function login() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('pass').value;
-        try {
-            await auth.signInWithEmailAndPassword(e, p);
-        } catch(err) { alert("Dados incorretos!"); }
-    }
-
-    // Observador de Login (Mantém o artista logado)
-    auth.onAuthStateChanged(user => {
-        if(user) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('mainArea').classList.remove('hidden');
-            
-            // Escuta o saldo em tempo real do banco de dados
-            db.collection('usuarios').doc(user.uid).onSnapshot(doc => {
-                if(doc.exists) {
-                    const d = doc.data();
-                    document.getElementById('uNome').innerText = d.nome;
-                    document.getElementById('userSaldo').innerText = d.saldo.toLocaleString() + " KZ";
-                }
-            });
+        async function registrar() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('pass').value;
+            try {
+                const res = await auth.createUserWithEmailAndPassword(e, p);
+                await db.collection('usuarios').doc(res.user.uid).set({ saldo: 0, nome: e.split('@')[0] });
+                alert("Conta Criada!");
+            } catch(err) { alert(err.message); }
         }
-    });
 
-    // Função de Ganhar Dinheiro (Guarda no Servidor)
-    async function ganharDinheiro() {
-        const user = auth.currentUser;
-        if(user) {
-            await db.collection('usuarios').doc(user.uid).update({
+        async function login() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('pass').value;
+            try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert(err.message); }
+        }
+
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                document.getElementById('authArea').classList.add('hidden');
+                document.getElementById('mainArea').classList.remove('hidden');
+                db.collection('usuarios').doc(user.uid).onSnapshot(doc => {
+                    if(doc.exists) document.getElementById('userSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
+                });
+            }
+        });
+
+        async function ganharDinheiro() {
+            await db.collection('usuarios').doc(auth.currentUser.uid).update({
                 saldo: firebase.firestore.FieldValue.increment(500)
             });
-            alert("Parabéns! 500 KZ foram adicionados à sua conta MAM.");
         }
-    }
-
-    function solicitarCuradoria() {
-        alert("Direcionando para a Curadoria MAM...\nE-mail: mamfilhos29@gmail.com");
-    }
-
-    function logout() {
-        auth.signOut().then(() => location.reload());
-    }
-</script>
-
+    </script>
 </body>
 </html>

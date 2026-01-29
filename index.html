@@ -3,99 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Curadoria de Elite</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
     <style>
-        :root { --gold: #FFD700; --dark: #050505; }
-        body { font-family: sans-serif; background: var(--dark); color: white; text-align: center; padding: 20px; }
-        .card { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #222; max-width: 400px; margin: auto; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        #userSaldo { font-size: 2.5em; color: var(--gold); margin: 15px 0; display: block; }
+        :root {
+            --gold: #D4AF37;
+            --bright-gold: #FFD700;
+            --dark-bg: #000000;
+            --card-bg: #0a0a0a;
+            --text-gray: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at top right, #1a1a1a, #000000);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container { flex: 1; padding: 20px; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid #1a1a1a;
+            max-width: 400px;
+            margin: 40px auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+
+        h1 { color: var(--bright-gold); font-size: 2.5em; letter-spacing: 2px; margin-bottom: 5px; }
+        .tagline { color: var(--text-gray); font-size: 0.9em; margin-bottom: 30px; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #111;
+            border: 1px solid #222;
+            color: white;
+            border-radius: 12px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--gold); }
+
+        .btn {
+            background: linear-gradient(45deg, var(--gold), var(--bright-gold));
+            color: black;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn:active { transform: scale(0.95); }
+
+        #userSaldo { font-size: 3em; color: var(--bright-gold); font-weight: bold; margin: 20px 0; display: block; }
+
+        /* Rodapé de Informação */
+        footer {
+            background: #050505;
+            padding: 25px;
+            border-top: 1px solid #111;
+            text-align: center;
+            font-size: 0.85em;
+            color: var(--text-gray);
+        }
+
+        .footer-info { margin-bottom: 10px; }
+        .footer-info strong { color: var(--gold); }
+        .footer-link { color: var(--gold); text-decoration: none; margin: 0 5px; }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div id="authArea" class="card">
-        <h1>MAM</h1>
-        <p>Distribuição Profissional</p>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Senha (mínimo 6 dígitos)">
-        <button class="btn" onclick="login()">ENTRAR</button>
-        <p onclick="registrar()" style="color:gray; cursor:pointer; margin-top:15px; font-size:14px;">Criar minha conta MAM</p>
-    </div>
 
-    <div id="mainArea" class="card hidden">
-        <h2>Painel MAM</h2>
-        <p>Olá, <span id="uNome">Artista</span></p>
-        <span id="userSaldo">0 KZ</span>
-        <button class="btn" onclick="ganharDinheiro()">ASSISTIR ANÚNCIO (+500 KZ)</button>
-        <br><br>
-        <button onclick="auth.signOut().then(()=>location.reload())" style="color:red; background:none; border:none; cursor:pointer;">Sair</button>
-    </div>
-
-    <script>
-        // Configurações da tua imagem
-        const firebaseConfig = {
-            apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo",
-            authDomain: "mam-distribuidora.firebaseapp.com",
-            projectId: "mam-distribuidora",
-            storageBucket: "mam-distribuidora.firebasestorage.app",
-            messagingSenderId: "670857002452",
-            appId: "1:670857002452:web:404822b5376075e520ea41"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        async function registrar() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('pass').value;
-            if (p.length < 6) return alert("A senha precisa de 6 números ou letras!");
-            try {
-                const res = await auth.createUserWithEmailAndPassword(e, p);
-                // Grava o nome e saldo inicial no Banco de Dados
-                await db.collection('usuarios').doc(res.user.uid).set({
-                    nome: e.split('@')[0],
-                    saldo: 0
-                });
-                alert("Conta MAM Criada com Sucesso!");
-            } catch(err) { alert("Erro ao criar: " + err.message); }
-        }
-
-        async function login() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('pass').value;
-            try {
-                await auth.signInWithEmailAndPassword(e, p);
-            } catch(err) { alert("Dados incorretos ou conta não existe!"); }
-        }
-
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                document.getElementById('authArea').classList.add('hidden');
-                document.getElementById('mainArea').classList.remove('hidden');
-                // Puxa o saldo do Banco de Dados
-                db.collection('usuarios').doc(user.uid).onSnapshot(doc => {
-                    if(doc.exists) {
-                        document.getElementById('uNome').innerText = doc.data().nome;
-                        document.getElementById('userSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
-                    }
-                });
-            }
-        });
-
-        async function ganharDinheiro() {
-            const user = auth.currentUser;
-            if(user) {
-                await db.collection('usuarios').doc(user.uid).update({
-                    saldo: firebase.firestore.FieldValue.increment(500)
-                });
-            }
-        }
-    </script>
-</body>
-</html>
+    <div class="container">
+        <div id="authArea" class="card">
+            <h1>MAM</h1>
+            <p class="tagline">Curadoria que as grandes plataformas não oferecem.</p>
+            <input type="email" id="email" placeholder="E-mail do Artista">
+            <input type="password" id="pass" placeholder="Palavra-passe (6+ dígitos)">
+            <button class="btn" onclick="login()">Entrar no Painel</button>
+            <p onclick="registrar()" style="color:var(--gold); cursor:pointer; margin-top:20px; font-size:0

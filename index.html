@@ -3,112 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora | Oficial</title>
-    
+    <title>MAM Distribuidora | Painel Oficial</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
     <style>
         :root { --gold: #D4AF37; --bright: #FFD700; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body { 
-            font-family: sans-serif; background: #000 url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1000&q=80') no-repeat center center fixed;
-            background-size: cover; color: #fff; min-height: 100vh; display: flex; flex-direction: column;
+            margin: 0; font-family: sans-serif; 
+            background: #000 url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1000&q=80') no-repeat center center fixed;
+            background-size: cover; color: #fff; min-height: 100vh;
         }
-
-        .overlay { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.75); }
-
-        .card { 
-            background: rgba(15, 15, 15, 0.98); border: 2px solid var(--gold); 
-            padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; 
-            text-align: center; box-shadow: 0 0 40px #000;
-        }
-
-        h1 { color: var(--bright); font-size: 2.2rem; letter-spacing: 4px; margin-bottom: 5px; }
-        .tagline { color: #888; font-size: 0.7rem; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .form-title { margin-bottom: 20px; font-weight: bold; color: var(--gold); border-bottom: 1px solid #333; padding-bottom: 10px; }
-
-        input { 
-            width: 100%; padding: 16px; margin-bottom: 15px; 
-            background: #000; border: 1px solid #444; 
-            color: #fff; border-radius: 12px; font-size: 16px; outline: none;
-        }
-
-        .btn { 
-            width: 100%; padding: 18px; 
-            background: linear-gradient(45deg, var(--gold), var(--bright)); 
-            border: none; border-radius: 12px; color: #000; 
-            font-weight: bold; font-size: 1rem; cursor: pointer; text-transform: uppercase;
-        }
-
-        .btn-link { color: var(--gold); display: block; margin-top: 20px; cursor: pointer; text-decoration: underline; font-size: 0.9rem; }
-
-        #userSaldo { font-size: 3.5rem; color: var(--bright); font-weight: bold; display: block; margin: 15px 0; }
-
-        footer { background: #000; border-top: 2px solid var(--gold); padding: 35px 20px; }
-        .footer-item { max-width: 600px; margin: auto; text-align: left; margin-bottom: 20px; }
-        .footer-item strong { color: var(--gold); display: block; margin-bottom: 8px; font-size: 1.1rem; }
-        .footer-item p { color: #bbb; font-size: 0.9rem; line-height: 1.6; }
-
+        .overlay { display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.8); min-height: 100vh; }
+        .card { background: rgba(10, 10, 10, 0.98); border: 2px solid var(--gold); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
+        h1 { color: var(--bright); letter-spacing: 4px; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px; margin-bottom: 12px; background: #111; border: 1px solid #444; color: #fff; border-radius: 10px; }
+        .btn { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; }
+        .link { color: var(--gold); display: block; margin-top: 15px; cursor: pointer; text-decoration: underline; }
+        footer { background: #000; border-top: 2px solid var(--gold); padding: 30px 20px; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="overlay">
-    <div id="loginCard" class="card">
+    <div id="boxLogin" class="card">
         <h1>MAM</h1>
-        <p class="tagline">Indústria & Distribuição</p>
-        <div class="form-title">ACEDER AO PAINEL</div>
-        <input type="email" id="loginEmail" placeholder="Teu E-mail">
-        <input type="password" id="loginPass" placeholder="Tua Senha">
-        <button class="btn" onclick="fazerLogin()">ENTRAR AGORA</button>
-        <span class="btn-link" onclick="irParaCadastro()">Não tem conta? Criar Cadastro de Artista</span>
+        <p style="color:var(--gold)">INICIAR SESSÃO</p><br>
+        <input type="email" id="lEmail" placeholder="E-mail">
+        <input type="password" id="lPass" placeholder="Senha">
+        <button class="btn" onclick="entrar()">ENTRAR</button>
+        <span class="link" onclick="mostrarReg()">Criar novo Cadastro de Artista</span>
     </div>
 
-    <div id="registerCard" class="card hidden">
+    <div id="boxReg" class="card hidden">
         <h1>MAM</h1>
-        <p class="tagline">Novo Artista</p>
-        <div class="form-title">FORMULÁRIO DE CADASTRO</div>
-        <input type="text" id="regNome" placeholder="Nome Artístico">
-        <input type="email" id="regEmail" placeholder="E-mail do Artista">
-        <input type="password" id="regPass" placeholder="Criar Senha (6+ dígitos)">
-        <button class="btn" onclick="fazerRegisto()">FINALIZAR CADASTRO</button>
-        <span class="btn-link" onclick="irParaLogin()">Já tem uma conta? Fazer Login</span>
+        <p style="color:var(--gold)">CADASTRO PROFISSIONAL</p><br>
+        <input type="text" id="rNome" placeholder="Nome Artístico">
+        <input type="email" id="rEmail" placeholder="E-mail do Artista">
+        <input type="password" id="rPass" placeholder="Senha (6+ dígitos)">
+        <button class="btn" onclick="registar()">CRIAR MINHA CONTA</button>
+        <span class="link" onclick="mostrarLogin()">Voltar para o Login</span>
     </div>
 
-    <div id="mainArea" class="card hidden">
-        <h2 style="color:var(--gold);">Olá, <span id="uNome">...</span></h2>
-        <span id="userSaldo">0 KZ</span>
-        <button class="btn" onclick="ganharDinheiro()">ASSISTIR ANÚNCIO (+500 KZ)</button>
-        
-        <div id="adminTools" class="hidden" style="margin-top:20px; padding:15px; border:1px dashed var(--gold); border-radius:10px;">
-            <p style="color:var(--bright); font-weight:bold; margin-bottom:10px;">🛠️ PAINEL GESTOR MAM</p>
-            <button class="btn" style="background:#fff; margin-bottom:8px; font-size:0.8rem;">GERIR ARTISTAS</button>
-            <button class="btn" style="background:#fff; font-size:0.8rem;">RELATÓRIOS</button>
+    <div id="boxPainel" class="card hidden">
+        <h2 style="color:var(--gold)">Olá, <span id="uNome">Artista</span></h2>
+        <span id="uSaldo" style="font-size:3rem; color:var(--bright); font-weight:bold; display:block; margin:15px 0;">0 KZ</span>
+        <button class="btn" onclick="ganhar()">GERAR CRÉDITO (+500 KZ)</button>
+        <div id="adminArea" class="hidden" style="margin-top:20px; border-top:1px solid #333; padding-top:10px;">
+            <p style="color:var(--bright)">MODO GESTOR ATIVO</p>
         </div>
-
-        <p style="color:#ff4444; cursor:pointer; margin-top:30px; font-weight:bold;" onclick="sair()">SAIR DA CONTA</p>
+        <p style="color:red; cursor:pointer; margin-top:20px;" onclick="sair()">Sair</p>
     </div>
 </div>
 
 <footer>
-    <div class="footer-item">
-        <strong>💎 CURAÇÃO EXCLUSIVA</strong>
-        <p>A MAM Distribuidora oferece a curadoria personalizada que as grandes plataformas automáticas não dão. Analisamos a tua arte como única.</p>
-    </div>
-    <div class="footer-item">
-        <strong>🚀 CEO & DIRECÇÃO</strong>
-        <p>Matias Arsénio Manuel (Play Sean Arsénio).<br>E-mail Oficial: <strong>mamfilhos29@gmail.com</strong>.</p>
-    </div>
-    <center style="font-size:0.7rem; color:#444;">© 2026 MAM DISTRIBUIDORA - ANGOLA</center>
+    <strong>💎 CURAÇÃO EXCLUSIVA</strong>
+    <p style="color:#888; font-size:0.9rem;">A MAM oferece a curadoria personalizada que as grandes plataformas não dão.</p>
+    <p style="margin-top:10px;">🚀 CEO: Matias Arsénio Manuel (Play Sean Arsénio)<br>E-mail: mamfilhos29@gmail.com</p>
 </footer>
 
 <script>
-    // Configurações do Firebase
+    // COLA A TUA CHAVE AQUI EM BAIXO SE O ERRO PERSISTIR
     var firebaseConfig = {
         apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo", 
         authDomain: "mam-distribuidora.firebaseapp.com",
@@ -119,76 +75,45 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    var auth = firebase.auth();
-    var db = firebase.firestore();
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Navegação entre formulários
-    function irParaCadastro() {
-        document.getElementById('loginCard').classList.add('hidden');
-        document.getElementById('registerCard').classList.remove('hidden');
-    }
+    function mostrarReg() { document.getElementById('boxLogin').classList.add('hidden'); document.getElementById('boxReg').classList.remove('hidden'); }
+    function mostrarLogin() { document.getElementById('boxReg').classList.add('hidden'); document.getElementById('boxLogin').classList.remove('hidden'); }
 
-    function irParaLogin() {
-        document.getElementById('registerCard').classList.add('hidden');
-        document.getElementById('loginCard').classList.remove('hidden');
-    }
-
-    // Lógica de Registo
-    function fazerRegisto() {
-        var n = document.getElementById('regNome').value;
-        var e = document.getElementById('regEmail').value;
-        var p = document.getElementById('regPass').value;
-
-        if(!n || !e || p.length < 6) { alert("Preencha todos os campos corretamente! Senha mín. 6 dígitos."); return; }
-
+    function registar() {
+        const n = document.getElementById('rNome').value;
+        const e = document.getElementById('rEmail').value;
+        const p = document.getElementById('rPass').value;
+        if(!n || !e || p.length < 6) return alert("Preencha tudo! Senha mínima 6 dígitos.");
+        
         auth.createUserWithEmailAndPassword(e, p).then(res => {
-            db.collection("usuarios").doc(res.user.uid).set({
-                nome: n,
-                saldo: 0,
-                email: e,
-                cargo: (e === "mamfilhos29@gmail.com") ? "admin" : "artista"
-            }).then(() => {
-                alert("CONTA MAM CRIADA COM SUCESSO!");
-            });
-        }).catch(err => alert("Erro ao registar: Verifique sua conexão ou API Key."));
+            db.collection("usuarios").doc(res.user.uid).set({ nome: n, saldo: 0 });
+            alert("CONTA CRIADA!");
+        }).catch(err => alert("Erro no Firebase: " + err.message));
     }
 
-    // Lógica de Login
-    function fazerLogin() {
-        var e = document.getElementById('loginEmail').value;
-        var p = document.getElementById('loginPass').value;
-        auth.signInWithEmailAndPassword(e, p).catch(err => alert("E-mail ou senha inválidos."));
+    function entrar() {
+        auth.signInWithEmailAndPassword(document.getElementById('lEmail').value, document.getElementById('lPass').value)
+        .catch(err => alert("E-mail ou senha incorretos."));
     }
 
-    // Monitor de Sessão
     auth.onAuthStateChanged(user => {
-        if (user) {
-            document.getElementById('loginCard').classList.add('hidden');
-            document.getElementById('registerCard').classList.add('hidden');
-            document.getElementById('mainArea').classList.remove('hidden');
-
-            if(user.email === "mamfilhos29@gmail.com") {
-                document.getElementById('adminTools').classList.remove('hidden');
-            }
-
+        if(user) {
+            document.getElementById('boxLogin').classList.add('hidden');
+            document.getElementById('boxReg').classList.add('hidden');
+            document.getElementById('boxPainel').classList.remove('hidden');
+            if(user.email === "mamfilhos29@gmail.com") document.getElementById('adminArea').classList.remove('hidden');
             db.collection("usuarios").doc(user.uid).onSnapshot(doc => {
                 if(doc.exists) {
                     document.getElementById('uNome').innerText = doc.data().nome;
-                    document.getElementById('userSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
+                    document.getElementById('uSaldo').innerText = doc.data().saldo.toLocaleString() + " KZ";
                 }
             });
-        } else {
-            document.getElementById('mainArea').classList.add('hidden');
-            irParaLogin();
         }
     });
 
-    function ganharDinheiro() {
-        db.collection("usuarios").doc(auth.currentUser.uid).update({
-            saldo: firebase.firestore.FieldValue.increment(500)
-        });
-    }
-
+    function ganhar() { db.collection("usuarios").doc(auth.currentUser.uid).update({ saldo: firebase.firestore.FieldValue.increment(500) }); }
     function sair() { auth.signOut().then(() => location.reload()); }
 </script>
 </body>

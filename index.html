@@ -3,166 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Dashboard Oficial</title>
+    <title>MAM Distribuidora | Oficial</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --bright: #FFD700; --vip: #00e5ff; }
+        :root { --gold: #D4AF37; --bright: #FFD700; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        
         body { 
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                        url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1600');
             background-size: cover; background-attachment: fixed; color: #fff; min-height: 100vh;
         }
-
         .hidden { display: none !important; }
-
-        /* HEADER & LOGO */
-        .top-header { text-align: center; padding: 20px; border-bottom: 1px solid var(--gold); background: rgba(0,0,0,0.5); }
-        .logo-mam { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); display: inline-flex; align-items: center; justify-content: center; font-weight: 900; color: var(--gold); background: #000; box-shadow: 0 0 15px var(--gold); }
-
-        /* AUTH CARD */
-        .auth-container { display: flex; justify-content: center; align-items: center; padding: 40px 20px; }
-        .auth-card { background: rgba(10,10,10,0.98); border: 1px solid var(--gold); padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        .btn-gold { width: 100%; padding: 14px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; margin-top: 10px; }
-
-        /* DASHBOARD LAYOUT */
-        .main-wrapper { display: flex; min-height: 80vh; }
-        .sidebar { width: 280px; background: rgba(15,15,15,0.95); border-right: 1px solid #222; padding: 20px; }
-        .content { flex: 1; padding: 30px; }
-        .nav-item { padding: 12px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; font-size: 0.9rem; }
-        .nav-item:hover, .nav-item.active { background: var(--gold); color: #000; font-weight: bold; }
-
-        /* DISCOS / MÚSICAS */
-        .grid-musicas { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
-        .disco-card { background: #111; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
-        .disco-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .disco-card img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
-
-        /* FOOTER INFO */
-        footer { background: #000; border-top: 1px solid var(--gold); padding: 30px; text-align: center; font-size: 0.8rem; color: #666; }
+        .auth-card { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); padding: 35px; border-radius: 20px; width: 90%; max-width: 400px; margin: 50px auto; text-align: center; box-shadow: 0 0 20px rgba(212,175,55,0.2); }
+        input { width: 100%; padding: 14px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 10px; }
         
-        /* PESQUISA */
-        .search-box { margin-bottom: 20px; display: flex; gap: 10px; }
-        .search-box input { margin: 0; }
+        /* BOTÕES RETIFICADOS */
+        .btn-acao { width: 100%; padding: 16px; background: var(--gold); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; font-size: 1rem; transition: 0.3s; }
+        .btn-acao:active { transform: scale(0.98); background: var(--bright); }
+
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: rgba(10,10,10,0.98); border-right: 1px solid #222; padding: 25px; }
+        .menu-btn { width: 100%; padding: 12px; text-align: left; background: none; border: none; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 8px; }
+        .menu-btn.active { background: var(--gold); color: #000; font-weight: bold; }
+        .content { flex: 1; padding: 40px; }
+        footer { background: #000; padding: 30px; border-top: 1px solid var(--gold); text-align: center; color: #555; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<div class="top-header">
-    <div class="logo-mam">MAM</div>
-    <div id="apoioHeader" style="font-size: 0.7rem; color: var(--gold); margin-top: 10px;">
-        Apoia: AO06.0040.0000.7381.1643.1017.5 (Matias Manuel)
-    </div>
-</div>
-
-<div id="authScreen" class="auth-container">
+<div id="authArea">
     <div class="auth-card" id="loginForm">
-        <h2 style="color:var(--gold)">Acesso Backstage</h2>
-        <input type="email" id="emailL" placeholder="E-mail">
-        <input type="password" id="passL" placeholder="Senha">
-        <button class="btn-gold" onclick="entrar()">INICIAR SESSÃO</button>
-        <p style="margin-top:15px; font-size:0.8rem;">Novo artista? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer">Criar Conta Real</span></p>
+        <div style="font-size: 2rem; color: var(--gold); font-weight: 900; margin-bottom: 10px;">MAM</div>
+        <h3 style="margin-bottom: 20px;">Iniciar Sessão</h3>
+        <input type="email" id="email_login" placeholder="E-mail">
+        <input type="password" id="pass_login" placeholder="Senha">
+        <button type="button" class="btn-acao" id="btn_login_submit">ENTRAR NA CONTA</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Novo Artista? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Criar Conta</span></p>
     </div>
 
     <div class="auth-card hidden" id="regForm">
-        <h2 style="color:var(--gold)">Cadrasto Oficial</h2>
-        <input type="text" id="nomeR" placeholder="Nome Artístico/Empresa">
-        <input type="email" id="emailR" placeholder="E-mail">
-        <input type="password" id="passR" placeholder="Senha (min. 6)">
-        <button class="btn-gold" onclick="registrar()">REGISTAR & CONFIRMAR E-MAIL</button>
-        <p style="margin-top:15px; font-size:0.8rem;">Já tem conta? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer">Entrar</span></p>
+        <div style="font-size: 2rem; color: var(--gold); font-weight: 900; margin-bottom: 10px;">MAM</div>
+        <h3 style="margin-bottom: 20px;">Criar Conta Profissional</h3>
+        <input type="text" id="reg_nome" placeholder="Nome Artístico">
+        <input type="email" id="reg_email" placeholder="E-mail Real">
+        <input type="password" id="reg_pass" placeholder="Senha (mín. 6 caracteres)">
+        <button type="button" class="btn-acao" id="btn_reg_submit">REGISTAR E ENVIAR CONFIRMAÇÃO</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Já tens conta? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Fazer Login</span></p>
     </div>
 </div>
 
-<div id="mainDashboard" class="hidden">
-    <div class="main-wrapper">
+<div id="appArea" class="hidden">
+    <div class="layout">
         <aside class="sidebar">
-            <div class="nav-item active" onclick="navTo('home')">🏠 Página Inicial</div>
-            <div class="nav-item" onclick="navTo('perfil')">👤 Meu Perfil</div>
-            <div class="nav-item" onclick="navTo('criador')">🎨 Criar Artista/Produtor</div>
-            <div class="nav-item" onclick="navTo('lancar')">📤 Lançar Música</div>
-            <div class="nav-item" onclick="navTo('minhas')">🎵 Minhas Músicas</div>
-            <div class="nav-item" onclick="navTo('carteira')">💰 Minha Carteira</div>
-            <div class="nav-item" onclick="navTo('ceo')">👔 Informação C.E.O</div>
-            <div class="nav-item" onclick="sair()" style="color:red; margin-top:20px;">🚪 Terminar Sessão</div>
+            <button class="menu-btn active" onclick="navTo('home')">🏠 Página Inicial</button>
+            <button class="menu-btn" onclick="navTo('perfil')">👤 Meu Perfil</button>
+            <button class="menu-btn" onclick="navTo('musicas')">🎶 Minhas Músicas</button>
+            <button class="menu-btn" onclick="navTo('artista')">👨‍🎨 Criar Artista</button>
+            <button class="menu-btn" onclick="navTo('lancar')">📤 Lançar Música</button>
+            <button class="menu-btn" onclick="navTo('carteira')">💰 Minha Carteira</button>
+            <button class="menu-btn" onclick="navTo('ceo')">👔 Informação CEO</button>
+            <button class="menu-btn" onclick="deslogar()" style="color:#ff4444; margin-top:20px;">🚪 Terminar Sessão</button>
         </aside>
-
         <main class="content">
-            <div class="search-box">
-                <input type="text" id="busca" placeholder="🔍 Pesquisar música, vídeo ou artista...">
-                <button class="btn-gold" style="width:100px; margin:0">BUSCAR</button>
-            </div>
-
-            <section id="pageHome">
-                <h3>🔥 Distribuição Global MAM</h3>
-                <div class="grid-musicas" id="feedGeral" style="margin-top:20px;"></div>
-                
-                <div style="margin-top:40px; border-top: 1px solid #222; padding-top:20px;">
-                    <h4>🎯 Caça Recompensas (Ganhe por assistir)</h4>
-                    <div id="cacaRecompensa" style="background:#111; padding:15px; border-radius:10px; margin-top:10px;">
-                        <p style="font-size:0.8rem; color:var(--vip)">Assista vídeos e ganhe % conforme seu nível!</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="pageCarteira" class="hidden">
-                <div style="background:linear-gradient(45deg, #111, #000); border:1px solid var(--gold); padding:30px; border-radius:15px; text-align:center;">
-                    <p>Saldo Atual (Convertido)</p>
-                    <h1 id="txtSaldo" style="color:var(--gold); font-size:3rem;">0,00 Kz</h1>
-                    <small id="txtDolar" style="color:#666"></small>
-                </div>
-                <div style="margin-top:20px;" class="auth-card">
-                    <h4>Solicitar Saque</h4>
-                    <select id="metodoSaque">
-                        <option>BFA / BAI / BIC (IBAN)</option>
-                        <option>Multicaixa Express</option>
-                        <option>Paypal (Internacional)</option>
-                        <option>PIX (Brasil)</option>
-                    </select>
-                    <input type="text" id="dadosConta" placeholder="Número da Conta / IBAN / E-mail">
-                    <button class="btn-gold" onclick="sacar()">EFETUAR SAQUE (Mín. 10.000 Kz)</button>
-                </div>
-            </section>
-            
-            <section id="pageLancar" class="hidden">
-                <h3>📤 Formulário de Envio Profissional</h3>
-                <div class="auth-card" style="max-width: 100%;">
-                    <input type="text" id="mTit" placeholder="Título da Música">
-                    <input type="text" id="mArt" placeholder="Artista Principal (Ex: Princesa Heliany ft Play Sean Arsenio)">
-                    <label>Capa da Música</label><input type="file" id="mCapa" accept="image/*">
-                    <label>Arquivo de Áudio</label><input type="file" id="mAudio" accept="audio/*">
-                    <button class="btn-gold" onclick="submeterMusica()">PUBLICAR NO CANAL E LOJAS</button>
-                </div>
-            </section>
+            <section id="page_home"><h2>Dashboard MAM</h2><p id="boas_vindas"></p></section>
+            <section id="page_carteira" class="hidden"><h2>Carteira Real</h2><h1 id="txt_saldo" style="color:var(--gold);">0,00 Kz</h1></section>
         </main>
     </div>
 </div>
 
 <footer>
-    <div style="max-width:800px; margin: 0 auto; display:grid; grid-template-columns: 1fr 1fr; gap:20px; text-align:left;">
-        <div>
-            <h4 style="color:var(--gold)">MAM Distribuidora</h4>
-            <p>E-mail: mamfilhos24@gmail.com</p>
-            <p>Suporte: +244 937 881 307</p>
-        </div>
-        <div>
-            <h4 style="color:var(--gold)">C.E.O Matias Manuel</h4>
-            <p>Apoie o projeto via IBAN direto.</p>
-            <p>Siga no TikTok: @playseanarsenio</p>
-        </div>
-    </div>
-    <p style="margin-top:30px;">© 2026 MAM Distribuidora. Todos os direitos reservados.</p>
+    <p>© 2026 MAM Distribuidora - Matias Arsénio Manuel</p>
+    <p>Email Oficial: mamfilhos24@gmail.com</p>
 </footer>
 
 <script>
-    // FIREBASE OFICIAL MATIAS
     const firebaseConfig = {
         apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
         authDomain: "mam-distribuidora.firebaseapp.com",
@@ -174,5 +91,61 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); const db = firebase.firestore();
 
-    function toggleAuth(r) {
-        document.getElementById('loginForm').classList.toggle('
+    // ESCUTADORES DE EVENTO DIRETOS (GARANTE QUE O BOTÃO FUNCIONE)
+    document.getElementById('btn_login_submit').addEventListener('click', fazerLogin);
+    document.getElementById('btn_reg_submit').addEventListener('click', fazerRegisto);
+
+    function toggleAuth(isReg) {
+        document.getElementById('loginForm').classList.toggle('hidden', isReg);
+        document.getElementById('regForm').classList.toggle('hidden', !isReg);
+    }
+
+    async function fazerRegisto() {
+        const e = document.getElementById('reg_email').value;
+        const p = document.getElementById('reg_pass').value;
+        const n = document.getElementById('reg_nome').value;
+        if(!e || !p || !n) return alert("Preencha tudo!");
+        try {
+            const res = await auth.createUserWithEmailAndPassword(e, p);
+            await res.user.sendEmailVerification();
+            await db.collection("users").doc(res.user.uid).set({ nome: n, saldo: 0, nivel: 'normal' });
+            alert("Verifique o seu e-mail para ativar a conta!");
+            deslogar();
+        } catch(err) { alert("Erro: " + err.message); }
+    }
+
+    async function fazerLogin() {
+        const e = document.getElementById('email_login').value;
+        const p = document.getElementById('pass_login').value;
+        try {
+            const res = await auth.signInWithEmailAndPassword(e, p);
+            if(!res.user.emailVerified && e !== "mamfilhos24@gmail.com") {
+                alert("Confirme o e-mail primeiro!");
+                deslogar();
+            }
+        } catch(err) { alert("Acesso negado. Verifique os dados."); }
+    }
+
+    auth.onAuthStateChanged(user => {
+        if(user && (user.emailVerified || user.email === "mamfilhos24@gmail.com")) {
+            document.getElementById('authArea').classList.add('hidden');
+            document.getElementById('appArea').classList.remove('hidden');
+            document.getElementById('boas_vindas').innerText = "Bem-vindo de volta!";
+            db.collection("users").doc(user.uid).onSnapshot(d => {
+                document.getElementById('txt_saldo').innerText = d.data().saldo.toLocaleString() + " Kz";
+            });
+        } else {
+            document.getElementById('authArea').classList.remove('hidden');
+            document.getElementById('appArea').classList.add('hidden');
+        }
+    });
+
+    function navTo(page) {
+        document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('page_' + page).classList.remove('hidden');
+    }
+
+    function deslogar() { auth.signOut().then(() => location.reload()); }
+</script>
+</body>
+</html>

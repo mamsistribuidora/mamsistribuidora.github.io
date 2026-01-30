@@ -12,79 +12,114 @@
     <style>
         :root { --gold: #D4AF37; --bright: #FFD700; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        
         body { 
             background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
                         url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
-            background-size: cover; background-attachment: fixed; color: #fff; min-height: 100vh;
+            background-size: cover; background-attachment: fixed;
+            color: #fff; min-height: 100vh; display: flex; flex-direction: column;
         }
+
         .hidden { display: none !important; }
+
+        /* LOGOTIPO CIRCULAR MAM */
+        .top-header { text-align: center; padding: 30px 0; }
         .logo-mam {
             width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold);
             display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 2rem; color: var(--gold); background: rgba(0,0,0,0.9); margin: 20px auto;
+            font-weight: 900; font-size: 2rem; color: var(--gold);
+            background: rgba(0,0,0,0.9); box-shadow: 0 0 25px var(--gold);
         }
-        .auth-card { background: rgba(10,10,10,0.98); border: 1px solid var(--gold); padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; margin: 0 auto; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        .btn-main { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; margin-top: 10px; }
-        .sidebar { width: 260px; background: rgba(0,0,0,0.9); padding: 20px; border-right: 1px solid #222; height: 100vh; position: fixed; }
-        .menu-link { padding: 12px; color: #ccc; cursor: pointer; display: block; border-radius: 5px; margin-bottom: 5px; }
+
+        /* CARDS DE AUTENTICAÇÃO */
+        .auth-card {
+            background: rgba(10,10,10,0.98); border: 1px solid var(--gold);
+            padding: 40px; border-radius: 20px; width: 95%; max-width: 420px;
+            margin: 20px auto; text-align: center;
+        }
+        input {
+            width: 100%; padding: 12px; margin: 10px 0; background: #111;
+            border: 1px solid #333; color: #fff; border-radius: 8px; outline: none;
+        }
+        .btn-main {
+            width: 100%; padding: 15px; background: var(--gold); border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
+            margin-top: 10px; transition: 0.3s;
+        }
+
+        /* DASHBOARD E SIDEBAR */
+        .dashboard { display: flex; flex: 1; padding: 20px; gap: 20px; }
+        .sidebar { width: 260px; background: rgba(0,0,0,0.9); border-radius: 15px; padding: 20px; border: 1px solid #222; }
+        .menu-link { padding: 12px; color: #ccc; cursor: pointer; display: block; text-decoration: none; margin-bottom: 5px; border-radius: 5px; font-size: 0.95rem; }
         .menu-link:hover, .active { background: var(--gold); color: #000; font-weight: bold; }
-        .main-panel { margin-left: 260px; padding: 30px; }
-        footer { background: #000; border-top: 1px solid var(--gold); padding: 30px; text-align: center; color: #888; margin-top: 20px; }
+        .content { flex: 1; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 15px; border: 1px solid #333; }
+
+        /* RODAPÉ ORIGINAL RESTAURADO */
+        footer {
+            background: rgba(0,0,0,0.95); border-top: 1px solid var(--gold);
+            padding: 40px 10%; text-align: center; color: #888; font-size: 0.9rem; margin-top: auto;
+        }
+        .footer-info { margin-bottom: 15px; color: #bbb; }
     </style>
 </head>
 <body>
 
-<div id="authArea">
-    <div style="text-align:center;"><div class="logo-mam">MAM</div></div>
-    
+<div class="top-header">
+    <div class="logo-mam">MAM</div>
+    <h2 style="margin-top:10px; letter-spacing:3px; color: var(--gold);">DISTRIBUIDORA</h2>
+</div>
+
+<div id="authContainer">
     <div class="auth-card" id="loginBox">
         <h3>Iniciar Sessão</h3>
         <input type="email" id="emailL" placeholder="E-mail">
         <input type="password" id="passL" placeholder="Senha">
-        <button class="btn-main" onclick="entrarReal()">ENTRAR NO PAINEL</button>
-        <p style="margin-top:15px; font-size:0.8rem;">Novo? <span onclick="mudar(true)" style="color:var(--gold); cursor:pointer;">Criar Conta</span></p>
+        <button class="btn-main" onclick="entrar()">ENTRAR AGORA</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Novo na MAM? <span onclick="mudar(true)" style="color:var(--gold); cursor:pointer;">Criar Conta Profissional</span></p>
     </div>
 
     <div class="auth-card hidden" id="regBox">
-        <h3>Registo Profissional</h3>
+        <h3>Registo de Artista</h3>
         <input type="text" id="nomeR" placeholder="Nome Artístico">
         <input type="email" id="emailR" placeholder="E-mail Real">
         <input type="password" id="passR" placeholder="Senha">
         <input type="password" id="passR2" placeholder="Confirmar Senha">
-        <button class="btn-main" onclick="registarReal()">REGISTAR E ENVIAR E-MAIL</button>
-        <p style="margin-top:15px; font-size:0.8rem;">Já tem conta? <span onclick="mudar(false)" style="color:var(--gold); cursor:pointer;">Fazer Login</span></p>
+        <button class="btn-main" onclick="registar()">REGISTAR E VALIDAR</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Já tem conta? <span onclick="mudar(false)" style="color:var(--gold); cursor:pointer;">Fazer Login</span></p>
     </div>
 </div>
 
-<div id="appArea" class="hidden">
-    <aside class="sidebar">
-        <div class="menu-link active" onclick="navTo('home')">🏠 Dashboard</div>
-        <div class="menu-link" onclick="navTo('perfil')">👤 Meu Perfil</div>
-        <div class="menu-link" onclick="navTo('musicas')">🎶 Minhas Músicas</div>
-        <div class="menu-link" onclick="navTo('artista')">👨‍🎨 Criar Artista</div>
-        <div class="menu-link" onclick="navTo('lancar')">📤 Lançar Música</div>
-        <div class="menu-link" onclick="navTo('carteira')">💰 Carteira</div>
-        <div class="menu-link" onclick="navTo('vip')">💎 Plano VIP</div>
-        <div class="menu-link" onclick="navTo('ceo')">👔 Direção CEO</div>
-        <div class="menu-link" onclick="sair()" style="color:red; margin-top:30px;">🚪 Sair</div>
-    </aside>
-    <main class="main-panel">
-        <section id="pageHome">
-            <h2 id="boasVindas"></h2>
-            <div id="statusVerificacao" style="background: rgba(212,175,55,0.1); padding: 15px; border-radius: 10px; border: 1px dashed var(--gold); margin-top: 20px;">
+<div id="appContainer" class="hidden">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="menu-link active" onclick="navTo('home')">🏠 Dashboard</div>
+            <div class="menu-link" onclick="navTo('perfil')">👤 Meu Perfil</div>
+            <div class="menu-link" onclick="navTo('musicas')">🎶 Minhas Músicas</div>
+            <div class="menu-link" onclick="navTo('artista')">👨‍🎨 Criar Artista</div>
+            <div class="menu-link" onclick="navTo('lancar')">📤 Lançar Música</div>
+            <div class="menu-link" onclick="navTo('carteira')">💰 Carteira</div>
+            <div class="menu-link" onclick="navTo('vip')">💎 Plano VIP</div>
+            <div class="menu-link" onclick="navTo('ceo')">👔 Direção CEO</div>
+            <div class="menu-link" onclick="sair()" style="color:red; margin-top:30px; border-top: 1px solid #333; padding-top: 10px;">🚪 Sair</div>
+        </aside>
+        <main class="content">
+            <section id="pageHome">
+                <h2 id="txtBoasVindas"></h2>
+                <div id="avisoEmail" class="hidden" style="margin-top:20px; padding:15px; border:1px dashed var(--gold); color:var(--gold); border-radius:8px;">
+                    ⚠️ A sua conta aguarda validação por e-mail para libertar todas as funcionalidades.
                 </div>
-        </section>
-        <section id="pageCarteira" class="hidden">
-            <h2>Saldo Atual</h2>
-            <h1 id="txtSaldo" style="color:var(--gold); font-size:3rem;">0,00 Kz</h1>
-        </section>
-    </main>
+            </section>
+            <section id="pageCarteira" class="hidden"><h2>Carteira Real</h2><h1 id="txtSaldo" style="color:var(--gold); font-size:3rem;">0,00 Kz</h1></section>
+        </main>
+    </div>
 </div>
 
 <footer>
-    <p><b>MAM Distribuidora</b> - Luanda, Angola | Oficial</p>
-    <p>Contacto: mamfilhos29@gmail.com</p>
+    <div class="footer-info">
+        <p><b>MAM Distribuidora</b> - Oferecemos a curação que as grandes plataformas não oferecem.</p>
+        <p>Contacto Oficial: <b>mamfilhos29@gmail.com</b> | Luanda, Angola</p>
+    </div>
+    <p>© 2026 Matias Arsénio Manuel (MAM). Todos os direitos reservados.</p>
 </footer>
 
 <script>
@@ -101,57 +136,47 @@
 
     function mudar(r) { document.getElementById('loginBox').classList.toggle('hidden', r); document.getElementById('regBox').classList.toggle('hidden', !r); }
 
-    // REGISTO: ENVIA EMAIL E BLOQUEIA FUNCIONALIDADES ATÉ CONFIRMAR
-    async function registarReal() {
+    async function registar() {
         const e = document.getElementById('emailR').value, p = document.getElementById('passR').value, p2 = document.getElementById('passR2').value, n = document.getElementById('nomeR').value;
-        if(p !== p2) return alert("Senhas não coincidem!");
+        if(p !== p2) return alert("As senhas não coincidem!");
         try {
             const r = await auth.createUserWithEmailAndPassword(e, p);
-            // DISPARO REAL DO EMAIL
-            await r.user.sendEmailVerification();
-            await db.collection("users").doc(r.user.uid).set({ nome: n, saldo: 0, verificado: false });
-            alert("CONTA CRIADA! O e-mail de confirmação foi enviado para " + e + ". Verifique a caixa de entrada ou SPAM agora.");
-            location.reload(); 
-        } catch(err) { alert("Erro Real: " + err.message); }
+            await r.user.sendEmailVerification(); // Disparo Real
+            await db.collection("users").doc(r.user.uid).set({ nome: n, saldo: 0 });
+            alert("Sucesso! E-mail de confirmação enviado. Verifique a sua caixa de entrada.");
+            location.reload();
+        } catch(err) { alert(err.message); }
     }
 
-    // LOGIN: ENTRADA DIRETA (SEM EXIGIR VERIFICAÇÃO NO MOMENTO)
-    async function entrarReal() {
+    async function entrar() {
         const e = document.getElementById('emailL').value, p = document.getElementById('passL').value;
         try {
             await auth.signInWithEmailAndPassword(e, p);
-            // Não bloqueamos aqui. Ele entra direto.
-        } catch(err) { alert("Erro: Dados de acesso inválidos."); }
+            // Início de sessão DIRETO, conforme pedido.
+        } catch(err) { alert("Dados de acesso incorretos!"); }
     }
 
     auth.onAuthStateChanged(user => {
         if(user) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('appArea').classList.remove('hidden');
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('hidden');
             
             db.collection("users").doc(user.uid).onSnapshot(doc => {
-                const data = doc.data();
-                document.getElementById('boasVindas').innerText = "Bem-vindo à MAM, " + data.nome + "!";
-                document.getElementById('txtSaldo').innerText = data.saldo.toLocaleString() + " Kz";
-                
-                // Lógica de Verificação Real
-                const statusDiv = document.getElementById('statusVerificacao');
-                if(!user.emailVerified) {
-                    statusDiv.innerHTML = "⚠️ <b>Conta Pendente:</b> Por favor, valide o e-mail enviado para libertar levantamentos e lançamentos.";
-                } else {
-                    statusDiv.innerHTML = "✅ <b>Conta Verificada:</b> Perfil Profissional Ativo.";
-                    db.collection("users").doc(user.uid).update({ verificado: true });
+                if(doc.exists) {
+                    document.getElementById('txtSaldo').innerText = doc.data().saldo.toLocaleString() + " Kz";
+                    document.getElementById('txtBoasVindas').innerText = "Bem-vindo, " + doc.data().nome + "!";
+                    if(!user.emailVerified) document.getElementById('avisoEmail').classList.remove('hidden');
                 }
             });
         } else {
-            document.getElementById('authArea').classList.remove('hidden');
-            document.getElementById('appArea').classList.add('hidden');
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
         }
     });
 
-    function navTo(p) { 
-        document.querySelectorAll('main section').forEach(s => s.classList.add('hidden')); 
-        document.getElementById('page' + p.charAt(0).toUpperCase() + p.slice(1)).classList.remove('hidden'); 
+    function navTo(p) {
+        document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('page' + p.charAt(0).toUpperCase() + p.slice(1)).classList.remove('hidden');
     }
     function sair() { auth.signOut().then(() => location.reload()); }
 </script>

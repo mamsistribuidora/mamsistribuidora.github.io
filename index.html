@@ -4,109 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --dark: #0a0a0a; }
+        :root { --gold: #D4AF37; --dark: #050505; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         
         body { 
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80');
-            background-size: cover; background-attachment: fixed; color: #fff; min-height: 100vh; display: flex; flex-direction: column;
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover; background-attachment: fixed; color: #fff; min-height: 100vh;
         }
 
-        .logo-mam { 
-            width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold);
-            display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 1.5rem; color: var(--gold);
-            background: #000; box-shadow: 0 0 20px var(--gold); margin: 20px auto;
-        }
-
-        /* RESPONSIVIDADE */
-        .wrapper { display: flex; flex-direction: column; flex: 1; }
-        @media (min-width: 992px) {
-            .wrapper { flex-direction: row; }
-            .sidebar { width: 280px; display: block !important; position: sticky; top: 0; height: 100vh; }
-            .mobile-nav { display: none; }
-        }
-
-        .sidebar { background: rgba(0,0,0,0.95); border-right: 1px solid #222; padding: 20px; display: none; }
-        .mobile-nav { background: #000; padding: 15px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
-
-        /* MENU DE 8 */
-        .menu-item { padding: 12px; color: #bbb; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; font-size: 0.9rem; }
-        .menu-item:hover, .active { background: var(--gold); color: #000; font-weight: bold; }
-
-        .main-content { flex: 1; padding: 25px; }
-        .card { background: rgba(15,15,15,0.9); border: 1px solid #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        
-        .disco { background: #111; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.4s; }
-        .capa-disco { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 4px solid #222; object-fit: cover; }
-        .disco:hover .capa-disco { transform: rotate(360deg); border-color: var(--gold); }
-
-        footer { background: #000; border-top: 1px solid var(--gold); padding: 40px 20px; text-align: center; color: #777; margin-top: auto; }
-        .btn-gold { width: 100%; padding: 14px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; }
-        input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
         .hidden { display: none !important; }
+
+        /* HEADER PROFISSIONAL */
+        .header-top {
+            background: rgba(0,0,0,0.95); padding: 10px 20px; border-bottom: 1px solid var(--gold);
+            display: flex; align-items: center; position: sticky; top: 0; z-index: 1000;
+        }
+        .logo-mam-circle {
+            width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; color: var(--gold); background: #000; flex-shrink: 0;
+        }
+        .search-bar-center { flex: 1; display: flex; justify-content: center; }
+        .search-bar-center input { 
+            width: 80%; max-width: 600px; padding: 10px 20px; border-radius: 30px; 
+            border: 1px solid #333; background: #111; color: #fff; outline: none; transition: 0.3s;
+        }
+        .search-bar-center input:focus { border-color: var(--gold); width: 90%; }
+
+        /* LAYOUT RESPONSIVO */
+        .main-wrapper { display: flex; flex-direction: column; }
+        @media (min-width: 992px) {
+            .main-wrapper { flex-direction: row; }
+            .side-nav { width: 260px; display: block !important; position: sticky; top: 66px; height: calc(100vh - 66px); }
+        }
+
+        /* MENU LATERAL */
+        .side-nav { background: rgba(0,0,0,0.98); border-right: 1px solid #222; padding: 15px; display: none; }
+        .nav-link { 
+            padding: 14px 18px; color: #ccc; cursor: pointer; border-radius: 10px; 
+            margin-bottom: 4px; transition: 0.3s; display: flex; align-items: center; gap: 12px;
+        }
+        .nav-link:hover, .active-page { background: var(--gold); color: #000; font-weight: 700; }
+
+        /* DISCOS QUE RODAM */
+        .content-area { flex: 1; padding: 25px; }
+        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
+        .vinyl { background: rgba(20,20,20,0.7); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #333; cursor: pointer; }
+        .vinyl-img { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 4px solid #222; object-fit: cover; transition: 0.8s; }
+        .vinyl:hover .vinyl-img { transform: rotate(360deg); border-color: var(--gold); }
+
+        /* CARDS E BOTÕES */
+        .mam-card { background: rgba(15,15,15,0.95); border: 1px solid #333; padding: 25px; border-radius: 15px; margin-bottom: 25px; }
+        .btn-mam { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; }
+        
+        footer { background: #000; border-top: 1px solid var(--gold); padding: 30px; text-align: center; color: #666; margin-top: auto; }
     </style>
 </head>
 <body>
 
-<div id="authArea">
-    <div style="text-align:center;"><div class="logo-mam">MAM</div></div>
-    <div class="card" style="max-width:400px; margin: 0 auto;">
-        <h3 style="text-align:center; color:var(--gold); margin-bottom:15px;">LOGIN REAL</h3>
-        <input type="email" id="emailL" placeholder="E-mail">
-        <input type="password" id="passL" placeholder="Senha">
-        <button class="btn-gold" onclick="entrar()">ENTRAR AGORA</button>
-        <p style="text-align:center; margin-top:15px; font-size:0.8rem;">Novo? <span onclick="mudar(true)" style="color:var(--gold); cursor:pointer;">Criar Conta</span></p>
-    </div>
-</div>
+<div id="appContainer" class="hidden">
+    <header class="header-top">
+        <div class="logo-mam-circle">MAM</div>
+        <div class="search-bar-center">
+            <input type="text" placeholder="Pesquisar músicas, artistas ou marcas..." oninput="searchMAM(this.value)">
+        </div>
+        <button onclick="logout()" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; font-size:0.8rem;">SAIR</button>
+    </header>
 
-<div id="appArea" class="hidden">
-    <div class="mobile-nav">
-        <div class="logo-mam" style="width:35px; height:35px; margin:0; font-size:0.7rem;">MAM</div>
-        <button onclick="sair()" style="background:none; border:none; color:red; font-weight:bold;">SAIR</button>
-    </div>
-
-    <div class="wrapper">
-        <aside class="sidebar">
-            <div class="logo-mam">MAM</div>
-            <div class="menu-item active" onclick="nav('home')">🏠 1. Início</div>
-            <div class="menu-item" onclick="nav('perfil')">👤 2. Meu Perfil</div>
-            <div class="menu-item" onclick="nav('artista')">👨‍🎨 3. Criar Artista</div>
-            <div class="menu-item" onclick="nav('lancar')">📤 4. Lançar Música</div>
-            <div class="menu-item" onclick="nav('minhas')">🎶 5. Minhas Músicas</div>
-            <div class="menu-item" onclick="nav('carteira')">💰 6. Carteira</div>
-            <div class="menu-item" onclick="nav('vip')">💎 7. Plano VIP</div>
-            <div class="menu-item" onclick="nav('ceo')">👔 8. Direção CEO</div>
-            <div id="adminBtn" class="menu-item hidden" onclick="nav('admin')" style="color:var(--gold); border:1px solid var(--gold); margin-top:10px;">👑 ADMIN MATIAS</div>
-        </aside>
-
-        <main class="main-content">
-            <section id="pageHome">
-                <h2 id="txtUser">Bem-vindo!</h2>
-                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:20px; margin-top:20px;" id="gridGeral"></div>
-            </section>
+    <div class="main-wrapper">
+        <nav class="side-nav">
+            <div class="nav-link active-page" onclick="navTo('home')">🏠 Início</div>
+            <div class="nav-link" onclick="navTo('perfil')">👤 Meu Perfil</div>
+            <div class="nav-link" onclick="navTo('artista')">👨‍🎨 Criar Artista</div>
+            <div class="nav-link" onclick="navTo('lancar')">📤 Lançar Música</div>
+            <div class="nav-link" onclick="navTo('minhas')">🎶 Minhas Músicas</div>
+            <div class="nav-link" onclick="navTo('carteira')">💰 Carteira</div>
+            <div class="nav-link" onclick="navTo('vip')">💎 Plano VIP</div>
+            <div class="nav-link" onclick="navTo('ceo')">👔 Direção CEO</div>
             
+            <div id="adminPanel" class="nav-link hidden" onclick="navTo('admin')" style="color:var(--gold); border:1px solid var(--gold); margin-top:15px;">👑 ADMIN</div>
+        </nav>
+
+        <main class="content-area">
+            <section id="pageHome">
+                <h2 id="welcomeUser" style="margin-bottom:20px; font-size:1.2rem;">Bem-vindo à Curadoria MAM</h2>
+                <div class="music-grid" id="mainGrid"></div>
+            </section>
+
+            <section id="pageCarteira" class="hidden">
+                <div class="mam-card" style="text-align:center;">
+                    <p style="color:#888; font-size:0.8rem;">SALDO ATUAL</p>
+                    <h1 id="userBalance" style="font-size:3rem; color:var(--gold);">0,00 Kz</h1>
+                </div>
+            </section>
+
             <section id="pageCeo" class="hidden">
-                <div class="card">
-                    <h2 style="color:var(--gold)">Direção CEO MAM</h2>
-                    <p style="margin-top:10px;">Olá, eu sou o <b>Matias Arsénio Manuel (Play Sean Arsénio)</b>.</p>
-                    <p>Oferecemos a curação que as grandes plataformas não oferecem.</p>
-                    <p style="margin-top:15px;">Contacto Direto: <b>mamfilhos29@gmail.com</b></p>
+                <div class="mam-card">
+                    <h2 style="color:var(--gold)">Direção CEO</h2>
+                    <p style="margin:10px 0;">Matias Arsénio Manuel (Play Sean Arsénio)</p>
+                    <p style="font-size:0.9rem; color:#aaa;">O nosso foco é a curação que o mercado ignora. Estamos aqui para o artista real.</p>
+                    <hr style="border:0; border-top:1px solid #333; margin:15px 0;">
+                    <p>Contacto: <b>mamfilhos29@gmail.com</b></p>
                 </div>
             </section>
         </main>
     </div>
 </div>
 
+<div id="loginArea">
+    <div class="mam-card" style="max-width:400px; margin: 80px auto; text-align:center;">
+        <div class="logo-mam-circle" style="width:70px; height:70px; margin:0 auto 20px;">MAM</div>
+        <h2 style="color:var(--gold); margin-bottom:20px;">ACESSO PROFISSIONAL</h2>
+        <input type="email" id="email" placeholder="E-mail" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; color:#fff;">
+        <input type="password" id="pass" placeholder="Senha" style="width:100%; padding:12px; margin-bottom:20px; background:#000; border:1px solid #333; color:#fff;">
+        <button class="btn-mam" onclick="login()">ENTRAR</button>
+    </div>
+</div>
+
 <footer>
-    <p><b>MAM DISTRIBUIDORA</b> - Curação Profissional Real</p>
-    <p>Luanda, Angola | mamfilhos29@gmail.com</p>
-    <p style="margin-top:10px; opacity:0.5;">© 2026 Matias Arsénio Manuel. Site 100% Real.</p>
+    <p><b>MAM DISTRIBUIDORA</b> | Curadoria Profissional</p>
+    <p style="font-size:0.7rem; margin-top:5px;">Luanda - Angola | mamfilhos29@gmail.com</p>
 </footer>
 
 <script>
@@ -121,30 +144,60 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); const db = firebase.firestore();
 
-    async function entrar() {
-        const e = document.getElementById('emailL').value, p = document.getElementById('passL').value;
-        try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert("Erro: " + err.message); }
+    async function login() {
+        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
+        try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert("Acesso inválido."); }
     }
 
     auth.onAuthStateChanged(user => {
         if(user) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('appArea').classList.remove('hidden');
-            if(user.email === "mamfilhos24@gmail.com") document.getElementById('adminBtn').classList.remove('hidden');
-            db.collection("users").doc(user.uid).get().then(doc => {
-                if(doc.exists) document.getElementById('txtUser').innerText = "Olá, " + doc.data().nome + "!";
+            document.getElementById('loginArea').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('hidden');
+            if(user.email === "mamfilhos24@gmail.com") document.getElementById('adminPanel').classList.remove('hidden');
+            
+            db.collection("users").doc(user.uid).onSnapshot(doc => {
+                if(doc.exists) {
+                    document.getElementById('welcomeUser').innerText = "Olá, " + doc.data().nome;
+                    document.getElementById('userBalance').innerText = doc.data().saldo.toLocaleString() + " Kz";
+                }
             });
+            loadSongs();
         } else {
-            document.getElementById('authArea').classList.remove('hidden');
-            document.getElementById('appArea').classList.add('hidden');
+            document.getElementById('loginArea').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
         }
     });
 
-    function nav(p) {
+    function loadSongs() {
+        db.collection("musicas").onSnapshot(snap => {
+            const grid = document.getElementById('mainGrid');
+            grid.innerHTML = "";
+            snap.forEach(doc => {
+                const m = doc.data();
+                grid.innerHTML += `
+                <div class="vinyl" onclick="playSong('${m.audio}')">
+                    <img src="${m.capa}" class="vinyl-img">
+                    <p style="font-weight:bold; font-size:0.8rem; margin-top:10px;">${m.titulo}</p>
+                    <p style="font-size:0.7rem; color:var(--gold);">${m.artista}</p>
+                </div>`;
+            });
+        });
+    }
+
+    function searchMAM(val) {
+        const t = val.toLowerCase();
+        document.querySelectorAll('.vinyl').forEach(v => {
+            v.style.display = v.innerText.toLowerCase().includes(t) ? "block" : "none";
+        });
+    }
+
+    function navTo(p) {
         document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
         document.getElementById('page' + p.charAt(0).toUpperCase() + p.slice(1)).classList.remove('hidden');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-page'));
     }
-    function sair() { auth.signOut().then(() => location.reload()); }
+
+    function logout() { auth.signOut().then(() => location.reload()); }
 </script>
 </body>
 </html>

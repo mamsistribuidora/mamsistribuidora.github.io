@@ -11,116 +11,120 @@
 
     <style>
         :root { --gold: #D4AF37; --bright: #FFD700; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         
         body { 
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
                         url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
-            background-size: cover; background-attachment: fixed;
-            color: #fff; min-height: 100vh; display: flex; flex-direction: column;
+            background-size: cover; background-attachment: fixed; color: #fff; min-height: 100vh;
         }
 
         .hidden { display: none !important; }
 
-        .top-header { text-align: center; padding: 30px 0; }
+        /* LOGO */
+        .header { text-align: center; padding: 40px 0; }
         .logo-mam {
-            width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--gold);
+            width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--gold);
             display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 1.8rem; color: var(--gold);
-            background: #000; box-shadow: 0 0 20px var(--gold);
+            font-weight: bold; font-size: 2rem; color: var(--gold); background: #000;
         }
 
-        /* CAIXA DE ACESSO */
-        .auth-card {
-            background: rgba(15,15,15,0.98); border: 1px solid var(--gold);
-            padding: 40px; border-radius: 20px; width: 95%; max-width: 400px;
-            margin: 20px auto; text-align: center;
+        /* CAIXA DE ACESSO FIXA */
+        .container-acesso { display: flex; justify-content: center; padding: 20px; }
+        .card-auth {
+            background: rgba(0,0,0,0.9); border: 2px solid var(--gold);
+            padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center;
         }
-        input {
-            width: 100%; padding: 14px; margin: 10px 0; background: #000;
-            border: 1px solid #333; color: #fff; border-radius: 10px; outline: none;
-        }
-        .btn-main {
-            width: 100%; padding: 16px; background: var(--gold); border: none;
-            border-radius: 10px; font-weight: bold; cursor: pointer; color: #000;
-            margin-top: 15px; font-size: 1rem;
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 5px; }
+        
+        /* BOTÕES QUE FUNCIONAM */
+        .btn-acao {
+            width: 100%; padding: 15px; background: var(--gold); border: none;
+            border-radius: 5px; font-weight: bold; cursor: pointer; color: #000; font-size: 1rem;
         }
 
         /* DASHBOARD */
-        .dashboard { display: flex; flex: 1; padding: 20px; gap: 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .sidebar { width: 250px; background: rgba(20,20,20,0.9); border-radius: 15px; padding: 20px; border: 1px solid #333; height: fit-content; }
-        .menu-link { padding: 12px; color: #aaa; cursor: pointer; display: block; text-decoration: none; margin-bottom: 8px; border-radius: 8px; font-size: 0.9rem; }
-        .menu-link:hover, .menu-link.active { background: var(--gold); color: #000; font-weight: bold; }
-        .content { flex: 1; background: rgba(10,10,10,0.8); padding: 30px; border-radius: 15px; border: 1px solid #222; }
+        .wrapper { display: flex; min-height: 60vh; padding: 20px; gap: 20px; }
+        .sidebar-mam { width: 250px; background: rgba(20,20,20,0.9); padding: 20px; border-radius: 10px; border: 1px solid #222; }
+        .btn-menu { display: block; padding: 12px; color: #fff; text-decoration: none; margin-bottom: 5px; border-bottom: 1px solid #222; cursor: pointer; }
+        .btn-menu:hover { color: var(--gold); }
+        .main-content { flex: 1; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 10px; }
 
-        footer {
+        /* RODAPÉ DE INFORMAÇÃO (COMO PEDISTE) */
+        .rodape-info {
             background: #000; border-top: 1px solid var(--gold);
-            padding: 30px; text-align: center; color: #666; font-size: 0.8rem; margin-top: auto;
+            padding: 40px 20px; text-align: center; color: #888; margin-top: 50px;
         }
     </style>
 </head>
 <body>
 
-<div class="top-header">
+<div class="header">
     <div class="logo-mam">MAM</div>
-    <h2 style="margin-top:10px; letter-spacing:4px; font-size: 1.2rem; color: var(--gold);">DISTRIBUIDORA</h2>
+    <h1 style="color:var(--gold); margin-top:10px;">MAM DISTRIBUIDORA</h1>
 </div>
 
-<div id="authContainer">
-    <div class="auth-card" id="loginBox">
-        <h3 style="margin-bottom:20px; color: var(--gold);">Entrar no Backstage</h3>
-        <input type="email" id="emailL" placeholder="Teu E-mail">
-        <input type="password" id="passL" placeholder="Tua Senha">
-        <button class="btn-main" onclick="entrar()">INICIAR SESSÃO</button>
-        <p style="margin-top:20px; font-size:0.85rem;">Não tens conta? <span onclick="mostrarRegisto()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Criar Conta MAM</span></p>
-    </div>
+<div id="sessao_acesso">
+    <div class="container-acesso">
+        <div id="tela_login" class="card-auth">
+            <h2 style="margin-bottom:20px;">Iniciar Sessão</h2>
+            <input type="email" id="email_login" placeholder="E-mail">
+            <input type="password" id="pass_login" placeholder="Senha">
+            <button class="btn-acao" onclick="fazerLogin()">ENTRAR NO PAINEL</button>
+            <p style="margin-top:20px;">Ainda não é MAM? <br>
+               <b onclick="trocar(true)" style="color:var(--gold); cursor:pointer; font-size: 1.1rem;">CRIAR MINHA CONTA AGORA</b>
+            </p>
+        </div>
 
-    <div class="auth-card hidden" id="regBox">
-        <h3 style="margin-bottom:20px; color: var(--gold);">Criar Perfil Artista</h3>
-        <input type="text" id="nomeR" placeholder="Nome Artístico / Produtora">
-        <input type="email" id="emailR" placeholder="E-mail Oficial">
-        <input type="password" id="passR" placeholder="Criar Senha (min. 6 dígitos)">
-        <button class="btn-main" onclick="criarConta()">REGISTAR AGORA</button>
-        <p style="margin-top:20px; font-size:0.85rem;">Já tens conta? <span onclick="mostrarLogin()" style="color:var(--gold); cursor:pointer; font-weight:bold;">Fazer Login</span></p>
+        <div id="tela_registo" class="card-auth hidden">
+            <h2 style="margin-bottom:20px;">Criar Conta Artista</h2>
+            <input type="text" id="nome_reg" placeholder="Nome Artístico">
+            <input type="email" id="email_reg" placeholder="E-mail">
+            <input type="password" id="pass_reg" placeholder="Senha">
+            <button class="btn-acao" onclick="fazerRegisto()">FINALIZAR REGISTO</button>
+            <p style="margin-top:20px;">Já tem conta? <br>
+               <b onclick="trocar(false)" style="color:var(--gold); cursor:pointer;">VOLTAR AO LOGIN</b>
+            </p>
+        </div>
     </div>
 </div>
 
-<div id="appContainer" class="hidden">
-    <div class="dashboard">
-        <aside class="sidebar">
-            <div class="menu-link active" onclick="navTo('home')">🏠 Início / Dashboard</div>
-            <div class="menu-link" onclick="navTo('lancar')">📤 Lançar Música</div>
-            <div class="menu-link" onclick="navTo('carteira')">💰 Carteira Real</div>
-            <div class="menu-link" onclick="navTo('perfil')">👤 Perfil</div>
-            <div class="menu-link" onclick="navTo('vip')">💎 Plano VIP</div>
-            <div class="menu-link" onclick="navTo('ceo')">👔 Canal CEO</div>
-            <div class="menu-link" onclick="sair()" style="color:#ff4444; margin-top:20px;">🚪 Sair</div>
+<div id="painel_mam" class="hidden">
+    <div class="wrapper">
+        <aside class="sidebar-mam">
+            <div class="btn-menu" onclick="show('h')">🏠 Home</div>
+            <div class="btn-menu" onclick="show('l')">📤 Lançar Música</div>
+            <div class="btn-menu" onclick="show('c')">💰 Carteira</div>
+            <div class="btn-menu" onclick="show('p')">👤 Perfil</div>
+            <div class="btn-menu" onclick="show('v')">💎 VIP</div>
+            <div class="btn-menu" onclick="show('ceo')">👔 CEO</div>
+            <div class="btn-menu" onclick="sair()" style="color:red;">🚪 Sair</div>
         </aside>
-        
-        <main class="content">
-            <section id="pageHome">
-                <h2 id="saudacao">Bem-vindo à MAM</h2>
-                <div style="background:rgba(212,175,55,0.1); padding:20px; border-radius:10px; margin-top:20px; border:1px dashed var(--gold);">
-                    <p id="statusEngine">Smart Engine: Ativando...</p>
-                </div>
-            </section>
-            <section id="pageLancar" class="hidden"><h2>Lançar Música</h2><p>Área de Upload em manutenção.</p></section>
-            <section id="pageCarteira" class="hidden"><h2>Minha Carteira</h2><h1 id="saldoKz" style="color:var(--gold); font-size:3rem;">0,00 Kz</h1></section>
-            <section id="pageProfile" class="hidden"><h2>Meu Perfil</h2><p>Gerencie seus dados artísticos.</p></section>
-            <section id="pageVip" class="hidden"><h2>MAM VIP</h2><p>Torne-se VIP para ganhar mais.</p></section>
-            <section id="pageCeo" class="hidden"><h2>Matias Arsénio (CEO)</h2><p>Curation that big platforms do not offer.</p></section>
+
+        <main class="main-content">
+            <div id="p_h"><h2>Dashboard</h2><p id="msg_welcome"></p></div>
+            <div id="p_l" class="hidden"><h2>Lançar Música</h2><p>Área de Upload da MAM Distribuidora.</p></div>
+            <div id="p_c" class="hidden"><h2>Carteira Real</h2><h1 id="saldo_txt" style="color:var(--gold);">0 Kz</h1></div>
+            <div id="p_p" class="hidden"><h2>Meu Perfil</h2><p>Dados do artista.</p></div>
+            <div id="p_v" class="hidden"><h2>MAM VIP</h2><p>Planos de aceleração.</p></div>
+            <div id="p_ceo" class="hidden"><h2>Matias Arsénio (CEO)</h2><p>Curation that big platforms do not offer.</p></div>
         </main>
     </div>
 </div>
 
-<footer>
-    <p><b>MAM Distribuidora Profissional</b></p>
-    <p>Suporte Oficial: mamfilhos29@gmail.com</p>
-    <p style="margin-top:10px; font-size:0.7rem;">© 2026 Matias Arsénio Manuel. Luanda, Angola.</p>
+<footer class="rodape-info">
+    <div style="max-width: 800px; margin: 0 auto;">
+        <h3>MAM DISTRIBUIDORA DIGITAL</h3>
+        <p style="margin: 15px 0;">Oferecemos uma curadoria personalizada que as grandes plataformas ignoram. O seu sucesso é o nosso trabalho.</p>
+        <p><b>E-mail Oficial:</b> mamfilhos29@gmail.com</p>
+        <p><b>Localização:</b> Luanda, Angola</p>
+        <hr style="border:0; border-top:1px solid #222; margin:20px 0;">
+        <p>© 2026 Matias Arsénio Manuel (MAM). Todos os direitos reservados.</p>
+    </div>
 </footer>
 
 <script>
-    // CONFIGURAÇÃO FIREBASE DO MATIAS
+    // Config do Matias
     const firebaseConfig = {
         apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
         authDomain: "mam-distribuidora.firebaseapp.com",
@@ -133,70 +137,18 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // FUNÇÕES DE ALTERNÂNCIA DE TELA
-    function mostrarRegisto() {
-        document.getElementById('loginBox').classList.add('hidden');
-        document.getElementById('regBox').classList.remove('hidden');
+    // Trocar telas
+    function trocar(eReg) {
+        document.getElementById('tela_login').classList.toggle('hidden', eReg);
+        document.getElementById('tela_registo').classList.toggle('hidden', !eReg);
     }
 
-    function mostrarLogin() {
-        document.getElementById('regBox').classList.add('hidden');
-        document.getElementById('loginBox').classList.remove('hidden');
-    }
-
-    // FUNÇÃO PARA CRIAR CONTA (REGISTO)
-    async function criarConta() {
-        const nome = document.getElementById('nomeR').value;
-        const email = document.getElementById('emailR').value;
-        const pass = document.getElementById('passR').value;
-
-        if(!nome || !email || !pass) return alert("Por favor, preencha todos os campos.");
-
-        try {
-            const res = await auth.createUserWithEmailAndPassword(email, pass);
-            await db.collection("users").doc(res.user.uid).set({
-                nome: nome,
-                email: email,
-                saldo: 0,
-                nivel: "normal",
-                criadoEm: new Date()
-            });
-            alert("Conta MAM criada com sucesso!");
-        } catch(err) {
-            alert("Erro ao criar conta: " + err.message);
-        }
-    }
-
-    // FUNÇÃO PARA ENTRAR (LOGIN)
-    async function entrar() {
-        const email = document.getElementById('emailL').value;
-        const pass = document.getElementById('passL').value;
-
-        if(!email || !pass) return alert("Preencha o e-mail e a senha.");
-
-        try {
-            await auth.signInWithEmailAndPassword(email, pass);
-        } catch(err) {
-            alert("Falha no login: Verifique os seus dados.");
-        }
-    }
-
-    // MONITOR DE SESSÃO DO UTILIZADOR
-    auth.onAuthStateChanged(user => {
-        if(user) {
-            document.getElementById('authContainer').classList.add('hidden');
-            document.getElementById('appContainer').classList.remove('hidden');
-            
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-                const data = doc.data();
-                if(data) {
-                    document.getElementById('saudacao').innerText = "Olá, " + data.nome + "!";
-                    document.getElementById('saldoKz').innerText = data.saldo.toLocaleString() + " Kz";
-                    document.getElementById('statusEngine').innerText = "MAM SMART ENGINE: Gerando ganhos automáticos...";
-                }
-            });
-
-            // Ganhos Automáticos por Minuto
-            setInterval(() => {
-                db.collection("users").doc(user.uid).update({
-                    saldo: firebase.firestore.FieldValue.increment
+    // AÇÕES REAIS DOS BOTÕES
+    function fazerRegisto() {
+        const n = document.getElementById('nome_reg').value;
+        const e = document.getElementById('email_reg').value;
+        const p = document.getElementById('pass_reg').value;
+        if(!n || !e || !p) return alert("Preencha tudo!");
+        
+        auth.createUserWithEmailAndPassword(e, p).then(res => {
+            db.collection("users").doc(res.user.uid).set({ nome: n,

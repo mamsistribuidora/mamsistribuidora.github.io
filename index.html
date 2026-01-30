@@ -11,72 +11,110 @@
 
     <style>
         :root { --gold: #D4AF37; --bright: #FFD700; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { 
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1600');
-            background-size: cover; background-attachment: fixed; color: #fff; min-height: 100vh;
-        }
-        .hidden { display: none !important; }
-        .auth-card { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); padding: 35px; border-radius: 20px; width: 90%; max-width: 400px; margin: 50px auto; text-align: center; box-shadow: 0 0 20px rgba(212,175,55,0.2); }
-        input { width: 100%; padding: 14px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 10px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         
-        /* BOTÕES RETIFICADOS */
-        .btn-acao { width: 100%; padding: 16px; background: var(--gold); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; font-size: 1rem; transition: 0.3s; }
-        .btn-acao:active { transform: scale(0.98); background: var(--bright); }
+        body { 
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+                        url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
+            background-size: cover; background-attachment: fixed;
+            color: #fff; min-height: 100vh; display: flex; flex-direction: column;
+        }
 
-        .layout { display: flex; min-height: 100vh; }
-        .sidebar { width: 280px; background: rgba(10,10,10,0.98); border-right: 1px solid #222; padding: 25px; }
-        .menu-btn { width: 100%; padding: 12px; text-align: left; background: none; border: none; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 8px; }
-        .menu-btn.active { background: var(--gold); color: #000; font-weight: bold; }
-        .content { flex: 1; padding: 40px; }
-        footer { background: #000; padding: 30px; border-top: 1px solid var(--gold); text-align: center; color: #555; font-size: 0.8rem; }
+        .hidden { display: none !important; }
+
+        /* LOGOTIPO CIRCULAR ORIGINAL */
+        .top-header { text-align: center; padding: 30px 0; }
+        .logo-mam {
+            width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 2rem; color: var(--gold);
+            background: rgba(0,0,0,0.9); box-shadow: 0 0 25px var(--gold);
+        }
+
+        /* CARDS DE ACESSO */
+        .auth-card {
+            background: rgba(10,10,10,0.95); border: 1px solid var(--gold);
+            padding: 40px; border-radius: 20px; width: 90%; max-width: 400px;
+            margin: 20px auto; text-align: center;
+        }
+        input {
+            width: 100%; padding: 12px; margin: 10px 0; background: #111;
+            border: 1px solid #333; color: #fff; border-radius: 8px; outline: none;
+        }
+        .btn-main {
+            width: 100%; padding: 15px; background: var(--gold); border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
+            margin-top: 10px; transition: 0.3s;
+        }
+
+        /* DASHBOARD */
+        .dashboard { display: flex; flex: 1; padding: 20px; gap: 20px; }
+        .sidebar { width: 250px; background: rgba(0,0,0,0.8); border-radius: 15px; padding: 20px; border: 1px solid #222; }
+        .menu-link { padding: 12px; color: #ccc; cursor: pointer; display: block; text-decoration: none; margin-bottom: 5px; border-radius: 5px; }
+        .menu-link:hover, .active { background: var(--gold); color: #000; font-weight: bold; }
+        .content { flex: 1; background: rgba(0,0,0,0.6); padding: 30px; border-radius: 15px; }
+
+        /* RODAPÉ ORIGINAL RESTAURADO */
+        footer {
+            background: rgba(0,0,0,0.9); border-top: 1px solid var(--gold);
+            padding: 40px 10%; text-align: center; color: #888; font-size: 0.85rem; margin-top: auto;
+        }
     </style>
 </head>
 <body>
 
-<div id="authArea">
-    <div class="auth-card" id="loginForm">
-        <div style="font-size: 2rem; color: var(--gold); font-weight: 900; margin-bottom: 10px;">MAM</div>
-        <h3 style="margin-bottom: 20px;">Iniciar Sessão</h3>
-        <input type="email" id="email_login" placeholder="E-mail">
-        <input type="password" id="pass_login" placeholder="Senha">
-        <button type="button" class="btn-acao" id="btn_login_submit">ENTRAR NA CONTA</button>
-        <p style="margin-top:20px; font-size:0.8rem;">Novo Artista? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Criar Conta</span></p>
+<div class="top-header">
+    <div class="logo-mam">MAM</div>
+    <h2 style="margin-top:10px; letter-spacing:3px; color: var(--gold);">DISTRIBUIDORA</h2>
+</div>
+
+<div id="authContainer">
+    <div class="auth-card" id="loginBox">
+        <h3 style="margin-bottom:20px;">Iniciar Sessão</h3>
+        <input type="email" id="emailL" placeholder="E-mail">
+        <input type="password" id="passL" placeholder="Senha">
+        <button class="btn-main" id="btn_entrar">ENTRAR AGORA</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Novo na MAM? <span onclick="toggleView(true)" style="color:var(--gold); cursor:pointer;">Criar Conta Grátis</span></p>
     </div>
 
-    <div class="auth-card hidden" id="regForm">
-        <div style="font-size: 2rem; color: var(--gold); font-weight: 900; margin-bottom: 10px;">MAM</div>
-        <h3 style="margin-bottom: 20px;">Criar Conta Profissional</h3>
-        <input type="text" id="reg_nome" placeholder="Nome Artístico">
-        <input type="email" id="reg_email" placeholder="E-mail Real">
-        <input type="password" id="reg_pass" placeholder="Senha (mín. 6 caracteres)">
-        <button type="button" class="btn-acao" id="btn_reg_submit">REGISTAR E ENVIAR CONFIRMAÇÃO</button>
-        <p style="margin-top:20px; font-size:0.8rem;">Já tens conta? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Fazer Login</span></p>
+    <div class="auth-card hidden" id="regBox">
+        <h3 style="margin-bottom:20px;">Criar Conta Artista</h3>
+        <input type="text" id="nomeR" placeholder="Nome Artístico">
+        <input type="email" id="emailR" placeholder="E-mail">
+        <input type="password" id="passR" placeholder="Senha">
+        <input type="password" id="passR2" placeholder="Confirmar Senha">
+        <button class="btn-main" id="btn_registar">REGISTAR CONTA</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Já tem conta? <span onclick="toggleView(false)" style="color:var(--gold); cursor:pointer;">Fazer Login</span></p>
     </div>
 </div>
 
-<div id="appArea" class="hidden">
-    <div class="layout">
+<div id="appContainer" class="hidden">
+    <div class="dashboard">
         <aside class="sidebar">
-            <button class="menu-btn active" onclick="navTo('home')">🏠 Página Inicial</button>
-            <button class="menu-btn" onclick="navTo('perfil')">👤 Meu Perfil</button>
-            <button class="menu-btn" onclick="navTo('musicas')">🎶 Minhas Músicas</button>
-            <button class="menu-btn" onclick="navTo('artista')">👨‍🎨 Criar Artista</button>
-            <button class="menu-btn" onclick="navTo('lancar')">📤 Lançar Música</button>
-            <button class="menu-btn" onclick="navTo('carteira')">💰 Minha Carteira</button>
-            <button class="menu-btn" onclick="navTo('ceo')">👔 Informação CEO</button>
-            <button class="menu-btn" onclick="deslogar()" style="color:#ff4444; margin-top:20px;">🚪 Terminar Sessão</button>
+            <div class="menu-link active" onclick="navTo('home')">🏠 Dashboard</div>
+            <div class="menu-link" onclick="navTo('perfil')">👤 Meu Perfil</div>
+            <div class="menu-link" onclick="navTo('musicas')">🎶 Minhas Músicas</div>
+            <div class="menu-link" onclick="navTo('artista')">👨‍🎨 Criar Artista</div>
+            <div class="menu-link" onclick="navTo('lancar')">📤 Lançar Música</div>
+            <button class="menu-link" style="background:none; width:100%; text-align:left; border:none;" onclick="navTo('carteira')">💰 Carteira</button>
+            <div class="menu-link" onclick="navTo('vip')">💎 Plano VIP</div>
+            <div class="menu-link" onclick="navTo('ceo')">👔 Direção CEO</div>
+            <div class="menu-link" onclick="logout()" style="color:red; margin-top:20px;">🚪 Sair</div>
         </aside>
+        
         <main class="content">
-            <section id="page_home"><h2>Dashboard MAM</h2><p id="boas_vindas"></p></section>
-            <section id="page_carteira" class="hidden"><h2>Carteira Real</h2><h1 id="txt_saldo" style="color:var(--gold);">0,00 Kz</h1></section>
+            <section id="pageHome"><h2>Estatísticas</h2><p id="boasVindas"></p></section>
+            <section id="pageCarteira" class="hidden"><h2>Carteira Real</h2><h1 id="saldoKz" style="color:var(--gold);">0,00 Kz</h1></section>
         </main>
     </div>
 </div>
 
 <footer>
-    <p>© 2026 MAM Distribuidora - Matias Arsénio Manuel</p>
-    <p>Email Oficial: mamfilhos24@gmail.com</p>
+    <div style="margin-bottom:20px;">
+        <p><b>MAM Distribuidora</b> - Curação que as grandes plataformas não oferecem.</p>
+        <p>Contacto: mamfilhos29@gmail.com | Suporte 24/7</p>
+    </div>
+    <p>© 2026 Matias Arsénio Manuel (MAM). Todos os direitos reservados.</p>
 </footer>
 
 <script>
@@ -91,61 +129,65 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); const db = firebase.firestore();
 
-    // ESCUTADORES DE EVENTO DIRETOS (GARANTE QUE O BOTÃO FUNCIONE)
-    document.getElementById('btn_login_submit').addEventListener('click', fazerLogin);
-    document.getElementById('btn_reg_submit').addEventListener('click', fazerRegisto);
+    // LIGAÇÃO DIRETA DOS BOTÕES (RETIFICAÇÃO)
+    document.getElementById('btn_entrar').onclick = acaoLogin;
+    document.getElementById('btn_registar').onclick = acaoRegisto;
 
-    function toggleAuth(isReg) {
-        document.getElementById('loginForm').classList.toggle('hidden', isReg);
-        document.getElementById('regForm').classList.toggle('hidden', !isReg);
+    function toggleView(reg) {
+        document.getElementById('loginBox').classList.toggle('hidden', reg);
+        document.getElementById('regBox').classList.toggle('hidden', !reg);
     }
 
-    async function fazerRegisto() {
-        const e = document.getElementById('reg_email').value;
-        const p = document.getElementById('reg_pass').value;
-        const n = document.getElementById('reg_nome').value;
-        if(!e || !p || !n) return alert("Preencha tudo!");
+    async function acaoRegisto() {
+        const e = document.getElementById('emailR').value;
+        const p = document.getElementById('passR').value;
+        const p2 = document.getElementById('passR2').value;
+        const n = document.getElementById('nomeR').value;
+
+        if(p !== p2) return alert("As senhas não coincidem!");
+        
         try {
-            const res = await auth.createUserWithEmailAndPassword(e, p);
-            await res.user.sendEmailVerification();
-            await db.collection("users").doc(res.user.uid).set({ nome: n, saldo: 0, nivel: 'normal' });
-            alert("Verifique o seu e-mail para ativar a conta!");
-            deslogar();
-        } catch(err) { alert("Erro: " + err.message); }
+            const r = await auth.createUserWithEmailAndPassword(e, p);
+            await r.user.sendEmailVerification();
+            await db.collection("users").doc(r.user.uid).set({ nome: n, saldo: 0 });
+            alert("Enviamos um link de confirmação para o seu e-mail!");
+            logout();
+        } catch(err) { alert(err.message); }
     }
 
-    async function fazerLogin() {
-        const e = document.getElementById('email_login').value;
-        const p = document.getElementById('pass_login').value;
+    async function acaoLogin() {
+        const e = document.getElementById('emailL').value;
+        const p = document.getElementById('passL').value;
         try {
-            const res = await auth.signInWithEmailAndPassword(e, p);
-            if(!res.user.emailVerified && e !== "mamfilhos24@gmail.com") {
-                alert("Confirme o e-mail primeiro!");
-                deslogar();
+            const r = await auth.signInWithEmailAndPassword(e, p);
+            if(!r.user.emailVerified && e !== "mamfilhos24@gmail.com") {
+                alert("Verifique o seu e-mail primeiro!");
+                logout();
             }
-        } catch(err) { alert("Acesso negado. Verifique os dados."); }
+        } catch(err) { alert("Dados incorretos!"); }
     }
 
     auth.onAuthStateChanged(user => {
         if(user && (user.emailVerified || user.email === "mamfilhos24@gmail.com")) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('appArea').classList.remove('hidden');
-            document.getElementById('boas_vindas').innerText = "Bem-vindo de volta!";
-            db.collection("users").doc(user.uid).onSnapshot(d => {
-                document.getElementById('txt_saldo').innerText = d.data().saldo.toLocaleString() + " Kz";
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('hidden');
+            db.collection("users").doc(user.uid).onSnapshot(doc => {
+                document.getElementById('saldoKz').innerText = doc.data().saldo.toLocaleString() + " Kz";
+                document.getElementById('boasVindas').innerText = "Olá, " + doc.data().nome + "!";
             });
         } else {
-            document.getElementById('authArea').classList.remove('hidden');
-            document.getElementById('appArea').classList.add('hidden');
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
         }
     });
 
-    function navTo(page) {
+    function navTo(p) {
         document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
-        document.getElementById('page_' + page).classList.remove('hidden');
+        const target = 'page' + p.charAt(0).toUpperCase() + p.slice(1);
+        if(document.getElementById(target)) document.getElementById(target).classList.remove('hidden');
     }
 
-    function deslogar() { auth.signOut().then(() => location.reload()); }
+    function logout() { auth.signOut().then(() => location.reload()); }
 </script>
 </body>
 </html>

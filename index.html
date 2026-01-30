@@ -22,7 +22,7 @@
 
         .hidden { display: none !important; }
 
-        /* LOGOTIPO CIRCULAR ORIGINAL */
+        /* LOGOTIPO CIRCULAR MAM */
         .top-header { text-align: center; padding: 30px 0; }
         .logo-mam {
             width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold);
@@ -31,9 +31,9 @@
             background: rgba(0,0,0,0.9); box-shadow: 0 0 25px var(--gold);
         }
 
-        /* CARDS DE ACESSO */
+        /* CAIXAS DE ACESSO */
         .auth-card {
-            background: rgba(10,10,10,0.95); border: 1px solid var(--gold);
+            background: rgba(10,10,10,0.98); border: 1px solid var(--gold);
             padding: 40px; border-radius: 20px; width: 90%; max-width: 400px;
             margin: 20px auto; text-align: center;
         }
@@ -46,17 +46,18 @@
             border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
             margin-top: 10px; transition: 0.3s;
         }
+        .btn-main:hover { background: var(--bright); }
 
-        /* DASHBOARD */
+        /* DASHBOARD PROFISSIONAL */
         .dashboard { display: flex; flex: 1; padding: 20px; gap: 20px; }
-        .sidebar { width: 250px; background: rgba(0,0,0,0.8); border-radius: 15px; padding: 20px; border: 1px solid #222; }
-        .menu-link { padding: 12px; color: #ccc; cursor: pointer; display: block; text-decoration: none; margin-bottom: 5px; border-radius: 5px; }
+        .sidebar { width: 260px; background: rgba(0,0,0,0.9); border-radius: 15px; padding: 20px; border: 1px solid #222; }
+        .menu-link { padding: 12px; color: #ccc; cursor: pointer; display: block; text-decoration: none; margin-bottom: 5px; border-radius: 5px; font-size: 0.9rem; }
         .menu-link:hover, .active { background: var(--gold); color: #000; font-weight: bold; }
-        .content { flex: 1; background: rgba(0,0,0,0.6); padding: 30px; border-radius: 15px; }
+        .content { flex: 1; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 15px; border: 1px solid #333; }
 
-        /* RODAPÉ ORIGINAL RESTAURADO */
+        /* RODAPÉ INSTITUCIONAL */
         footer {
-            background: rgba(0,0,0,0.9); border-top: 1px solid var(--gold);
+            background: rgba(0,0,0,0.95); border-top: 1px solid var(--gold);
             padding: 40px 10%; text-align: center; color: #888; font-size: 0.85rem; margin-top: auto;
         }
     </style>
@@ -73,18 +74,18 @@
         <h3 style="margin-bottom:20px;">Iniciar Sessão</h3>
         <input type="email" id="emailL" placeholder="E-mail">
         <input type="password" id="passL" placeholder="Senha">
-        <button class="btn-main" id="btn_entrar">ENTRAR AGORA</button>
-        <p style="margin-top:20px; font-size:0.8rem;">Novo na MAM? <span onclick="toggleView(true)" style="color:var(--gold); cursor:pointer;">Criar Conta Grátis</span></p>
+        <button class="btn-main" id="btnEntrar">ENTRAR AGORA</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Novo na MAM? <span onclick="mudar(true)" style="color:var(--gold); cursor:pointer;">Criar Conta Profissional</span></p>
     </div>
 
     <div class="auth-card hidden" id="regBox">
-        <h3 style="margin-bottom:20px;">Criar Conta Artista</h3>
+        <h3 style="margin-bottom:20px;">Registo de Artista</h3>
         <input type="text" id="nomeR" placeholder="Nome Artístico">
         <input type="email" id="emailR" placeholder="E-mail">
         <input type="password" id="passR" placeholder="Senha">
         <input type="password" id="passR2" placeholder="Confirmar Senha">
-        <button class="btn-main" id="btn_registar">REGISTAR CONTA</button>
-        <p style="margin-top:20px; font-size:0.8rem;">Já tem conta? <span onclick="toggleView(false)" style="color:var(--gold); cursor:pointer;">Fazer Login</span></p>
+        <button class="btn-main" id="btnRegistar">REGISTAR E VALIDAR</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Já tem conta? <span onclick="mudar(false)" style="color:var(--gold); cursor:pointer;">Fazer Login</span></p>
     </div>
 </div>
 
@@ -96,28 +97,26 @@
             <div class="menu-link" onclick="navTo('musicas')">🎶 Minhas Músicas</div>
             <div class="menu-link" onclick="navTo('artista')">👨‍🎨 Criar Artista</div>
             <div class="menu-link" onclick="navTo('lancar')">📤 Lançar Música</div>
-            <button class="menu-link" style="background:none; width:100%; text-align:left; border:none;" onclick="navTo('carteira')">💰 Carteira</button>
+            <div class="menu-link" onclick="navTo('carteira')">💰 Carteira</div>
             <div class="menu-link" onclick="navTo('vip')">💎 Plano VIP</div>
             <div class="menu-link" onclick="navTo('ceo')">👔 Direção CEO</div>
-            <div class="menu-link" onclick="logout()" style="color:red; margin-top:20px;">🚪 Sair</div>
+            <div class="menu-link" onclick="sair()" style="color:red; margin-top:20px; border-top:1px solid #333; padding-top:15px;">🚪 Sair</div>
         </aside>
-        
         <main class="content">
-            <section id="pageHome"><h2>Estatísticas</h2><p id="boasVindas"></p></section>
-            <section id="pageCarteira" class="hidden"><h2>Carteira Real</h2><h1 id="saldoKz" style="color:var(--gold);">0,00 Kz</h1></section>
+            <section id="pageHome"><h2>Estatísticas</h2><p id="txtBoasVindas"></p></section>
+            <section id="pageCarteira" class="hidden"><h2>Carteira Real</h2><h1 id="txtSaldo" style="color:var(--gold); font-size:2.5rem;">0,00 Kz</h1></section>
         </main>
     </div>
 </div>
 
 <footer>
-    <div style="margin-bottom:20px;">
-        <p><b>MAM Distribuidora</b> - Curação que as grandes plataformas não oferecem.</p>
-        <p>Contacto: mamfilhos29@gmail.com | Suporte 24/7</p>
-    </div>
+    <p><b>MAM Distribuidora</b> - Curação que as grandes plataformas não oferecem.</p>
+    <p>Contacto Oficial: mamfilhos29@gmail.com | Luanda, Angola</p>
     <p>© 2026 Matias Arsénio Manuel (MAM). Todos os direitos reservados.</p>
 </footer>
 
 <script>
+    // Configurações Reais do Firebase do Matias
     const firebaseConfig = {
         apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
         authDomain: "mam-distribuidora.firebaseapp.com",
@@ -129,51 +128,43 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); const db = firebase.firestore();
 
-    // LIGAÇÃO DIRETA DOS BOTÕES (RETIFICAÇÃO)
-    document.getElementById('btn_entrar').onclick = acaoLogin;
-    document.getElementById('btn_registar').onclick = acaoRegisto;
+    // Lógica de Troca de Tela
+    function mudar(r) { document.getElementById('loginBox').classList.toggle('hidden', r); document.getElementById('regBox').classList.toggle('hidden', !r); }
 
-    function toggleView(reg) {
-        document.getElementById('loginBox').classList.toggle('hidden', reg);
-        document.getElementById('regBox').classList.toggle('hidden', !reg);
-    }
-
-    async function acaoRegisto() {
-        const e = document.getElementById('emailR').value;
-        const p = document.getElementById('passR').value;
-        const p2 = document.getElementById('passR2').value;
-        const n = document.getElementById('nomeR').value;
-
+    // BOTÕES REAIS (SEM SIMULAÇÃO)
+    document.getElementById('btnRegistar').onclick = async function() {
+        const e = document.getElementById('emailR').value, p = document.getElementById('passR').value, p2 = document.getElementById('passR2').value, n = document.getElementById('nomeR').value;
         if(p !== p2) return alert("As senhas não coincidem!");
-        
         try {
             const r = await auth.createUserWithEmailAndPassword(e, p);
             await r.user.sendEmailVerification();
             await db.collection("users").doc(r.user.uid).set({ nome: n, saldo: 0 });
-            alert("Enviamos um link de confirmação para o seu e-mail!");
-            logout();
-        } catch(err) { alert(err.message); }
-    }
+            alert("Sucesso! E-mail de confirmação enviado. Valide o link para aceder ao painel.");
+            auth.signOut(); mudar(false);
+        } catch(err) { alert("Erro no registo: " + err.message); }
+    };
 
-    async function acaoLogin() {
-        const e = document.getElementById('emailL').value;
-        const p = document.getElementById('passL').value;
+    document.getElementById('btnEntrar').onclick = async function() {
+        const e = document.getElementById('emailL').value, p = document.getElementById('passL').value;
         try {
             const r = await auth.signInWithEmailAndPassword(e, p);
             if(!r.user.emailVerified && e !== "mamfilhos24@gmail.com") {
-                alert("Verifique o seu e-mail primeiro!");
-                logout();
+                alert("Por favor, confirme o seu e-mail primeiro!");
+                auth.signOut();
             }
-        } catch(err) { alert("Dados incorretos!"); }
-    }
+        } catch(err) { alert("Dados de acesso incorretos!"); }
+    };
 
+    // Monitor de Estado da Conta
     auth.onAuthStateChanged(user => {
         if(user && (user.emailVerified || user.email === "mamfilhos24@gmail.com")) {
             document.getElementById('authContainer').classList.add('hidden');
             document.getElementById('appContainer').classList.remove('hidden');
             db.collection("users").doc(user.uid).onSnapshot(doc => {
-                document.getElementById('saldoKz').innerText = doc.data().saldo.toLocaleString() + " Kz";
-                document.getElementById('boasVindas').innerText = "Olá, " + doc.data().nome + "!";
+                if(doc.exists) {
+                    document.getElementById('txtSaldo').innerText = doc.data().saldo.toLocaleString() + " Kz";
+                    document.getElementById('txtBoasVindas').innerText = "Bem-vindo, " + doc.data().nome + "!";
+                }
             });
         } else {
             document.getElementById('authContainer').classList.remove('hidden');
@@ -183,11 +174,10 @@
 
     function navTo(p) {
         document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
-        const target = 'page' + p.charAt(0).toUpperCase() + p.slice(1);
-        if(document.getElementById(target)) document.getElementById(target).classList.remove('hidden');
+        document.getElementById('page' + p.charAt(0).toUpperCase() + p.slice(1)).classList.remove('hidden');
     }
 
-    function logout() { auth.signOut().then(() => location.reload()); }
+    function sair() { auth.signOut().then(() => location.reload()); }
 </script>
 </body>
 </html>

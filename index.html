@@ -3,23 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora - Oficial</title>
+    <title>MAM Distribuidora - Cadastro Profissional</title>
     <style>
         body {
             margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
                         url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1350&q=80');
             background-size: cover; background-position: center; background-attachment: fixed;
             color: white; display: flex; flex-direction: column; min-height: 100vh;
         }
         .container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .logo-area { background: #ffcc00; color: black; padding: 15px 25px; border-radius: 10px; font-weight: bold; font-size: 24px; margin-bottom: 20px; text-transform: uppercase; }
-        .login-card { background: rgba(26, 26, 26, 0.95); padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; border-top: 4px solid #ffcc00; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: 1px solid #333; background: #222; color: white; box-sizing: border-box; }
-        .btn-main { background: #ffcc00; color: black; width: 100%; padding: 12px; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 10px; }
-        .link-alt { color: #ffcc00; text-decoration: none; font-size: 14px; display: block; margin-top: 15px; cursor: pointer; }
-        footer { background: rgba(0, 0, 0, 0.9); padding: 20px; text-align: center; font-size: 13px; }
-        .footer-menu a { color: #ffcc00; text-decoration: none; margin: 0 10px; }
+        .logo-area { background: #ffcc00; color: black; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 24px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .login-card { 
+            background: rgba(20, 20, 20, 0.98); padding: 35px; border-radius: 15px; 
+            width: 100%; max-width: 500px; text-align: center; border-top: 5px solid #ffcc00; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .full-width { grid-column: span 2; }
+        
+        label { font-size: 12px; color: #ffcc00; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px; }
+        
+        input, select { 
+            width: 100%; padding: 12px; border-radius: 6px; 
+            border: 1px solid #333; background: #111; color: white; box-sizing: border-box; 
+            font-size: 14px;
+        }
+        
+        input:focus { border-color: #ffcc00; outline: none; }
+
+        .btn-main { 
+            background: #ffcc00; color: black; width: 100%; padding: 15px; 
+            border: none; font-weight: bold; cursor: pointer; border-radius: 6px; 
+            margin-top: 10px; font-size: 16px; text-transform: uppercase; transition: 0.3s; 
+        }
+        .btn-main:hover { background: #fff; transform: translateY(-2px); }
+        
+        .link-alt { color: #888; text-decoration: none; font-size: 14px; display: block; margin-top: 25px; cursor: pointer; }
+        .link-alt b { color: #ffcc00; }
+
+        footer { background: rgba(0, 0, 0, 0.95); padding: 25px; text-align: center; font-size: 13px; border-top: 1px solid #222; }
+        .admin-tag { color: #ffcc00; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -27,41 +54,90 @@
     <div class="container">
         <div class="logo-area">MAM Distribuidora</div>
 
-        <div class="login-card" id="box-principal">
-            <h2 id="titulo-box">Iniciar Sessão</h2>
-            <p style="font-size: 13px; color: #aaa;">Curadoria exclusiva por Matias Arsénio Manuel</p>
+        <div class="login-card" id="main-box">
+            <h2 id="titulo" style="margin-top: 0; color: #fff;">Iniciar Sessão</h2>
+            <p id="desc" style="color: #666; font-size: 14px; margin-bottom: 25px;">Entre para gerir os seus lançamentos.</p>
             
-            <input type="email" id="email" placeholder="Teu Email">
-            <input type="password" id="password" placeholder="Tua Senha">
+            <form id="meuFormulario">
+                <div class="form-grid" id="campos-cadastro" style="display: none;">
+                    <div class="form-group full-width">
+                        <label>Nome Completo (Civil)</label>
+                        <input type="text" id="nome_real" placeholder="Seu nome de registo">
+                    </div>
+                    <div class="form-group">
+                        <label>Nome Artístico</label>
+                        <input type="text" id="nome_artista" placeholder="Ex: Play Sean">
+                    </div>
+                    <div class="form-group">
+                        <label>Telemóvel / WhatsApp</label>
+                        <input type="tel" id="whatsapp" placeholder="Ex: 937881307">
+                    </div>
+                    <div class="form-group">
+                        <label>Localização (Cidade/País)</label>
+                        <input type="text" id="local" placeholder="Ex: Luanda, Angola">
+                    </div>
+                    <div class="form-group">
+                        <label>Gênero Musical</label>
+                        <select id="genero">
+                            <option value="kuduro">Kuduro</option>
+                            <option value="kizomba">Kizomba</option>
+                            <option value="hiphop">Hip Hop / Rap</option>
+                            <option value="afrobeat">Afrobeat</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="text-align: left;">
+                    <label>Email Oficial</label>
+                    <input type="email" id="email" placeholder="artista@email.com" required>
+                </div>
+                
+                <div class="form-group" style="text-align: left;">
+                    <label>Palavra-passe</label>
+                    <input type="password" id="pass" placeholder="Mínimo 6 caracteres" required>
+                </div>
+                
+                <button type="button" class="btn-main" id="btn-texto" onclick="enviarDados()">Entrar na Plataforma</button>
+            </form>
             
-            <button class="btn-main" onclick="entrar()">Entrar na Plataforma</button>
-            
-            <span class="link-alt" id="trocar-btn" onclick="mostrarCadastro()">Não tem conta? Criar conta de Artista</span>
+            <span class="link-alt" id="mudar-modo" onclick="ativarCadastro()">
+                Novo por aqui? <b>Criar conta de Artista</b>
+            </span>
         </div>
     </div>
 
     <footer>
-        <div class="footer-menu">
-            <a href="#">Sobre</a> | <a href="#">Serviços</a> | <a href="#">Privacidade</a>
-        </div>
-        <p>Admin: mamfilhos29@gmail.com</p>
+        <p>A curadoria que as grandes plataformas não oferecem.</p>
+        <p>Direção: <span class="admin-tag">Matias Arsénio Manuel</span> | Suporte: mamfilhos29@gmail.com</p>
     </footer>
 
     <script>
-        function mostrarCadastro() {
-            document.getElementById('titulo-box').innerText = "Criar Conta";
-            document.getElementById('trocar-btn').innerText = "Já tem conta? Iniciar Sessão";
-            document.getElementById('trocar-btn').setAttribute('onclick', 'mostrarLogin()');
+        let modoRegisto = false;
+
+        function ativarCadastro() {
+            modoRegisto = true;
+            document.getElementById('campos-cadastro').style.display = 'grid';
+            document.getElementById('titulo').innerText = "Registo de Artista";
+            document.getElementById('desc').innerText = "Preencha os dados para a curadoria MAM.";
+            document.getElementById('btn-texto').innerText = "Finalizar Cadastro";
+            document.getElementById('mudar-modo').innerHTML = "Já tem conta? <b>Fazer Login</b>";
+            document.getElementById('mudar-modo').setAttribute('onclick', 'ativarLogin()');
         }
 
-        function mostrarLogin() {
-            document.getElementById('titulo-box').innerText = "Iniciar Sessão";
-            document.getElementById('trocar-btn').innerText = "Não tem conta? Criar conta de Artista";
-            document.getElementById('trocar-btn').setAttribute('onclick', 'mostrarCadastro()');
+        function ativarLogin() {
+            modoRegisto = false;
+            document.getElementById('campos-cadastro').style.display = 'none';
+            document.getElementById('titulo').innerText = "Iniciar Sessão";
+            document.getElementById('desc').innerText = "Entre para gerir os seus lançamentos.";
+            document.getElementById('btn-texto').innerText = "Entrar na Plataforma";
+            document.getElementById('mudar-modo').innerHTML = "Novo por aqui? <b>Criar conta de Artista</b>";
+            document.getElementById('mudar-modo').setAttribute('onclick', 'ativarCadastro()');
         }
 
-        function entrar() {
-            alert("MAM Distribuidora: Conectando ao servidor de curadoria...");
+        function enviarDados() {
+            const acao = modoRegisto ? "O teu registo foi enviado para a curadoria de Matias Manuel!" : "A entrar no painel MAM...";
+            alert(acao);
         }
     </script>
 </body>

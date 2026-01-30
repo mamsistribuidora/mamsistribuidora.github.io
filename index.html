@@ -14,17 +14,24 @@
         :root { --gold: #D4AF37; --bright: #FFD700; --dark: #0a0a0a; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: #000 url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; }
-        .overlay { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; background: rgba(0,0,0,0.92); min-height: 100vh; }
-        .card { background: rgba(15, 15, 15, 0.98); border: 1px solid var(--gold); padding: 30px; border-radius: 15px; width: 100%; max-width: 600px; box-shadow: 0 0 40px #000; margin-bottom: 20px; text-align: center; }
-        h1 { color: var(--bright); letter-spacing: 5px; }
-        .section-title { color: var(--gold); font-size: 0.9rem; font-weight: bold; margin: 25px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        .input-group { position: relative; width: 100%; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 15px; background: #050505; border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; }
-        .toggle-password { position: absolute; right: 10px; top: 12px; cursor: pointer; color: var(--gold); font-size: 0.8rem; font-weight: bold; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .overlay { display: flex; flex-direction: column; align-items: center; padding: 20px; background: rgba(0,0,0,0.92); min-height: 100vh; }
+        .card { background: rgba(15, 15, 15, 0.98); border: 1px solid var(--gold); padding: 25px; border-radius: 15px; width: 100%; max-width: 500px; box-shadow: 0 0 40px #000; margin-bottom: 20px; text-align: center; }
+        
+        h1 { color: var(--bright); letter-spacing: 5px; margin-bottom: 5px; }
+        .section-title { color: var(--gold); font-size: 0.8rem; font-weight: bold; margin: 20px 0 10px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 5px; text-transform: uppercase; }
+        
+        .input-container { position: relative; width: 100%; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 12px; background: #050505; border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 14px; }
+        input:focus { border-color: var(--gold); }
+
+        /* Botão Ver Senha */
+        .toggle-btn { position: absolute; right: 12px; top: 12px; cursor: pointer; color: var(--gold); font-size: 0.7rem; font-weight: bold; background: none; border: none; }
+
+        .btn { width: 100%; padding: 15px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
         .hidden { display: none !important; }
-        .item-lancamento { background: #111; border: 1px solid #333; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: left; }
-        footer { background: #000; border-top: 2px solid var(--gold); padding: 40px 20px; width: 100%; margin-top: auto; }
+
+        footer { background: #000; border-top: 2px solid var(--gold); padding: 30px 20px; width: 100%; margin-top: auto; font-size: 0.8rem; }
+        .footer-grid { max-width: 900px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: left; }
     </style>
 </head>
 <body>
@@ -32,68 +39,69 @@
 <div class="overlay">
     <div id="boxLogin" class="card">
         <h1>MAM</h1>
-        <div class="section-title" style="text-align:center;">Iniciar Sessão</div>
-        <input type="email" id="lEmail" placeholder="Teu E-mail">
-        <div class="input-group">
-            <input type="password" id="lPass" placeholder="Tua Senha">
-            <span class="toggle-password" onclick="togglePass('lPass')">MOSTRAR</span>
+        <p style="color:#666; font-size:0.6rem; letter-spacing:2px; margin-bottom:20px;">DISTRIBUIDORA DIGITAL</p>
+        <div class="section-title" style="text-align:center;">Entrar na Conta</div>
+        <input type="email" id="lEmail" placeholder="E-mail">
+        <div class="input-container">
+            <input type="password" id="lPass" placeholder="Senha">
+            <button class="toggle-btn" onclick="toggleView('lPass')">VER</button>
         </div>
-        <button class="btn" onclick="fazerLogin()">Entrar</button>
-        <p onclick="irPara('reg')" style="color:var(--gold); cursor:pointer; margin-top:20px;">Criar Cadastro Profissional</p>
+        <button class="btn" onclick="fazerLogin()">ACEDER</button>
+        <p onclick="irPara('reg')" style="color:var(--gold); cursor:pointer; margin-top:20px; text-decoration:underline;">Novo Artista? Criar Cadastro</p>
     </div>
 
     <div id="boxReg" class="card hidden">
         <h2>Criar Conta</h2>
+        <div class="section-title">Dados Artísticos</div>
         <input type="text" id="rNome" placeholder="Nome Artístico">
-        <input type="email" id="rEmail" placeholder="E-mail">
+        <input type="email" id="rEmail" placeholder="E-mail Profissional">
+        
+        <label style="display:block; text-align:left; font-size:0.7rem; color:#888;">Categoria Musical:</label>
         <select id="rCategoria">
-            <option>Kuduro</option><option>Kizomba</option><option>Semba</option><option>Hip Hop</option>
+            <option>Kuduro</option><option>Kizomba</option><option>Semba</option>
+            <option>Hip Hop / Rap</option><option>Afro House</option><option>Gospel</option>
+            <option>Amapiano</option><option>Zouk</option><option>R&B</option><option>Pop / World</option>
         </select>
-        <div class="input-group">
-            <input type="password" id="rPass" placeholder="Senha (mín. 6)">
-            <span class="toggle-password" onclick="togglePass('rPass')">MOSTRAR</span>
+
+        <div class="input-container">
+            <input type="password" id="rPass" placeholder="Criar Senha (mín. 6 caracteres)">
+            <button class="toggle-btn" onclick="toggleView('rPass')">VER</button>
         </div>
-        <div class="input-group">
+        <div class="input-container">
             <input type="password" id="rPassConf" placeholder="Confirmar Senha">
-            <span class="toggle-password" onclick="togglePass('rPassConf')">MOSTRAR</span>
+            <button class="toggle-btn" onclick="toggleView('rPassConf')">VER</button>
         </div>
-        <button class="btn" onclick="fazerRegisto()">Finalizar</button>
-        <p onclick="irPara('login')" style="color:var(--gold); cursor:pointer; margin-top:20px;">Já tenho conta</p>
+        <button class="btn" onclick="fazerRegisto()">FINALIZAR REGISTO</button>
+        <p onclick="irPara('login')" style="color:var(--gold); cursor:pointer; margin-top:20px;">Voltar ao Login</p>
     </div>
 
     <div id="boxPainel" class="card hidden">
-        <h2>Olá, <span id="uNome">Artista</span></h2>
-        <div class="section-title">Lançamento Direto</div>
-        <input type="text" id="mTitulo" placeholder="Título">
-        <input type="text" id="mProdutor" placeholder="Produtor">
+        <h2 style="color:var(--gold);">Olá, <span id="uNome">...</span></h2>
+        <div class="section-title">Submeter para Lançamento</div>
+        <input type="text" id="mTitulo" placeholder="Título da Obra">
+        <input type="text" id="mProdutor" placeholder="Produtor da Faixa">
         <input type="date" id="mData">
-        <label style="display:block; text-align:left; font-size:0.7rem;">Capa e Áudio:</label>
+        
+        <label style="text-align:left; display:block; font-size:0.7rem; margin:10px 0 5px;">Capa (JPG) e Música (MP3/WAV):</label>
         <input type="file" id="fCapa" accept="image/*">
         <input type="file" id="fMusica" accept="audio/*">
-        <progress id="uploadProg" value="0" max="100" class="hidden"></progress>
-        <button class="btn" id="btnSub" onclick="submeter()">Enviar Lançamento</button>
-        <div id="btnAreaCEO" class="hidden"><button class="btn" style="background:#fff; margin-top:10px;" onclick="irPara('ceo')">Painel CEO</button></div>
-        <p onclick="sair()" style="color:red; cursor:pointer; margin-top:20px;">Sair</p>
-    </div>
-
-    <div id="boxCEO" class="card hidden">
-        <h2>Lançamentos Pendentes</h2>
-        <div id="listaPendentes"></div>
-        <button class="btn" onclick="irPara('painel')" style="background:#333; color:#fff;">Voltar</button>
+        
+        <button class="btn" onclick="submeter()">ENVIAR AGORA</button>
+        <p onclick="sair()" style="color:red; cursor:pointer; margin-top:20px; font-weight:bold;">Sair</p>
     </div>
 </div>
 
 <footer>
-    <div style="max-width:900px; margin:auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
-        <div><strong>💎 MAM DISTRIBUIDORA</strong><p style="font-size:0.8rem; color:#666;">Curação que as grandes plataformas não oferecem.</p></div>
-        <div><strong>🚀 MENU</strong><p style="font-size:0.8rem; color:#666;">Distribuição | Gestão | Suporte</p></div>
-        <div><strong>CEO</strong><p style="font-size:0.8rem; color:#666;">Matias Arsénio Manuel<br>mamfilhos29@gmail.com</p></div>
+    <div class="footer-grid">
+        <div><strong>💎 MAM</strong><p>Curação humana de música angolana.</p></div>
+        <div><strong>CEO</strong><p>Matias Arsénio Manuel<br>mamfilhos29@gmail.com</p></div>
     </div>
 </footer>
 
 <script>
+    // Configurações extraídas das tuas fotos
     const firebaseConfig = {
-        apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo", // Chave extraída do teu painel
+        apiKey: "AIzaSyBBsZS8EpsZUtikaKS8B5te8C7Q90w-9wo", 
         authDomain: "mam-distribuidora.firebaseapp.com",
         projectId: "mam-distribuidora",
         storageBucket: "mam-distribuidora.appspot.com",
@@ -104,9 +112,8 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
-    function togglePass(id) {
+    function toggleView(id) {
         const x = document.getElementById(id);
         x.type = x.type === "password" ? "text" : "password";
     }
@@ -114,50 +121,29 @@
     function irPara(t) {
         document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
         document.getElementById('box'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hidden');
-        if(t === 'ceo') carregarCEO();
     }
 
     function fazerRegisto() {
-        const e = document.getElementById('rEmail').value, p = document.getElementById('rPass').value, pc = document.getElementById('rPassConf').value, n = document.getElementById('rNome').value;
-        if(p !== pc || p.length < 6) return alert("Erro nas senhas!");
-        auth.createUserWithEmailAndPassword(e, p).then(r => db.collection("usuarios").doc(r.user.uid).set({nome:n, email:e}))
-        .catch(err => alert("Erro API: " + err.message));
+        const e = document.getElementById('rEmail').value, p = document.getElementById('rPass').value, pc = document.getElementById('rPassConf').value, n = document.getElementById('rNome').value, c = document.getElementById('rCategoria').value;
+        if(p !== pc || p.length < 6) return alert("Erro: As senhas devem ser iguais e ter 6+ caracteres.");
+        
+        auth.createUserWithEmailAndPassword(e, p).then(res => {
+            db.collection("usuarios").doc(res.user.uid).set({nome:n, email:e, categoria:c})
+            .then(() => alert("CONTA MAM CRIADA!"));
+        }).catch(err => alert("Erro ao criar conta: " + err.message));
     }
 
     function fazerLogin() {
         auth.signInWithEmailAndPassword(document.getElementById('lEmail').value, document.getElementById('lPass').value)
-        .catch(err => alert("Erro: " + err.message));
+        .catch(err => alert("Falha no Login: " + err.message));
     }
 
-    auth.onAuthStateChanged(u => {
-        if(u) {
+    auth.onAuthStateChanged(user => {
+        if(user) {
             irPara('painel');
-            if(u.email === "mamfilhos29@gmail.com") document.getElementById('btnAreaCEO').classList.remove('hidden');
-            db.collection("usuarios").doc(u.uid).get().then(d => { if(d.exists) document.getElementById('uNome').innerText = d.data().nome; });
-        } else irPara('login');
+            db.collection("usuarios").doc(user.uid).get().then(doc => { if(doc.exists) document.getElementById('uNome').innerText = doc.data().nome; });
+        } else { irPara('login'); }
     });
-
-    async function submeter() {
-        const t = document.getElementById('mTitulo').value, c = document.getElementById('fCapa').files[0], m = document.getElementById('fMusica').files[0];
-        if(!t || !c || !m) return alert("Ficheiros obrigatórios!");
-        document.getElementById('uploadProg').classList.remove('hidden');
-        try {
-            await storage.ref(`lancamentos/${t}/capa`).put(c);
-            storage.ref(`lancamentos/${t}/musica`).put(m).on('state_changed', s => {
-                document.getElementById('uploadProg').value = (s.bytesTransferred/s.totalBytes)*100;
-            }, null, () => {
-                db.collection("lancamentos").add({titulo:t, artista: document.getElementById('uNome').innerText, data: document.getElementById('mData').value, status: "Pendente"});
-                alert("Enviado!"); location.reload();
-            });
-        } catch(e) { alert(e.message); }
-    }
-
-    function carregarCEO() {
-        db.collection("lancamentos").onSnapshot(s => {
-            const l = document.getElementById('listaPendentes'); l.innerHTML = "";
-            s.forEach(d => { l.innerHTML += `<div class="item-lancamento"><b>${d.data().artista}</b> - ${d.data().titulo}</div>`; });
-        });
-    }
 
     function sair() { auth.signOut().then(() => location.reload()); }
 </script>

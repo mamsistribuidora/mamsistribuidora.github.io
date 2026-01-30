@@ -3,120 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Dashboard Profissional</title>
+    <title>MAM Distribuidora | Oficial</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --bright: #FFD700; --dark-bg: #0a0a0a; --sidebar-bg: #111; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', sans-serif; }
-        body { background: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
+        :root { --gold: #D4AF37; --bright: #FFD700; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         
+        /* FUNDO DE ESTÚDIO PROFISSIONAL */
+        body { 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
+            background-size: cover; background-attachment: fixed;
+            color: #fff; min-height: 100vh; display: flex; flex-direction: column;
+        }
+
         .hidden { display: none !important; }
 
-        /* HEADER & LOGO */
-        header { 
-            background: var(--dark-bg); border-bottom: 1px solid #222; 
-            padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo-box { display: flex; align-items: center; gap: 15px; }
-        .logo-circle { 
-            width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; color: var(--gold); background: #000; box-shadow: 0 0 10px rgba(212,175,55,0.3);
+        /* LOGOTIPO NO TOPO */
+        .top-header { text-align: center; padding: 30px 0; }
+        .logo-mam {
+            width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 2rem; color: var(--gold);
+            background: rgba(0,0,0,0.9); box-shadow: 0 0 25px var(--gold);
         }
 
-        /* LAYOUT PRINCIPAL */
-        .main-container { display: flex; flex: 1; }
-
-        /* MENU LATERAL PROFISSIONAL (SIDEBAR) */
-        .sidebar { 
-            width: 260px; background: var(--sidebar-bg); border-right: 1px solid #222;
-            padding: 30px 15px; display: flex; flex-direction: column; gap: 8px;
+        /* CAIXA DE ACESSO (LOGIN E REGISTO FUNCIONAIS) */
+        .auth-card {
+            background: rgba(10,10,10,0.95); border: 1px solid var(--gold);
+            padding: 40px; border-radius: 20px; width: 90%; max-width: 400px;
+            margin: 20px auto; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .nav-link { 
-            padding: 12px 15px; color: #aaa; text-decoration: none; border-radius: 8px;
-            font-size: 0.9rem; transition: 0.3s; cursor: pointer; display: flex; align-items: center; gap: 10px;
+        input {
+            width: 100%; padding: 12px; margin: 10px 0; background: #111;
+            border: 1px solid #333; color: #fff; border-radius: 8px; outline: none;
         }
-        .nav-link:hover { background: #1a1a1a; color: var(--gold); }
-        .nav-link.active { background: var(--gold); color: #000; font-weight: bold; }
-
-        /* ÁREA DE CONTEÚDO */
-        .content { flex: 1; padding: 40px; background: #050505; }
-        section h2 { margin-bottom: 25px; border-left: 4px solid var(--gold); padding-left: 15px; }
-
-        /* RODAPÉ INFORMATIVO */
-        footer { 
-            background: #080808; border-top: 1px solid #222; padding: 30px 5%;
-            font-size: 0.8rem; color: #555; text-align: center;
+        .btn-main {
+            width: 100%; padding: 15px; background: var(--gold); border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
+            margin-top: 10px; transition: 0.3s;
         }
-        .footer-links { margin-bottom: 15px; display: flex; justify-content: center; gap: 20px; }
-        .footer-links a { color: #888; text-decoration: none; }
-        .footer-links a:hover { color: var(--gold); }
+        .btn-main:hover { background: var(--bright); transform: scale(1.02); }
 
-        /* CARDS */
-        .card { background: #111; border: 1px solid #222; padding: 25px; border-radius: 12px; }
-        .btn-gold { 
-            background: var(--gold); color: #000; padding: 12px 25px; border: none;
-            border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .btn-gold:hover { background: var(--bright); transform: translateY(-2px); }
+        /* LAYOUT DASHBOARD */
+        .dashboard { display: flex; flex: 1; padding: 20px; gap: 20px; }
+        .sidebar { width: 250px; background: rgba(0,0,0,0.8); border-radius: 15px; padding: 20px; border: 1px solid #222; }
+        .menu-link { padding: 12px; color: #ccc; cursor: pointer; display: block; text-decoration: none; margin-bottom: 5px; border-radius: 5px; }
+        .menu-link:hover, .active { background: var(--gold); color: #000; font-weight: bold; }
+        .content { flex: 1; background: rgba(0,0,0,0.6); padding: 30px; border-radius: 15px; }
 
-        /* RESPONSIVO */
-        @media (max-width: 768px) {
-            .main-container { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #222; }
+        /* RODAPÉ DE INFORMAÇÃO */
+        footer {
+            background: rgba(0,0,0,0.9); border-top: 1px solid var(--gold);
+            padding: 40px 10%; text-align: center; color: #888; font-size: 0.85rem; margin-top: 50px;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo-box">
-        <div class="logo-circle">MAM</div>
-        <span style="font-weight: bold; letter-spacing: 1px;">DISTRIBUIDORA</span>
-    </div>
-    <div id="userStatus" style="font-size: 0.8rem; color: var(--gold);"></div>
-</header>
+<div class="top-header">
+    <div class="logo-mam">MAM</div>
+    <h2 style="margin-top:10px; letter-spacing:3px;">DISTRIBUIDORA</h2>
+</div>
 
-<div id="authArea" class="content" style="display: flex; justify-content: center; align-items: center;">
-    <div class="card" style="width: 100%; max-width: 400px; text-align: center;">
-        <h3 id="authTitle" style="margin-bottom: 20px;">Painel do Artista</h3>
-        <div id="loginInputs">
-            <input type="email" id="lEmail" placeholder="E-mail" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; color:#fff;">
-            <input type="password" id="lPass" placeholder="Senha" style="width:100%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #333; color:#fff;">
-            <button class="btn-gold" onclick="login()" style="width: 100%;">ENTRAR</button>
-        </div>
-        <p style="margin-top:20px; font-size:0.8rem; color:#666;">MAM Curation & Distribution Digital</p>
+<div id="authContainer">
+    <div class="auth-card" id="loginBox">
+        <h3 style="margin-bottom:20px;">Iniciar Sessão</h3>
+        <input type="email" id="emailL" placeholder="E-mail">
+        <input type="password" id="passL" placeholder="Senha">
+        <button class="btn-main" onclick="acaoLogin()">ENTRAR AGORA</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Novo na MAM? <span onclick="mudarTela(true)" style="color:var(--gold); cursor:pointer;">Criar Conta Grátis</span></p>
+    </div>
+
+    <div class="auth-card hidden" id="regBox">
+        <h3 style="margin-bottom:20px;">Criar Conta Artista</h3>
+        <input type="text" id="nomeR" placeholder="Nome Artístico">
+        <input type="email" id="emailR" placeholder="E-mail">
+        <input type="password" id="passR" placeholder="Senha">
+        <button class="btn-main" onclick="acaoRegisto()">REGISTAR CONTA</button>
+        <p style="margin-top:20px; font-size:0.8rem;">Já tem conta? <span onclick="mudarTela(false)" style="color:var(--gold); cursor:pointer;">Fazer Login</span></p>
     </div>
 </div>
 
-<div id="appArea" class="main-container hidden">
-    <aside class="sidebar">
-        <div class="nav-link active" onclick="navTo('home')">🏠 Dashboard</div>
-        <div class="nav-link" onclick="navTo('upload')">📤 Lançar Música</div>
-        <div class="nav-link" onclick="navTo('wallet')">💰 Carteira & Ganhos</div>
-        <div class="nav-link" onclick="navTo('profile')">👤 Perfil Artístico</div>
-        <div class="nav-link" onclick="navTo('vip')">💎 Plano VIP MAX</div>
-        <div class="nav-link" onclick="navTo('ceo')">👔 Direção CEO</div>
-        <div class="nav-link" style="margin-top: auto; color: #ff4444;" onclick="sair()">🚪 Sair da Conta</div>
-    </aside>
+<div id="appContainer" class="hidden">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="menu-link active" onclick="navTo('home')">🏠 Dashboard</div>
+            <div class="menu-link" onclick="navTo('lancar')">📤 Lançar Música</div>
+            <div class="menu-link" onclick="navTo('carteira')">💰 Carteira</div>
+            <div class="menu-link" onclick="navTo('perfil')">👤 Meu Perfil</div>
+            <div class="menu-link" onclick="navTo('vip')">💎 Plano VIP</div>
+            <div class="menu-link" onclick="navTo('ceo')">👔 Direção CEO</div>
+            <div class="menu-link" onclick="logout()" style="color:red; margin-top:20px;">🚪 Sair</div>
+        </aside>
+        
+        <main class="content">
+            <section id="pageHome"><h2>Estatísticas de Ganho</h2><div id="statusSmart" style="color:var(--gold); margin-top:10px;">A carregar dados...</div></section>
+            <section id="pageLancar" class="hidden"><h2>Lançar Nova Obra</h2><p>Área de Upload da MAM.</p></section>
+            <section id="pageCarteira" class="hidden"><h2>Minha Carteira</h2><h1 id="totalKz" style="color:var(--gold);">0,00 Kz</h1></section>
+        </main>
+    </div>
+</div>
 
-    <main class="content">
-        <section id="pageHome">
-            <h2>Bem-vindo ao Backstage</h2>
-            <div class="card">
-                <h4>Estatísticas Rápidas</h4>
-                <p style="color: #888; margin-top: 10px;">Ganhos automáticos em processamento...</p>
-            </div>
-        </section>
-
-        <section id="pageUpload" class="hidden">
-            <h2>Enviar Novo Conteúdo</h2>
-            <div class="card">
-                <input type="text" id="mTit" placeholder="Título da Obra" style="width:100%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #333; color:#fff;">
-                <button class="btn-gold">INICIAR PROCESSO DE UPLOAD</button>
-            </div>
+<footer>
+    <div style="margin-bottom:20px;">
+        <p><b>MAM Distribuidora</b> - Curação que as grandes plataformas não oferecem.</p>
+        <p>Contacto: mamfilhos29@gmail.com | Suporte 24/7</p>
+    </div>
+    <p>© 2026 Matias Arsénio Manuel (MAM). Todos os direitos reservados.</

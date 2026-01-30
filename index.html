@@ -3,142 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora - Cadastro Profissional</title>
+    <title>MAM Distribuidora - Oficial</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // COLOCA AQUI A TUA PUBLIC KEY (Encontras em Account no EmailJS)
+            emailjs.init("TEU_PUBLIC_KEY_AQUI");
+        })();
+    </script>
     <style>
-        body {
-            margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                        url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; background-position: center; background-attachment: fixed;
-            color: white; display: flex; flex-direction: column; min-height: 100vh;
-        }
-        .container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .logo-area { background: #ffcc00; color: black; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 24px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .login-card { 
-            background: rgba(20, 20, 20, 0.98); padding: 35px; border-radius: 15px; 
-            width: 100%; max-width: 500px; text-align: center; border-top: 5px solid #ffcc00; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-        
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .full-width { grid-column: span 2; }
-        
-        label { font-size: 12px; color: #ffcc00; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px; }
-        
-        input, select { 
-            width: 100%; padding: 12px; border-radius: 6px; 
-            border: 1px solid #333; background: #111; color: white; box-sizing: border-box; 
-            font-size: 14px;
-        }
-        
-        input:focus { border-color: #ffcc00; outline: none; }
-
-        .btn-main { 
-            background: #ffcc00; color: black; width: 100%; padding: 15px; 
-            border: none; font-weight: bold; cursor: pointer; border-radius: 6px; 
-            margin-top: 10px; font-size: 16px; text-transform: uppercase; transition: 0.3s; 
-        }
-        .btn-main:hover { background: #fff; transform: translateY(-2px); }
-        
-        .link-alt { color: #888; text-decoration: none; font-size: 14px; display: block; margin-top: 25px; cursor: pointer; }
-        .link-alt b { color: #ffcc00; }
-
-        footer { background: rgba(0, 0, 0, 0.95); padding: 25px; text-align: center; font-size: 13px; border-top: 1px solid #222; }
-        .admin-tag { color: #ffcc00; font-weight: bold; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-attachment: fixed; color: white; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card { background: rgba(15, 15, 15, 0.98); padding: 30px; border-radius: 15px; width: 100%; max-width: 500px; border-top: 5px solid #ffcc00; box-shadow: 0 20px 50px rgba(0,0,0,0.9); text-align: center; }
+        .logo { background: #ffcc00; color: #000; display: inline-block; padding: 10px 20px; font-weight: bold; border-radius: 5px; margin-bottom: 20px; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
+        .full { grid-column: span 2; }
+        label { font-size: 11px; color: #ffcc00; font-weight: bold; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin: 5px 0 15px; border-radius: 6px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        .pass-container { position: relative; }
+        .ver-btn { position: absolute; right: 10px; top: 38px; color: #ffcc00; font-size: 10px; cursor: pointer; font-weight: bold; background: #222; padding: 2px 5px; border-radius: 3px; }
+        .btn-main { background: #ffcc00; color: black; width: 100%; padding: 16px; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 14px; transition: 0.3s; }
+        .btn-main:hover { background: #fff; }
+        footer { background: #000; padding: 20px; text-align: center; font-size: 12px; border-top: 1px solid #222; color: #888; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo-area">MAM Distribuidora</div>
-
-        <div class="login-card" id="main-box">
-            <h2 id="titulo" style="margin-top: 0; color: #fff;">Iniciar Sessão</h2>
-            <p id="desc" style="color: #666; font-size: 14px; margin-bottom: 25px;">Entre para gerir os seus lançamentos.</p>
-            
-            <form id="meuFormulario">
-                <div class="form-grid" id="campos-cadastro" style="display: none;">
-                    <div class="form-group full-width">
-                        <label>Nome Completo (Civil)</label>
-                        <input type="text" id="nome_real" placeholder="Seu nome de registo">
-                    </div>
-                    <div class="form-group">
-                        <label>Nome Artístico</label>
-                        <input type="text" id="nome_artista" placeholder="Ex: Play Sean">
-                    </div>
-                    <div class="form-group">
-                        <label>Telemóvel / WhatsApp</label>
-                        <input type="tel" id="whatsapp" placeholder="Ex: 937881307">
-                    </div>
-                    <div class="form-group">
-                        <label>Localização (Cidade/País)</label>
-                        <input type="text" id="local" placeholder="Ex: Luanda, Angola">
-                    </div>
-                    <div class="form-group">
-                        <label>Gênero Musical</label>
-                        <select id="genero">
-                            <option value="kuduro">Kuduro</option>
-                            <option value="kizomba">Kizomba</option>
-                            <option value="hiphop">Hip Hop / Rap</option>
-                            <option value="afrobeat">Afrobeat</option>
-                            <option value="outro">Outro</option>
-                        </select>
-                    </div>
+<div class="container">
+    <div class="card">
+        <div class="logo">MAM Distribuidora</div>
+        <h3>Registo de Artista / Produtora</h3>
+        <p style="font-size: 13px; color: #aaa; margin-bottom: 20px;">Preencha para receber a confirmação por email.</p>
+        
+        <form id="form-mam">
+            <div class="grid">
+                <div class="form-group full">
+                    <label>Nome Completo</label>
+                    <input type="text" name="user_name" required>
                 </div>
-
-                <div class="form-group" style="text-align: left;">
-                    <label>Email Oficial</label>
-                    <input type="email" id="email" placeholder="artista@email.com" required>
+                <div class="form-group">
+                    <label>Nome Artístico</label>
+                    <input type="text" name="artist_name" required>
                 </div>
-                
-                <div class="form-group" style="text-align: left;">
-                    <label>Palavra-passe</label>
-                    <input type="password" id="pass" placeholder="Mínimo 6 caracteres" required>
+                <div class="form-group">
+                    <label>WhatsApp</label>
+                    <input type="tel" name="user_phone" required>
                 </div>
-                
-                <button type="button" class="btn-main" id="btn-texto" onclick="enviarDados()">Entrar na Plataforma</button>
-            </form>
-            
-            <span class="link-alt" id="mudar-modo" onclick="ativarCadastro()">
-                Novo por aqui? <b>Criar conta de Artista</b>
-            </span>
-        </div>
+                <div class="form-group full">
+                    <label>Gênero Musical</label>
+                    <select name="music_style">
+                        <option>Kuduro</option><option>Kizomba</option><option>Semba</option>
+                        <option>Hip Hop / Rap</option><option>Afrobeat</option><option>Amapiano</option>
+                        <option>Gospel</option><option>Zouk</option><option>Pop / R&B</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Email para Receber Confirmação</label>
+                    <input type="email" name="user_email" id="email_artista" required>
+                </div>
+                <div class="form-group pass-container">
+                    <label>Senha</label>
+                    <input type="password" id="p1" required>
+                    <span class="ver-btn" onclick="ver('p1')">VER</span>
+                </div>
+                <div class="form-group pass-container">
+                    <label>Confirmar Senha</label>
+                    <input type="password" id="p2" required>
+                    <span class="ver-btn" onclick="ver('p2')">VER</span>
+                </div>
+            </div>
+            <button type="submit" class="btn-main">Finalizar e Enviar Email</button>
+        </form>
     </div>
+</div>
 
-    <footer>
-        <p>A curadoria que as grandes plataformas não oferecem.</p>
-        <p>Direção: <span class="admin-tag">Matias Arsénio Manuel</span> | Suporte: mamfilhos29@gmail.com</p>
-    </footer>
+<footer>
+    MAM Distribuidora | Direção: Matias Arsénio Manuel | Suporte: mamfilhos29@gmail.com
+</footer>
 
-    <script>
-        let modoRegisto = false;
+<script>
+    function ver(id) {
+        const input = document.getElementById(id);
+        input.type = input.type === "password" ? "text" : "password";
+    }
 
-        function ativarCadastro() {
-            modoRegisto = true;
-            document.getElementById('campos-cadastro').style.display = 'grid';
-            document.getElementById('titulo').innerText = "Registo de Artista";
-            document.getElementById('desc').innerText = "Preencha os dados para a curadoria MAM.";
-            document.getElementById('btn-texto').innerText = "Finalizar Cadastro";
-            document.getElementById('mudar-modo').innerHTML = "Já tem conta? <b>Fazer Login</b>";
-            document.getElementById('mudar-modo').setAttribute('onclick', 'ativarLogin()');
+    document.getElementById('form-mam').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Verificação de Senha
+        if(document.getElementById('p1').value !== document.getElementById('p2').value) {
+            alert("Erro: As senhas não coincidem!");
+            return;
         }
 
-        function ativarLogin() {
-            modoRegisto = false;
-            document.getElementById('campos-cadastro').style.display = 'none';
-            document.getElementById('titulo').innerText = "Iniciar Sessão";
-            document.getElementById('desc').innerText = "Entre para gerir os seus lançamentos.";
-            document.getElementById('btn-texto').innerText = "Entrar na Plataforma";
-            document.getElementById('mudar-modo').innerHTML = "Novo por aqui? <b>Criar conta de Artista</b>";
-            document.getElementById('mudar-modo').setAttribute('onclick', 'ativarCadastro()');
-        }
+        const email = document.getElementById('email_artista').value;
+        alert("MAM SYSTEM: Enviando confirmação real para " + email);
 
-        function enviarDados() {
-            const acao = modoRegisto ? "O teu registo foi enviado para a curadoria de Matias Manuel!" : "A entrar no painel MAM...";
-            alert(acao);
-        }
-    </script>
+        // ENVIO PELO TEU NOVO SERVIÇO GMAIL
+        // SUBSTITUI 'TEU_TEMPLATE_ID' PELO CÓDIGO DO TEU MODELO
+        emailjs.sendForm('service_gmwnj3w', 'TEU_TEMPLATE_ID_AQUI', this)
+            .then(() => {
+                alert("SUCESSO! Email enviado com sucesso. Bem-vindo à MAM!");
+                location.reload();
+            }, (err) => {
+                alert("Erro no envio: " + JSON.stringify(err));
+            });
+    });
+</script>
 </body>
 </html>

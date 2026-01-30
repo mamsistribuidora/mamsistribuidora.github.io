@@ -4,181 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
-    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
     <style>
-        :root { --gold: #D4AF37; --bright: #FFD700; }
+        :root { --gold: #D4AF37; --dark: #050505; --gray: #121212; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        
-        body { 
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                        url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'); 
-            background-size: cover; background-attachment: fixed;
-            color: #fff; min-height: 100vh; display: flex; flex-direction: column;
-        }
-
+        body { background: var(--dark); color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
         .hidden { display: none !important; }
 
-        /* LOGOTIPO CIRCULAR MAM */
-        .top-header { text-align: center; padding: 30px 0; }
-        .logo-mam {
-            width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold);
-            display: inline-flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 2rem; color: var(--gold);
-            background: rgba(0,0,0,0.9); box-shadow: 0 0 25px var(--gold);
+        /* RESPONSIVIDADE TOTAL */
+        .wrapper { display: flex; flex-direction: column; flex: 1; }
+        @media (min-width: 992px) {
+            .wrapper { flex-direction: row; }
+            .sidebar { width: 280px; display: block !important; position: sticky; top: 0; height: 100vh; }
+            .mobile-nav { display: none; }
         }
 
-        /* CARDS DE AUTENTICAÇÃO */
-        .auth-card {
-            background: rgba(10,10,10,0.98); border: 1px solid var(--gold);
-            padding: 40px; border-radius: 20px; width: 95%; max-width: 420px;
-            margin: 20px auto; text-align: center;
-        }
-        input {
-            width: 100%; padding: 12px; margin: 10px 0; background: #111;
-            border: 1px solid #333; color: #fff; border-radius: 8px; outline: none;
-        }
-        .btn-main {
-            width: 100%; padding: 15px; background: var(--gold); border: none;
-            border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
-            margin-top: 10px; transition: 0.3s;
-        }
+        /* SIDEBAR & NAV */
+        .sidebar { background: #000; border-right: 1px solid #222; padding: 25px; display: none; }
+        .mobile-nav { background: #000; padding: 15px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo-mam { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--gold); display: inline-flex; align-items: center; justify-content: center; color: var(--gold); font-weight: bold; box-shadow: 0 0 10px var(--gold); margin-bottom: 10px; }
 
-        /* DASHBOARD E SIDEBAR */
-        .dashboard { display: flex; flex: 1; padding: 20px; gap: 20px; }
-        .sidebar { width: 260px; background: rgba(0,0,0,0.9); border-radius: 15px; padding: 20px; border: 1px solid #222; }
-        .menu-link { padding: 12px; color: #ccc; cursor: pointer; display: block; text-decoration: none; margin-bottom: 5px; border-radius: 5px; font-size: 0.95rem; }
-        .menu-link:hover, .active { background: var(--gold); color: #000; font-weight: bold; }
-        .content { flex: 1; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 15px; border: 1px solid #333; }
+        /* AUTH CARDS */
+        .auth-card { max-width: 400px; margin: 40px auto; padding: 30px; background: #000; border: 1px solid var(--gold); border-radius: 20px; width: 90%; text-align: center; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        .btn-gold { width: 100%; padding: 14px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; transition: 0.3s; }
 
-        /* RODAPÉ ORIGINAL RESTAURADO */
-        footer {
-            background: rgba(0,0,0,0.95); border-top: 1px solid var(--gold);
-            padding: 40px 10%; text-align: center; color: #888; font-size: 0.9rem; margin-top: auto;
-        }
-        .footer-info { margin-bottom: 15px; color: #bbb; }
+        /* MENU */
+        .menu-item { padding: 12px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; }
+        .menu-item:hover, .active { background: var(--gold); color: #000; font-weight: bold; }
+
+        /* GRID DE DISCOS */
+        .grid-musicas { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
+        .disco { background: var(--gray); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
+        .disco:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .capa-disco { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 3px solid #333; object-fit: cover; animation: rodar 10s linear infinite paused; }
+        .disco:hover .capa-disco { animation-play-state: running; }
+        @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* CARTEIRA */
+        .wallet-box { background: linear-gradient(135deg, #111, #000); border: 1px solid var(--gold); padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 20px; }
+        .saldo-num { font-size: clamp(2rem, 5vw, 3rem); color: var(--gold); font-weight: 800; }
+
+        .main-content { flex: 1; padding: 20px; width: 100%; }
+        footer { background: #000; border-top: 1px solid var(--gold); padding: 30px; text-align: center; color: #666; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<div class="top-header">
-    <div class="logo-mam">MAM</div>
-    <h2 style="margin-top:10px; letter-spacing:3px; color: var(--gold);">DISTRIBUIDORA</h2>
-</div>
-
-<div id="authContainer">
+<div id="authArea">
     <div class="auth-card" id="loginBox">
-        <h3>Iniciar Sessão</h3>
+        <div class="logo-mam">MAM</div>
+        <h2>INICIAR SESSÃO</h2>
         <input type="email" id="emailL" placeholder="E-mail">
         <input type="password" id="passL" placeholder="Senha">
-        <button class="btn-main" onclick="entrar()">ENTRAR AGORA</button>
-        <p style="margin-top:20px; font-size:0.8rem;">Novo na MAM? <span onclick="mudar(true)" style="color:var(--gold); cursor:pointer;">Criar Conta Profissional</span></p>
+        <button class="btn-gold" onclick="entrar()">ENTRAR AGORA</button>
+        <p style="margin-top:15px; font-size:0.8rem;">Novo? <span onclick="mudar(true)" style="color:var(--gold); cursor:pointer;">Criar Conta</span></p>
     </div>
-
     <div class="auth-card hidden" id="regBox">
-        <h3>Registo de Artista</h3>
-        <input type="text" id="nomeR" placeholder="Nome Artístico">
+        <div class="logo-mam">MAM</div>
+        <h3>REGISTO REAL</h3>
+        <input type="text" id="nomeR" placeholder="Nome do Utilizador">
         <input type="email" id="emailR" placeholder="E-mail Real">
         <input type="password" id="passR" placeholder="Senha">
-        <input type="password" id="passR2" placeholder="Confirmar Senha">
-        <button class="btn-main" onclick="registar()">REGISTAR E VALIDAR</button>
-        <p style="margin-top:20px; font-size:0.8rem;">Já tem conta? <span onclick="mudar(false)" style="color:var(--gold); cursor:pointer;">Fazer Login</span></p>
+        <button class="btn-gold" onclick="registar()">CRIAR E RECEBER E-MAIL</button>
+        <p style="margin-top:15px; font-size:0.8rem;">Já tem conta? <span onclick="mudar(false)" style="color:var(--gold); cursor:pointer;">Login</span></p>
     </div>
 </div>
 
-<div id="appContainer" class="hidden">
-    <div class="dashboard">
+<div id="appArea" class="hidden">
+    <div class="mobile-nav">
+        <div class="logo-mam" style="width:40px; height:40px; margin:0;">MAM</div>
+        <button onclick="sair()" style="background:none; border:none; color:red; font-weight:bold;">SAIR</button>
+    </div>
+    <div class="wrapper">
         <aside class="sidebar">
-            <div class="menu-link active" onclick="navTo('home')">🏠 Dashboard</div>
-            <div class="menu-link" onclick="navTo('perfil')">👤 Meu Perfil</div>
-            <div class="menu-link" onclick="navTo('musicas')">🎶 Minhas Músicas</div>
-            <div class="menu-link" onclick="navTo('artista')">👨‍🎨 Criar Artista</div>
-            <div class="menu-link" onclick="navTo('lancar')">📤 Lançar Música</div>
-            <div class="menu-link" onclick="navTo('carteira')">💰 Carteira</div>
-            <div class="menu-link" onclick="navTo('vip')">💎 Plano VIP</div>
-            <div class="menu-link" onclick="navTo('ceo')">👔 Direção CEO</div>
-            <div class="menu-link" onclick="sair()" style="color:red; margin-top:30px; border-top: 1px solid #333; padding-top: 10px;">🚪 Sair</div>
-        </aside>
-        <main class="content">
-            <section id="pageHome">
-                <h2 id="txtBoasVindas"></h2>
-                <div id="avisoEmail" class="hidden" style="margin-top:20px; padding:15px; border:1px dashed var(--gold); color:var(--gold); border-radius:8px;">
-                    ⚠️ A sua conta aguarda validação por e-mail para libertar todas as funcionalidades.
-                </div>
-            </section>
-            <section id="pageCarteira" class="hidden"><h2>Carteira Real</h2><h1 id="txtSaldo" style="color:var(--gold); font-size:3rem;">0,00 Kz</h1></section>
-        </main>
-    </div>
-</div>
-
-<footer>
-    <div class="footer-info">
-        <p><b>MAM Distribuidora</b> - Oferecemos a curação que as grandes plataformas não oferecem.</p>
-        <p>Contacto Oficial: <b>mamfilhos29@gmail.com</b> | Luanda, Angola</p>
-    </div>
-    <p>© 2026 Matias Arsénio Manuel (MAM). Todos os direitos reservados.</p>
-</footer>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
-        authDomain: "mam-distribuidora.firebaseapp.com",
-        projectId: "mam-distribuidora",
-        storageBucket: "mam-distribuidora.firebasestorage.app",
-        messagingSenderId: "670857002452",
-        appId: "1:670857002452:web:404822b5376075e520ea41"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth(); const db = firebase.firestore();
-
-    function mudar(r) { document.getElementById('loginBox').classList.toggle('hidden', r); document.getElementById('regBox').classList.toggle('hidden', !r); }
-
-    async function registar() {
-        const e = document.getElementById('emailR').value, p = document.getElementById('passR').value, p2 = document.getElementById('passR2').value, n = document.getElementById('nomeR').value;
-        if(p !== p2) return alert("As senhas não coincidem!");
-        try {
-            const r = await auth.createUserWithEmailAndPassword(e, p);
-            await r.user.sendEmailVerification(); // Disparo Real
-            await db.collection("users").doc(r.user.uid).set({ nome: n, saldo: 0 });
-            alert("Sucesso! E-mail de confirmação enviado. Verifique a sua caixa de entrada.");
-            location.reload();
-        } catch(err) { alert(err.message); }
-    }
-
-    async function entrar() {
-        const e = document.getElementById('emailL').value, p = document.getElementById('passL').value;
-        try {
-            await auth.signInWithEmailAndPassword(e, p);
-            // Início de sessão DIRETO, conforme pedido.
-        } catch(err) { alert("Dados de acesso incorretos!"); }
-    }
-
-    auth.onAuthStateChanged(user => {
-        if(user) {
-            document.getElementById('authContainer').classList.add('hidden');
-            document.getElementById('appContainer').classList.remove('hidden');
-            
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-                if(doc.exists) {
-                    document.getElementById('txtSaldo').innerText = doc.data().saldo.toLocaleString() + " Kz";
-                    document.getElementById('txtBoasVindas').innerText = "Bem-vindo, " + doc.data().nome + "!";
-                    if(!user.emailVerified) document.getElementById('avisoEmail').classList.remove('hidden');
-                }
-            });
-        } else {
-            document.getElementById('authContainer').classList.remove('hidden');
-            document.getElementById('appContainer').classList.add('hidden');
-        }
-    });
-
-    function navTo(p) {
-        document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
-        document.getElementById('page' + p.charAt(0).toUpperCase() + p.slice(1)).classList.remove('hidden');
-    }
-    function sair() { auth.signOut().then(() => location.reload()); }
-</script>
-</body>
-</html>
+            <div class="logo-mam">MAM</div>
+            <div class="menu-item active" onclick="navTo('home')">🏠 Página Inicial</div>
+            <div class="menu-item" onclick="navTo('perfil')">👤 Meu Perfil</div>
+            <div class="menu-item"

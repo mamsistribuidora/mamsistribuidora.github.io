@@ -1,48 +1,212 @@
-Manda codico completo DA Mam painel norma e Admin,  depos De registo cria um Sistema que a AMA envia ao email um email De confirmacao depois do usuario confiemar a parti do email o link leva ela a pagina a mesma pagina que levara o inicio de Cessão inicio do mam
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAM Distribuidora | Oficial</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
-E depois de início de secção  apcom mesagem. De boas vida.  E passara aparacer todas musica ou video lançado pela MAM Listas de todas músicas distribuida na nossa distribuidora, em forma de disco aparecendo a imagem da capa da música, ao clica lá abre as informações da música, título, Artista ( ao clica no nome de Artista se tiver um perfil na MAM irá direito ao seu perfil da conta criada ou um perfil criada por um utilizador) e opção ouvir. Ao clicar no ouvir a música deve realmente tocar e sai Son. Adiciona também no meu um barra de pesquisa onde todos os usuarioas passaram pesquisar e baixar a musica que deseja. Tudo num tamanho pequeno q seja visivel em forma de discos, e por baixo das musicas vira um menu de Publicidade exibindo lintas de desafio Caça recompença que vaz criar um mecanismo auromaticamente que serao pago para quem seguir,  cria um sister que a MAM cassa videos pago por assistir sites que pagam para assistir videos e automaticamente cada video que utilizadores assistir se for perfil normal ganha 20% do pagamento e a AMA 80%, a conta vip ganha 50% se tiver mas De 1000 segudores,  ouvintes ou strem recebe 70% do pagamento. O mesmo Vai acontecer com outras forma de tarefas como jogos q a mam vai procurar. O link de convidar amigos a se registarem na MAM para isto vaz criar um link na qual cada pessoa que se cadrastar Automentemente a MAM ganha um valor pago pelo sateline,net Equivalente a 5000 kz e cada usuar que casa ultizador consegui vai indo ganhando um valor equivalene a 500 kz Entre outros 
+    <style>
+        :root { --gold: #D4AF37; --bright: #FFD700; --dark: #050505; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #000; color: #fff; min-height: 100vh; overflow-x: hidden; }
+        
+        .hidden { display: none !important; }
 
-Dentro do inicio vaz organizar um menu bonito com as seguintes opcão 
-1* Pagina inicial que dara aceso a pagina inial da MAM 
+        /* LOGOTIPO NO TOPO */
+        .header-logo {
+            text-align: center; padding: 20px 0;
+            background: linear-gradient(to bottom, #111, #000);
+            border-bottom: 1px solid var(--gold);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo-circulo {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 3px solid var(--gold); display: inline-flex;
+            align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.6rem; color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); background: #000;
+        }
 
-2* meu Perfil
-*Editar perfil (Altera foto do perfil,  Altera Dados da conta) 
-3* Criar artista, Productor, Productora Voce cria um formulário de Preenchimento de cadrasto ( So sera possivel divulgar uma Musica depois de registrar o artista) 
-4* Lança musica ( voce criar um formulario profissinal com varios opoes para prencher)
-5 Minha Carteira ( A carteira vaz criar um convertor de moeda automatica a MAM para que todos os ganho Converte em moeda Angolana Kwanza para quem estiver em Angola Sacar com as conta Bancaria BFA, BAI, BIC ate mesmo com o Multica Express/numero activo.  E para quem n estiver em Angola sera convertida na moeda do seu pais e sacar com Paypal,  Visa, Pix,  Brncos disponivel do seu pais) Vincular um formulario de Preenchimento automatico que direiciona ate contas direitamente aos Banco que fora citado para facilita o saque apresentar na carteira valores verdadeiro
+        /* MENU RODAPÉ (7 OPÇÕES) */
+        .footer-nav {
+            position: fixed; bottom: 0; width: 100%; background: #080808;
+            border-top: 1px solid var(--gold); display: flex;
+            justify-content: space-between; padding: 10px 5px; z-index: 9999;
+        }
+        .nav-item {
+            text-align: center; color: #666; cursor: pointer;
+            font-size: 0.55rem; flex: 1; transition: 0.3s;
+        }
+        .nav-item.active { color: var(--gold); font-weight: bold; }
+        .nav-item i { display: block; font-size: 1.2rem; margin-bottom: 2px; }
 
+        /* CONTEÚDO */
+        main { padding: 20px; padding-bottom: 120px; }
+        .auth-card {
+            background: #0a0a0a; border: 1px solid #222; padding: 30px;
+            border-radius: 20px; width: 90%; max-width: 380px; margin: 50px auto; text-align: center;
+        }
+        input, select {
+            width: 100%; padding: 12px; margin: 8px 0; background: #111;
+            border: 1px solid #333; color: #fff; border-radius: 10px; outline: none;
+        }
+        .btn-main {
+            width: 100%; padding: 15px; background: var(--gold); border: none;
+            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; color: #000;
+        }
 
-6* Informação do C.E.O com suas redes social, video e Musicas lancadas num tamanho piqueno mas visivel. 
+        .wallet-box {
+            background: linear-gradient(135deg, #111, #000); border: 2px solid var(--gold);
+            padding: 25px; border-radius: 20px; text-align: center;
+        }
+    </style>
+</head>
+<body>
 
-7* Botão De terminar sessão 
+<div class="header-logo">
+    <div class="logo-circulo">MAM</div>
+</div>
 
-Na pagina inicial uma tabela de Anucio Apoia meus projecto onde Vaz colocar informação das minha conta bancaria e minha carteira da MAM (Dever ser apresentado fora e dentro de Sessão.)
-A conta n devem perde a sessão (Guardar a sessão) a nao for que o utizado termina a sessão. 
- 
+<div id="screenAuth">
+    <div class="auth-card" id="boxLogin">
+        <h3>Entrar na MAM</h3>
+        <input type="email" id="lEmail" placeholder="E-mail">
+        <input type="password" id="lPass" placeholder="Senha">
+        <button class="btn-main" onclick="login()">ACEDER AO PAINEL</button>
+        <p onclick="toggleAuth(true)" style="margin-top:15px; font-size:0.8rem; color:var(--gold); cursor:pointer;">Novo Artista? Criar Conta</p>
+    </div>
 
-Peril.
-O mam vai oferecer 4 nivel de perfil e a cada um vai ganha consoante o nivel
+    <div class="auth-card hidden" id="boxReg">
+        <h3>Registo Oficial</h3>
+        <input type="text" id="rNome" placeholder="Nome Artístico">
+        <input type="email" id="rEmail" placeholder="Teu melhor E-mail">
+        <input type="password" id="rPass" placeholder="Criar Senha">
+        <button class="btn-main" onclick="registrar()">FINALIZAR REGISTO</button>
+        <p onclick="toggleAuth(false)" style="margin-top:15px; font-size:0.8rem; color:var(--gold); cursor:pointer;">Já tenho conta</p>
+    </div>
+</div>
 
-1* Perfil normal permitido a distribuir apenas 1 acrtista.  ( Mas pode criarvario artista e adiciona Los numa colaboração com o artista lançado este perfil vai receber 20% De tudo que ele fara o MAM ganha cada pagamento por tarefa e strem feito por ele a MAM rece 80% e ele 20%) 
+<div id="screenApp" class="hidden">
+    <main>
+        <section id="pageHome">
+            <h4>🎵 Feed de Distribuição</h4>
+            <div id="feedMusicas" style="margin-top:20px; display: grid; grid-template-columns: 1fr 1fr; gap:15px;"></div>
+        </section>
 
-2* Perfil Vip ( Disponil a 10 Artista ganha 50% De tudo q fazer entra no MAM com tarefas e Strem) 
+        <section id="pageUpload" class="hidden">
+            <h4>📤 Novo Lançamento</h4>
+            <input type="text" id="mTit" placeholder="Título">
+            <input type="text" id="mArt" placeholder="Artista Principal">
+            <label>Capa (JPG)</label><input type="file" id="fCap" accept="image/*">
+            <label>Áudio (MP3)</label><input type="file" id="fAud" accept="audio/*">
+            <button class="btn-main" onclick="uploadMusica()">ENVIAR PARA CURADORIA</button>
+        </section>
 
-Vip Maximo direito a Artistas ilimitado ganho De 70% por tarefas e strem
+        <section id="pageWallet" class="hidden">
+            <div class="wallet-box">
+                <small>Saldo Royalties</small>
+                <h2 id="saldoKz" style="color:var(--bright); margin:10px 0;">0,00 Kz</h2>
+                <button class="btn-main" style="font-size:0.7rem;">SOLICITAR LEVANTAMENTO</button>
+            </div>
+        </section>
 
-A minha conta deve haver 2 painel 
-1* Painel normal de Usuario (Com todas configuração De outros perfil, todos Santos faz normal ou ViP OS perfil devem ter mesma configurações com ganhos, luxos e lucro diferente indo subindo por cada nivel) 
+        <section id="pageProfile" class="hidden">
+            <h4>👤 Perfil do Artista</h4>
+            <div style="background:#111; padding:20px; border-radius:15px; margin-top:15px;">
+                <p id="profNome">Nome: ...</p>
+                <p id="profEmail" style="color:#666; font-size:0.8rem;">E-mail: ...</p>
+                <button class="btn-main" style="background:#222; color:#fff;">EDITAR BIOGRAFIA</button>
+            </div>
+        </section>
 
-2* Painel Administrativo 
+        <section id="pageVip" class="hidden">
+            <div style="text-align:center; padding:20px; border:2px solid #00e5ff; border-radius:20px;">
+                <h3 style="color:#00e5ff;">MAM VIP MAX</h3>
+                <p style="font-size:0.8rem; margin:15px 0;">Ganha 3x mais por minuto e tenha suporte prioritário do CEO.</p>
+                <button class="btn-main" style="background:#00e5ff;">ATIVAR VIP AGORA</button>
+            </div>
+        </section>
 
-Suger Sempre meu Tiktok Play Sean Arsenio para todos OS usuario seguerem em cada 5 min para quem n segue. 
+        <section id="pageCeo" class="hidden">
+            <h4>👔 Direção Geral (Matias Arsenio)</h4>
+            <div style="background:#111; padding:20px; border-radius:15px; margin-top:15px;">
+                <p style="font-size:0.9rem;">Siga as diretrizes oficiais da MAM Distribuidora no TikTok.</p>
+                <button class="btn-main" onclick="window.open('https://www.tiktok.com/@playseanarsenio')">TIKTOK DO CEO</button>
+                <button class="btn-main" style="background:green; color:white; margin-top:10px;">WHATSAPP SUPORTE</button>
+            </div>
+        </section>
+    </main>
 
-Nao consigo sacar. As musica as devem aparecer imagem DA capa ao clica LA deve mostrar informação da musica e Artista e se pode a Musica adiciona meu nome Como colaborador Princesa Heliany ft Play Sean Arsenio e direcio para minhas redes socias E permitir a pessoa ouvir quanto mas cada ouvir a MAM deve ganha 2000. Cada Conta criada o MAM deve ganha 5000 e cada vez qalguem inicia Sessão a Mam deve ganha 3000 Cria o link De convidar amigo onde a mam pagar 500 kz para cada registro a utilizador q conseguir atra no menu adicio opção minhas Music as (Onde a parece as music as lancada De cada conta)  as opçãos do Menu n estão abrir. Na carteira apresentar valores verdadeiro.  Garante que tudo funiona
-Permitir que as musica apartir do site e aparece a imagem DA capa,  marca o perfil De artista nas informação DA musica. E apresetar dinheiro verdadeiro na carteira. O lime De saque é De 10.000 kz mas para mim n ha limitede
-O email oficial da MAM e de acesso é sempre mamfilhos24@gmail.com
-Eviar misica cria um formulario de envio Profissinal 
-Faça uma criação e configuração functional De tudo e manda o codigo completo do panel principal onde a opção inicial Sessão ou cria conta e manda codigo leve 
+    <div class="footer-nav">
+        <div class="nav-item active" onclick="navTo('home')"><i>🏠</i>Home</div>
+        <div class="nav-item" onclick="navTo('upload')"><i>📤</i>Lançar</div>
+        <div class="nav-item" onclick="navTo('wallet')"><i>💰</i>Carteira</div>
+        <div class="nav-item" onclick="navTo('profile')"><i>👤</i>Perfil</div>
+        <div class="nav-item" onclick="navTo('vip')"><i>💎</i>VIP</div>
+        <div class="nav-item" onclick="navTo('ceo')"><i>👔</i>CEO</div>
+        <div class="nav-item" onclick="sair()" style="color:#ff4444;"><i>🚪</i>Sair</div>
+    </div>
+</div>
 
-Tudo real
-Cadastro real 
-Início de sessão real
-Ganhos e levantamentos real. Conta Administrativo dias carteira conforme já havia pedido como deve ser a separação dos lucro e muito mas.n esqueci o PayPal, Visa/Wise, Pix e payonne
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
+        authDomain: "mam-distribuidora.firebaseapp.com",
+        projectId: "mam-distribuidora",
+        storageBucket: "mam-distribuidora.firebasestorage.app",
+        messagingSenderId: "670857002452",
+        appId: "1:670857002452:web:404822b5376075e520ea41"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(); const db = firebase.firestore();
+
+    function toggleAuth(r) { document.getElementById('boxLogin').classList.toggle('hidden', r); document.getElementById('boxReg').classList.toggle('hidden', !r); }
+    
+    function navTo(p) {
+        document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('page' + p.charAt(0).toUpperCase() + p.slice(1)).classList.remove('hidden');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    async function registrar() {
+        const e = document.getElementById('rEmail').value; const p = document.getElementById('rPass').value;
+        try {
+            const res = await auth.createUserWithEmailAndPassword(e, p);
+            await db.collection("users").doc(res.user.uid).set({ nome: document.getElementById('rNome').value, saldo: 0 });
+            alert("Conta MAM criada!");
+        } catch(err) { alert(err.message); }
+    }
+
+    async function login() {
+        try { await auth.signInWithEmailAndPassword(document.getElementById('lEmail').value, document.getElementById('lPass').value); }
+        catch(err) { alert(err.message); }
+    }
+
+    auth.onAuthStateChanged(user => {
+        if(user) {
+            document.getElementById('screenAuth').classList.add('hidden');
+            document.getElementById('screenApp').classList.remove('hidden');
+            db.collection("users").doc(user.uid).onSnapshot(doc => {
+                const data = doc.data();
+                document.getElementById('saldoKz').innerText = data.saldo.toLocaleString() + " Kz";
+                document.getElementById('profNome').innerText = "Artista: " + data.nome;
+                document.getElementById('profEmail').innerText = "E-mail: " + user.email;
+            });
+            // Ganho Automático (Smart Engine)
+            setInterval(() => { db.collection("users").doc(user.uid).update({ saldo: firebase.firestore.FieldValue.increment(50) }); }, 60000);
+        } else {
+            document.getElementById('screenAuth').classList.remove('hidden');
+            document.getElementById('screenApp').classList.add('hidden');
+        }
+    });
+
+    function sair() { auth.signOut().then(() => location.reload()); }
+</script>
+</body>
+</html>

@@ -7,100 +7,86 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --bright: #FFD700; --dark: #050505; }
+        :root { --gold: #D4AF37; --bright: #FFD700; --dark: #050505; --success: #28a745; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: #000 url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; }
-        .overlay { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.88); min-height: 100vh; }
-        .card { background: rgba(15, 15, 15, 0.98); border: 2px solid var(--gold); padding: 30px; border-radius: 20px; width: 100%; max-width: 480px; text-align: center; box-shadow: 0 0 50px #000; margin: 20px 0; }
+        .overlay { display: flex; flex-direction: column; align-items: center; padding: 20px; background: rgba(0,0,0,0.88); min-height: 100vh; }
         
-        h1 { color: var(--bright); font-size: 2.2rem; letter-spacing: 5px; margin-bottom: 5px; }
-        .tagline { color: #888; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 2px; }
+        .scanner-box { width: 100%; max-width: 480px; background: #111; border: 1px solid var(--gold); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 0.7rem; display: none; }
         
-        .input-group { position: relative; width: 100%; margin-bottom: 12px; }
-        input, select { width: 100%; padding: 14px; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; font-size: 15px; outline: none; }
-        input:focus { border-color: var(--gold); }
-        .eye-btn { position: absolute; right: 15px; top: 14px; background: none; border: none; color: var(--gold); cursor: pointer; font-size: 0.7rem; font-weight: bold; z-index: 10; }
+        .card { background: rgba(15, 15, 15, 0.98); border: 2px solid var(--gold); padding: 30px; border-radius: 20px; width: 100%; max-width: 480px; text-align: center; box-shadow: 0 0 50px #000; }
+        h1 { color: var(--bright); letter-spacing: 5px; margin-bottom: 5px; }
         
-        .btn { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .input-group { position: relative; width: 100%; margin-bottom: 15px; }
+        input, select { width: 100%; padding: 14px; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; outline: none; }
+        .eye-btn { position: absolute; right: 15px; top: 14px; background: none; border: none; color: var(--gold); cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+        
+        .btn { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--gold), var(--bright)); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .hidden { display: none !important; }
         
         footer { background: #000; border-top: 2px solid var(--gold); padding: 40px 20px; width: 100%; margin-top: auto; }
         .footer-content { max-width: 850px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: left; }
-        .footer-item strong { color: var(--gold); display: block; margin-bottom: 10px; font-size: 0.9rem; }
-        .footer-item p { color: #777; font-size: 0.8rem; line-height: 1.6; }
     </style>
 </head>
 <body>
 
 <div class="overlay">
+    <button class="btn" style="width:auto; padding:8px 15px; font-size:0.7rem; margin-bottom:10px;" onclick="rodarScanner()">🔍 SCANNER DE SISTEMA</button>
+    
+    <div id="scannerResult" class="scanner-box">
+        <p>Status Firebase: <span id="sAuth">...</span></p>
+    </div>
+
     <div id="boxLogin" class="card">
         <h1>MAM</h1>
-        <p class="tagline">Distribuição & Curadoria</p>
-        <input type="email" id="lEmail" placeholder="Teu E-mail">
+        <p style="color:#888; font-size:0.7rem; letter-spacing:2px; margin-bottom:20px;">DISTRIBUIDORA DIGITAL</p>
+        <input type="email" id="lEmail" placeholder="E-mail">
         <div class="input-group">
-            <input type="password" id="lPass" placeholder="Tua Senha">
+            <input type="password" id="lPass" placeholder="Senha">
             <button class="eye-btn" onclick="togglePass('lPass')">VER</button>
         </div>
-        <button class="btn" onclick="fazerLogin()">INICIAR SESSÃO</button>
-        <p onclick="irPara('reg')" style="color:var(--gold); cursor:pointer; margin-top:20px; text-decoration:underline; font-size:0.9rem;">Novo Artista? Criar Cadastro</p>
+        <button class="btn" onclick="fazerLogin()">ENTRAR</button>
+        <p onclick="irPara('reg')" style="color:var(--gold); cursor:pointer; margin-top:20px; text-decoration:underline;">Criar Conta de Artista</p>
     </div>
 
     <div id="boxReg" class="card hidden">
         <h1>CRIAR CONTA</h1>
-        <p class="tagline">Ficha de Distribuição</p>
-        <input type="text" id="rNome" placeholder="Nome Artístico Oficial">
+        <input type="text" id="rNome" placeholder="Nome Artístico">
         <input type="email" id="rEmail" placeholder="E-mail">
         
-        <select id="rCategoria">
-            <option disabled selected>Escolha a sua Categoria</option>
+        <select id="rCat" style="margin-bottom:15px;">
             <option>Kuduro</option><option>Kizomba</option><option>Semba</option>
-            <option>Hip Hop / Rap</option><option>Afro House</option><option>Gospel</option>
-            <option>Amapiano</option><option>Zouk</option><option>R&B</option>
+            <option>Hip Hop</option><option>Afro House</option><option>Amapiano</option>
         </select>
 
         <div class="input-group">
-            <input type="password" id="rPass" placeholder="Senha (mín. 6 dígitos)">
+            <input type="password" id="rPass" placeholder="Definir Senha">
             <button class="eye-btn" onclick="togglePass('rPass')">VER</button>
         </div>
+        
+        <div class="input-group">
+            <input type="password" id="rPassConf" placeholder="Confirmar Senha">
+            <button class="eye-btn" onclick="togglePass('rPassConf')">VER</button>
+        </div>
+
         <button class="btn" onclick="fazerRegisto()">FINALIZAR REGISTO</button>
         <p onclick="irPara('login')" style="color:var(--gold); cursor:pointer; margin-top:20px;">Já tenho conta</p>
     </div>
 
     <div id="boxPainel" class="card hidden">
-        <h2 style="color:var(--gold);">Olá, <span id="uNome">...</span></h2>
-        <div class="input-group" style="margin-top:20px;">
-            <input type="text" id="mTitulo" placeholder="Título da Música">
-            <input type="text" id="mColab" placeholder="Colaboração (Artista Feat.)">
-            <input type="text" id="mProdutor" placeholder="Produtor Musical">
-            <label style="display:block; text-align:left; font-size:0.7rem; color:#888; margin-bottom:5px;">Data de Lançamento:</label>
-            <input type="date" id="mData">
-            <label style="display:block; text-align:left; font-size:0.7rem; color:#888; margin-bottom:5px;">Capa e Áudio:</label>
-            <input type="file" id="fCapa" accept="image/*" style="padding: 5px;">
-            <input type="file" id="fAudio" accept="audio/*" style="padding: 5px;">
-        </div>
-        <button class="btn" onclick="alert('Lançamento enviado com sucesso para curadoria!')">ENVIAR PARA LANÇAMENTO</button>
-        <p onclick="sair()" style="color:red; cursor:pointer; margin-top:25px; font-weight:bold;">Sair da Conta</p>
+        <h2 style="color:var(--gold);">Olá, <span id="uNome">Artista</span></h2>
+        <p style="font-size:0.8rem; margin-top:10px;">Sistema Online. Próximo passo: Upload de Faixa.</p>
+        <button class="btn" style="margin-top:20px;" onclick="sair()">SAIR</button>
     </div>
 </div>
 
 <footer>
     <div class="footer-content">
-        <div class="footer-item">
-            <strong>💎 CURAÇÃO EXCLUSIVA</strong>
-            <p>A MAM oferece a curadoria personalizada que as grandes plataformas automáticas não dão. Analisamos a tua arte de forma humana.</p>
-        </div>
-        <div class="footer-item">
-            <strong>🚀 MENU INFORMATIVO</strong>
-            <p>• Distribuição Digital<br>• Gestão de Carreira<br>• Suporte Direto</p>
-        </div>
-        <div class="footer-item">
-            <strong>CEO & DIRECÇÃO</strong>
-            <p>Matias Arsénio Manuel<br>Email: <strong>mamfilhos29@gmail.com</strong></p>
-        </div>
+        <div><strong>💎 CURAÇÃO MAM</strong><p style="font-size:0.8rem; color:#777;">Curação humana para artistas de Angola.</p></div>
+        <div><strong>🚀 MENU</strong><p style="font-size:0.8rem; color:#777;">Distribuição | Gestão | Suporte</p></div>
+        <div><strong>CEO</strong><p style="font-size:0.8rem; color:#777;">Matias Arsénio Manuel<br>mamfilhos29@gmail.com</p></div>
     </div>
 </footer>
 
@@ -111,47 +97,11 @@
         projectId: "mam-distribuidora",
         storageBucket: "mam-distribuidora.firebasestorage.app",
         messagingSenderId: "670857002452",
-        appId: "1:670857002452:web:404822b5376075e520ea41",
-        measurementId: "G-69J05E609V"
+        appId: "1:670857002452:web:404822b5376075e520ea41"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    function togglePass(id) {
-        const x = document.getElementById(id);
-        x.type = x.type === "password" ? "text" : "password";
-    }
-
-    function irPara(t) {
-        document.getElementById('boxLogin').classList.add('hidden');
-        document.getElementById('boxReg').classList.add('hidden');
-        document.getElementById('boxPainel').classList.add('hidden');
-        document.getElementById('box'+t.charAt(0).toUpperCase()+t.slice(1)).classList.remove('hidden');
-    }
-
-    function fazerRegisto() {
-        const e = document.getElementById('rEmail').value, p = document.getElementById('rPass').value;
-        if(p.length < 6) return alert("A senha deve ter pelo menos 6 dígitos!");
-        auth.createUserWithEmailAndPassword(e, p)
-            .then(() => alert("Conta criada com sucesso!"))
-            .catch(err => alert("Erro: " + err.message));
-    }
-
-    function fazerLogin() {
-        const e = document.getElementById('lEmail').value, p = document.getElementById('lPass').value;
-        auth.signInWithEmailAndPassword(e, p)
-            .catch(err => alert("Acesso negado: " + err.message));
-    }
-
-    auth.onAuthStateChanged(user => {
-        if(user) {
-            irPara('painel');
-            document.getElementById('uNome').innerText = user.email.split('@')[0];
-        } else irPara('login');
-    });
-
-    function sair() { auth.signOut().then(() => location.reload()); }
-</script>
-</body>
-</html>
+    function rodarScanner() {
+        const res = document.getElementById

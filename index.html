@@ -3,182 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Painel Administrativo de Elite</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --black: #050505; --card: rgba(10, 10, 10, 0.98); }
+        :root { --gold: #D4AF37; --card: rgba(10, 10, 10, 0.98); --glass: rgba(255, 255, 255, 0.03); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
         body { 
             background: #000; color: #fff; height: 100vh; overflow: hidden;
-            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            background-attachment: fixed;
         }
 
         .hidden { display: none !important; }
 
-        /* LOGIN / REGISTO */
-        #authArea { height: 100vh; display: flex; align-items: center; justify-content: center; z-index: 1000; position: relative; }
-        .mam-box { background: var(--card); padding: 40px; border-radius: 30px; border: 2px solid var(--gold); width: 100%; max-width: 420px; text-align: center; box-shadow: 0 0 50px #000; }
-        .logo-circle { width: 100px; height: 100px; border: 3px solid var(--gold); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--gold); font-size: 1.8rem; background: #000; }
+        /* LOGIN BOX LUXURY */
+        #authArea { height: 100vh; display: flex; align-items: center; justify-content: center; z-index: 100; position: relative; }
+        .mam-box { background: var(--card); padding: 50px; border-radius: 40px; border: 1px solid var(--gold); width: 100%; max-width: 450px; text-align: center; box-shadow: 0 0 100px rgba(0,0,0,1); }
+        .mam-logo-hq { width: 100px; height: 100px; border: 4px solid var(--gold); border-radius: 50%; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--gold); font-size: 1.8rem; background: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
 
-        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 12px; font-size: 0.9rem; }
-        .btn-mam { width: 100%; padding: 16px; background: var(--gold); color: #000; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 15px; transition: 0.3s; }
-        .btn-mam:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        input, select, textarea { width: 100%; padding: 15px; margin: 10px 0; background: #080808; border: 1px solid #222; color: #fff; border-radius: 12px; outline: none; }
+        input:focus { border-color: var(--gold); }
+        .btn-mam { width: 100%; padding: 18px; background: var(--gold); color: #000; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-mam:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
 
-        /* DASHBOARD GRID */
-        #app { display: grid; grid-template-columns: 280px 1fr; height: 100vh; }
-        aside { background: #000; border-right: 1px solid #1a1a1a; padding: 25px 15px; display: flex; flex-direction: column; }
-        main { overflow-y: auto; padding: 40px; position: relative; background: rgba(0,0,0,0.5); padding-bottom: 120px; }
+        /* DASHBOARD ADMIN E USUÁRIO */
+        #app { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
+        aside { background: rgba(0,0,0,0.95); border-right: 1px solid #1a1a1a; padding: 40px 20px; display: flex; flex-direction: column; }
+        main { overflow-y: auto; padding: 40px; background: rgba(0,0,0,0.2); padding-bottom: 100px; }
 
-        .nav-item { padding: 12px 15px; color: #888; cursor: pointer; border-radius: 10px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; transition: 0.3s; }
-        .nav-item:hover, .active-nav { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-weight: 600; border-left: 3px solid var(--gold); }
+        .nav-item { padding: 16px 20px; color: #777; cursor: pointer; border-radius: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 15px; transition: 0.4s; }
+        .nav-item:hover, .active-nav { background: var(--glass); color: var(--gold); font-weight: 700; border-left: 4px solid var(--gold); }
+        .btn-sair { margin-top: auto; color: #ff3333; padding: 15px; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; border: 1px solid rgba(255,51,51,0.2); }
 
-        /* DISCOS & MÚSICAS */
-        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; margin-top: 20px; }
-        .vinyl { background: #111; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #222; transition: 0.4s; cursor: pointer; }
-        .vinyl:hover { border-color: var(--gold); transform: translateY(-10px); }
-        .vinyl-img { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 4px solid #1a1a1a; object-fit: cover; margin-bottom: 10px; }
+        /* ESTATISTICAS ADMIN */
+        .admin-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid #222; position: relative; overflow: hidden; }
+        .stat-card::after { content: ""; position: absolute; top:0; right:0; width: 5px; height:100%; background: var(--gold); }
+        .stat-card h4 { font-size: 0.8rem; color: #666; text-transform: uppercase; }
+        .stat-card h2 { font-size: 2rem; color: var(--gold); margin-top: 10px; }
 
-        /* HEADER & BANNER */
-        .promo-banner { background: linear-gradient(90deg, #D4AF37, #aa8a2e); color: #000; padding: 15px; border-radius: 15px; margin-bottom: 30px; font-weight: 700; text-align: center; font-size: 0.8rem; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        /* TAREFA COM CONTADOR */
+        .task-box { background: #0a0a0a; border: 2px solid #1a1a1a; padding: 30px; border-radius: 25px; text-align: center; margin-bottom: 30px; }
+        #timerDisplay { font-size: 4rem; font-weight: 800; color: var(--gold); margin: 20px 0; font-variant-numeric: tabular-nums; }
+        .video-placeholder { width: 100%; height: 200px; background: #000; border-radius: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; border: 1px dashed #333; }
 
-        footer { position: fixed; bottom: 0; right: 0; width: calc(100% - 280px); padding: 12px; background: #000; border-top: 1px solid #1a1a1a; text-align: center; color: var(--gold); font-size: 0.7rem; letter-spacing: 2px; }
+        /* MÚSICAS DISCO HQ */
+        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 30px; }
+        .vinyl-case { background: #0f0f0f; padding: 15px; border-radius: 25px; text-align: center; border: 1px solid #1a1a1a; transition: 0.5s; cursor: pointer; }
+        .vinyl-case:hover { transform: translateY(-10px) rotate(2deg); border-color: var(--gold); }
+        .vinyl-disc { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 6px solid #111; object-fit: cover; box-shadow: 0 15px 35px rgba(0,0,0,0.7); }
+
+        footer { position: fixed; bottom: 0; right: 0; width: calc(100% - 300px); padding: 15px; background: #000; border-top: 1px solid #1a1a1a; text-align: center; color: var(--gold); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
 <div id="authArea">
     <div class="mam-box">
-        <div class="logo-circle">MAM</div>
-        <h2 id="aTitle">INICIAR SESSÃO</h2>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Senha">
+        <div class="mam-logo-hq">MAM</div>
+        <h2 id="aT" style="color:var(--gold); margin-bottom:10px;">HQ CENTRAL</h2>
+        <p style="color:#555; margin-bottom:30px; font-size:0.8rem;">GESTÃO DE DISTRIBUIÇÃO E LUCROS</p>
+        <input type="email" id="email" placeholder="Email do Artista ou Admin">
+        <input type="password" id="pass" placeholder="Palavra-passe">
         <input type="password" id="cPass" class="hidden" placeholder="Confirmar Senha">
-        <button class="btn-mam" onclick="authMAM()" id="btnA">ENTRAR</button>
-        <p onclick="toggleA()" id="tA" style="margin-top:20px; cursor:pointer; color:var(--gold); font-size:0.8rem;">Novo Artista? <b>Criar Conta</b></p>
+        <button class="btn-mam" onclick="authMAM()" id="btnA">ENTRAR NO SISTEMA</button>
+        <p onclick="toggleA()" id="tA" style="margin-top:25px; cursor:pointer; color:var(--gold); font-size:0.85rem;">Novo na MAM? <b>Criar Conta de Elite</b></p>
     </div>
 </div>
 
 <div id="app" class="hidden">
     <aside>
-        <div class="logo-circle" style="transform: scale(0.6); margin-bottom: 20px;">MAM</div>
-        <div class="nav-item active-nav" onclick="tab('Home', this)">🏠 1* Pagina Inicial</div>
-        <div class="nav-item" onclick="tab('Perfil', this)">👤 2* Meu Perfil</div>
-        <div class="nav-item" onclick="tab('Artista', this)">🎙️ 3* Criar Artista/Produtor</div>
-        <div class="nav-item" onclick="tab('Lancar', this)">📤 4* Lança Música</div>
-        <div class="nav-item" onclick="tab('Carteira', this)">💰 5* Minha Carteira</div>
-        <div class="nav-item" onclick="tab('CEO', this)">👔 6* Informação CEO</div>
-        <div class="nav-item" style="margin-top:auto; color:#ff4d4d" onclick="sair()">🚪 7* Terminar Sessão</div>
-        
-        <div id="admNav" class="nav-item hidden" style="color:cyan" onclick="tab('Admin', this)">⚙️ Painel Admin</div>
+        <div class="mam-logo-hq" style="transform: scale(0.7); margin-bottom: 30px;">MAM</div>
+        <div class="nav-item active-nav" onclick="tab('Home', this)">🏠 Pagina Inicial</div>
+        <div class="nav-item" onclick="tab('Perfil', this)">👤 Meu Perfil</div>
+        <div class="nav-item" onclick="tab('Art', this)">🎙️ Criar Artista</div>
+        <div class="nav-item" onclick="tab('Lancar', this)">📤 Lança Música</div>
+        <div class="nav-item" onclick="tab('Minhas', this)">🎶 Minhas Músicas</div>
+        <div class="nav-item" onclick="tab('Cart', this)">💰 Minha Carteira</div>
+        <div class="nav-item" onclick="tab('Admin', this)" id="navAdmin">⚙️ Painel Administrativo</div>
+        <div class="btn-sair" onclick="sair()">TERMINAR SESSÃO</div>
     </aside>
 
     <main>
-        <div class="promo-banner">APOIA MEUS PROJECTOS: IBAN AO06 0040 0000 7845 1010 1 (MATIAS MANUEL)</div>
-
-        <header>
-            <h2 id="welcome" style="color:var(--gold)">BEM-VINDO</h2>
-            <div id="uSaldo" style="background:#111; padding:8px 25px; border-radius:30px; border:1px solid var(--gold); font-weight:700;">0,00 Kz</div>
-        </header>
+        <div id="pAdmin" class="aba hidden">
+            <h2 style="color:var(--gold); margin-bottom:30px;">👔 COMANDO CENTRAL CEO</h2>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h4>Cofre Total MAM</h4>
+                    <h2 id="admCofre">0,00 Kz</h2>
+                </div>
+                <div class="stat-card">
+                    <h4>Artistas Registados</h4>
+                    <h2 id="admUsers">0</h2>
+                </div>
+                <div class="stat-card">
+                    <h4>Distribuições Ativas</h4>
+                    <h2 id="admTracks">0</h2>
+                </div>
+            </div>
+        </div>
 
         <div id="pHome" class="aba">
-            <h3 style="color:var(--gold); margin-bottom:15px;">Músicas Distribuídas pela MAM</h3>
-            <input type="text" placeholder="Pesquisar música ou artista..." style="max-width:400px; margin-bottom:20px;">
+            <div class="task-box">
+                <h3 style="color:var(--gold)">🎯 CAÇA RECOMPENSA: TAREFA DIÁRIA</h3>
+                <p style="color:#666">Assiste ao vídeo completo para ganhar 500 Kz</p>
+                <div id="timerDisplay">30s</div>
+                <div class="video-placeholder">
+                    <span style="color:#333">VIDEO_STREAM_MAM_AD</span>
+                </div>
+                <button class="btn-mam" id="btnTarefa" onclick="iniciarContagem()" style="width: auto; padding: 12px 40px;">INICIAR TAREFA</button>
+            </div>
+
+            <h3 style="color:var(--gold); margin-top:50px; margin-bottom:20px;">📀 ÚLTIMOS LANÇAMENTOS</h3>
             <div class="music-grid" id="fGlobal"></div>
         </div>
 
-        <div id="pPerfil" class="aba hidden">
-            <h3>👤 Editar Perfil</h3>
-            <div style="background:var(--card); padding:30px; border-radius:20px; max-width:500px;">
-                <img id="uFoto" src="https://via.placeholder.com/150" style="width:100px; border-radius:50%; border:2px solid var(--gold);"><br>
-                <input type="file" id="uFotoFile" accept="image/*">
-                <input type="text" id="uNome" placeholder="Nome Artístico">
-                <textarea id="uBio" placeholder="Biografia"></textarea>
-                <button class="btn-mam" onclick="atualizarPerfil()">Atualizar Dados</button>
+        <div id="pCart" class="aba hidden">
+            <div style="background:var(--card); padding:50px; border-radius:30px; border-left:10px solid var(--gold);">
+                <p style="color:#666; font-weight:bold;">SALDO DISPONÍVEL</p>
+                <h1 id="uSaldoBig" style="color:var(--gold); font-size:4rem; font-weight:800;">0,00 Kz</h1>
+                <div style="margin-top:30px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <button class="btn-mam" style="background:#111; color:var(--gold); border:1px solid var(--gold);">SAQUE BFA/BAI</button>
+                    <button class="btn-mam">MULTICAIXA EXPRESS</button>
+                </div>
             </div>
         </div>
-
-        <div id="pLancar" class="aba hidden">
-            <h3>📤 Lançamento Profissional</h3>
-            <div style="background:var(--card); padding:30px; border-radius:20px; border:1px solid #333;">
-                <label>Título da Obra</label><input type="text" id="mTit">
-                <label>Artista Principal</label><input type="text" id="mArt">
-                <label>Colaborador: Princesa Heliany ft Play Sean Arsenio</label>
-                <label>Carregar Capa</label><input type="file" id="mCapa" accept="image/*">
-                <label>Carregar Áudio</label><input type="file" id="mAudio" accept="audio/*">
-                <label>Data de Lançamento</label><input type="date" id="mData">
-                <button class="btn-mam" onclick="fazerUpload()">Distribuir Música</button>
-            </div>
-        </div>
-
-        <div id="pCarteira" class="aba hidden">
-            <div style="background:var(--card); padding:40px; border-radius:25px; border-left:6px solid var(--gold);">
-                <p>Saldo do Artista (AOA)</p>
-                <h1 id="uSaldoBig" style="color:var(--gold); font-size:3.5rem;">0,00 Kz</h1>
-                <p style="margin-top:20px;">Sacar para:</p>
-                <select id="saqueBanco">
-                    <option>BFA</option><option>BAI</option><option>BIC</option>
-                    <option>Multicaixa Express</option><option>PayPal</option>
-                </select>
-                <input type="text" placeholder="IBAN ou E-mail da conta">
-                <button class="btn-mam" onclick="alert('Saldo mínimo de 10.000 Kz para saque.')">Solicitar Levantamento</button>
-            </div>
-        </div>
-
-        <div id="pCEO" class="aba hidden">
-            <h3 style="color:var(--gold)">Matias Arsénio Manuel</h3>
-            <p>E-mail: mamfilhos24@gmail.com</p>
-            <p>Siga no TikTok: <b>@playseanarsenio</b></p>
-            <button class="btn-mam" style="width:auto; padding:10px 20px" onclick="window.open('https://tiktok.com/@playseanarsenio')">Seguir TikTok</button>
-        </div>
-
-        <div id="pAdmin" class="aba hidden">
-            <h2 style="color:cyan">Cofre Administrativo MAM</h2>
-            <div style="background:#111; padding:30px; border-radius:20px; border:2px solid cyan;">
-                <p>LUCRO TOTAL DA EMPRESA</p>
-                <h1 id="admSaldo" style="font-size:3rem; color:cyan;">0,00 Kz</h1>
-            </div>
-        </div>
-
     </main>
 </div>
 
-<footer>MAM DISTRIBUIDORA &copy; 2026 | CEO MATIAS ARSÉNIO MANUEL</footer>
+<footer>MAM DISTRIBUIDORA | PROPRIEDADE EXCLUSIVA DE MATIAS ARSÉNIO MANUEL</footer>
 
 <script>
-    // Configuração Firebase do Matias
     const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
     firebase.initializeApp(cfg);
-    const auth = firebase.auth(), db = firebase.firestore(), storage = firebase.storage();
+    const auth = firebase.auth(), db = firebase.firestore();
 
     let isL = true;
-    const CEO_MAIL = "mamfilhos24@gmail.com";
+    const CEO_EMAIL = "mamfilhos24@gmail.com";
 
-    function toggleA() { 
-        isL = !isL; 
-        document.getElementById('aTitle').innerText = isL ? "INICIAR SESSÃO" : "CRIAR CONTA";
+    function toggleA() {
+        isL = !isL;
+        document.getElementById('aT').innerText = isL ? "HQ CENTRAL" : "REGISTO MAM";
         document.getElementById('cPass').classList.toggle('hidden', isL);
-        document.getElementById('btnA').innerText = isL ? "ENTRAR" : "CADASTRAR";
+        document.getElementById('btnA').innerText = isL ? "ENTRAR NO SISTEMA" : "CRIAR CONTA AGORA";
     }
 
     async function authMAM() {
-        const e = document.getElementById('email').value, p = document.getElementById('pass').value, cp = document.getElementById('cPass').value;
-        if(!e || !p) return alert("Campos vazios!");
+        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
         try {
             if(isL) {
                 await auth.signInWithEmailAndPassword(e, p);
                 db.collection("lucro_mam").add({ valor: 3000, mot: "Login: "+e, data: new Date() });
             } else {
-                if(p !== cp) return alert("Senhas não coincidem!");
                 const r = await auth.createUserWithEmailAndPassword(e, p);
                 await db.collection("users").doc(r.user.uid).set({ email: e, saldo: 1000, uid: r.user.uid, nivel: "Normal" });
-                db.collection("lucro_mam").add({ valor: 5000, mot: "Conta: "+e, data: new Date() });
-                alert("MAM: Bem-vindo! Bónus de 1.000 Kz atribuído.");
+                db.collection("lucro_mam").add({ valor: 5000, mot: "Novo Artista: "+e, data: new Date() });
+                alert("Conta de Artista Criada com Sucesso!");
             }
         } catch(err) { alert(err.message); }
     }
@@ -187,44 +172,59 @@
         if(u) {
             document.getElementById('authArea').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
-            document.getElementById('welcome').innerText = "BOAS-VINDAS: " + u.email.split('@')[0].toUpperCase();
             
-            if(u.email === CEO_MAIL) document.getElementById('admNav').classList.remove('hidden');
+            // Controle Admin
+            if(u.email === CEO_EMAIL) {
+                document.getElementById('navAdmin').classList.remove('hidden');
+                carregarStatsAdmin();
+            } else {
+                document.getElementById('navAdmin').classList.add('hidden');
+            }
 
             db.collection("users").doc(u.uid).onSnapshot(d => {
-                const s = d.data().saldo.toLocaleString() + " Kz";
-                document.getElementById('uSaldo').innerText = s;
+                const s = d.data().saldo.toLocaleString() + ",00 Kz";
                 document.getElementById('uSaldoBig').innerText = s;
             });
-
-            db.collection("lucro_mam").onSnapshot(snap => {
-                let total = 0; snap.forEach(doc => total += doc.data().valor);
-                document.getElementById('admSaldo').innerText = total.toLocaleString() + " Kz";
-            });
-
             carregarMusicas();
-            setInterval(() => { alert("Siga o CEO no TikTok: Play Sean Arsenio"); }, 300000); 
         } else {
             document.getElementById('authArea').classList.remove('hidden');
             document.getElementById('app').classList.add('hidden');
         }
     });
 
-    async function fazerUpload() {
-        const tit = document.getElementById('mTit').value, art = document.getElementById('mArt').value;
-        const capaFile = document.getElementById('mCapa').files[0], audioFile = document.getElementById('mAudio').files[0];
+    // SISTEMA DE TAREFA COM CONTADOR
+    function iniciarContagem() {
+        let tempo = 30;
+        const btn = document.getElementById('btnTarefa');
+        const display = document.getElementById('timerDisplay');
+        btn.disabled = true;
+        btn.innerText = "ASSISTINDO...";
 
-        if(!capaFile || !audioFile) return alert("Selecione os ficheiros!");
-        alert("Enviando para os servidores da MAM... Por favor aguarde.");
+        const clock = setInterval(async () => {
+            tempo--;
+            display.innerText = tempo + "s";
+            if(tempo <= 0) {
+                clearInterval(clock);
+                display.innerText = "30s";
+                btn.disabled = false;
+                btn.innerText = "INICIAR TAREFA";
+                
+                // Paga ao utilizador e dá lucro à MAM
+                const uid = auth.currentUser.uid;
+                await db.collection("users").doc(uid).update({ saldo: firebase.firestore.FieldValue.increment(500) });
+                db.collection("lucro_mam").add({ valor: 2000, mot: "Comissão Vídeo", data: new Date() }); // Lucro do Matias
+                alert("Parabéns! 500 Kz creditados na tua carteira.");
+            }
+        }, 1000);
+    }
 
-        const cRef = storage.ref(`capas/${Date.now()}`);
-        await cRef.put(capaFile);
-        const cUrl = await cRef.getDownloadURL();
-
-        await db.collection("musicas").add({
-            titulo: tit, artista: art, capa: cUrl, uid: auth.currentUser.uid, data: new Date()
+    function carregarStatsAdmin() {
+        db.collection("lucro_mam").onSnapshot(snap => {
+            let total = 0; snap.forEach(d => total += d.data().valor);
+            document.getElementById('admCofre').innerText = total.toLocaleString() + ",00 Kz";
         });
-        alert("Sucesso! Música lançada.");
+        db.collection("users").onSnapshot(snap => document.getElementById('admUsers').innerText = snap.size);
+        db.collection("musicas").onSnapshot(snap => document.getElementById('admTracks').innerText = snap.size);
     }
 
     function carregarMusicas() {
@@ -232,15 +232,9 @@
             const fg = document.getElementById('fGlobal'); fg.innerHTML = "";
             snap.forEach(doc => {
                 const m = doc.data();
-                fg.innerHTML += `<div class="vinyl" onclick="play()"><img src="${m.capa}" class="vinyl-img"><p>${m.titulo}</p><p style="font-size:0.7rem; color:var(--gold)">${m.artista}</p></div>`;
+                fg.innerHTML += `<div class="vinyl-case"><img src="${m.capa}" class="vinyl-disc"><p style="margin-top:10px; font-weight:bold;">${m.titulo}</p></div>`;
             });
         });
-    }
-
-    function play() {
-        db.collection("users").doc(auth.currentUser.uid).update({ saldo: firebase.firestore.FieldValue.increment(200) });
-        db.collection("lucro_mam").add({ valor: 2000, mot: "Play", data: new Date() });
-        alert("Ouvindo... Ganhos MAM processados.");
     }
 
     function tab(id, el) {

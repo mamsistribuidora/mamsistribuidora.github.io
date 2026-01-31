@@ -2,132 +2,135 @@
 <html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --blue: #00BFFF; --bg: #000; --card: #111; }
+        :root { --gold: #D4AF37; --bg: #050505; --card: #111; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
-        body { background: var(--bg); color: #fff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-
-        /* FUNDO E RODAPÉ FIXOS */
-        #app { display: flex; flex: 1; flex-direction: column; }
-        @media (min-width: 768px) {
-            #app { display: grid; grid-template-columns: 280px 1fr; }
-            aside { display: flex !important; }
-            .mobile-nav { display: none !important; }
+        body { 
+            background: var(--bg); color: #fff; min-height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
         }
 
-        aside { background: #080808; border-right: 1px solid #222; padding: 25px; flex-direction: column; display: none; height: 100vh; position: sticky; top: 0; }
-        main { flex: 1; padding: 20px; padding-bottom: 120px; overflow-y: auto; }
+        #authArea { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; border: 2px solid var(--gold); width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
 
-        .logo-circle { width: 70px; height: 70px; border: 3px solid var(--gold); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--gold); }
+        /* MENU HAMBÚRGUER MOBILE */
+        .menu-btn { position: fixed; top: 20px; right: 20px; z-index: 1001; background: var(--gold); border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: 900; }
+        
+        aside { 
+            position: fixed; left: -280px; top: 0; bottom: 0; width: 280px; 
+            background: #080808; border-right: 1px solid var(--gold); padding: 30px; 
+            transition: 0.4s; z-index: 1000; display: flex; flex-direction: column;
+        }
+        aside.open { left: 0; }
 
-        .mam-box { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; width: 100%; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; }
-        .btn-gold { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .logo-circle { width: 80px; height: 80px; border: 3px solid var(--gold); border-radius: 50%; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--gold); font-size: 1.5rem; }
 
-        /* NAVEGAÇÃO */
-        .nav-item { padding: 12px; color: #888; cursor: pointer; border-radius: 10px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; transition: 0.3s; font-size: 14px; }
-        .nav-item:hover, .active { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-weight: 600; }
+        main { padding: 80px 20px 100px; max-width: 800px; margin: 0 auto; }
+        .mam-box { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-bottom: 25px; position: relative; overflow: hidden; }
+        .mam-box::after { content: 'MAM'; position: absolute; right: -10px; bottom: -10px; font-size: 4rem; font-weight: 900; color: rgba(212, 175, 55, 0.03); }
 
-        .mobile-nav { position: fixed; bottom: 0; width: 100%; background: #080808; display: flex; justify-content: space-around; padding: 10px; border-top: 2px solid var(--gold); z-index: 4000; }
-        .mobile-item { color: #888; text-align: center; font-size: 10px; cursor: pointer; }
-        .mobile-item.active { color: var(--gold); }
+        .nav-item { padding: 15px; color: #888; cursor: pointer; border-radius: 10px; margin-bottom: 10px; transition: 0.3s; font-weight: 600; }
+        .nav-item:hover, .active { color: var(--gold); background: rgba(212, 175, 55, 0.1); }
 
-        footer { padding: 15px; text-align: center; color: var(--gold); font-size: 11px; font-weight: bold; border-top: 1px solid #222; background: #000; width: 100%; }
+        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; }
+        .btn-gold { width: 100%; padding: 16px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+
+        footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: rgba(0,0,0,0.9); border-top: 1px solid var(--gold); text-align: center; color: var(--gold); font-size: 10px; font-weight: 900; letter-spacing: 1px; }
         .hidden { display: none !important; }
 
-        /* LISTA DE MÚSICAS */
-        .track-card { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid #222; }
+        /* TAREFAS GRID */
+        .task-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #222; }
     </style>
 </head>
 <body>
 
-<div id="authArea" style="position:fixed; inset:0; background:#000; z-index:5000; display:flex; align-items:center; justify-content:center;">
-    <div class="mam-box" style="max-width:360px; text-align:center; border:1px solid var(--gold);">
+<button class="menu-btn" onclick="toggleMenu()">MENU ☰</button>
+
+<div id="authArea">
+    <div class="auth-card">
         <div class="logo-circle">MAM</div>
-        <h2 id="authT">LOGIN HQ</h2>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Senha">
-        <button class="btn-gold" onclick="autenticar()" id="btnA">Entrar</button>
-        <p onclick="toggleA()" style="margin-top:15px; cursor:pointer; font-size:0.8rem;">Novo artista? <b style="color:var(--gold)">Cadastrar-se</b></p>
+        <h2 id="authT" style="color:var(--gold); margin-bottom:10px;">MAM DISTRIBUIDORA</h2>
+        <p style="font-size:0.8rem; margin-bottom:20px; color:#888;">INICIAR SESSÃO HQ</p>
+        <input type="email" id="email" placeholder="Email do Artista">
+        <input type="password" id="pass" placeholder="Palavra-passe">
+        <button class="btn-gold" onclick="autenticar()" id="btnA">ACESSAR PAINEL</button>
+        <p onclick="toggleA()" style="margin-top:20px; cursor:pointer; font-size:0.7rem;">É NOVO AQUI? <b style="color:var(--gold)">CRIAR CONTA MAM</b></p>
     </div>
 </div>
 
 <div id="app" class="hidden">
-    <aside>
+    <aside id="sideBar">
         <div class="logo-circle">MAM</div>
-        <div class="nav-item active" onclick="tab('Home', this)">🏠 Início</div>
-        <div class="nav-item" onclick="tab('Musicas', this)">🎵 Minhas Músicas</div>
-        <div class="nav-item" onclick="tab('Lancar', this)">📤 Lançar Música</div>
-        <div class="nav-item" onclick="tab('Cart', this)">💰 Carteira</div>
-        <div class="nav-item" onclick="tab('Perfil', this)">👤 Perfil</div>
-        <div class="nav-item hidden" id="admBtn" onclick="tab('Admin', this)">👔 Painel CEO</div>
-        <div style="margin-top:auto; color:red; cursor:pointer; font-size:12px; text-align:center;" onclick="sair()">SAIR DA CONTA</div>
+        <div class="nav-item active" onclick="tab('Home', this)">🏠 INÍCIO</div>
+        <div class="nav-item" onclick="tab('Musicas', this)">🎵 MINHAS MÚSICAS</div>
+        <div class="nav-item" onclick="tab('Lancar', this)">📤 LANÇAR MÚSICA</div>
+        <div class="nav-item" onclick="tab('Cart', this)">💰 CARTEIRA</div>
+        <div class="nav-item" onclick="tab('Perfil', this)">👤 PERFIL</div>
+        <div class="nav-item hidden" id="admBtn" onclick="tab('Admin', this)">👔 PAINEL CEO</div>
+        <div style="margin-top:auto; color:red; cursor:pointer; font-size:11px; text-align:center;" onclick="sair()">TERMINAR SESSÃO</div>
     </aside>
 
     <main>
         <div id="pHome" class="aba">
-            <h2 style="color:var(--gold)">Feed de Lançamentos</h2>
-            <div class="mam-box" id="globalFeed">
-                <p style="font-size:0.8rem; color:#666;">Novidades da MAM Distribuidora aparecerão aqui.</p>
-            </div>
-            <h3 style="color:var(--gold)">Tarefas de Lucro</h3>
+            <h1 style="color:var(--gold); margin-bottom:20px;">Olá, Bem-vindo à MAM!</h1>
+            
             <div class="mam-box">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="color:var(--gold); margin-bottom:15px;">LISTA DE TAREFAS DIÁRIAS</h3>
+                <div class="task-row">
                     <span>📺 Assistir Vídeo (30s)</span>
-                    <button class="btn-gold" style="width:80px; padding:5px" onclick="ganhar(500)">+500</button>
+                    <button class="btn-gold" style="width:80px; padding:5px" onclick="task(500)">+500</button>
+                </div>
+                <div class="task-row">
+                    <span>🎵 Ouvir Novas Músicas</span>
+                    <button class="btn-gold" style="width:80px; padding:5px" onclick="task(200)">+200</button>
+                </div>
+                <div class="task-row">
+                    <span>🤝 Convidar Amigos</span>
+                    <button class="btn-gold" style="width:80px; padding:5px" onclick="task(1000)">+1000</button>
                 </div>
             </div>
-        </div>
 
-        <div id="pMusicas" class="aba hidden">
-            <h2 style="color:var(--gold)">Minha Galeria</h2>
-            <div class="mam-box" id="myTracks">
-                <p style="font-size:0.8rem; color:#666;">Ainda não lançaste músicas nesta conta.</p>
+            <h3 style="color:var(--gold)">Músicas em Destaque</h3>
+            <div class="mam-box" id="globalFeed">
+                <p style="color:#555; font-size:0.8rem;">O feed de músicas aparecerá aqui...</p>
             </div>
         </div>
 
         <div id="pLancar" class="aba hidden">
             <div class="mam-box">
-                <h3 style="color:var(--gold)">Novo Lançamento</h3>
-                <input type="text" placeholder="Título da Obra">
+                <h2 style="color:var(--gold)">NOVO LANÇAMENTO</h2>
+                <input type="text" placeholder="Título da Música">
                 <input type="text" placeholder="Artista Principal">
-                <input type="text" placeholder="Feat (Colaboradores)">
-                <select><option>Diversos</option><option>Rap</option><option>Kizomba</option></select>
+                <input type="text" placeholder="Colaboração (Feat)">
+                <select><option>Categoria: Diversos</option><option>Kizomba</option><option>Rap</option></select>
                 <label>Data</label><input type="date">
-                <label>Capa</label><input type="file">
-                <label>Áudio</label><input type="file">
-                <button class="btn-gold" onclick="alert('Enviado para curadoria de Matias Manuel')">PUBLICAR AGORA</button>
+                <label>Capa da Música</label><input type="file">
+                <label>Áudio (MP3)</label><input type="file">
+                <button class="btn-gold">ENVIAR PARA CURADORIA</button>
             </div>
         </div>
 
         <div id="pCart" class="aba hidden">
-            <div class="mam-box" style="border-left:5px solid var(--gold)">
-                <p>SALDO ACUMULADO</p>
-                <h1 id="sBig" style="color:var(--gold); font-size:3rem;">0,00 Kz</h1>
+            <div class="mam-box" style="border-left:8px solid var(--gold)">
+                <p>SALDO TOTAL</p>
+                <h1 id="sBig" style="font-size:3.5rem; color:var(--gold)">0,00 Kz</h1>
             </div>
             <div class="mam-box">
-                <h3>Sacar para BFA/BAI</h3>
-                <input type="text" placeholder="Teu IBAN">
-                <button class="btn-gold">Pedir Transferência</button>
+                <h3>LEVANTAMENTO</h3>
+                <input type="text" placeholder="IBAN BFA/BAI">
+                <button class="btn-gold">SOLICITAR SAQUE REAL</button>
             </div>
         </div>
     </main>
 
-    <div class="mobile-nav">
-        <div class="mobile-item active" onclick="tab('Home', this)">🏠<br>Início</div>
-        <div class="mobile-item" onclick="tab('Musicas', this)">🎵<br>Músicas</div>
-        <div class="mobile-item" onclick="tab('Lancar', this)">📤<br>Lançar</div>
-        <div class="mobile-item" onclick="tab('Cart', this)">💰<br>Saldo</div>
-    </div>
-
-    <footer>MAM DISTRIBUIDORA | CEO MATIAS ARSÉNIO MANUEL</footer>
+    <footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
 </div>
 
 <script>
@@ -135,48 +138,16 @@
     firebase.initializeApp(cfg);
     const auth = firebase.auth(), db = firebase.firestore();
 
+    function toggleMenu() { document.getElementById('sideBar').classList.toggle('open'); }
+    
     let isL = true;
     function toggleA() { 
         isL = !isL; 
-        document.getElementById('authT').innerText = isL ? "LOGIN HQ" : "REGISTO";
-        document.getElementById('btnA').innerText = isL ? "Entrar" : "Cadastrar";
+        document.getElementById('authT').innerText = isL ? "MAM DISTRIBUIDORA" : "CRIAR CONTA";
+        document.getElementById('btnA').innerText = isL ? "ACESSAR PAINEL" : "REGISTAR AGORA";
     }
 
     async function autenticar() {
         const e = document.getElementById('email').value, p = document.getElementById('pass').value;
         try {
             if(isL) await auth.signInWithEmailAndPassword(e, p);
-            else {
-                const r = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection("users").doc(r.user.uid).set({ email: e, saldo: 0 });
-            }
-        } catch(err) { alert(err.message); }
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-            if(u.email === "mamfilhos29@gmail.com") document.getElementById('admBtn').classList.remove('hidden');
-            db.collection("users").doc(u.uid).onSnapshot(d => {
-                document.getElementById('sBig').innerText = d.data().saldo.toLocaleString() + ",00 Kz";
-            });
-        }
-    });
-
-    async function ganhar(v) {
-        alert("Tarefa iniciada...");
-        await db.collection("users").doc(auth.currentUser.uid).update({ saldo: firebase.firestore.FieldValue.increment(v) });
-    }
-
-    function tab(id, el) {
-        document.querySelectorAll('.aba').forEach(a => a.classList.add('hidden'));
-        document.getElementById('p' + id).classList.remove('hidden');
-        document.querySelectorAll('.nav-item, .mobile-item').forEach(n => n.classList.remove('active'));
-        if(el) el.classList.add('active');
-    }
-
-    function sair() { auth.signOut(); location.reload(); }
-</script>
-</body>
-</html>

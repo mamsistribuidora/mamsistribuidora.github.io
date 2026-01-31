@@ -20,145 +20,139 @@
             background-size: cover; color: #fff; min-height: 100vh;
         }
 
-        /* LOGIN E REGISTO */
         #authArea { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); }
         .auth-card { background: var(--card); padding: 40px; border-radius: 20px; border: 2px solid var(--gold); width: 90%; max-width: 420px; text-align: center; backdrop-filter: blur(10px); }
-        
-        .logo-box { margin-bottom: 25px; }
-        .logo-main { font-weight: 900; color: var(--gold); font-size: 1.8rem; text-transform: uppercase; line-height: 1.1; }
-        .logo-sub { font-size: 0.75rem; color: #fff; font-weight: 400; letter-spacing: 1px; margin-top: 5px; }
+        .logo-main { font-weight: 900; color: var(--gold); font-size: 1.8rem; text-transform: uppercase; }
+        .logo-sub { font-size: 0.75rem; color: #fff; margin-top: 5px; }
 
-        input { width: 100%; padding: 14px; margin: 10px 0; background: rgba(0,0,0,0.6); border: 1px solid #444; color: #fff; border-radius: 10px; outline: none; }
-        .btn-gold { width: 100%; padding: 16px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; background: rgba(0,0,0,0.6); border: 1px solid #444; color: #fff; border-radius: 10px; outline: none; }
+        .btn-gold { width: 100%; padding: 16px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* PAINEL PRINCIPAL */
         #mainPanel { display: none; background: rgba(0,0,0,0.7); min-height: 100vh; }
-        header { 
-            background: #000; padding: 15px 25px; border-bottom: 1px solid var(--gold); 
-            display: flex; align-items: center; justify-content: space-between; 
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .search-container { flex: 1; display: flex; justify-content: center; padding: 0 30px; }
-        .search-container input { max-width: 500px; margin: 0; background: #111; border: 1px solid #333; padding: 10px 20px; }
-
+        header { background: #000; padding: 15px 25px; border-bottom: 1px solid var(--gold); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; }
+        
         .layout { display: flex; min-height: calc(100vh - 75px); }
-        nav { 
-            width: 270px; background: rgba(0,0,0,0.9); border-right: 1px solid #222; 
-            padding: 25px; display: flex; flex-direction: column; gap: 8px;
-        }
-        .nav-item { padding: 14px 18px; color: #aaa; cursor: pointer; border-radius: 10px; transition: 0.3s; font-size: 14px; font-weight: 600; }
+        nav { width: 270px; background: rgba(0,0,0,0.9); border-right: 1px solid #222; padding: 25px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-item { padding: 14px 18px; color: #aaa; cursor: pointer; border-radius: 10px; font-size: 14px; font-weight: 600; transition: 0.3s; }
         .nav-item:hover { background: rgba(212, 175, 55, 0.1); color: var(--gold); }
-        .nav-item.logout { color: #ff4444; margin-top: auto; border-top: 1px solid #222; padding-top: 20px; }
 
-        /* PÁGINA INICIAL ESTILOS */
+        main { flex: 1; padding: 30px; overflow-y: auto; height: calc(100vh - 75px); padding-bottom: 100px; }
+        
+        /* SEÇÕES DA PÁGINA INICIAL */
         .promo-banner { border: 2px dashed var(--gold); padding: 20px; border-radius: 15px; background: rgba(212,175,55,0.05); margin-bottom: 30px; }
-        .disco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 25px; margin-top: 15px; }
-        .disco-item { text-align: center; }
+        .disco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 25px; }
         .vinyl { 
             width: 140px; height: 140px; margin: 0 auto; border-radius: 50%; 
-            background: #111 url('https://images.unsplash.com/photo-1539352775794-762bc32305ad?auto=format&fit=crop&w=300&q=80'); 
-            background-size: cover; border: 4px solid #111; box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            position: relative; overflow: hidden;
+            background: #111; border: 4px solid #111; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative; cursor: pointer; transition: 0.3s;
         }
-        .vinyl::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, transparent 35%, rgba(0,0,0,0.8) 100%); border: 1px solid rgba(255,255,255,0.1); }
-        
+        .vinyl:hover { transform: scale(1.05); }
+        .vinyl::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, transparent 35%, rgba(0,0,0,0.8) 100%); }
+
         .reward-card { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         .btn-action { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: 900; font-size: 12px; cursor: pointer; }
+
+        /* TABELA DE PREÇOS / VIP */
+        .vip-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .vip-card { background: linear-gradient(145deg, #151515, #050505); padding: 25px; border-radius: 20px; border: 1px solid var(--gold); text-align: center; }
+        .vip-price { font-size: 1.5rem; font-weight: 900; color: var(--gold); margin: 15px 0; }
 
         footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; border-top: 1px solid var(--gold); text-align: center; color: var(--gold); font-size: 11px; font-weight: 900; z-index: 10000; }
         .hidden { display: none !important; }
 
-        /* AJUSTE DISPOSITIVO */
-        @media (max-width: 768px) { 
-            nav { width: 70px; padding: 10px; align-items: center; }
-            .nav-item span { display: none; }
-            .search-container input { width: 100%; }
-        }
+        @media (max-width: 768px) { nav { width: 70px; } .nav-item span { display: none; } }
     </style>
 </head>
 <body>
 
 <div id="authArea">
     <div class="auth-card" id="boxLogin">
-        <div class="logo-box">
-            <div class="logo-main">MAM Distribuidora</div>
-            <div class="logo-sub">Matias Arsénio Manuel</div>
-        </div>
+        <div class="logo-main">MAM Distribuidora</div>
+        <div class="logo-sub">Matias Arsénio Manuel</div>
         <input type="email" id="lE" placeholder="E-mail">
         <input type="password" id="lP" placeholder="Senha">
         <button class="btn-gold" id="btnEntrar">INICIAR SESSÃO</button>
-        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(false)">Novo Artista? <b style="color:var(--gold)">CRIAR CONTA</b></p>
+        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(false)">Criar Conta</p>
     </div>
-
     <div class="auth-card hidden" id="boxRegisto">
-        <div class="logo-box">
-            <div class="logo-main">MAM Distribuidora</div>
-            <div class="logo-sub">Matias Arsénio Manuel</div>
-        </div>
+        <div class="logo-main">MAM Distribuidora</div>
         <input type="text" id="rN" placeholder="Nome Artístico">
         <input type="email" id="rE" placeholder="E-mail">
         <input type="password" id="rP" placeholder="Senha">
         <input type="password" id="rPC" placeholder="Confirmar Senha">
         <button class="btn-gold" id="btnRegistar">REGISTAR</button>
-        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(true)">Já tens conta? <b style="color:var(--gold)">FAZER LOGIN</b></p>
+        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(true)">Voltar ao Login</p>
     </div>
 </div>
 
 <div id="mainPanel">
     <header>
-        <div class="logo-box" style="margin-bottom:0; text-align: left;">
+        <div style="text-align: left;">
             <div class="logo-main" style="font-size:1.1rem;">MAM Distribuidora</div>
             <div class="logo-sub" style="font-size:0.5rem; margin-top:0;">Matias Arsénio Manuel</div>
         </div>
-        <div class="search-container"><input type="text" placeholder="Pesquisar músicas..."></div>
         <div id="uBadge" style="font-size: 11px; color: var(--gold); font-weight: bold;"></div>
     </header>
 
     <div class="layout">
         <nav>
-            <div class="nav-item">Página inicial</div>
-            <div class="nav-item">Perfil</div>
-            <div class="nav-item">Minhas Músicas</div>
-            <div class="nav-item">Lança Música</div>
-            <div class="nav-item">Carteira</div>
-            <div class="nav-item">Estatística</div>
-            <div id="adminOptions" class="hidden">
-                <hr style="border:0; border-top:1px solid #222; margin:15px 0;">
-                <div class="nav-item">Administração</div>
-            </div>
-            <div class="nav-item logout" onclick="fSair()">Termina Sessão</div>
+            <div class="nav-item"><span>Página inicial</span></div>
+            <div class="nav-item"><span>Perfil</span></div>
+            <div class="nav-item"><span>Minhas Músicas</span></div>
+            <div class="nav-item"><span>Carteira</span></div>
+            <div class="nav-item logout" onclick="fSair()"><span>Sair</span></div>
         </nav>
         
-        <main style="flex:1; padding: 30px; overflow-y: auto; height: calc(100vh - 75px);">
+        <main>
             <div class="promo-banner">
-                <h3 style="color:var(--gold); font-weight: 900; margin-bottom: 5px;">APOIA MEUS PROJECTOS</h3>
-                <p style="font-size: 12px; color: #aaa;">IBAN: [INSERIR IBAN] | CEO Matias Arsénio Manuel</p>
+                <h3 style="color:var(--gold); font-weight: 900;">APOIA ESTE PROJECTO</h3>
+                <p style="font-size: 13px; margin-top: 5px;">IBAN: <b>0006.0000.8631.6866.3015.2</b></p>
+                <p style="font-size: 11px; color: #888;">Titular: Matias Arsénio Manuel</p>
             </div>
 
             <h2 style="margin-bottom: 20px;">Feed de Lançamentos</h2>
-            <div class="disco-grid">
-                <div class="disco-item">
-                    <div class="vinyl"></div>
-                    <p style="font-size: 13px; font-weight: 600; margin-top: 10px;">Lançamento #1</p>
-                </div>
-                <div class="disco-item">
-                    <div class="vinyl" style="filter: grayscale(1);"></div>
-                    <p style="font-size: 13px; font-weight: 600; margin-top: 10px;">Brevemente</p>
+            <div class="disco-grid" id="feedMusica">
+                <div class="disco-item" onclick="playMusic('Exemplo')">
+                    <div class="vinyl" style="background-image: url('https://via.placeholder.com/150');"></div>
+                    <p style="font-size: 12px; margin-top: 10px;">Clique para Ouvir</p>
                 </div>
             </div>
 
             <h2 style="margin: 40px 0 20px;">Caça Recompensa</h2>
             <div class="reward-card">
-                <div><h4>Assistir Videos pago</h4><p style="font-size:11px; color:#666;">Ganhe assistindo</p></div>
-                <button class="btn-action">ASSISTIR</button>
+                <div><h4>Assistir Vídeos Pago</h4><p style="font-size:11px; color:var(--gold);">Ganha 20% ou 50% por vídeo</p></div>
+                <button class="btn-action" onclick="alert('A conectar ao Satélite para buscar vídeos...')">ASSISTIR</button>
             </div>
             <div class="reward-card">
-                <div><h4>Convidar amigos</h4><p style="font-size:11px; color:#666;">Envie seu link</p></div>
-                <button class="btn-action">CONVIDAR</button>
+                <div><h4>Convidar Amigos</h4><p style="font-size:11px; color:var(--gold);">Ganha 500 Kz por cada Amigo que convidar</p></div>
+                <button class="btn-action" onclick="copiarConvite()">COPIAR LINK</button>
             </div>
             <div class="reward-card">
-                <div><h4>Seguir Play Sean Arsénio no Tiktok</h4><p style="font-size:11px; color:#666;">Apoie no Social</p></div>
-                <button class="btn-action" style="background:#fff;">SEGUIR</button>
+                <div><h4>Seguir Play Sean Arsénio no Tiktok</h4><p style="font-size:11px; color:var(--gold);">Ganha 500 Kz por mês</p></div>
+                <button class="btn-action" style="background:#fff;" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
+            </div>
+
+            <h2 style="margin: 40px 0 20px;">Categorias de Perfil</h2>
+            <div class="vip-container">
+                <div class="vip-card">
+                    <h3>PERFIL VIP</h3>
+                    <p style="font-size: 11px; color: #aaa;">Ganhos de 50% em vídeos e suporte prioritário.</p>
+                    <div class="vip-price">15.000 Kz</div>
+                    <button class="btn-gold" style="padding:10px;" onclick="abrirPagamento('VIP', 15000)">ADERIR VIP</button>
+                </div>
+                <div class="vip-card">
+                    <h3>PERFIL VIP MAX</h3>
+                    <p style="font-size: 11px; color: #aaa;">Ganhos máximos, selo oficial e distribuição ilimitada.</p>
+                    <div class="vip-price">25.000 Kz</div>
+                    <button class="btn-gold" style="padding:10px;" onclick="abrirPagamento('VIP MAX', 25000)">ADERIR MAX</button>
+                </div>
+            </div>
+
+            <div id="payForm" class="hidden" style="margin-top: 30px; background: #111; padding: 20px; border-radius: 15px; border: 1px solid var(--gold);">
+                <h3>Pagamento <span id="planName"></span></h3>
+                <p style="font-size: 12px; margin: 10px 0;">Transfira para o IBAN acima e anexe o comprovativo.</p>
+                <input type="file" id="comprovativo">
+                <button class="btn-gold" onclick="alert('Comprovativo enviado para análise de Matias Manuel!')">CONFIRMAR PAGAMENTO</button>
             </div>
         </main>
     </div>
@@ -182,11 +176,10 @@
     });
 
     document.getElementById('btnRegistar').addEventListener('click', async () => {
-        const n = document.getElementById('rN').value, e = document.getElementById('rE').value, p = document.getElementById('rP').value, pc = document.getElementById('rPC').value;
-        if(p !== pc) return alert("Senhas não coincidem");
+        const n = document.getElementById('rN').value, e = document.getElementById('rE').value, p = document.getElementById('rP').value;
         try {
             const res = await auth.createUserWithEmailAndPassword(e, p);
-            await db.collection("users").doc(res.user.uid).set({ nome: n, email: e, saldo: 0 });
+            await db.collection("users").doc(res.user.uid).set({ nome: n, email: e, role: 'user', saldo: 0, tipo: 'Normal' });
         } catch(err) { alert(err.message); }
     });
 
@@ -194,7 +187,6 @@
         if(u) {
             document.getElementById('authArea').classList.add('hidden');
             document.getElementById('mainPanel').style.display = 'block';
-            if(u.email === "mamfilhos29@gmail.com") document.getElementById('adminOptions').classList.remove('hidden');
             db.collection("users").doc(u.uid).get().then(doc => {
                 if(doc.exists) { document.getElementById('uBadge').innerText = u.email.toUpperCase(); }
             });
@@ -203,6 +195,18 @@
             document.getElementById('mainPanel').style.display = 'none';
         }
     });
+
+    function copiarConvite() {
+        const link = window.location.href + "?ref=" + auth.currentUser.uid;
+        navigator.clipboard.writeText(link);
+        alert("Link de convite copiado! Ganharás 500 Kz após o registo do amigo.");
+    }
+
+    function abrirPagamento(plano, preco) {
+        document.getElementById('payForm').classList.remove('hidden');
+        document.getElementById('planName').innerText = plano + " (" + preco + " Kz)";
+        window.scrollTo(0, document.body.scrollHeight);
+    }
 
     function fSair() { auth.signOut(); }
 </script>

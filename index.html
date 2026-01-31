@@ -12,15 +12,21 @@
         :root { --gold: #D4AF37; --bg: #0a0a0a; --card: rgba(20, 20, 20, 0.95); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
-        body { background: var(--bg); color: #fff; min-height: 100vh; }
+        /* O FUNDO QUE JÁ TNHAS APROVADO */
+        body { 
+            background: var(--bg); color: #fff; min-height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+                              url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
 
         /* TELA DE ENTRADA */
         #authArea { 
             position: fixed; inset: 0; z-index: 9999; 
             display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), 
-                        url('https://images.unsplash.com/photo-1514525253361-bee0438d5df2?auto=format&fit=crop&w=1200&q=80');
-            background-size: cover; background-position: center;
+            background: rgba(0,0,0,0.8);
         }
 
         .auth-card { 
@@ -35,14 +41,15 @@
         .logo-sub { font-size: 0.75rem; color: #fff; font-weight: 400; letter-spacing: 1px; margin-top: 5px; opacity: 0.9; }
 
         input { width: 100%; padding: 12px; margin: 8px 0; background: rgba(0,0,0,0.6); border: 1px solid #444; color: #fff; border-radius: 10px; outline: none; }
+        input:focus { border-color: var(--gold); }
         .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
 
         /* PAINEL PRINCIPAL */
         #mainPanel { display: none; }
         header { 
-            background: #000; padding: 15px 25px; border-bottom: 1px solid var(--gold); 
+            background: rgba(0,0,0,0.9); padding: 15px 25px; border-bottom: 1px solid var(--gold); 
             display: flex; align-items: center; justify-content: space-between; 
-            position: sticky; top: 0; z-index: 1000;
+            position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px);
         }
 
         .search-container { flex: 1; display: flex; justify-content: center; padding: 0 30px; }
@@ -50,8 +57,9 @@
 
         .layout { display: flex; min-height: calc(100vh - 75px); }
         nav { 
-            width: 270px; background: #080808; border-right: 1px solid #222; 
+            width: 270px; background: rgba(8, 8, 8, 0.9); border-right: 1px solid #222; 
             padding: 25px; display: flex; flex-direction: column; gap: 8px;
+            backdrop-filter: blur(5px);
         }
 
         .nav-item { 
@@ -69,7 +77,7 @@
             text-align: center; color: var(--gold); font-size: 11px; font-weight: 900; 
             z-index: 999; letter-spacing: 1px;
         }
-        @media (min-width: 768px) { footer { margin-left: 270px; width: calc(100% - 270px); } }
+        @media (min-width: 768px) { footer { left: 270px; width: calc(100% - 270px); } }
 
         .hidden { display: none !important; }
     </style>
@@ -133,7 +141,7 @@
             <div class="nav-item logout" onclick="sair()">Termina Sessão</div>
         </nav>
         <main>
-            <h2 id="welcomeTxt" style="color: var(--gold);">Bem-vindo</h2>
+            <h2 id="welcomeTxt" style="color: var(--gold); text-shadow: 2px 2px 4px #000;">Bem-vindo</h2>
         </main>
     </div>
 </div>
@@ -157,32 +165,4 @@
     }
 
     async function registar() {
-        const nome = document.getElementById('regNome').value, e = document.getElementById('regEmail').value, p = document.getElementById('regPass').value, pc = document.getElementById('regPassConf').value;
-        if(p !== pc) return alert("As senhas não coincidem!");
-        try {
-            const res = await auth.createUserWithEmailAndPassword(e, p);
-            await db.collection("users").doc(res.user.uid).set({ nome: nome, email: e, role: 'user', saldo: 0 });
-        } catch(err) { alert(err.message); }
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('mainPanel').style.display = 'block';
-            if(u.email === "mamfilhos29@gmail.com") document.getElementById('adminOptions').classList.remove('hidden');
-            db.collection("users").doc(u.uid).get().then(doc => {
-                if(doc.exists) {
-                    document.getElementById('welcomeTxt').innerText = "Olá, " + doc.data().nome;
-                    document.getElementById('userBadge').innerText = u.email.toUpperCase();
-                }
-            });
-        } else {
-            document.getElementById('authArea').classList.remove('hidden');
-            document.getElementById('mainPanel').style.display = 'none';
-        }
-    });
-
-    function sair() { auth.signOut(); }
-</script>
-</body>
-</html>
+        const nome = document.getElementById('regNome').value, e = document.getElementById('regEmail').value

@@ -3,54 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Oficial CEO Matias Manuel</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --bg: #050505; --card: #121212; --glass: rgba(20,20,20,0.9); }
+        :root { --gold: #D4AF37; --bg: #050505; --card: #111111; --glass: rgba(15,15,15,0.95); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
         .hidden { display: none !important; }
 
-        /* TELA DE ACESSO PROFISSIONAL */
-        #authScreen { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at center, #1a1a1a, #000); display: flex; align-items: center; justify-content: center; }
+        /* TELA DE ACESSO */
+        #authScreen { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle, #1a1a1a, #000); display: flex; align-items: center; justify-content: center; }
         .auth-card { background: var(--glass); padding: 40px; border-radius: 25px; border: 1px solid var(--gold); width: 100%; max-width: 400px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 0 50px rgba(212,175,55,0.2); }
-        .auth-card img { width: 100px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 20px; }
+        .auth-card img { width: 90px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 15px; }
         
         /* DASHBOARD GRID */
         #mainApp { display: grid; grid-template-columns: 280px 1fr; height: 100vh; }
         .sidebar { background: #000; border-right: 1px solid #1a1a1a; padding: 30px 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 15px; margin: 5px 0; border-radius: 12px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: #888; transition: 0.3s; }
-        .nav-item:hover, .nav-active { background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent); color: var(--gold); border-left: 4px solid var(--gold); }
+        .nav-item { padding: 14px; margin: 4px 0; border-radius: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; color: #777; transition: 0.3s; font-size: 0.9rem; }
+        .nav-item:hover, .nav-active { background: linear-gradient(90deg, rgba(212,175,55,0.15), transparent); color: var(--gold); border-left: 4px solid var(--gold); }
 
-        /* CONTEÚDO E HEADER */
-        .viewport { overflow-y: auto; background: linear-gradient(135deg, #050505 0%, #151515 100%); }
-        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); sticky; top: 0; z-index: 100; border-bottom: 1px solid #1a1a1a; }
+        /* CONTEÚDO */
+        .viewport { overflow-y: auto; background: linear-gradient(145deg, #050505 0%, #121212 100%); position: relative; }
+        header { padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); sticky; top: 0; z-index: 100; border-bottom: 1px solid #1a1a1a; }
         
-        /* BARRA VIP */
-        .vip-container { padding: 20px 40px; }
-        .vip-bar-bg { width: 100%; background: #222; height: 8px; border-radius: 10px; margin-top: 8px; overflow: hidden; }
-        .vip-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--gold), #fff); transition: 1.5s; }
+        /* BARRA VIP PROFISSIONAL */
+        .vip-zone { padding: 20px 40px; }
+        .vip-bar-bg { width: 100%; background: #222; height: 10px; border-radius: 20px; margin-top: 8px; overflow: hidden; border: 1px solid #333; }
+        .vip-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #D4AF37, #f2d06b, #fff); transition: 1.5s ease-in-out; }
 
-        /* MISSÕES INICIAIS (CARDS) */
-        .mission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px 40px; }
-        .mission-card { background: var(--card); border: 1px solid #222; padding: 25px; border-radius: 20px; transition: 0.3s; position: relative; }
-        .mission-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .mission-done { opacity: 0.5; border-color: #27ae60 !important; }
+        /* MISSÕES CARDS */
+        .mission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; padding: 10px 40px; }
+        .mission-card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 18px; position: relative; transition: 0.3s; }
+        .mission-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+        .mission-done { opacity: 0.4; border-color: #27ae60 !important; }
 
-        /* DISCOS VINIL */
-        .vinyl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 30px; padding: 40px; }
-        .vinyl { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 5px solid #1a1a1a; box-shadow: 0 10px 25px #000; transition: 0.5s; cursor: pointer; }
-        .vinyl:hover { transform: rotate(15deg) scale(1.05); border-color: var(--gold); }
+        /* VINIL / FEED */
+        .vinyl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; padding: 30px 40px; }
+        .vinyl-card { text-align: center; cursor: pointer; }
+        .vinyl { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 4px solid #1a1a1a; box-shadow: 0 8px 20px #000; transition: 0.4s; }
+        .vinyl-card:hover .vinyl { transform: rotate(20deg) scale(1.05); border-color: var(--gold); }
 
-        /* ELEMENTOS DE FORMULÁRIO */
-        input, select { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; }
-        .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        /* BOTÕES */
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; }
+        .btn-mam { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-mam:active { transform: scale(0.98); }
 
-        /* RODAPÉ IDENTIFICADOR */
-        footer { position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); border: 1px solid #333; padding: 10px 20px; border-radius: 10px; display: flex; align-items: center; gap: 12px; z-index: 1000; }
+        /* FOOTER CEO */
+        footer { position: fixed; bottom: 15px; left: 15px; background: rgba(0,0,0,0.85); border: 1px solid #333; padding: 8px 18px; border-radius: 30px; display: flex; align-items: center; gap: 10px; z-index: 1000; border-left: 3px solid var(--gold); }
     </style>
 </head>
 <body>
+
+<div id="authScreen">
+    <div class="auth-card">
+        <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg">
+        <h2 id="authTitle" style="color:var(--gold); margin-bottom:10px;">MAM Distribuidora</h2>
+        <input type="email" id="email" placeholder="Seu E-mail">
+        <input type="password" id="pass" placeholder="Palavra-passe">
+        <button class="btn-mam" id="btnAuth" onclick="processarAuth()">ENTRAR NO PAINEL</button>
+        <p style="margin-top:15px; font-size:0.75rem; color:#888;">CEO Matias Arsénio Manuel</p>
+        <p onclick="toggleAuth()" style="margin-top:10px; font-size:0.8rem; cursor:pointer; color:var(--gold);">Não tem conta? Criar Agora</p>
+    </div>
+</div>
+
+<div id="mainApp" class="hidden">
+    <aside class="sidebar">
+        <div style="text-align:center; margin-bottom:30px;">
+            <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" style="width:110px; border-radius:50%; border:2px solid var(--gold);">
+        </div>
+        <nav>
+            <div class="nav-item nav-active" onclick="ver('Home')">🏠 Início & Missões</div>
+            <div class="nav-item" onclick="ver('Perfil')">👤 Perfil do Artista</div>
+            <div class="nav-item" onclick="ver('Lancar')">📤 Lançar Música</div>
+            <div class="nav-item" onclick="ver('Carteira')">💰 Carteira / Ganhos</div>
+            <div class="nav-item" onclick="ver('Ceo')">👔 Contacto CEO</div>
+            <div class="nav-item" style="color:#ff4444; margin-top:auto;" onclick="sair()">🚪 Sair</div>
+        </nav>
+    </aside>
+
+    <main class="viewport">
+        <header>
+            <div style="font-weight:700; letter-spacing:1px; color:var(--gold);">MAM DISTRIBUIDORA</div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div id="uSaldo" style="background:#111; padding:7px 15px; border-radius:30px; border:1px solid var(--gold); font-weight:700; color:#fff;">0,00 Kz</div>
+                <img id="uImg" src="" style="width:38px; height:38px; border-radius:50%; border:1px solid var(--gold);">
+            </div>
+        </header>
+
+        <div class="vip-zone">
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:bold;">
+                <span id="nivelTxt" style="color:var(--gold);">STATUS: INICIANTE</span>
+                <span id="percentTxt">0% PARA VIP</span>
+            </div>
+            <div class="vip-bar-bg"><div id="vipFill" class="vip-fill"></div></div>
+        </div>
+
+        <section id="pHome">
+            <h3 style="padding:0 40px; font-size:1rem; color:var(--gold);">🎯 TAREFAS DE MONETIZAÇÃO</h3>
+            <div class="mission-grid">
+                <div class="mission-card" id="task_profile">
+                    <h4>Identidade Visual</h4>
+                    <p style="font-size:0.7rem; color:#777; margin:5px 0;">Atualize sua foto e biografia.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                        <span style="color:#2ecc71; font-weight:700; font-size:0.8rem;">+1.000 Kz</span>
+                        <button class="btn-mam" style="width:auto; padding:5px 12px; font-size:0.7rem;" onclick="missao('task_profile', 1000)">CONCLUIR</button>
+                    </div>
+                </div>
+                <div class="mission-card" id="task_first">
+                    <h4>Primeiro Hit</h4>
+                    <p style="font-size:0.7rem; color:#777; margin:5px 0;">Faça seu primeiro lançamento oficial.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                        <span style="color:#2ecc71; font-weight:700; font-size:0.8rem;">+2.000 Kz</span>
+                        <button class="btn-mam" style="width:auto; padding:5px 12px; font-size:0.7rem;" onclick="missao('task_first', 2000)">CONCLUIR</button>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="padding:20px 40px 0; font-size:1rem; color:var(--gold);">🎵 FEED DE LANÇAMENTOS (PLAY = GANHO)</h3>
+            <div class="vinyl-grid" id="feedList"></div>
+        </section>
+
+        <section id="pLancar" class="hidden" style="padding:40px;">
+            <div class="auth-card" style="max-width:500px; margin:0 auto; background: #111;">
+                <h3 style="color:var(--gold); margin-bottom:15px;">Upload de Obra Profissional</h3>
+                <input type="text" id="mTit" placeholder="Título da Música">
+                <input type="text" id="mArt" placeholder="Artista Principal & Feats">
+                <select id="mGen"><option>Kizomba</option><option>Kuduro</option><option>Hip-Hop</option><option>Afro House</option></select>
+                <label style="font-size:0.7rem; color:#555;">Capa (JPG/PNG):</label><input type="file" id="mCapa">
+                <label style="font-size:0.7rem; color:#555;">Áudio (MP3/WAV):</label><input type="file" id="mAudio">
+                <button class="btn-mam" onclick="subirMusica()">PUBLICAR AGORA</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer>
+    <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" style="width:22px; border-radius:50%;">
+    <span style="font-size:0.65rem; font-weight:700; letter-spacing:1.5px; color:#fff;">MAM DISTRIBUIDORA</span>
+</footer>
+
+<script>
+    // CONFIGURAÇÃO FIREBASE [cite: 2026-01-27]
+    const firebaseConfig = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(), db = firebase.firestore(), st = firebase.storage();
+
+    let isLogin = true;
+
+    // SISTEMA DE GANHOS DA EMPRESA (MAM)
+    async function mamGanhou(valor, motivo) {
+        await db.collection("financeiro_mam").add({
+            valor: valor, 
+            motivo: motivo, 
+            data: new Date(),
+            gestor: "Matias Manuel"
+        });
+    }
+
+    // AUTH COM REGRAS DE NEGÓCIO (MAM 5000 / ARTISTA 1000)
+    async function processarAuth() {
+        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
+        if(!e || !p) return alert("Preencha os campos!");
+        
+        try {
+            if(isLogin) {
+                await auth.signInWithEmailAndPassword(e, p);
+                await mamGanhou(3000, "Sessão Iniciada: " + e); // MAM ganha 3000 por login
+            } else {
+                const res = await auth.createUserWithEmailAndPassword(e, p);
+                await db.collection("users").doc(res.user.uid).set({
+                    nome: "Artista MAM", saldo: 1000, foto: "", missoes: []
+                });
+                await mamGanhou(5000, "Conta Nova: " + e); // MAM ganha 5000 por conta nova
+                alert("Bem-vindo! Conta Criada com Sucesso.");
+            }
+        } catch(err) { alert("Erro: " + err.message); }
+    }
+
+    // MONITOR DE SESSÃO
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            db.collection("users").doc(u.uid).onSnapshot(doc => {
+                const d = doc.data();
+                document.getElementById('uSaldo').innerText = d.saldo.toLocaleString() + ",00 Kz";
+                document.getElementById('uImg').src = d.foto || 'https://i.ibb.co/LhqZz1L/mam-logo.jpg';
+                atualizarBarraVip(d.missoes ? d.missoes.length : 0);
+                if(d.missoes) d.missoes.forEach(m => {
+                   const el = document.getElementById(m);
+                   if(el) el.classList.add('mission-done');
+                });
+            });
+            carregarFeed();
+        } else {
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+    });
+
+    // LÓGICA DE PLAY (MAM 5000 / ARTISTA 200)
+    async function ganharNoPlay(mId, titulo) {
+        const ref = db.collection("users").doc(auth.currentUser.uid);
+        try {
+            await db.runTransaction(async (t) => {
+                const d = await t.get(ref);
+                t.update(ref, { saldo: d.data().saldo + 200 }); // Artista ganha 200 Kz
+            });
+            await mamGanhou(5000, "Reprodução Obra: " + titulo); // MAM GANHA 5000 Kz
+            alert(`MAM: +5.000 Kz (Taxa)\nArtista: +200 Kz (Royalties)`);
+        } catch(e) { console.log(e); }
+    }
+
+    // MISSÕES
+    async function missao(id, valor) {
+        const ref = db.collection("users").doc(auth.currentUser.uid);
+        const d = await ref.get();
+        if(d.data().missoes && d.data().missoes.includes(id)) return;
+
+        await db.runTransaction(async (t) => {
+            t.update(ref, { 
+                saldo: d.data().saldo + valor, 
+                missoes: firebase.firestore.FieldValue.arrayUnion(id) 
+            });
+        });
+    }
+
+    function atualizarBarraVip(total) {
+        let p = (total / 2) * 100; // 2 missões para VIP
+        document.getElementById('vipFill').style.width = p + "%";
+        document.getElementById('percentTxt').innerText = p + "% PARA VIP";
+        if(p >= 100) document.getElementById('nivelTxt').innerText = "STATUS: ARTISTA VIP MAM";
+    }
+
+    function carregarFeed() {
+        db.collection("musicas").onSnapshot(snap => {
+            const list = document.getElementById('feedList'); list.innerHTML = "";
+            snap.forEach(doc => {
+                const m = doc.data();
+                list.innerHTML += `<div class="vinyl-card" onclick="ganharNoPlay('${doc.id}', '${m.titulo}')">
+                    <img src="${m.capa}" class="vinyl"><h4 style="margin-top:10px; font-size:0.8rem; color:var(--gold);">${m.titulo}</h4>
+                </div>`;
+            });
+        });
+    }
+
+    function ver(id) {
+        document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('p' + id).classList.remove('hidden');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+        event.currentTarget.classList.add('nav-active');
+    }
+
+    function toggleAuth() { isLogin = !isLogin; document.getElementById('authTitle').innerText = isLogin ? "MAM Login" : "Criar Conta MAM"; document.getElementById('btnAuth').innerText = isLogin ? "ENTRAR NO PAINEL" : "REGISTAR CONTA"; }
+    function sair() { auth.signOut(); }
+</script>
+</body>
+</html>

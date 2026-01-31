@@ -50,14 +50,13 @@
         
         .promo-banner { border: 2px dashed var(--gold); padding: 20px; border-radius: 15px; background: rgba(212,175,55,0.05); margin-bottom: 30px; }
         .disco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 25px; margin-top: 15px; }
-        .disco-item { text-align: center; }
         .vinyl { 
             width: 140px; height: 140px; margin: 0 auto; border-radius: 50%; 
             background: #111 url('https://via.placeholder.com/150'); 
             background-size: cover; border: 4px solid #111; box-shadow: 0 0 20px rgba(0,0,0,0.5);
             position: relative; overflow: hidden; cursor: pointer;
         }
-        .vinyl::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, transparent 35%, rgba(0,0,0,0.8) 100%); border: 1px solid rgba(255,255,255,0.1); }
+        .vinyl::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, transparent 35%, rgba(0,0,0,0.8) 100%); }
         
         .reward-card { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         .btn-action { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: 900; font-size: 12px; cursor: pointer; }
@@ -65,7 +64,8 @@
         .vip-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
         .vip-card { background: linear-gradient(145deg, #151515, #050505); padding: 25px; border-radius: 20px; border: 1px solid var(--gold); text-align: center; }
         
-        .pay-method-box { background: #111; padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px solid #333; text-align: left; font-size: 13px; line-height: 1.6; }
+        /* FORMULÁRIO DE PAGAMENTO */
+        #paymentFormArea { margin-top: 30px; background: #000; padding: 25px; border-radius: 20px; border: 2px solid var(--gold); }
 
         footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; border-top: 1px solid var(--gold); text-align: center; color: var(--gold); font-size: 11px; font-weight: 900; z-index: 10000; }
         .hidden { display: none !important; }
@@ -77,14 +77,11 @@
 
 <div id="authArea">
     <div class="auth-card" id="boxLogin">
-        <div class="logo-box">
-            <div class="logo-main">MAM Distribuidora</div>
-            <div class="logo-sub">Matias Arsénio Manuel</div>
-        </div>
+        <div class="logo-box"><div class="logo-main">MAM Distribuidora</div><div class="logo-sub">Matias Arsénio Manuel</div></div>
         <input type="email" id="lE" placeholder="E-mail">
         <input type="password" id="lP" placeholder="Senha">
         <button class="btn-gold" id="btnEntrar">INICIAR SESSÃO</button>
-        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(false)">Novo Artista? <b style="color:var(--gold)">CRIAR CONTA</b></p>
+        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(false)">Criar Conta</p>
     </div>
     <div class="auth-card hidden" id="boxRegisto">
         <div class="logo-main">MAM Distribuidora</div>
@@ -92,7 +89,7 @@
         <input type="email" id="rE" placeholder="E-mail">
         <input type="password" id="rP" placeholder="Senha">
         <button class="btn-gold" id="btnRegistar">REGISTAR</button>
-        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(true)">Voltar ao Login</p>
+        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(true)">Voltar</p>
     </div>
 </div>
 
@@ -100,7 +97,7 @@
     <header>
         <div style="text-align: left;">
             <div class="logo-main" style="font-size:1.1rem;">MAM Distribuidora</div>
-            <div class="logo-sub" style="font-size:0.5rem; margin-top:0;">Matias Arsénio Manuel</div>
+            <div class="logo-sub" style="font-size:0.5rem;">Matias Arsénio Manuel</div>
         </div>
         <div class="search-container"><input type="text" placeholder="Pesquisar músicas..."></div>
         <div id="uBadge" style="font-size: 11px; color: var(--gold); font-weight: bold;"></div>
@@ -126,21 +123,15 @@
         <main>
             <div class="promo-banner">
                 <h3 style="color:var(--gold); font-weight: 900;">APOIA ESTE PROJECTO</h3>
-                <p style="font-size: 13px; margin-top: 5px;">IBAN: <b>0006.0000.8631.6866.3015.2</b></p>
-                <p style="font-size: 11px; color: #888;">Titular: Matias Arsénio Manuel</p>
+                <p style="font-size: 13px;">IBAN: <b>0006.0000.8631.6866.3015.2</b></p>
             </div>
 
             <h2 style="margin-bottom: 20px;">Feed de Lançamentos</h2>
-            <div class="disco-grid">
-                <div class="disco-item" onclick="alert('Sistema de áudio a carregar...')">
-                    <div class="vinyl"></div>
-                    <p style="font-size: 12px; margin-top: 10px;">Ouvir Música</p>
-                </div>
-            </div>
+            <div class="disco-grid"><div class="disco-item"><div class="vinyl"></div><p style="font-size: 12px; margin-top: 10px;">Ouvir Música</p></div></div>
 
             <h2 style="margin: 40px 0 20px;">Caça Recompensa</h2>
             <div class="reward-card">
-                <div><h4>Assistir Vídeos Pago</h4><p style="font-size:11px; color:var(--gold);">Ganhos (20% ou 50%) via Satélite</p></div>
+                <div><h4>Assistir Vídeos Pago</h4><p style="font-size:11px; color:var(--gold);">Ganhos via Satélite</p></div>
                 <button class="btn-action" onclick="alert('Conectando ao Satélite para buscar vídeos reais...')">ASSISTIR</button>
             </div>
             <div class="reward-card">
@@ -154,27 +145,28 @@
 
             <h2 style="margin: 40px 0 20px;">Categorias de Perfil</h2>
             <div class="vip-container">
-                <div class="vip-card">
-                    <h3>PERFIL VIP</h3>
-                    <div style="font-size: 1.5rem; color:var(--gold); font-weight:900; margin: 15px 0;">15.000 Kz</div>
-                    <button class="btn-gold" style="padding:10px;" onclick="abrirPagamento('VIP')">ADERIR AGORA</button>
-                </div>
-                <div class="vip-card">
-                    <h3>PERFIL VIP MAX</h3>
-                    <div style="font-size: 1.5rem; color:var(--gold); font-weight:900; margin: 15px 0;">25.000 Kz</div>
-                    <button class="btn-gold" style="padding:10px;" onclick="abrirPagamento('VIP MAX')">ADERIR AGORA</button>
-                </div>
+                <div class="vip-card"><h3>PERFIL VIP</h3><div style="font-size: 1.5rem; color:var(--gold); font-weight:900; margin: 15px 0;">15.000 Kz</div><button class="btn-gold" style="padding:10px;" onclick="abrirPagamento('VIP', 15000)">ADERIR</button></div>
+                <div class="vip-card"><h3>PERFIL VIP MAX</h3><div style="font-size: 1.5rem; color:var(--gold); font-weight:900; margin: 15px 0;">25.000 Kz</div><button class="btn-gold" style="padding:10px;" onclick="abrirPagamento('VIP MAX', 25000)">ADERIR</button></div>
             </div>
 
-            <div id="payForm" class="hidden" style="margin-top: 30px; background: #000; padding: 25px; border-radius: 20px; border: 2px solid var(--gold);">
-                <h3 id="planTitle" style="color:var(--gold);"></h3>
-                <div class="pay-method-box">
-                    <b>Angola:</b> BFA, BAI, BIC (IBAN: 0006.0000.8631.6866.3015.2)<br>
-                    <b>Global:</b> Visa, Wise, PayPal, Payoneer (mamfilhos29@gmail.com)<br>
-                    <b>Brasil:</b> Pix (Solicitar Chave)
+            <div id="paymentFormArea" class="hidden">
+                <h3 id="planTitle" style="color:var(--gold); margin-bottom: 15px;"></h3>
+                <label style="font-size: 12px; color: #888;">Escolha o seu Banco ou Carteira:</label>
+                <select id="metodoPagamento">
+                    <option value="BFA">BFA (Angola)</option>
+                    <option value="BAI">BAI (Angola)</option>
+                    <option value="BIC">BIC (Angola)</option>
+                    <option value="BFF">BFF (Angola)</option>
+                    <option value="PAYPAL">PayPal</option>
+                    <option value="WISE">Visa / Wise</option>
+                    <option value="PAYONEER">Payoneer</option>
+                    <option value="PIX">Pix (Brasil)</option>
+                </select>
+                <div id="infoDestino" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; font-size: 13px; margin: 10px 0; border-left: 4px solid var(--gold);">
+                    <b>Dados da Conta MAM:</b><br>
+                    <span id="dadosTexto">Selecione um método acima</span>
                 </div>
-                <input type="file" id="comprovativo" style="margin-top:20px;">
-                <button class="btn-gold" onclick="alert('Comprovativo enviado! O valor cairá diretamente na carteira MAM.')">CONFIRMAR ENVIO</button>
+                <button class="btn-gold" onclick="finalizarPedido()">CONFIRMAR PAGAMENTO</button>
             </div>
         </main>
     </div>
@@ -187,23 +179,25 @@
     firebase.initializeApp(cfg);
     const auth = firebase.auth(), db = firebase.firestore();
 
+    const dadosMAM = {
+        "BFA": "IBAN: 0006.0000.8631.6866.3015.2",
+        "BAI": "IBAN BAI: [Aguardando Dados]",
+        "BIC": "IBAN BIC: [Aguardando Dados]",
+        "BFF": "IBAN BFF: [Aguardando Dados]",
+        "PAYPAL": "Email: mamfilhos29@gmail.com",
+        "WISE": "Email Wise: mamfilhos29@gmail.com",
+        "PAYONEER": "Email Payoneer: mamfilhos29@gmail.com",
+        "PIX": "Chave Pix: [Aguardando Dados]"
+    };
+
+    document.getElementById('metodoPagamento').addEventListener('change', (e) => {
+        document.getElementById('dadosTexto').innerText = dadosMAM[e.target.value];
+    });
+
     function toggleA(isL) {
         document.getElementById('boxLogin').classList.toggle('hidden', !isL);
         document.getElementById('boxRegisto').classList.toggle('hidden', isL);
     }
-
-    document.getElementById('btnEntrar').addEventListener('click', async () => {
-        const e = document.getElementById('lE').value, p = document.getElementById('lP').value;
-        try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert(err.message); }
-    });
-
-    document.getElementById('btnRegistar').addEventListener('click', async () => {
-        const n = document.getElementById('rN').value, e = document.getElementById('rE').value, p = document.getElementById('rP').value;
-        try {
-            const res = await auth.createUserWithEmailAndPassword(e, p);
-            await db.collection("users").doc(res.user.uid).set({ nome: n, email: e, saldo: 0, tipo: 'Normal' });
-        } catch(err) { alert(err.message); }
-    });
 
     auth.onAuthStateChanged(u => {
         if(u) {
@@ -217,16 +211,20 @@
         }
     });
 
-    function copiarConvite() {
-        const link = window.location.href + "?ref=" + auth.currentUser.uid;
-        navigator.clipboard.writeText(link);
-        alert("Link de convite copiado!");
+    function abrirPagamento(plano, preco) {
+        document.getElementById('paymentFormArea').classList.remove('hidden');
+        document.getElementById('planTitle').innerText = "Pagamento " + plano + " (" + preco + " Kz)";
+        document.getElementById('dadosTexto').innerText = dadosMAM[document.getElementById('metodoPagamento').value];
+        window.scrollTo(0, document.body.scrollHeight);
     }
 
-    function abrirPagamento(plano) {
-        document.getElementById('payForm').classList.remove('hidden');
-        document.getElementById('planTitle').innerText = "Pagar Plano " + plano;
-        window.scrollTo(0, document.body.scrollHeight);
+    function finalizarPedido() {
+        alert("O seu pedido foi enviado! O valor cairá diretamente na carteira da MAM Distribuidora assim que confirmado.");
+    }
+
+    function copiarConvite() {
+        navigator.clipboard.writeText(window.location.href + "?ref=" + auth.currentUser.uid);
+        alert("Link de convite copiado!");
     }
 
     function fSair() { auth.signOut(); }

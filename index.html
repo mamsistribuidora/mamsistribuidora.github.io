@@ -3,151 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Portal Oficial</title>
+    <title>MAM Distribuidora | Oficial</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #D4AF37; --bg: #0a0a0a; --glass: rgba(20, 20, 20, 0.8); }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        :root { --gold: #D4AF37; --bg: #0d0d0d; --card: #161616; --side: #000000; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
+
+        /* TELA DE LOGIN / REGISTO */
+        #authContainer {
+            position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle, #1a1a1a, #000);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .auth-card {
+            background: rgba(20,20,20,0.95); border: 1px solid var(--gold); padding: 40px;
+            border-radius: 20px; width: 380px; text-align: center; backdrop-filter: blur(10px);
+        }
+        .auth-card img { width: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 20px; }
+
+        /* LAYOUT PRINCIPAL (IDÊNTICO AO IMAC) */
+        #mainApp { display: grid; grid-template-columns: 260px 1fr; height: 100vh; }
         
-        body { 
-            background: radial-gradient(circle at top right, #1a1a1a, #000); 
-            color: #fff; min-height: 100vh; overflow-x: hidden;
-        }
-
-        /* TELA DE ACESSO (LOGIN/REGISTO) */
-        #authScreen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; background: url('https://i.ibb.co/LhqZz1L/mam-logo.jpg') no-repeat center center / cover;
-        }
-        .auth-overlay {
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
-            padding: 40px; border-radius: 25px; border: 1px solid var(--gold);
-            width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
-        }
-        .auth-overlay img { width: 100px; border-radius: 50%; margin-bottom: 20px; border: 2px solid var(--gold); }
-
-        /* INPUTS ESTILO PREMIUM */
-        input {
-            width: 100%; padding: 14px; margin: 10px 0; background: rgba(255,255,255,0.05);
-            border: 1px solid #333; border-radius: 12px; color: #fff; transition: 0.3s;
-        }
-        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
-        .btn-gold {
-            width: 100%; padding: 15px; margin-top: 20px; background: linear-gradient(45deg, #D4AF37, #f2d06b);
-            border: none; border-radius: 12px; color: #000; font-weight: 700; cursor: pointer; text-transform: uppercase;
-        }
-
-        /* DASHBOARD PRINCIPAL */
-        #mainApp { display: grid; grid-template-columns: 280px 1fr; height: 100vh; }
+        /* SIDEBAR PROFISSIONAL */
+        .sidebar { background: var(--side); border-right: 1px solid #222; padding: 25px; display: flex; flex-direction: column; }
+        .logo-box { text-align: center; margin-bottom: 40px; }
+        .logo-box img { width: 130px; border-radius: 50%; border: 2px solid var(--gold); }
         
-        /* SIDEBAR SCANNER */
-        .sidebar {
-            background: #000; border-right: 1px solid #1a1a1a; padding: 30px 20px;
-            display: flex; flex-direction: column;
+        .nav-link { 
+            display: flex; align-items: center; gap: 15px; padding: 14px 18px; 
+            color: #888; text-decoration: none; border-radius: 12px; margin-bottom: 8px;
+            cursor: pointer; transition: 0.3s; font-size: 0.9rem;
         }
-        .nav-item {
-            padding: 15px; margin: 5px 0; border-radius: 12px; display: flex; align-items: center;
-            gap: 15px; cursor: pointer; transition: 0.3s; color: #888;
+        .nav-link:hover, .nav-active { background: linear-gradient(90deg, #D4AF3733, transparent); color: var(--gold); border-left: 4px solid var(--gold); }
+        .nav-link i { font-size: 1.2rem; }
+
+        /* ÁREA DE CONTEÚDO */
+        .viewport { overflow-y: auto; background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%); position: relative; }
+        header { 
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); sticky; top: 0; z-index: 100;
         }
-        .nav-item:hover, .nav-active {
-            background: linear-gradient(90deg, rgba(212,175,55,0.2), transparent);
-            color: var(--gold); border-left: 4px solid var(--gold);
+        .search-bar { background: #1a1a1a; border: 1px solid #333; border-radius: 30px; padding: 10px 25px; width: 400px; color: #fff; outline: none; }
+
+        /* CARDS DE MÚSICA (ESTILO VINIL) */
+        .content-grid { padding: 40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 30px; }
+        .music-card { text-align: center; transition: 0.3s; }
+        .music-card:hover { transform: translateY(-5px); }
+        .vinyl { 
+            width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 5px solid #1a1a1a; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 12px; object-fit: cover;
         }
 
-        /* HEADER & SEARCH */
-        header {
-            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-        }
-        .search-box {
-            background: #151515; border: 1px solid #333; border-radius: 30px;
-            padding: 8px 25px; width: 400px; display: flex; align-items: center;
-        }
-        .search-box input { border: none; background: transparent; margin: 0; padding: 5px; }
+        /* BOTÕES E INPUTS */
+        .btn-mam { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; }
 
-        /* DISCOS VINIL IDENTICOS À IMAGEM */
-        .vinyl-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 30px; padding: 40px; }
-        .vinyl-card { text-align: center; }
-        .vinyl-disk {
-            width: 100%; aspect-ratio: 1/1; border-radius: 50%;
-            background: radial-gradient(circle, #222 15%, #000 16%, #111 20%, #000 25%);
-            border: 4px solid #1a1a1a; box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            margin-bottom: 15px; position: relative; overflow: hidden;
+        /* RODAPÉ EXCLUSIVO MAM */
+        .footer-tag { 
+            position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); 
+            border: 1px solid #333; padding: 8px 15px; border-radius: 8px; 
+            display: flex; align-items: center; gap: 10px; z-index: 1000;
         }
-        .vinyl-disk img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        
-        /* RODAPÉ MAM */
-        footer {
-            position: fixed; bottom: 20px; left: 20px;
-            background: rgba(20,20,20,0.9); padding: 10px 25px; border-radius: 10px;
-            border: 1px solid #333; display: flex; align-items: center; gap: 15px;
-        }
-        .footer-logo { width: 30px; border-radius: 50%; border: 1px solid var(--gold); }
 
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div id="authScreen">
-    <div class="auth-overlay" id="boxLogin">
+<div id="authContainer">
+    <div class="auth-card">
         <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg">
-        <h2 style="color:var(--gold)">MAM Distribuidora</h2>
-        <p style="font-size: 0.8rem; margin-bottom: 20px;">Curadoria de Elite [Matias Manuel]</p>
+        <h2 id="authTitle" style="color:var(--gold); margin-bottom: 5px;">MAM Login</h2>
+        <p style="font-size:0.7rem; color:#666; margin-bottom:20px;">Curadoria de Elite [Matias Manuel]</p>
         
-        <div id="loginInputs">
-            <input type="email" id="email" placeholder="E-mail oficial">
-            <input type="password" id="pass" placeholder="Palavra-passe">
-            <button class="btn-gold" onclick="acessar()">Entrar no Painel</button>
-            <p style="margin-top:15px; font-size:0.8rem; cursor:pointer;" onclick="toggleAuth()">Não tem conta? <span style="color:var(--gold)">Criar Agora</span></p>
-        </div>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Palavra-passe">
+        <button class="btn-mam" onclick="autenticar()">ENTRAR NO PAINEL</button>
+        
+        <p style="margin-top:20px; font-size:0.8rem;">
+            <span id="toggleText">Ainda não tem conta?</span> 
+            <b style="color:var(--gold); cursor:pointer;" onclick="alternarAuth()">Clique aqui</b>
+        </p>
     </div>
 </div>
 
 <div id="mainApp" class="hidden">
     <aside class="sidebar">
-        <div style="text-align:center; margin-bottom:40px;">
-            <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" style="width:120px; border-radius:50%; border:2px solid var(--gold);">
+        <div class="logo-box">
+            <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg">
         </div>
-        <div class="nav-item nav-active">🏠 Página Inicial</div>
-        <div class="nav-item">👤 Meu Perfil</div>
-        <div class="nav-item">👨‍🎨 Criar Artista</div>
-        <div class="nav-item">📤 Lançar Música</div>
-        <div class="nav-item">💰 Minha Carteira</div>
-        <div class="nav-item">👔 Informação CEO</div>
-        <div class="nav-item" style="color:#ff4d4d; margin-top:auto;" onclick="sair()">🚪 Terminar Sessão</div>
+        <nav>
+            <div class="nav-link nav-active" onclick="navegar('home')">🏠 Página Inicial</div>
+            <div class="nav-link" onclick="navegar('perfil')">👤 Meu Perfil</div>
+            <div class="nav-link" onclick="navegar('artista')">👨‍🎨 Criar Artista</div>
+            <div class="nav-link" onclick="navegar('lancar')">📤 Lançar Música</div>
+            <div class="nav-link" onclick="navegar('carteira')">💰 Minha Carteira</div>
+            <div class="nav-link" onclick="navegar('ceo')">👔 Informação CEO</div>
+            <div class="nav-link" style="color:#ff4444; margin-top:20px;" onclick="sair()">🚪 Terminar Sessão</div>
+        </nav>
     </aside>
 
-    <div style="overflow-y:auto;">
+    <main class="viewport">
         <header>
-            <div class="search-box">
-                <input type="text" placeholder="Pesquisar músicas ou produtores...">
-            </div>
+            <input type="text" class="search-bar" placeholder="Pesquisar músicas, artistas ou produtores...">
             <div style="display:flex; align-items:center; gap:15px;">
-                <span id="txtSaldo" style="color:var(--gold); font-weight:700;">1.000,00 Kz</span>
-                <img id="userImg" src="" style="width:40px; height:40px; border-radius:50%; border:1px solid var(--gold);">
+                <span id="userSaldo" style="color:var(--gold); font-weight:bold;">1.000,00 Kz</span>
+                <img id="userThumb" src="" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--gold);">
             </div>
         </header>
 
-        <section style="padding: 40px;">
-            <h2 style="margin-bottom:10px;">Feed de Lançamentos</h2>
-            <div class="vinyl-container" id="feed">
+        <section id="viewHome" class="view">
+            <div style="padding: 40px 40px 0;">
+                <h2>Feed de Lançamentos</h2>
+                <p style="color:#666; font-size:0.9rem;">As últimas novidades da MAM Distribuidora.</p>
+            </div>
+            <div class="content-grid" id="listaMusicas">
                 </div>
         </section>
-    </div>
-    
-    <footer>
-        <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" class="footer-logo">
-        <span style="font-weight:600; letter-spacing:1px; font-size:0.8rem;">MAM DISTRIBUIDORA</span>
-    </footer>
+
+        <section id="viewLancar" class="view hidden" style="padding:40px;">
+            <h2>Lançar Nova Obra</h2>
+            <div style="max-width:500px; margin-top:20px;">
+                <input type="text" id="mTitulo" placeholder="Título da Música">
+                <input type="file" id="mCapa" accept="image/*">
+                <button class="btn-mam" onclick="processarLancamento()">PUBLICAR AGORA</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="footer-tag">
+    <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" style="width:25px; border-radius:50%;">
+    <span style="font-size:0.7rem; letter-spacing:1px;">MAM DISTRIBUIDORA</span>
 </div>
 
 <script>
-    // Configuração oficial do Matias Manuel [cite: 2026-01-27]
+    // CONFIGURAÇÃO FIREBASE [cite: 2026-01-27]
     const firebaseConfig = {
         apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
         authDomain: "mam-distribuidora.firebaseapp.com",
@@ -160,62 +156,67 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Alternar entre Login e Criar Conta
-    let isLogin = true;
-    function toggleAuth() {
-        isLogin = !isLogin;
-        document.querySelector('#boxLogin h2').innerText = isLogin ? "MAM Login" : "Criar Conta MAM";
-        document.querySelector('.btn-gold').innerText = isLogin ? "Entrar no Painel" : "Registar Artista";
+    let modoLogin = true;
+
+    function alternarAuth() {
+        modoLogin = !modoLogin;
+        document.getElementById('authTitle').innerText = modoLogin ? "MAM Login" : "Criar Conta MAM";
+        document.getElementById('toggleText').innerText = modoLogin ? "Ainda não tem conta?" : "Já tem uma conta?";
     }
 
-    // Função de Acesso
-    async function acessar() {
+    async function autenticar() {
         const e = document.getElementById('email').value;
         const p = document.getElementById('pass').value;
         try {
-            if(isLogin) {
+            if(modoLogin) {
                 await auth.signInWithEmailAndPassword(e, p);
             } else {
-                const res = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection("users").doc(res.user.uid).set({
-                    nome: "Novo Artista",
+                const cred = await auth.createUserWithEmailAndPassword(e, p);
+                await db.collection("users").doc(cred.user.uid).set({
+                    nome: "MAM Artist",
                     saldo: 1000,
                     foto: "",
                     email: e
                 });
-                alert("Bem-vindo à MAM! Ganhaste 1000 Kz de bónus.");
+                alert("Conta criada! Ganhaste 1000 Kz de bónus [cite: 2026-01-28]");
             }
         } catch(err) { alert("Erro: " + err.message); }
     }
 
-    // Monitor de Sessão [cite: 2026-01-27]
     auth.onAuthStateChanged(user => {
         if(user) {
-            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('authContainer').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             db.collection("users").doc(user.uid).onSnapshot(doc => {
                 const d = doc.data();
-                document.getElementById('txtSaldo').innerText = d.saldo.toLocaleString() + ",00 Kz";
-                document.getElementById('userImg').src = d.foto || 'https://i.ibb.co/LhqZz1L/mam-logo.jpg';
+                document.getElementById('userSaldo').innerText = d.saldo.toLocaleString() + ",00 Kz";
+                document.getElementById('userThumb').src = d.foto || 'https://i.ibb.co/LhqZz1L/mam-logo.jpg';
             });
-            carregarFeed();
+            carregarMusicas();
         } else {
-            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('authContainer').classList.remove('hidden');
             document.getElementById('mainApp').classList.add('hidden');
         }
     });
 
-    function carregarFeed() {
+    function navegar(onde) {
+        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+        document.getElementById('view' + onde.charAt(0).toUpperCase() + onde.slice(1)).classList.remove('hidden');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('nav-active'));
+        event.currentTarget.classList.add('nav-active');
+    }
+
+    function carregarMusicas() {
         db.collection("musicas").onSnapshot(snap => {
-            const f = document.getElementById('feed');
-            f.innerHTML = "";
+            const container = document.getElementById('listaMusicas');
+            container.innerHTML = "";
             snap.forEach(doc => {
                 const m = doc.data();
-                f.innerHTML += `
-                    <div class="vinyl-card">
-                        <div class="vinyl-disk"><img src="${m.capa}"></div>
-                        <h4 style="color:var(--gold);">${m.titulo}</h4>
-                        <p style="font-size:0.7rem; opacity:0.6;">${m.artista}</p>
+                container.innerHTML += `
+                    <div class="music-card">
+                        <img src="${m.capa}" class="vinyl">
+                        <h4 style="color:var(--gold); font-size:0.9rem;">${m.titulo}</h4>
+                        <p style="font-size:0.7rem; color:#777;">${m.artista || 'MAM Artist'}</p>
                     </div>
                 `;
             });

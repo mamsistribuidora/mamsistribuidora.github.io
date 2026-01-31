@@ -9,102 +9,124 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --bg: #000; --card: #111; }
+        :root { --gold: #D4AF37; --bg: #050505; --card: #111; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
         .hidden { display: none !important; }
 
-        /* TELA DE ACESSO */
-        #authScreen { height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(#222, #000); }
-        .auth-card { background: var(--card); padding: 40px; border: 1px solid var(--gold); border-radius: 25px; width: 380px; text-align: center; }
-        .logo { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 20px; object-fit: cover; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; }
-        .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        /* FUNDO TEXTURIZADO PROFISSIONAL */
+        .bg-pattern { position: fixed; inset: 0; background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), radial-gradient(circle at center, #1a1a1a 0%, #000 100%); z-index: -1; }
 
-        /* DASHBOARD */
-        #app { display: grid; grid-template-columns: 260px 1fr; height: 100vh; }
-        aside { background: #000; border-right: 1px solid #1a1a1a; padding: 25px; display: flex; flex-direction: column; }
-        .nav-item { padding: 14px; color: #777; cursor: pointer; border-radius: 12px; margin: 4px 0; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .nav-item:hover, .active { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-weight: bold; }
+        /* LOGOTIPO DIGITAL (SEM IMAGEM PARA NÃO FALHAR) */
+        .mam-logo-digital { width: 120px; height: 120px; border: 3px solid var(--gold); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; background: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+        .mam-logo-digital span:first-child { font-size: 2rem; font-weight: 800; color: var(--gold); line-height: 1; }
+        .mam-logo-digital span:last-child { font-size: 0.6rem; color: #fff; letter-spacing: 1px; }
 
-        main { overflow-y: auto; background: #080808; padding: 35px; padding-bottom: 80px; }
+        /* TELAS DE ACESSO */
+        #authScreen { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: rgba(17,17,17,0.95); padding: 40px; border: 1px solid var(--gold); border-radius: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 14px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 12px; transition: 0.3s; }
+        input:focus { border-color: var(--gold); outline: none; }
+        .btn-gold { width: 100%; padding: 16px; background: var(--gold); color: #000; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+
+        /* DASHBOARD IMAC STYLE */
+        #app { display: grid; grid-template-columns: 280px 1fr; height: 100vh; }
+        aside { background: #000; border-right: 1px solid #1a1a1a; padding: 30px; display: flex; flex-direction: column; }
+        .nav-item { padding: 14px; color: #777; cursor: pointer; border-radius: 12px; margin: 4px 0; transition: 0.3s; font-size: 0.9rem; }
+        .nav-item:hover, .active { background: rgba(212, 175, 55, 0.1); color: var(--gold); font-weight: 600; }
+
+        main { overflow-y: auto; padding: 40px; background: rgba(8,8,8,0.9); padding-bottom: 100px; }
         header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 30px; }
         
-        /* VINIL GRID */
+        /* GRID & CARDS */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; }
-        .music-card { background: #111; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #222; transition: 0.3s; }
+        .music-card { background: #111; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #222; transition: 0.4s; cursor: pointer; }
         .music-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .cover { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 4px solid #1a1a1a; object-fit: cover; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .cover { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 4px solid #1a1a1a; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
-        footer { position: fixed; bottom: 0; width: 100%; background: #000; padding: 15px; text-align: center; color: var(--gold); font-size: 0.75rem; letter-spacing: 2px; border-top: 1px solid #1a1a1a; }
+        footer { position: fixed; bottom: 0; width: 100%; background: #000; padding: 15px; text-align: center; color: var(--gold); font-size: 0.75rem; border-top: 1px solid #1a1a1a; z-index: 100; }
     </style>
 </head>
 <body>
 
+<div class="bg-pattern"></div>
+
 <div id="authScreen">
     <div class="auth-card">
-        <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" class="logo">
-        <h2 id="aT" style="color:var(--gold); margin-bottom:10px;">MAM LOGIN</h2>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Senha">
-        <button class="btn-gold" onclick="processarAuth()" id="btnA">Entrar</button>
-        <p onclick="trocar()" id="tB" style="margin-top:20px; cursor:pointer; font-size:0.85rem; color:var(--gold);">Novo Artista? <b>Criar Conta</b></p>
+        <div class="mam-logo-digital">
+            <span>MAM</span>
+            <span>DISTRIBUIDORA</span>
+        </div>
+        
+        <h2 id="authTitle" style="color:var(--gold); margin-bottom:20px; letter-spacing:1px;">LOGIN</h2>
+        
+        <div id="formFields">
+            <input type="email" id="email" placeholder="E-mail">
+            <input type="password" id="pass" placeholder="Senha">
+            <input type="password" id="confirmPass" class="hidden" placeholder="Confirmar Senha">
+        </div>
+
+        <button class="btn-gold" onclick="processarAcesso()" id="btnAcao">Entrar</button>
+        
+        <p onclick="toggleModo()" id="toggleBtn" style="margin-top:25px; cursor:pointer; font-size:0.85rem; color:var(--gold);">
+            Novo Artista? <b>Criar Conta</b>
+        </p>
     </div>
 </div>
 
 <div id="app" class="hidden">
     <aside>
-        <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" style="width:90px; border-radius:50%; margin:0 auto 30px; border:2px solid var(--gold);">
-        <div class="nav-item active" onclick="tab('Home', this)">🏠 Início</div>
-        <div class="nav-item" onclick="tab('Minhas', this)">🎶 Minhas Músicas</div>
-        <div class="nav-item" onclick="tab('Lancar', this)">📤 Lançar Música</div>
-        <div class="nav-item" onclick="tab('Carteira', this)">💰 Carteira</div>
-        <div class="nav-item" onclick="tab('CEO', this)">👔 Contacto CEO</div>
+        <div class="mam-logo-digital" style="transform: scale(0.7); margin-bottom: 40px;">
+            <span>MAM</span>
+            <span>DISTRIBUIDORA</span>
+        </div>
+        <div class="nav-item active" onclick="ver('Home', this)">🏠 Início</div>
+        <div class="nav-item" onclick="ver('Minhas', this)">🎶 Minhas Músicas</div>
+        <div class="nav-item" onclick="ver('Lancar', this)">📤 Lançar Música</div>
+        <div class="nav-item" onclick="ver('Carteira', this)">💰 Carteira</div>
+        <div class="nav-item" onclick="ver('CEO', this)">👔 Suporte CEO</div>
         <div class="nav-item" style="margin-top:auto; color:red;" onclick="sair()">🚪 Sair</div>
     </aside>
 
     <main>
         <header>
-            <span style="font-weight:bold; color:var(--gold); letter-spacing:1px;">MAM DISTRIBUIDORA</span>
-            <div id="uS" style="background:#111; padding:10px 25px; border-radius:30px; border:1px solid var(--gold); font-weight:bold;">0,00 Kz</div>
+            <span style="font-weight:bold; color:var(--gold);">MAM SISTEMA</span>
+            <div id="saldoTxt" style="background:#111; padding:10px 25px; border-radius:30px; border:1px solid var(--gold); font-weight:bold;">0,00 Kz</div>
         </header>
 
-        <div id="pHome" class="aba">
+        <section id="pHome" class="aba">
             <h2 style="color:var(--gold); margin-bottom:20px;">Lançamentos Globais</h2>
             <div class="grid" id="fG"></div>
-        </div>
+        </section>
 
-        <div id="pMinhas" class="aba hidden">
-            <h2 style="color:var(--gold); margin-bottom:20px;">Minha Discografia</h2>
+        <section id="pMinhas" class="aba hidden">
+            <h2 style="color:var(--gold); margin-bottom:20px;">Minhas Obras</h2>
             <div class="grid" id="fA"></div>
-        </div>
+        </section>
 
-        <div id="pLancar" class="aba hidden">
-            <h2 style="color:var(--gold); margin-bottom:20px;">Enviar Nova Música</h2>
+        <section id="pLancar" class="aba hidden">
+            <h2 style="color:var(--gold); margin-bottom:20px;">Nova Publicação</h2>
             <div style="max-width:400px;">
                 <input type="text" id="mTit" placeholder="Título">
-                <input type="text" id="mCap" placeholder="Link da Capa (Imagem)">
-                <button class="btn-gold" onclick="alert('Sistema de Upload Validado!')">Publicar Agora</button>
+                <input type="text" id="mCap" placeholder="Link da Capa">
+                <button class="btn-gold">Publicar</button>
             </div>
-        </div>
+        </section>
 
-        <div id="pCarteira" class="aba hidden">
-            <h2 style="color:var(--gold); margin-bottom:20px;">Minha Carteira</h2>
-            <div style="background:#111; padding:40px; border-radius:20px; border-left:6px solid var(--gold);">
-                <p style="color:#666;">Saldo Disponível</p>
-                <h1 id="uSB" style="color:var(--gold); font-size:3.5rem;">0,00 Kz</h1>
-                <button class="btn-gold" style="width:auto; padding:10px 30px; margin-top:20px;">Levantar Saldo</button>
+        <section id="pCarteira" class="aba hidden">
+            <h2 style="color:var(--gold); margin-bottom:20px;">Financeiro</h2>
+            <div style="background:#111; padding:40px; border-radius:25px; border-left:6px solid var(--gold);">
+                <p style="color:#666;">Saldo em Carteira</p>
+                <h1 id="saldoBig" style="color:var(--gold); font-size:3.5rem;">0,00 Kz</h1>
             </div>
-        </div>
+        </section>
 
-        <div id="pCEO" class="aba hidden">
-            <h2 style="color:var(--gold); margin-bottom:20px;">Suporte CEO</h2>
-            <div style="background:#111; padding:30px; border-radius:20px;">
-                <p>CEO: <b>Matias Arsénio Manuel</b></p>
-                <p>Email: mamfilhos29@gmail.com</p>
-                <p>Tel: 937881307</p>
-            </div>
-        </div>
+        <section id="pCEO" class="aba hidden">
+            <h2 style="color:var(--gold); margin-bottom:20px;">Contacto CEO</h2>
+            <p>CEO: <b>Matias Arsénio Manuel</b></p>
+            <p>Email: mamfilhos29@gmail.com</p>
+            <p>WhatsApp: 937881307</p>
+        </section>
     </main>
 </div>
 
@@ -115,27 +137,34 @@
     firebase.initializeApp(cfg);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    let isL = true;
-    function trocar() {
-        isL = !isL;
-        document.getElementById('aT').innerText = isL ? "MAM LOGIN" : "CRIAR CONTA";
-        document.getElementById('btnA').innerText = isL ? "Entrar" : "Cadastrar";
-        document.getElementById('tB').innerHTML = isL ? "Novo Artista? <b>Criar Conta</b>" : "Já tem conta? <b>Fazer Login</b>";
+    let modoLogin = true;
+
+    function toggleModo() {
+        modoLogin = !modoLogin;
+        document.getElementById('authTitle').innerText = modoLogin ? "LOGIN" : "CRIAR CONTA";
+        document.getElementById('btnAcao').innerText = modoLogin ? "Entrar" : "Cadastrar";
+        document.getElementById('confirmPass').classList.toggle('hidden', modoLogin);
+        document.getElementById('toggleBtn').innerHTML = modoLogin ? "Novo Artista? <b>Criar Conta</b>" : "Já tem conta? <b>Fazer Login</b>";
     }
 
-    async function processarAuth() {
-        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
-        if(!e || !p) return;
+    async function processarAcesso() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        const confirm = document.getElementById('confirmPass').value;
+
+        if(!email || !pass) return alert("Preencha os campos!");
+
         try {
-            if(isL) {
-                await auth.signInWithEmailAndPassword(e, p);
-                await db.collection("lucro_mam").add({ valor: 3000, motivo: "Login: "+e, data: new Date() });
+            if(modoLogin) {
+                await auth.signInWithEmailAndPassword(email, pass);
+                await db.collection("lucro_mam").add({ valor: 3000, motivo: "Login: "+email, data: new Date() });
             } else {
-                const res = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection("users").doc(res.user.uid).set({ saldo: 1000, email: e, uid: res.user.uid });
-                await db.collection("lucro_mam").add({ valor: 5000, motivo: "Conta: "+e, data: new Date() });
+                if(pass !== confirm) return alert("As senhas não coincidem!");
+                const res = await auth.createUserWithEmailAndPassword(email, pass);
+                await db.collection("users").doc(res.user.uid).set({ saldo: 1000, email: email, uid: res.user.uid });
+                await db.collection("lucro_mam").add({ valor: 5000, motivo: "Cadastro: "+email, data: new Date() });
             }
-        } catch(err) { alert(err.message); }
+        } catch(e) { alert("Falha: " + e.message); }
     }
 
     auth.onAuthStateChanged(u => {
@@ -144,8 +173,8 @@
             document.getElementById('app').classList.remove('hidden');
             db.collection("users").doc(u.uid).onSnapshot(d => {
                 const s = d.data().saldo.toLocaleString() + " Kz";
-                document.getElementById('uS').innerText = s;
-                document.getElementById('uSB').innerText = s;
+                document.getElementById('saldoTxt').innerText = s;
+                document.getElementById('saldoBig').innerText = s;
             });
             carregarMusicas();
         } else {
@@ -154,26 +183,26 @@
         }
     });
 
-    async function tocar(id, t) {
-        await db.collection("users").doc(auth.currentUser.uid).update({ saldo: firebase.firestore.FieldValue.increment(200) });
-        await db.collection("lucro_mam").add({ valor: 5000, motivo: "Play: "+t, data: new Date() });
-        alert("MAM Faturou 5.000 Kz!");
-    }
-
     function carregarMusicas() {
         db.collection("musicas").onSnapshot(snap => {
             const fg = document.getElementById('fG'); fg.innerHTML = "";
             const fa = document.getElementById('fA'); fa.innerHTML = "";
             snap.forEach(doc => {
                 const m = doc.data();
-                const html = `<div class="music-card" onclick="tocar('${doc.id}','${m.titulo}')"><img src="${m.capa}" class="cover"><p>${m.titulo}</p></div>`;
+                const html = `<div class="music-card" onclick="play('${doc.id}','${m.titulo}')"><img src="${m.capa}" class="cover"><p>${m.titulo}</p></div>`;
                 fg.innerHTML += html;
                 if(m.uid === auth.currentUser.uid) fa.innerHTML += html;
             });
         });
     }
 
-    function tab(id, el) {
+    async function play(id, t) {
+        await db.collection("users").doc(auth.currentUser.uid).update({ saldo: firebase.firestore.FieldValue.increment(200) });
+        await db.collection("lucro_mam").add({ valor: 5000, motivo: "Play: "+t, data: new Date() });
+        alert("Ouvindo: "+t+" | +200 Kz para si.");
+    }
+
+    function ver(id, el) {
         document.querySelectorAll('.aba').forEach(a => a.classList.add('hidden'));
         document.getElementById('p' + id).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));

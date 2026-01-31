@@ -7,141 +7,195 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <style>
-        :root { --gold: #D4AF37; --dark: #0a0a0a; --glass: rgba(255, 255, 255, 0.03); }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        :root { --gold: #D4AF37; --bg: #050505; --card: #111; --text: #eee; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+        .hidden { display: none !important; }
+
+        /* ESTILO ACESSO */
+        #authScreen { height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(#222, #000); }
+        .auth-card { background: var(--card); padding: 40px; border: 1px solid var(--gold); border-radius: 20px; width: 350px; text-align: center; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        .btn-gold { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* DASHBOARD IMAC STYLE */
+        #app { display: grid; grid-template-columns: 260px 1fr; height: 100vh; }
+        aside { background: #000; border-right: 1px solid #1a1a1a; padding: 25px; display: flex; flex-direction: column; }
+        .nav-item { padding: 12px; color: #777; cursor: pointer; border-radius: 10px; margin: 3px 0; transition: 0.3s; font-size: 0.9rem; }
+        .nav-item:hover, .active { background: #d4af3715; color: var(--gold); border-left: 4px solid var(--gold); }
+
+        main { overflow-y: auto; background: #080808; padding: 30px; position: relative; padding-bottom: 100px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1a1a1a; padding-bottom: 15px; }
         
-        body { 
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            color: #fff; height: 100vh; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* FUNDO TECNOLÓGICO ANIMADO */
-        .bg-effect { position: fixed; inset: 0; z-index: -1; opacity: 0.4; background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); }
-
-        /* CONTENTOR DE ACESSO DE ELITE */
-        .auth-container {
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 40px; border-radius: 30px;
-            width: 100%; max-width: 420px;
-            text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .logo-mam {
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 2px solid var(--gold); margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-        }
-
-        h1 { font-family: 'Orbitron', sans-serif; color: var(--gold); font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 5px; }
-        p.sub { color: #888; font-size: 0.8rem; margin-bottom: 25px; }
-
-        input {
-            width: 100%; padding: 15px; margin-bottom: 15px;
-            background: rgba(255,255,255,0.05); border: 1px solid #333;
-            border-radius: 12px; color: #fff; transition: 0.3s;
-        }
-
-        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); outline: none; }
-
-        .btn-action {
-            width: 100%; padding: 16px; background: var(--gold);
-            color: #000; border: none; border-radius: 12px;
-            font-weight: 700; cursor: pointer; text-transform: uppercase;
-            letter-spacing: 1px; transition: 0.3s;
-        }
-
-        .btn-action:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
-
-        .toggle-link { margin-top: 20px; font-size: 0.85rem; color: #aaa; cursor: pointer; }
-        .toggle-link span { color: var(--gold); font-weight: 600; text-decoration: underline; }
-
-        /* RODAPÉ DE LUXO */
-        footer {
-            position: fixed; bottom: 20px; width: 100%; text-align: center;
-            font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 3px;
-        }
+        /* ELEMENTOS VISUAIS */
+        .page-title { color: var(--gold); font-size: 1.4rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .vinyl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 25px; }
+        .disk-wrap { text-align: center; cursor: pointer; }
+        .disk { width: 100%; aspect-ratio: 1/1; border-radius: 50%; border: 4px solid #1a1a1a; transition: 0.5s; box-shadow: 0 10px 20px #000; }
+        .disk-wrap:hover .disk { transform: rotate(25deg) scale(1.05); border-color: var(--gold); }
+        
+        .footer-mam { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 1px solid #1a1a1a; padding: 10px; text-align: center; color: var(--gold); font-size: 0.7rem; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-<div class="bg-effect"></div>
-
-<div class="auth-container" id="boxAuth">
-    <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" class="logo-mam">
-    <h1 id="title">MAM LOGIN</h1>
-    <p class="sub" id="desc">Acesso restrito à Curadoria de Elite</p>
-
-    <div id="form">
-        <input type="email" id="email" placeholder="E-mail Institucional">
-        <input type="password" id="pass" placeholder="Palavra-passe">
-        <button class="btn-action" id="btnMain" onclick="executar()">Entrar no Painel</button>
+<div id="authScreen">
+    <div class="auth-card">
+        <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" style="width:70px; border-radius:50%; margin-bottom:15px; border:2px solid var(--gold);">
+        <h2 id="aT">MAM LOGIN</h2>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Senha">
+        <button class="btn-gold" onclick="authMAM()">ACEDER AO IMPÉRIO</button>
+        <p onclick="toggleA()" id="aL" style="margin-top:20px; font-size:0.8rem; color:var(--gold); cursor:pointer;">Novo Artista? <b>Criar Conta</b></p>
     </div>
-
-    <div class="toggle-link" onclick="toggleMode()">
-        <p id="toggleText">Ainda não faz parte da MAM? <span>Criar Conta</span></p>
-    </div>
-    
-    <p style="margin-top: 25px; font-size: 0.65rem; color: #444;">CEO Matias Arsénio Manuel</p>
 </div>
 
-<footer>MAM Distribuidora | Curadoria de Elite &copy; 2026</footer>
+<div id="app" class="hidden">
+    <aside>
+        <img src="https://i.ibb.co/LhqZz1L/mam-logo.jpg" onclick="tab('Admin')" style="width:90px; border-radius:50%; margin:0 auto 30px; border:2px solid var(--gold); cursor:pointer;">
+        <div class="nav-item active" onclick="tab('Home', this)">🏠 Início & Missões</div>
+        <div class="nav-item" onclick="tab('Perfil', this)">👤 Perfil Profissional</div>
+        <div class="nav-item" onclick="tab('Minhas', this)">🎶 Minhas Músicas</div>
+        <div class="nav-item" onclick="tab('Lancar', this)">📤 Lançar na MAM</div>
+        <div class="nav-item" onclick="tab('Carteira', this)">💰 Carteira / Saques</div>
+        <div class="nav-item" onclick="tab('CEO', this)">👔 Suporte CEO</div>
+        <div class="nav-item" style="margin-top:auto; color:#ff4444;" onclick="sair()">🚪 Terminar Sessão</div>
+    </aside>
+
+    <main>
+        <header>
+            <div style="font-weight:bold; color:var(--gold);">MAM DISTRIBUIDORA</div>
+            <div id="uSaldo" style="background:#111; padding:8px 20px; border-radius:30px; border:1px solid var(--gold); font-weight:bold; color:#fff;">0,00 Kz</div>
+        </header>
+
+        <section id="pHome" class="aba">
+            <h2 class="page-title">Feed de Lançamentos</h2>
+            <div class="vinyl-grid" id="feedList"></div>
+        </section>
+
+        <section id="pPerfil" class="aba hidden">
+            <h2 class="page-title">Editar Perfil</h2>
+            <div style="max-width:400px;">
+                <input type="text" placeholder="Nome Artístico">
+                <textarea style="width:100%; height:100px; background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:8px;"></textarea>
+                <button class="btn-gold">GUARDAR ALTERAÇÕES</button>
+            </div>
+        </section>
+
+        <section id="pMinhas" class="aba hidden">
+            <h2 class="page-title">Minha Discografia</h2>
+            <div class="vinyl-grid" id="myMusicList"></div>
+        </section>
+
+        <section id="pLancar" class="aba hidden">
+            <h2 class="page-title">Upload de Obra</h2>
+            <div style="max-width:400px;">
+                <input type="text" id="mTit" placeholder="Título do Single">
+                <input type="file" id="mAudio">
+                <button class="btn-gold">PUBLICAR AGORA</button>
+            </div>
+        </section>
+
+        <section id="pCarteira" class="aba hidden">
+            <h2 class="page-title">Dados Financeiros</h2>
+            <div style="background:#111; padding:30px; border-radius:15px; border-left:5px solid var(--gold);">
+                <p>Saldo do Artista</p>
+                <h1 id="uSaldoBig" style="color:var(--gold); margin:10px 0;">0,00 Kz</h1>
+                <button class="btn-gold" style="width:auto; padding:10px 30px;">SOLICITAR PAGAMENTO</button>
+            </div>
+        </section>
+
+        <section id="pCEO" class="aba hidden">
+            <h2 class="page-title">Contacto Direto</h2>
+            <div style="background:#111; padding:20px; border-radius:15px;">
+                <p>CEO: <b>Matias Arsénio Manuel</b></p>
+                <p>Email: mamfilhos29@gmail.com</p>
+                <p>Tel: 937881307</p>
+            </div>
+        </section>
+
+        <section id="pAdmin" class="aba hidden">
+            <h2 class="page-title">Painel de Lucros MAM (CEO)</h2>
+            <div style="background:var(--gold); color:#000; padding:20px; border-radius:15px; margin-bottom:20px;">
+                <p>Lucro Total da Empresa:</p>
+                <h1 id="admTotal">0,00 Kz</h1>
+            </div>
+            <div id="admLogs" style="font-size:0.8rem;"></div>
+        </section>
+    </main>
+</div>
+
+<footer class="footer-mam">MAM DISTRIBUIDORA | CURADORIA DE ELITE</footer>
 
 <script>
-    // Firebase Config [cite: 2026-01-27]
     const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
     firebase.initializeApp(cfg);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    let modoLogin = true;
-
-    function toggleMode() {
-        modoLogin = !modoLogin;
-        document.getElementById('title').innerText = modoLogin ? "MAM LOGIN" : "REGISTO MAM";
-        document.getElementById('desc').innerText = modoLogin ? "Acesso restrito à Curadoria de Elite" : "Junte-se à maior distribuidora de Angola";
-        document.getElementById('btnMain').innerText = modoLogin ? "Entrar no Painel" : "Criar Minha Conta";
-        document.getElementById('toggleText').innerHTML = modoLogin ? 
-            "Ainda não faz parte da MAM? <span>Criar Conta</span>" : 
-            "Já possui uma conta? <span>Fazer Login</span>";
+    let isLogin = true;
+    function toggleA() { 
+        isLogin = !isLogin; 
+        document.getElementById('aT').innerText = isLogin ? "MAM LOGIN" : "CRIAR CONTA";
+        document.getElementById('aL').innerHTML = isLogin ? "Novo Artista? <b>Criar Conta</b>" : "Já tem conta? <b>Fazer Login</b>";
     }
 
-    async function executar() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('pass').value;
+    async function mamLucro(val, mot) { 
+        await db.collection("lucro_mam").add({ valor: val, motivo: mot, data: new Date() }); 
+    }
 
-        if(!e || !p) return alert("Por favor, preencha todos os campos.");
-
+    async function authMAM() {
+        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
+        if(!e || !p) return;
         try {
-            if(modoLogin) {
-                // LOGIN
+            if(isLogin) {
                 await auth.signInWithEmailAndPassword(e, p);
-                // Lucro MAM por sessão
-                await db.collection("lucro_mam").add({ valor: 3000, motivo: "Sessão Artista: " + e, data: new Date() });
-                window.location.href = "dashboard.html"; // Redireciona para o painel
+                await mamLucro(3000, "Login: " + e);
             } else {
-                // REGISTO
-                const res = await auth.createUserWithEmailAndPassword(e, p);
-                // Inicializa Perfil do Artista com 1000 Kz
-                await db.collection("users").doc(res.user.uid).set({
-                    email: e, saldo: 1000, missoes: [], dataCriacao: new Date()
-                });
-                // Lucro MAM por nova conta
-                await db.collection("lucro_mam").add({ valor: 5000, motivo: "Nova Conta: " + e, data: new Date() });
-                alert("Conta criada! Bem-vindo à Família MAM.");
-                window.location.href = "dashboard.html";
+                const r = await auth.createUserWithEmailAndPassword(e, p);
+                await db.collection("users").doc(r.user.uid).set({ saldo: 1000, email: e, missoes: [] });
+                await mamLucro(5000, "Conta Nova: " + e);
+                alert("Conta Criada! +1000 Kz de Bónus.");
             }
-        } catch (err) {
-            alert("Erro: " + err.message);
-        }
+        } catch(err) { alert(err.message); }
     }
-</script>
 
-</body>
-</html>
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            db.collection("users").doc(u.uid).onSnapshot(doc => {
+                const s = doc.data().saldo.toLocaleString() + ",00 Kz";
+                document.getElementById('uSaldo').innerText = s;
+                document.getElementById('uSaldoBig').innerText = s;
+            });
+            carregarTudo();
+        } else {
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('app').classList.add('hidden');
+        }
+    });
+
+    async function play(id, t) {
+        await db.collection("users").doc(auth.currentUser.uid).update({ saldo: firebase.firestore.FieldValue.increment(200) });
+        await mamLucro(5000, "Play: " + t);
+        alert("MAM: +5000 Kz | Artista: +200 Kz");
+    }
+
+    function carregarTudo() {
+        // Feed Geral
+        db.collection("musicas").onSnapshot(snap => {
+            const f = document.getElementById('feedList'); f.innerHTML = "";
+            const m = document.getElementById('myMusicList'); m.innerHTML = "";
+            snap.forEach(doc => {
+                const data = doc.data();
+                const html = `<div class="disk-wrap" onclick="play('${doc.id}','${data.titulo}')"><img src="${data.capa}" class="disk"><p style="font-size:0.7rem; margin-top:10px;">${data.titulo}</p></div>`;
+                f.innerHTML += html;
+                if(data.artista_id === auth.currentUser.uid) m.innerHTML += html;
+            });
+        });
+        // Admin
+        db.collection("lucro_mam").orderBy("data","desc").onSnapshot(snap => {
+            let t = 0; const logs = document.getElementById('admLogs'); logs.innerHTML = "";
+            snap.forEach(doc =>

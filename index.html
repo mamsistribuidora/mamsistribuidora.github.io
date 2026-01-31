@@ -14,156 +14,27 @@
         
         body { background: var(--bg); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* TELA DE LOGIN (PASSO 1 E 2 MANTIDOS) */
         #authArea { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=60'); background-size: cover; background-position: center; }
         .auth-card { background: var(--card); padding: 30px; border-radius: 20px; border: 2px solid var(--gold); width: 90%; max-width: 420px; text-align: center; backdrop-filter: blur(8px); }
-        .logo-circle { width: 70px; height: 70px; border: 3px solid var(--gold); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--gold); font-size: 1.2rem; }
+        
+        /* LOGO RETIFICADO */
+        .logo-box { margin-bottom: 20px; }
+        .logo-main { font-weight: 900; color: var(--gold); font-size: 1.8rem; line-height: 1; text-transform: uppercase; }
+        .logo-sub { font-size: 0.7rem; color: #fff; font-weight: 300; letter-spacing: 1px; margin-top: 4px; }
+
         input { width: 100%; padding: 12px; margin: 8px 0; background: rgba(0,0,0,0.5); border: 1px solid #444; color: #fff; border-radius: 10px; outline: none; }
         .btn-gold { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
 
-        /* --- NOVO MENU (PASSO 3) --- */
         #mainPanel { display: none; }
-        
-        header { 
-            background: #000; padding: 15px 20px; border-bottom: 1px solid var(--gold); 
-            display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 900;
-        }
-
+        header { background: #000; padding: 15px 20px; border-bottom: 1px solid var(--gold); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 900; }
         .search-container { flex: 1; display: flex; justify-content: center; padding: 0 20px; }
         .search-container input { max-width: 400px; margin: 0; background: #111; border: 1px solid #333; padding: 8px 15px; }
 
         .layout { display: flex; }
-        
-        nav { 
-            width: 260px; background: #080808; height: calc(100vh - 70px); 
-            position: sticky; top: 70px; border-right: 1px solid #222; padding: 20px; 
-            display: flex; flex-direction: column; gap: 5px;
-        }
-
-        .nav-item { 
-            padding: 12px 15px; color: #aaa; cursor: pointer; border-radius: 8px; 
-            transition: 0.3s; font-size: 14px; font-weight: 600;
-        }
+        nav { width: 260px; background: #080808; height: calc(100vh - 70px); position: sticky; top: 70px; border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 5px; }
+        .nav-item { padding: 12px 15px; color: #aaa; cursor: pointer; border-radius: 8px; transition: 0.3s; font-size: 14px; font-weight: 600; }
         .nav-item:hover { background: rgba(212, 175, 55, 0.1); color: var(--gold); }
         .nav-item.logout { color: #ff4444; margin-top: auto; }
 
         main { flex: 1; padding: 30px; }
-
-        footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; border-top: 2px solid var(--gold); text-align: center; color: var(--gold); font-size: 10px; font-weight: 900; z-index: 10000; }
-
-        .hidden { display: none !important; }
-    </style>
-</head>
-<body>
-
-<div id="authArea">
-    <div class="auth-card" id="boxLogin">
-        <div class="logo-circle">MAM</div>
-        <h2>MAM DISTRIBUIDORA</h2>
-        <input type="email" id="loginEmail" placeholder="E-mail">
-        <input type="password" id="loginPass" placeholder="Senha">
-        <button class="btn-gold" onclick="entrar()">ENTRAR NO PAINEL</button>
-        <div style="margin-top:20px; font-size:0.75rem; cursor:pointer;" onclick="toggleAuth(false)">Não tens conta? <b style="color:var(--gold)">CRIAR AGORA</b></div>
-    </div>
-
-    <div class="auth-card hidden" id="boxRegisto">
-        <div class="logo-circle">MAM</div>
-        <h2>MAM DISTRIBUIDORA</h2>
-        <input type="text" id="regNome" placeholder="Nome do Artista ou Produtora">
-        <input type="email" id="regEmail" placeholder="E-mail Oficial">
-        <input type="password" id="regPass" placeholder="Criar Senha">
-        <input type="password" id="regPassConf" placeholder="Confirmar Senha">
-        <button class="btn-gold" onclick="registar()">REGISTAR E ENTRAR</button>
-        <div style="margin-top:20px; font-size:0.75rem; cursor:pointer;" onclick="toggleAuth(true)">Já tens conta? <b style="color:var(--gold)">FAZER LOGIN</b></div>
-    </div>
-</div>
-
-<div id="mainPanel">
-    <header>
-        <div style="font-weight: 900; color: var(--gold); letter-spacing: 1px;">MAM</div>
-        <div class="search-container">
-            <input type="text" placeholder="Pesquisar músicas, artistas...">
-        </div>
-        <div id="userBadge" style="font-size: 12px; color: #888;"></div>
-    </header>
-
-    <div class="layout">
-        <nav id="sidebar">
-            <div class="nav-item">Página inicial</div>
-            <div class="nav-item">Perfil</div>
-            <div class="nav-item">Minhas Músicas</div>
-            <div class="nav-item">Lança Música</div>
-            <div class="nav-item">Carteira</div>
-            <div class="nav-item">Estatística</div>
-            
-            <div id="adminOptions" class="hidden">
-                <hr style="border: 0; border-top: 1px solid #222; margin: 10px 0;">
-                <div class="nav-item">Administração</div>
-                <div class="nav-item">Assistente editor</div>
-                <div class="nav-item">Assistente de tarefas</div>
-            </div>
-
-            <div class="nav-item logout" onclick="sair()">Termina Sessão</div>
-        </nav>
-
-        <main>
-            <h2 id="welcomeTxt">Bem-vindo à MAM Distribuidora</h2>
-            <p style="color: #666; margin-top: 10px;">Painel de controle em desenvolvimento...</p>
-        </main>
-    </div>
-</div>
-
-<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
-
-<script>
-    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
-    firebase.initializeApp(cfg);
-    const auth = firebase.auth(), db = firebase.firestore();
-
-    function toggleAuth(isLogin) {
-        document.getElementById('boxLogin').classList.toggle('hidden', !isLogin);
-        document.getElementById('boxRegisto').classList.toggle('hidden', isLogin);
-    }
-
-    async function entrar() {
-        const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-        if(!e || !p) return alert("Preencha os campos!");
-        try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert(err.message); }
-    }
-
-    async function registar() {
-        const nome = document.getElementById('regNome').value, e = document.getElementById('regEmail').value, p = document.getElementById('regPass').value, pc = document.getElementById('regPassConf').value;
-        if(!nome || !e || !p || !pc) return alert("Preencha tudo!");
-        if(p !== pc) return alert("Senhas diferentes!");
-        try {
-            const res = await auth.createUserWithEmailAndPassword(e, p);
-            await db.collection("users").doc(res.user.uid).set({ nome: nome, email: e, role: 'user' });
-        } catch(err) { alert(err.message); }
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('mainPanel').style.display = 'block';
-            
-            // Verifica se é o Matias (CEO) para mostrar menu extra
-            if(u.email === "mamfilhos29@gmail.com") {
-                document.getElementById('adminOptions').classList.remove('hidden');
-            }
-
-            db.collection("users").doc(u.uid).get().then(doc => {
-                if(doc.exists) {
-                    document.getElementById('welcomeTxt').innerText = "Olá, " + doc.data().nome;
-                    document.getElementById('userBadge').innerText = u.email;
-                }
-            });
-        } else {
-            document.getElementById('authArea').classList.remove('hidden');
-            document.getElementById('mainPanel').style.display = 'none';
-        }
-    });
-
-    function sair() { auth.signOut(); }
-</script>
-</body>
-</html>
+        footer { position: fixed; bottom: 0

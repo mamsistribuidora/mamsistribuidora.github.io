@@ -38,15 +38,172 @@
 
         main { flex: 1; padding: 30px; overflow-y: auto; height: calc(100vh - 75px); padding-bottom: 100px; }
 
-        /* PERFIL ESTILOS */
-        .profile-card { background: #111; padding: 25px; border-radius: 20px; border: 1px solid var(--gold); margin-bottom: 30px; text-align: center; }
-        .profile-pic-box { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; }
-        #profilePic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
-        .edit-icon { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
-        .balance-display { font-size: 2rem; font-weight: 900; color: var(--gold); margin: 10px 0; }
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 5px; font-size: 10px; font-weight: 900; margin-bottom: 15px; }
+        /* BLOCO PERFIL SOLICITADO */
+        .seccao-perfil { background: #111; padding: 30px; border-radius: 20px; border: 1px solid var(--gold); margin-bottom: 40px; }
+        .foto-container { position: relative; width: 110px; height: 110px; margin: 0 auto 15px; }
+        #imgPerfil { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); }
+        .btn-upload { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; border: 2px solid #000; }
+        .painel-saldo { background: #000; border: 1px solid #333; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: center; }
+        .valor-saldo { font-size: 2.2rem; font-weight: 900; color: var(--gold); }
+        .cracha-status { display: inline-block; padding: 5px 15px; border-radius: 6px; font-size: 11px; font-weight: 900; margin-top: 5px; text-transform: uppercase; }
 
-        /* FEED E RECOMPENSAS (RESTALRADOS) */
+        /* ELEMENTOS ORIGINAIS MANTIDOS */
         .promo-banner { border: 2px dashed var(--gold); padding: 20px; border-radius: 15px; background: rgba(212,175,55,0.05); margin-bottom: 30px; }
         .reward-card { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .btn-action { background: var(--gold); color: #000; border: none; padding: 10
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) { nav { width: 70px; padding: 10px; } .nav-item span { display: none; } }
+    </style>
+</head>
+<body>
+
+<div id="authArea">
+    <div class="auth-card" id="boxLogin">
+        <div class="logo-main">MAM Distribuidora</div>
+        <input type="email" id="lE" placeholder="E-mail">
+        <input type="password" id="lP" placeholder="Senha">
+        <button class="btn-gold" id="btnEntrar">INICIAR SESSÃO</button>
+        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(false)">Criar Conta</p>
+    </div>
+    <div class="auth-card hidden" id="boxRegisto">
+        <div class="logo-main">MAM Distribuidora</div>
+        <input type="text" id="rN" placeholder="Nome Artístico">
+        <input type="email" id="rE" placeholder="E-mail">
+        <input type="password" id="rP" placeholder="Senha">
+        <button class="btn-gold" id="btnRegistar">REGISTAR</button>
+        <p style="margin-top:20px; font-size:0.8rem; cursor:pointer;" onclick="toggleA(true)">Login</p>
+    </div>
+</div>
+
+<div id="mainPanel">
+    <header>
+        <div class="logo-main" style="font-size:1.1rem;">MAM Distribuidora</div>
+        <div id="uBadge" style="font-size: 11px; color: var(--gold);"></div>
+    </header>
+
+    <div class="layout">
+        <nav>
+            <div class="nav-item"><span>Página inicial</span></div>
+            <div class="nav-item"><span>Perfil</span></div>
+            <div class="nav-item"><span>Minhas Músicas</span></div>
+            <div class="nav-item"><span>Lança Música</span></div>
+            <div class="nav-item"><span>Carteira</span></div>
+            <div class="nav-item logout" onclick="fSair()"><span>Sair</span></div>
+        </nav>
+        
+        <main>
+            <div class="seccao-perfil">
+                <div class="foto-container">
+                    <img id="imgPerfil" src="https://via.placeholder.com/150">
+                    <label for="inputFoto" class="btn-upload">✎</label>
+                    <input type="file" id="inputFoto" class="hidden" accept="image/*" onchange="atualizarFoto(this)">
+                </div>
+                <div style="text-align:center;">
+                    <h2 id="nomeDisplay">---</h2>
+                    <p id="emailDisplay" style="color:#666; font-size:13px;"></p>
+                    <div id="statusDisplay" class="cracha-status" style="background:#333;">Artista Normal</div>
+                </div>
+
+                <div class="painel-saldo">
+                    <p style="font-size:11px; color:#888;">SALDO MAM</p>
+                    <div class="valor-saldo"><span id="saldoDisplay">0,00</span> Kz</div>
+                    <button id="upgradeBtn" class="btn-gold" style="width:auto; padding:8px 20px; font-size:10px; margin-top:10px;">Upgrade para VIP</button>
+                </div>
+
+                <div style="margin-top:25px; border-top:1px solid #222; padding-top:20px;">
+                    <input type="text" id="novoNome" placeholder="Alterar Nome Artístico">
+                    <textarea id="novaBio" placeholder="Editar Biografia/Resumo..." rows="3"></textarea>
+                    <button class="btn-gold" onclick="salvarPerfil()">GUARDAR ALTERAÇÕES</button>
+                </div>
+            </div>
+
+            <div class="promo-banner">
+                <h3 style="color:var(--gold);">APOIA ESTE PROJECTO</h3>
+                <p>IBAN: <b>0006.0000.8631.6866.3015.2</b></p>
+            </div>
+
+            <h2>Caça Recompensa</h2>
+            <div class="reward-card">
+                <div><h4>Assistir Vídeos Pago</h4><p style="font-size:11px;">Ganhos via Satélite</p></div>
+                <button class="btn-gold" style="padding:10px 15px; font-size:11px;">ASSISTIR</button>
+            </div>
+            
+            <h2 style="margin-top:30px;">Categorias de Perfil</h2>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <div style="flex:1; border:1px solid var(--gold); padding:20px; border-radius:15px; text-align:center;">
+                    <h3>VIP</h3><button class="btn-gold" style="margin-top:10px; padding:10px;">ADERIR</button>
+                </div>
+                <div style="flex:1; border:1px solid var(--gold); padding:20px; border-radius:15px; text-align:center;">
+                    <h3>VIP MAX</h3><button class="btn-gold" style="margin-top:10px; padding:10px;">ADERIR</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
+
+<script>
+    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
+    firebase.initializeApp(cfg);
+    const auth = firebase.auth(), db = firebase.firestore();
+
+    function atualizarFoto(input) {
+        if (input.files && input.files[0]) {
+            let r = new FileReader();
+            r.onload = e => document.getElementById('imgPerfil').src = e.target.result;
+            r.readAsDataURL(input.files[0]);
+        }
+    }
+
+    async function salvarPerfil() {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("users").doc(u.uid).update({
+                nome: document.getElementById('novoNome').value,
+                bio: document.getElementById('novaBio').value
+            });
+            alert("Perfil MAM atualizado!");
+        }
+    }
+
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            document.getElementById('authArea').classList.add('hidden');
+            document.getElementById('mainPanel').style.display = 'block';
+            db.collection("users").doc(u.uid).get().then(doc => {
+                const d = doc.data();
+                document.getElementById('nomeDisplay').innerText = d.nome || "Artista";
+                document.getElementById('emailDisplay').innerText = u.email;
+                document.getElementById('saldoDisplay').innerText = (d.saldo || 0).toLocaleString();
+                document.getElementById('novoNome').value = d.nome || "";
+                document.getElementById('novaBio').value = d.bio || "";
+                if(d.tipo && d.tipo !== "Normal") {
+                    const s = document.getElementById('statusDisplay');
+                    s.innerText = d.tipo;
+                    s.style.background = "#D4AF37";
+                    s.style.color = "#000";
+                    document.getElementById('upgradeBtn').classList.add('hidden');
+                }
+            });
+        } else {
+            document.getElementById('authArea').classList.remove('hidden');
+            document.getElementById('mainPanel').style.display = 'none';
+        }
+    });
+
+    document.getElementById('btnEntrar').addEventListener('click', () => {
+        auth.signInWithEmailAndPassword(document.getElementById('lE').value, document.getElementById('lP').value);
+    });
+
+    document.getElementById('btnRegistar').addEventListener('click', async () => {
+        const n = document.getElementById('rN').value, e = document.getElementById('rE').value, p = document.getElementById('rP').value;
+        const res = await auth.createUserWithEmailAndPassword(e, p);
+        await db.collection("users").doc(res.user.uid).set({ nome: n, email: e, saldo: 0, tipo: 'Normal', bio: '' });
+    });
+
+    function fSair() { auth.signOut(); }
+    function toggleA(l) { document.getElementById('boxLogin').classList.toggle('hidden', !l); document.getElementById('boxRegisto').classList.toggle('hidden', l); }
+</script>
+</body>
+</html>

@@ -12,174 +12,88 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #D4AF37; --bg: #0a0a0a; --card: rgba(20, 20, 20, 0.95); }
+        :root { --gold: #D4AF37; --bg: #0d0d0d; --nav-bg: #121212; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
-        body { 
-            background: var(--bg) url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed; 
-            background-size: cover; color: #fff; min-height: 100vh; overflow-x: hidden;
+        body { background-color: var(--bg); color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* HEADER ORIGINAL */
+        header { 
+            height: 70px; background: #000; border-bottom: 1px solid #222;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+            position: sticky; top: 0; z-index: 1000;
         }
+        .search-box { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 8px 15px; width: 400px; display: flex; align-items: center; }
+        .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; margin-left: 10px; }
 
-        /* AUTH AREA */
-        #authArea { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 20px; border: 2px solid var(--gold); width: 90%; max-width: 400px; text-align: center; }
+        .layout { display: flex; flex: 1; }
 
-        /* HEADER & NAV */
-        header { background: #000; padding: 15px 25px; border-bottom: 1px solid var(--gold); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; }
-        .logo-txt { font-weight: 900; color: var(--gold); text-transform: uppercase; line-height: 1; }
+        /* MENU COMPLETO - 6 OPÇÕES */
+        nav { width: 260px; background: var(--nav-bg); border-right: 1px solid #222; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .nav-link { padding: 12px 15px; color: #888; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { background: rgba(212, 175, 55, 0.1); color: var(--gold); }
+        .nav-link.exit { color: #ff4444; margin-top: auto; border-top: 1px solid #222; padding-top: 20px; border-radius: 0; }
+
+        main { flex: 1; padding: 30px; overflow-y: auto; height: calc(100vh - 70px); }
+
+        /* SEÇÕES */
+        .content-sec { display: none; }
+        .content-sec.active { display: block; }
+
+        /* PAGINA INICIAL COMPLETA */
+        .apoio-card { border: 1px dashed var(--gold); padding: 20px; border-radius: 10px; background: rgba(212,175,55,0.02); margin-bottom: 30px; }
+        .apoio-card h2 { color: var(--gold); font-size: 14px; text-transform: uppercase; margin-bottom: 5px; }
         
-        .layout { display: flex; min-height: calc(100vh - 70px); }
-        nav { width: 260px; background: rgba(0,0,0,0.9); border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .nav-item { padding: 12px 15px; color: #aaa; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.3s; }
-        .nav-item:hover, .nav-item.active { background: rgba(212, 175, 55, 0.1); color: var(--gold); }
+        .section-title { font-size: 18px; margin-bottom: 20px; font-weight: 600; color: #eee; }
+        
+        .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .disco { text-align: center; }
+        .vinyl-art { width: 140px; height: 140px; background: #1a1a1a; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; overflow: hidden; }
+        .vinyl-art::after { content: ''; position: absolute; top: 0; right: -50%; width: 100%; height: 100%; background: rgba(255,255,255,0.05); transform: skewX(-20deg); }
 
-        main { flex: 1; padding: 25px; overflow-y: auto; height: calc(100vh - 75px); padding-bottom: 100px; }
+        .reward-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .reward-card { background: #151515; padding: 20px; border-radius: 12px; border: 1px solid #222; display: flex; align-items: center; justify-content: space-between; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 900; font-size: 11px; cursor: pointer; }
 
-        /* SECCIONALIZAÇÃO */
-        .secao { display: none; animation: fadeIn 0.3s ease; }
-        .secao.ativa { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* PERFIL (EDITÁVEL) */
+        .profile-box { max-width: 600px; margin: 0 auto; background: #151515; border: 1px solid var(--gold); padding: 40px; border-radius: 20px; text-align: center; }
+        .avatar-edit { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); margin: 0 auto 20px; position: relative; background: #000; }
+        .avatar-edit img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .edit-icon { position: absolute; bottom: 5px; right: 5px; background: var(--gold); color: #000; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; }
+        
+        input, textarea { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; }
+        .status-tag { display: inline-block; padding: 5px 15px; border-radius: 20px; background: #333; font-size: 10px; font-weight: 900; margin: 10px 0; }
 
-        /* PAGINA INICIAL (O QUE ESTAVA BOM) */
-        .banner-apoio { border: 2px dashed var(--gold); padding: 20px; border-radius: 15px; background: rgba(212,175,55,0.05); margin-bottom: 30px; }
-        .disco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-bottom: 35px; }
-        .vinyl-disc { width: 130px; height: 130px; border-radius: 50%; background: #111; border: 4px solid #222; margin: 0 auto; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
-        .reward-item { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; display: flex; align-items: center; justify-content: space-between; }
-
-        /* PERFIL (APENAS O QUE ORIENTASTE) */
-        .perfil-container { max-width: 600px; margin: 0 auto; background: #111; padding: 30px; border-radius: 20px; border: 1px solid var(--gold); text-align: center; }
-        .foto-perfil-wrap { position: relative; width: 110px; height: 110px; margin: 0 auto 20px; }
-        #imgUser { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); }
-        .btn-edit-foto { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; }
-        .saldo-kz { font-size: 2.5rem; font-weight: 900; color: var(--gold); margin: 15px 0; }
-        .badge-status { display: inline-block; padding: 5px 12px; border-radius: 5px; font-size: 11px; font-weight: 900; background: #222; color: var(--gold); text-transform: uppercase; }
-
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        .btn-main { background: var(--gold); color: #000; border: none; padding: 15px 25px; border-radius: 8px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; }
-
-        footer { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #000; border-top: 1px solid var(--gold); text-align: center; color: var(--gold); font-size: 11px; font-weight: bold; z-index: 1000; }
+        footer { padding: 15px; text-align: center; background: #000; color: var(--gold); font-size: 10px; font-weight: 900; border-top: 1px solid #222; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div id="authArea">
-    <div class="auth-card">
-        <h1 class="logo-txt">MAM Distribuidora</h1>
-        <p style="font-size: 10px; margin-bottom: 20px;">Matias Arsénio Manuel</p>
-        <input type="email" id="emailLogin" placeholder="E-mail">
-        <input type="password" id="passLogin" placeholder="Senha">
-        <button class="btn-main" id="btnEntrar">ENTRAR NO PAINEL</button>
+<header>
+    <div style="font-weight: 900; color: var(--gold);">MAM DISTRIBUIDORA</div>
+    <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Pesquisar músicas, álbuns ou artistas...">
     </div>
-</div>
+    <div id="userDisplay" style="font-size: 11px; font-weight: 600; color: #888;"></div>
+</header>
 
-<div id="mainPanel" style="display:none;">
-    <header>
-        <div><div class="logo-txt" style="font-size:1.1rem;">MAM</div><div style="font-size:0.5rem;">Matias Arsénio Manuel</div></div>
-        <div id="userTag" style="font-size: 11px; color: var(--gold); border: 1px solid var(--gold); padding: 3px 10px; border-radius: 20px;"></div>
-    </header>
+<div class="layout">
+    <nav>
+        <div class="nav-link active" onclick="tab('home', this)">Página inicial</div>
+        <div class="nav-link" onclick="tab('perfil', this)">Perfil</div>
+        <div class="nav-link">Minhas Músicas</div>
+        <div class="nav-link">Lança Música</div>
+        <div class="nav-link">Carteira</div>
+        <div class="nav-link exit" onclick="location.reload()">Sair</div>
+    </nav>
 
-    <div class="layout">
-        <nav>
-            <div class="nav-item active" onclick="mudarTab('home', this)">Página inicial</div>
-            <div class="nav-item" onclick="mudarTab('perfil', this)">Perfil</div>
-            <div class="nav-item">Lança Música</div>
-            <div class="nav-item" onclick="location.reload()" style="color:#ff4444; margin-top:auto;">Sair</div>
-        </nav>
-        
-        <main>
-            <div id="home" class="secao ativa">
-                <div class="banner-apoio">
-                    <h3 style="color:var(--gold);">APOIA ESTE PROJECTO</h3>
-                    <p>IBAN BFA: <b>0006.0000.8631.6866.3015.2</b></p>
-                </div>
-
-                <h2 style="margin-bottom:20px;">Feed de Discos</h2>
-                <div class="disco-grid">
-                    <div style="text-align:center;"><div class="vinyl-disc"></div><p style="font-size:10px; margin-top:10px;">Single Oficial</p></div>
-                    <div style="text-align:center;"><div class="vinyl-disc"></div><p style="font-size:10px; margin-top:10px;">Álbum Novo</p></div>
-                </div>
-
-                <h2>Caça Recompensa</h2>
-                <div class="reward-item">
-                    <div><h4 style="color:var(--gold);">Assistir Vídeos</h4><p style="font-size:10px;">Remuneração via Satélite</p></div>
-                    <button class="btn-main" style="width:auto; padding:8px 15px; font-size:10px;">ASSISTIR</button>
-                </div>
+    <main>
+        <div id="home" class="content-sec active">
+            <div class="apoio-card">
+                <h2>APOIA ESTE PROJECTO</h2>
+                <p>IBAN BFA: 0006.0000.8631.6866.3015.2 | MATIAS ARSÉNIO MANUEL</p>
             </div>
 
-            <div id="perfil" class="secao">
-                <div class="perfil-container">
-                    <div class="foto-perfil-wrap">
-                        <img id="imgUser" src="https://via.placeholder.com/150">
-                        <label for="fileIn" class="btn-edit-foto">✎</label>
-                        <input type="file" id="fileIn" class="hidden" accept="image/*" onchange="previewImg(this)">
-                    </div>
-                    <h2 id="nomeUser">Carregando...</h2>
-                    <div id="statusUser" class="badge-status">Artista Normal</div>
-
-                    <div class="saldo-kz"><span id="saldoUser">0,00</span> Kz</div>
-                    
-                    <div style="margin-top:25px; border-top:1px solid #222; padding-top:20px; text-align:left;">
-                        <label style="font-size:11px; color:var(--gold);">Nome Artístico</label>
-                        <input type="text" id="editNome">
-                        <label style="font-size:11px; color:var(--gold);">Biografia</label>
-                        <textarea id="editBio" rows="3"></textarea>
-                        <button class="btn-main" onclick="salvarDados()">GUARDAR ALTERAÇÕES</button>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-</div>
-
-<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
-
-<script>
-    const firebaseConfig = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth(), db = firebase.firestore();
-
-    function mudarTab(id, el) {
-        document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
-        document.getElementById(id).classList.add('ativa');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function previewImg(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('imgUser').src=e.target.result; r.readAsDataURL(i.files[0]); } }
-
-    async function salvarDados() {
-        const u = auth.currentUser;
-        await db.collection("users").doc(u.uid).update({ 
-            nome: document.getElementById('editNome').value, 
-            bio: document.getElementById('editBio').value 
-        });
-        alert("Perfil Atualizado com Sucesso!");
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('authArea').classList.add('hidden');
-            document.getElementById('mainPanel').style.display = 'block';
-            db.collection("users").doc(u.uid).get().then(doc => {
-                const d = doc.data();
-                document.getElementById('nomeUser').innerText = d.nome || "Artista";
-                document.getElementById('saldoUser').innerText = (d.saldo || 0).toLocaleString();
-                document.getElementById('editNome').value = d.nome || "";
-                document.getElementById('editBio').value = d.bio || "";
-                document.getElementById('userTag').innerText = u.email;
-                if(d.tipo && d.tipo !== "Normal") {
-                    document.getElementById('statusUser').innerText = d.tipo;
-                    document.getElementById('statusUser').style.background = "#D4AF37";
-                    document.getElementById('statusUser').style.color = "#000";
-                }
-            });
-        }
-    });
-
-    document.getElementById('btnEntrar').addEventListener('click', () => {
-        auth.signInWithEmailAndPassword(document.getElementById('emailLogin').value, document.getElementById('passLogin').value);
-    });
-</script>
-</body>
-</html>
+            <h3 class="section-title">Feed de Lançamentos

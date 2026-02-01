@@ -10,17 +10,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; --grey: #1a1a1a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: var(--black); color: #fff; min-height: 100vh; }
+        body { background: var(--black); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
         header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
 
         .layout { display: flex; }
         
-        /* MENU COMPLETO - 8 OPÇÕES */
-        nav { width: 220px; background: #050505; height: calc(100vh - 60px); padding: 15px; border-right: 1px solid #1a1a1a; position: fixed; }
+        /* MENU 8 OPÇÕES */
+        nav { width: 220px; background: #050505; height: calc(100vh - 60px); padding: 15px; border-right: 1px solid var(--grey); position: fixed; overflow-y: auto; }
         .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 4px; text-decoration: none; }
         .nav-item:hover, .nav-item.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
 
@@ -28,12 +28,16 @@
         .secao { display: none; }
         .secao.ativa { display: block; }
 
-        /* TAREFAS */
-        .card-task { background: var(--dark); border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-acao { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        /* FEED DE LANÇAMENTOS */
+        .feed-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; margin-bottom: 25px; scrollbar-width: thin; }
+        .disco-capa { min-width: 100px; height: 100px; background: #111; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--gold); text-align: center; padding: 5px; }
 
-        /* PERFIL CORRIGIDO */
-        .perfil-box { max-width: 400px; margin: 0 auto; text-align: center; background: var(--dark); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
+        /* TAREFAS */
+        .card-task { background: var(--dark); border: 1px solid var(--grey); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-acao { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
+
+        /* PERFIL */
+        .perfil-box { max-width: 400px; margin: 0 auto; text-align: center; background: var(--dark); padding: 25px; border-radius: 15px; border: 1px solid var(--gold); }
         .foto-u { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; background: #111; }
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 5px; }
 
@@ -68,10 +72,18 @@
                 <small>Matias Arsénio Manuel</small>
             </div>
 
-            <h4>Caça Recompensa</h4><br>
+            <h4 style="margin-bottom:10px;">Feed de Lançamentos</h4>
+            <div class="feed-container">
+                <div class="disco-capa">NOVIDADE MAM</div>
+                <div class="disco-capa">PLAY SEAN</div>
+                <div class="disco-capa">CURADORIA</div>
+                <div class="disco-capa">BREVEMENTE</div>
+            </div>
+
+            <h4 style="margin-bottom:15px">Caça Recompensa</h4>
             <div class="card-task">
-                <div><b>Assistir Vídeos Pago</b><br><small style="color:#666">Ganha por visualização</small></div>
-                <button class="btn-acao" onclick="alert('Buscando anúncio...')">ABRIR</button>
+                <div><b>Assistir Vídeos Pago</b><br><small style="color:#666">Ganha por cada anúncio</small></div>
+                <button class="btn-acao" onclick="alert('Buscando vídeo...')">ABRIR</button>
             </div>
             <div class="card-task">
                 <div><b>Convidar Amigos</b><br><small style="color:#666">Ganha 500 Kz por registo</small></div>
@@ -90,14 +102,14 @@
                 <input type="file" id="fileIn" style="display:none" onchange="preview(this)">
                 <button class="btn-acao" style="font-size:10px; margin-bottom:10px;" onclick="document.getElementById('fileIn').click()">MUDAR FOTO</button>
                 
-                <div style="margin: 10px 0; background:#000; padding:10px; border-radius:10px;">
+                <div style="margin: 10px 0; background:#000; padding:10px; border-radius:10px; border:1px solid #1a1a1a;">
                     <small style="color:#444">SALDO MAM</small>
                     <h2 id="usrSaldo" style="color:var(--gold)">0,00 Kz</h2>
                 </div>
 
                 <input type="text" id="usrNome" placeholder="Nome Artístico">
-                <textarea id="usrBio" placeholder="Biografia..." rows="3"></textarea>
-                <button id="btnSalvar" class="btn-acao" style="width:100%; padding:15px;" onclick="salvarBD()">GUARDAR TUDO</button>
+                <textarea id="usrBio" placeholder="Biografia artística..." rows="3"></textarea>
+                <button id="btnSalvar" class="btn-acao" style="width:100%; padding:15px;" onclick="salvarTudo()">GUARDAR ALTERAÇÕES</button>
             </div>
         </div>
     </main>
@@ -125,25 +137,23 @@
         }
     }
 
-    async function salvarBD() {
+    async function salvarTudo() {
         const u = auth.currentUser;
         if(!u) return;
         const btn = document.getElementById('btnSalvar');
         btn.innerText = "A GUARDAR...";
 
-        const dados = {
-            nome: document.getElementById('usrNome').value,
-            bio: document.getElementById('usrBio').value,
-            foto: document.getElementById('usrFoto').src // Salva o Base64 direto
-        };
-
         try {
-            await db.collection("users").doc(u.uid).set(dados, { merge: true });
-            alert("Perfil MAM guardado com sucesso!");
+            await db.collection("users").doc(u.uid).set({
+                nome: document.getElementById('usrNome').value,
+                bio: document.getElementById('usrBio').value,
+                foto: document.getElementById('usrFoto').src 
+            }, { merge: true });
+            alert("MAM: Perfil atualizado com sucesso!");
         } catch (e) {
-            alert("Erro: " + e.message);
+            alert("Erro ao salvar: " + e.message);
         }
-        btn.innerText = "GUARDAR TUDO";
+        btn.innerText = "GUARDAR ALTERAÇÕES";
     }
 
     auth.onAuthStateChanged(u => {

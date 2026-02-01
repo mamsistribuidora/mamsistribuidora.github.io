@@ -10,148 +10,72 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         
-        /* FIX DA IMAGEM DE FUNDO: Ela fica atrás e não mexe */
-        body { background: #000; color: #fff; min-height: 100vh; position: relative; }
-        .bg-fix { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200') no-repeat center center; 
-            background-size: cover; z-index: -1; opacity: 0.4;
-        }
+        body { background: var(--black); color: #fff; min-height: 100vh; }
 
-        /* HEADER */
-        header { background: rgba(0,0,0,0.9); padding: 15px; border-bottom: 1px solid var(--gold); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-        .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; line-height: 1; }
-        .search { background: #111; border: 1px solid #333; padding: 8px; border-radius: 5px; width: 40%; color: #fff; }
+        header { 
+            background: var(--dark); padding: 15px 20px; border-bottom: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100;
+        }
+        .logo { color: var(--gold); font-weight: 900; text-transform: uppercase; font-size: 16px; }
 
         .layout { display: flex; }
 
-        /* MENU LATERAL - 8 OPÇÕES */
-        nav { width: 220px; background: rgba(0,0,0,0.8); height: calc(100vh - 60px); padding: 20px 10px; border-right: 1px solid #222; position: sticky; top: 60px; }
-        .nav-link { padding: 12px; color: #ccc; cursor: pointer; display: block; text-decoration: none; font-size: 13px; margin-bottom: 5px; border-radius: 5px; }
-        .nav-link:hover, .nav-link.active { background: rgba(212,175,55,0.2); color: var(--gold); font-weight: bold; }
+        nav { width: 230px; background: var(--dark); height: calc(100vh - 60px); padding: 20px 10px; border-right: 1px solid #1a1a1a; }
+        .nav-link { padding: 12px; color: #777; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 5px; text-decoration: none; }
+        .nav-link:hover, .nav-link.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
 
-        /* ÁREA DE CONTEÚDO */
-        main { flex: 1; padding: 20px; z-index: 1; }
-        .tela { display: none; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px; backdrop-filter: blur(5px); }
-        .tela.ativa { display: block; }
+        main { flex: 1; padding: 25px; overflow-y: auto; height: calc(100vh - 60px); padding-bottom: 80px; }
+        .tela { display: none; }
+        .tela.active { display: block; }
 
-        /* HOME */
-        .banner { border: 2px dashed var(--gold); padding: 15px; margin-bottom: 20px; border-radius: 10px; }
-        .disco-row { display: flex; gap: 20px; margin: 20px 0; }
-        .disco-v { width: 100px; height: 100px; background: #000; border-radius: 50%; border: 3px solid #222; box-shadow: 0 0 10px var(--gold); }
-        .card-r { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        /* HOME CONTENT */
+        .banner { border: 1px dashed var(--gold); padding: 15px; border-radius: 10px; background: #050505; margin-bottom: 25px; }
+        .card-task { background: #0a0a0a; padding: 15px; border-radius: 10px; border: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 8px 16px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; }
 
         /* PERFIL */
-        .perfil-card { max-width: 400px; margin: 0 auto; text-align: center; }
-        .foto-u { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; }
-        .btn { background: var(--gold); color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .perfil-card { max-width: 420px; margin: 0 auto; background: var(--dark); padding: 25px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; }
+        .foto-u { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 15px; object-fit: cover; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 8px; font-size: 13px; }
 
-        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); border-top: 1px solid #222; background: #000; position: fixed; bottom: 0; width: 100%; }
+        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); background: #000; border-top: 1px solid #111; position: fixed; bottom: 0; width: 100%; z-index: 100; }
     </style>
 </head>
 <body>
 
-<div class="bg-fix"></div>
-
 <header>
-    <div class="logo">MAM DISTRIBUIDORA<br><span style="font-size: 8px; color:#fff">Matias Arsénio Manuel</span></div>
-    <input type="text" class="search" placeholder="Pesquisar...">
-    <div id="uEmail" style="font-size: 10px; color: var(--gold);"></div>
+    <div class="logo">MAM DISTRIBUIDORA</div>
+    <div id="uMail" style="font-size: 10px; color: #555;"></div>
 </header>
 
 <div class="layout">
     <nav>
-        <div class="nav-link active" onclick="tab('home', this)">Página Inicial</div>
-        <div class="nav-link" onclick="tab('perfil', this)">Perfil</div>
+        <div class="nav-link active" onclick="ver('home', this)">Página Inicial</div>
+        <div class="nav-link" onclick="ver('perfil', this)">Perfil</div>
         <div class="nav-link">Minhas Músicas</div>
-        <div class="nav-link">Lança Música</div>
         <div class="nav-link">Carteira</div>
         <div class="nav-link">Estatística</div>
-        <div class="nav-link">Administração</div>
-        <div class="nav-link" style="color:red; margin-top:30px;" onclick="location.reload()">Sair</div>
+        <div class="nav-link" style="color:red; margin-top:50px;" onclick="location.reload()">Sair</div>
     </nav>
 
     <main>
-        <div id="home" class="tela ativa">
+        <div id="home" class="tela active">
             <div class="banner">
-                <h3 style="color: var(--gold)">APOIA MEUS PROJECTOS</h3>
+                <h4 style="color:var(--gold)">APOIA ESTE PROJECTO</h4>
                 <p style="font-size: 12px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
             </div>
-            <h4>Feed de Lançamentos</h4>
-            <div class="disco-row">
-                <div style="text-align:center"><div class="disco-v"></div><small>Lançamento #1</small></div>
-                <div style="text-align:center"><div class="disco-v"></div><small>Brevemente</small></div>
+
+            <h3 style="margin-bottom:15px; font-size: 16px;">Caça Recompensa</h3>
+            
+            <div class="card-task">
+                <div><b>Assistir Vídeos</b><br><small style="color:#666">Ganha por visualização</small></div>
+                <button class="btn-gold" onclick="alert('Buscando vídeos...')">ABRIR</button>
             </div>
-            <h4>Caça Recompensa</h4>
-            <div class="card-r">
-                <div><b>Assistir Vídeos Pago</b><br><small>Ganha por visualização</small></div>
-                <button class="btn" onclick="alert('Conectando...')">ASSISTIR</button>
+
+            <div class="card-task">
+                <div><b>Convidar Amigos</b><br><small style="color:#666">Ganha 500 Kz por registo</small></div>
+                <button class="btn-gold" onclick="copiarLink()">COPIAR LINK</button>
             </div>
-        </div>
-
-        <div id="perfil" class="tela">
-            <div class="perfil-card">
-                <img id="usrImg" src="https://via.placeholder.com/110" class="foto-u">
-                <br>
-                <button class="btn" style="font-size: 10px; padding: 5px 10px;" onclick="document.getElementById('fIn').click()">Mudar Foto</button>
-                <input type="file" id="fIn" style="display:none" onchange="readImg(this)">
-                
-                <div style="margin: 20px 0; background: #000; padding: 15px; border-radius: 10px;">
-                    <small style="color:#888">SALDO EM CONTA</small>
-                    <h2 id="usrSaldo" style="color: var(--gold)">0,00 Kz</h2>
-                </div>
-
-                <input type="text" id="usrNome" placeholder="Seu Nome Artístico">
-                <textarea id="usrBio" placeholder="Sua Biografia..." rows="3"></textarea>
-                <button class="btn" style="width:100%" onclick="save()">GUARDAR ALTERAÇÕES</button>
-            </div>
-        </div>
-    </main>
-</div>
-
-<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
-
-<script>
-    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
-    firebase.initializeApp(cfg);
-    const auth = firebase.auth(), db = firebase.firestore();
-
-    function tab(id, el) {
-        document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-        document.getElementById(id).classList.add('ativa');
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function readImg(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('usrImg').src=e.target.result; r.readAsDataURL(i.files[0]); } }
-
-    async function save() {
-        const u = auth.currentUser;
-        if(u) {
-            await db.collection("users").doc(u.uid).update({
-                nome: document.getElementById('usrNome').value,
-                bio: document.getElementById('usrBio').value
-            });
-            alert("Perfil MAM atualizado!");
-        }
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('uEmail').innerText = u.email.toUpperCase();
-            db.collection("users").doc(u.uid).get().then(doc => {
-                if(doc.exists) {
-                    const d = doc.data();
-                    document.getElementById('usrNome').value = d.nome || "";
-                    document.getElementById('usrSaldo').innerText = (d.saldo || 0).toLocaleString() + " Kz";
-                }
-            });
-        }
-    });
-</script>
-</body>
-</html>

@@ -3,64 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora</title>
+    <title>MAM Distribuidora | Oficial</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --bg: #000; --card: #0a0a0a; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        
-        body { background: var(--bg); color: #fff; min-height: 100vh; }
+        body { background: var(--black); color: #fff; min-height: 100vh; }
 
-        /* Cabeçalho Fixo */
-        header { 
-            background: #000; padding: 15px; border-bottom: 2px solid var(--gold);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { color: var(--gold); font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
 
         .layout { display: flex; }
+        
+        /* MENU COMPLETO RESTAURADO */
+        nav { width: 220px; background: #050505; height: calc(100vh - 60px); padding: 15px; border-right: 1px solid #1a1a1a; position: fixed; overflow-y: auto; }
+        .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 4px; text-decoration: none; }
+        .nav-item:hover, .nav-item.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
 
-        /* Menu Lateral */
-        nav { width: 200px; background: #050505; height: calc(100vh - 60px); padding: 15px; border-right: 1px solid #1a1a1a; position: fixed; }
-        .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; text-decoration: none; margin-bottom: 5px; border-radius: 4px; }
-        .nav-item:hover, .nav-item.active { background: #111; color: var(--gold); }
-
-        /* Área Principal */
-        main { flex: 1; margin-left: 200px; padding: 20px; }
+        main { flex: 1; margin-left: 220px; padding: 20px; padding-bottom: 80px; }
         .secao { display: none; }
         .secao.ativa { display: block; }
 
-        /* Estilos da Home */
-        .banner-apoio { border: 1px dashed var(--gold); padding: 15px; border-radius: 8px; background: #080808; margin-bottom: 25px; }
-        
-        .feed-discos { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin: 15px 0; }
-        .disco { min-width: 90px; text-align: center; }
-        .capa { width: 90px; height: 90px; background: #111; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 5px; }
+        /* TAREFAS */
+        .card-task { background: var(--dark); border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-acao { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
-        .tarefa-card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-acao { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
-
-        /* Planos VIP */
-        .vip-container { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .vip-card { flex: 1; min-width: 140px; background: #080808; border: 1px solid var(--gold); padding: 15px; border-radius: 10px; text-align: center; }
-        .preco { color: var(--gold); font-size: 18px; font-weight: bold; margin: 10px 0; }
-
-        /* Perfil Editável */
-        .perfil-form { max-width: 400px; margin: 0 auto; text-align: center; }
-        .foto-perfil { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; }
+        /* PERFIL */
+        .perfil-box { max-width: 400px; margin: 0 auto; text-align: center; background: var(--dark); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
+        .foto-u { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; background: #111; }
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 5px; }
 
         footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); border-top: 1px solid #111; background: #000; position: fixed; bottom: 0; width: 100%; }
-
-        @media (max-width: 600px) {
-            nav { width: 100px; padding: 5px; }
-            .nav-item { font-size: 10px; }
-            main { margin-left: 100px; }
+        
+        @media (max-width: 768px) {
+            nav { width: 140px; }
+            main { margin-left: 140px; }
+            .nav-item { font-size: 11px; }
         }
     </style>
 </head>
@@ -68,118 +51,65 @@
 
 <header>
     <div class="logo">MAM DISTRIBUIDORA</div>
-    <div id="uEmail" style="font-size: 9px; color: #444;"></div>
+    <div id="uEmail" style="font-size: 9px; color: var(--gold);"></div>
 </header>
 
 <div class="layout">
     <nav>
-        <div class="nav-item active" onclick="trocar('home', this)">Página Inicial</div>
-        <div class="nav-item" onclick="trocar('perfil', this)">Meu Perfil</div>
+        <div class="nav-item active" onclick="ver('home', this)">Página Inicial</div>
+        <div class="nav-item" onclick="ver('perfil', this)">Meu Perfil</div>
         <div class="nav-item">Minhas Músicas</div>
+        <div class="nav-item">Lançar Música</div>
         <div class="nav-item">Carteira</div>
-        <div class="nav-item" style="color:red; margin-top:30px;" onclick="location.reload()">Sair</div>
+        <div class="nav-item">Estatística</div>
+        <div class="nav-item">Suporte MAM</div>
+        <div class="nav-item">Administração</div>
+        <div class="nav-item" style="color:red; margin-top:20px;" onclick="location.reload()">Sair</div>
     </nav>
 
     <main>
         <div id="home" class="secao ativa">
-            <div class="banner-apoio">
-                <h4 style="color:var(--gold)">APOIA ESTE PROJECTO (CEO MAM)</h4>
+            <div style="border: 1px dashed var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px; background: #050505;">
+                <h4 style="color:var(--gold)">APOIO AO CEO</h4>
                 <p style="font-size: 12px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
                 <small>Matias Arsénio Manuel</small>
             </div>
 
-            <h4>Lançamentos MAM</h4>
-            <div class="feed-discos">
-                <div class="disco"><div class="capa"></div><small>Música 1</small></div>
-                <div class="disco"><div class="capa"></div><small>Música 2</small></div>
-                <div class="disco"><div class="capa"></div><small>Música 3</small></div>
+            <h4 style="margin-bottom:15px">Caça Recompensa</h4>
+            <div class="card-task">
+                <div><b>Assistir Vídeos Pago</b><br><small style="color:#666">Ganha por visualização</small></div>
+                <button class="btn-acao" onclick="alert('Carregando vídeo...')">ABRIR</button>
             </div>
 
-            <h4 style="margin: 20px 0 10px;">Caça Recompensa</h4>
-            <div class="tarefa-card">
-                <div><b>Convidar Amigos</b><br><small style="color:#666">+500 Kz por pessoa</small></div>
-                <button class="btn-acao" onclick="alert('Link Copiado!')">CONVIDAR</button>
+            <div class="card-task">
+                <div><b>Convidar Amigos</b><br><small style="color:#666">Ganha 500 Kz por registo</small></div>
+                <button class="btn-acao" onclick="alert('Link de convite copiado!')">CONVIDAR</button>
             </div>
-            <div class="tarefa-card">
-                <div><b>Seguir no TikTok</b><br><small style="color:#666">Play Sean Arsénio</small></div>
+
+            <div class="card-task">
+                <div><b>Seguir Play Sean Arsénio</b><br><small style="color:#666">TikTok Oficial</small></div>
                 <button class="btn-acao" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
-            </div>
-
-            <h4 style="margin: 20px 0 10px;">Categorias VIP</h4>
-            <div class="vip-container">
-                <div class="vip-card">
-                    <b>VIP</b>
-                    <div class="preco">15.000 Kz</div>
-                    <button class="btn-acao" style="width:100%">ADERIR</button>
-                </div>
-                <div class="vip-card">
-                    <b>VIP MAX</b>
-                    <div class="preco">25.000 Kz</div>
-                    <button class="btn-acao" style="width:100%">ADERIR</button>
-                </div>
             </div>
         </div>
 
         <div id="perfil" class="secao">
-            <div class="perfil-form">
-                <img id="pFoto" src="https://via.placeholder.com/100" class="foto-perfil">
+            <div class="perfil-box">
+                <img id="usrFoto" src="https://via.placeholder.com/120" class="foto-u">
                 <br>
-                <button class="btn-acao" style="font-size:9px;" onclick="document.getElementById('fIn').click()">MUDAR FOTO</button>
-                <input type="file" id="fIn" style="display:none" onchange="imgPreview(this)">
+                <input type="file" id="fileIn" style="display:none" onchange="preview(this)">
+                <button class="btn-gold" style="background:var(--gold); border:none; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;" onclick="document.getElementById('fileIn').click()">ALTERAR FOTO</button>
                 
-                <div style="margin: 15px 0; background:#050505; padding:10px; border-radius:5px;">
-                    <small style="color:#444">MEU SALDO</small>
-                    <h2 id="pSaldo" style="color:var(--gold)">0,00 Kz</h2>
+                <div style="margin: 15px 0; background:#000; padding:10px; border-radius:10px; border:1px solid #111;">
+                    <small style="color:#444">SALDO MAM</small>
+                    <h2 id="usrSaldo" style="color:var(--gold)">0,00 Kz</h2>
                 </div>
 
-                <input type="text" id="pNome" placeholder="Seu Nome Artístico">
-                <textarea id="pBio" placeholder="Sua Biografia..." rows="3"></textarea>
-                <button class="btn-acao" style="width:100%; padding:15px;" onclick="salvarBD()">GUARDAR DADOS</button>
+                <input type="text" id="usrNome" placeholder="Nome Artístico">
+                <textarea id="usrBio" placeholder="Biografia..." rows="3"></textarea>
+                <button id="btnSalvar" class="btn-acao" style="width:100%; padding:15px;" onclick="salvarTudo()">GUARDAR PERFIL</button>
             </div>
         </div>
     </main>
 </div>
 
-<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
-
-<script>
-    // Teu Firebase Config
-    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
-    firebase.initializeApp(cfg);
-    const auth = firebase.auth(), db = firebase.firestore();
-
-    function trocar(id, el) {
-        document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
-        document.getElementById(id).classList.add('ativa');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function imgPreview(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('pFoto').src=e.target.result; r.readAsDataURL(i.files[0]); } }
-
-    async function salvarBD() {
-        const u = auth.currentUser;
-        if(u) {
-            await db.collection("users").doc(u.uid).update({
-                nome: document.getElementById('pNome').value,
-                bio: document.getElementById('pBio').value
-            });
-            alert("Perfil Guardado!");
-        }
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('uEmail').innerText = u.email.toUpperCase();
-            db.collection("users").doc(u.uid).get().then(doc => {
-                if(doc.exists) {
-                    const d = doc.data();
-                    document.getElementById('pNome').value = d.nome || "";
-                    document.getElementById('pSaldo').innerText = (d.saldo || 0).toLocaleString() + " Kz";
-                }
-            });
-        }
-    });
-</script>
-</body>
-</html>
+<footer>MAM DIST

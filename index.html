@@ -10,72 +10,70 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; --grey: #1a1a1a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         
-        body { background: var(--black); color: #fff; min-height: 100vh; }
+        body { background: var(--black); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
         header { 
             background: var(--dark); padding: 15px 20px; border-bottom: 2px solid var(--gold);
             display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100;
         }
-        .logo { color: var(--gold); font-weight: 900; text-transform: uppercase; font-size: 16px; }
+        .logo-txt { color: var(--gold); font-weight: 900; text-transform: uppercase; font-size: 14px; }
 
         .layout { display: flex; }
 
-        nav { width: 230px; background: var(--dark); height: calc(100vh - 60px); padding: 20px 10px; border-right: 1px solid #1a1a1a; }
+        /* MENU LATERAL */
+        nav { width: 220px; background: var(--dark); min-height: calc(100vh - 60px); padding: 20px 10px; border-right: 1px solid var(--grey); position: sticky; top: 60px; }
         .nav-link { padding: 12px; color: #777; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 5px; text-decoration: none; }
-        .nav-link:hover, .nav-link.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
+        .nav-link:hover, .nav-link.active { background: var(--grey); color: var(--gold); }
 
-        main { flex: 1; padding: 25px; overflow-y: auto; height: calc(100vh - 60px); padding-bottom: 80px; }
+        /* CONTEÚDO */
+        main { flex: 1; padding: 25px; padding-bottom: 100px; }
         .tela { display: none; }
         .tela.active { display: block; }
 
-        /* HOME CONTENT */
-        .banner { border: 1px dashed var(--gold); padding: 15px; border-radius: 10px; background: #050505; margin-bottom: 25px; }
-        .card-task { background: #0a0a0a; padding: 15px; border-radius: 10px; border: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 8px 16px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; }
+        /* SEÇÃO: BANNER & FEED */
+        .banner { border: 2px dashed var(--gold); padding: 15px; border-radius: 10px; background: #050505; margin-bottom: 25px; }
+        .disco-grid { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 30px; }
+        .disco-item { min-width: 100px; text-align: center; }
+        .disco-img { width: 100px; height: 100px; background: #111; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 5px; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+
+        /* SEÇÃO: TAREFAS */
+        .card-task { background: var(--dark); padding: 15px; border-radius: 10px; border: 1px solid var(--grey); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 18px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; }
+
+        /* SEÇÃO: VIP */
+        .vip-flex { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        .vip-card { flex: 1; min-width: 250px; background: linear-gradient(145deg, #0a0a0a, #111); padding: 20px; border-radius: 12px; border: 1px solid var(--gold); text-align: center; }
+        .price { font-size: 24px; font-weight: 900; color: var(--gold); margin: 10px 0; }
 
         /* PERFIL */
-        .perfil-card { max-width: 420px; margin: 0 auto; background: var(--dark); padding: 25px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; }
-        .foto-u { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 15px; object-fit: cover; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 8px; font-size: 13px; }
+        .perfil-box { max-width: 450px; margin: 0 auto; background: var(--dark); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; }
+        .foto-u { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 15px; object-fit: cover; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 8px; }
 
-        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); background: #000; border-top: 1px solid #111; position: fixed; bottom: 0; width: 100%; z-index: 100; }
+        footer { text-align: center; padding: 12px; font-size: 9px; color: var(--gold); background: #000; border-top: 1px solid #111; position: fixed; bottom: 0; width: 100%; z-index: 1000; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">MAM DISTRIBUIDORA</div>
-    <div id="uMail" style="font-size: 10px; color: #555;"></div>
+    <div class="logo-txt">MAM DISTRIBUIDORA</div>
+    <div id="uMail" style="font-size: 9px; color: #444;"></div>
 </header>
 
 <div class="layout">
     <nav>
         <div class="nav-link active" onclick="ver('home', this)">Página Inicial</div>
-        <div class="nav-link" onclick="ver('perfil', this)">Perfil</div>
+        <div class="nav-link" onclick="ver('perfil', this)">Meu Perfil</div>
         <div class="nav-link">Minhas Músicas</div>
         <div class="nav-link">Carteira</div>
-        <div class="nav-link">Estatística</div>
-        <div class="nav-link" style="color:red; margin-top:50px;" onclick="location.reload()">Sair</div>
+        <div class="nav-link">Lançar Música</div>
+        <div class="nav-link" style="color:red; margin-top:40px;" onclick="location.reload()">Sair</div>
     </nav>
 
     <main>
         <div id="home" class="tela active">
             <div class="banner">
-                <h4 style="color:var(--gold)">APOIA ESTE PROJECTO</h4>
-                <p style="font-size: 12px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
-            </div>
-
-            <h3 style="margin-bottom:15px; font-size: 16px;">Caça Recompensa</h3>
-            
-            <div class="card-task">
-                <div><b>Assistir Vídeos</b><br><small style="color:#666">Ganha por visualização</small></div>
-                <button class="btn-gold" onclick="alert('Buscando vídeos...')">ABRIR</button>
-            </div>
-
-            <div class="card-task">
-                <div><b>Convidar Amigos</b><br><small style="color:#666">Ganha 500 Kz por registo</small></div>
-                <button class="btn-gold" onclick="copiarLink()">COPIAR LINK</button>
-            </div>
+                <h4 style="color:var(--gold)">APOIA ESTE PROJECTO (CEO MAM)</h4>

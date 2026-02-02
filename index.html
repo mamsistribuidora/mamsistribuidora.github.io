@@ -17,31 +17,38 @@
         header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
 
-        .layout { display: flex; }
+        .layout { display: flex; flex-direction: row; }
         
-        /* MENU 8 OPÇÕES */
-        nav { width: 220px; background: #050505; height: calc(100vh - 60px); padding: 15px; border-right: 1px solid var(--grey); position: fixed; overflow-y: auto; }
+        /* MENU ADAPTÁVEL */
+        nav { width: 220px; background: #050505; height: calc(100vh - 60px); padding: 15px; border-right: 1px solid var(--grey); position: sticky; top: 60px; overflow-y: auto; }
         .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 4px; text-decoration: none; }
         .nav-item:hover, .nav-item.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
 
-        main { flex: 1; margin-left: 220px; padding: 20px; padding-bottom: 80px; }
+        main { flex: 1; padding: 20px; padding-bottom: 80px; }
         .secao { display: none; }
         .secao.ativa { display: block; }
 
-        /* FEED DE LANÇAMENTOS */
-        .feed-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; margin-bottom: 25px; scrollbar-width: thin; }
-        .disco-capa { min-width: 100px; height: 100px; background: #111; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--gold); text-align: center; padding: 5px; }
+        /* FEED E CARDS */
+        .feed-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; margin-bottom: 25px; }
+        .disco-capa { min-width: 90px; height: 90px; background: #111; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--gold); text-align: center; }
 
-        /* TAREFAS */
         .card-task { background: var(--dark); border: 1px solid var(--grey); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-acao { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
+        .btn-acao { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; }
 
         /* PERFIL */
-        .perfil-box { max-width: 400px; margin: 0 auto; text-align: center; background: var(--dark); padding: 25px; border-radius: 15px; border: 1px solid var(--gold); }
-        .foto-u { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; background: #111; }
+        .perfil-box { max-width: 400px; margin: 0 auto; text-align: center; background: var(--dark); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
+        .foto-u { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; background: #111; }
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 5px; }
 
-        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); border-top: 1px solid #111; background: #000; position: fixed; bottom: 0; width: 100%; }
+        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); border-top: 1px solid #111; background: #000; position: fixed; bottom: 0; width: 100%; z-index: 1000; }
+
+        /* RESPONSIVIDADE PARA TELEMÓVEL */
+        @media (max-width: 768px) {
+            nav { width: 70px; padding: 5px; }
+            .nav-item { font-size: 9px; text-align: center; padding: 10px 2px; }
+            main { padding: 15px; }
+            .card-task { flex-direction: column; text-align: center; gap: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -53,14 +60,12 @@
 
 <div class="layout">
     <nav>
-        <div class="nav-item active" onclick="ver('home', this)">Página Inicial</div>
-        <div class="nav-item" onclick="ver('perfil', this)">Meu Perfil</div>
-        <div class="nav-item">Minhas Músicas</div>
-        <div class="nav-item">Lançar Música</div>
-        <div class="nav-item">Carteira</div>
-        <div class="nav-item">Estatística</div>
-        <div class="nav-item">Suporte MAM</div>
-        <div class="nav-item">Administração</div>
+        <div class="nav-item active" onclick="ver('home', this)">Início</div>
+        <div class="nav-item" onclick="ver('perfil', this)">Perfil</div>
+        <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
+        <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
+        <div class="nav-item" onclick="ver('stats', this)">Stats</div>
+        <div class="nav-item" onclick="window.location.href='mailto:mamfilhos29@gmail.com'">Suporte</div>
         <div class="nav-item" style="color:red; margin-top:20px;" onclick="location.reload()">Sair</div>
     </nav>
 
@@ -69,47 +74,57 @@
             <div style="border: 1px dashed var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px; background: #050505;">
                 <h4 style="color:var(--gold)">APOIO AO CEO</h4>
                 <p style="font-size: 12px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
-                <small>Matias Arsénio Manuel</small>
             </div>
 
-            <h4 style="margin-bottom:10px;">Feed de Lançamentos</h4>
+            <h4>Feed de Lançamentos</h4>
             <div class="feed-container">
-                <div class="disco-capa">NOVIDADE MAM</div>
                 <div class="disco-capa">PLAY SEAN</div>
+                <div class="disco-capa">NOVIDADE</div>
+                <div class="disco-capa">MAM BEAT</div>
                 <div class="disco-capa">CURADORIA</div>
-                <div class="disco-capa">BREVEMENTE</div>
             </div>
 
-            <h4 style="margin-bottom:15px">Caça Recompensa</h4>
+            <h4>Caça Recompensa</h4><br>
             <div class="card-task">
-                <div><b>Assistir Vídeos Pago</b><br><small style="color:#666">Ganha por cada anúncio</small></div>
-                <button class="btn-acao" onclick="alert('Buscando vídeo...')">ABRIR</button>
+                <div><b>Assistir Vídeo Pago</b><br><small style="color:#D4AF37">+ 15 Kz por vídeo</small></div>
+                <button class="btn-acao" onclick="ganhar(15)">ABRIR</button>
             </div>
             <div class="card-task">
-                <div><b>Convidar Amigos</b><br><small style="color:#666">Ganha 500 Kz por registo</small></div>
+                <div><b>Convidar Amigos</b><br><small style="color:#D4AF37">+ 500 Kz por registo</small></div>
                 <button class="btn-acao" onclick="alert('Link copiado!')">CONVIDAR</button>
             </div>
             <div class="card-task">
-                <div><b>Seguir Play Sean Arsénio</b><br><small style="color:#666">TikTok Oficial</small></div>
+                <div><b>Seguir no TikTok</b><br><small style="color:#D4AF37">Ganha 500 Kz (Play Sean Arsénio)</small></div>
                 <button class="btn-acao" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
             </div>
         </div>
 
         <div id="perfil" class="secao">
             <div class="perfil-box">
-                <img id="usrFoto" src="https://via.placeholder.com/120" class="foto-u">
+                <img id="usrFoto" src="https://via.placeholder.com/110" class="foto-u">
                 <br>
-                <input type="file" id="fileIn" style="display:none" onchange="preview(this)">
-                <button class="btn-acao" style="font-size:10px; margin-bottom:10px;" onclick="document.getElementById('fileIn').click()">MUDAR FOTO</button>
-                
-                <div style="margin: 10px 0; background:#000; padding:10px; border-radius:10px; border:1px solid #1a1a1a;">
-                    <small style="color:#444">SALDO MAM</small>
-                    <h2 id="usrSaldo" style="color:var(--gold)">0,00 Kz</h2>
-                </div>
+                <input type="file" id="fIn" style="display:none" onchange="preview(this)">
+                <button class="btn-acao" style="font-size:9px;" onclick="document.getElementById('fIn').click()">MUDAR FOTO</button>
+                <input type="text" id="usrNome" placeholder="Seu Nome Artístico">
+                <textarea id="usrBio" placeholder="Sua biografia..." rows="3"></textarea>
+                <button class="btn-acao" style="width:100%; padding:15px;" onclick="salvarBD()">GUARDAR PERFIL</button>
+            </div>
+        </div>
 
-                <input type="text" id="usrNome" placeholder="Nome Artístico">
-                <textarea id="usrBio" placeholder="Biografia artística..." rows="3"></textarea>
-                <button id="btnSalvar" class="btn-acao" style="width:100%; padding:15px;" onclick="salvarTudo()">GUARDAR ALTERAÇÕES</button>
+        <div id="carteira" class="secao">
+            <div class="perfil-box">
+                <small style="color:#444">MEU SALDO ACUMULADO</small>
+                <h1 id="usrSaldo" style="color:var(--gold); margin:10px 0;">0,00 Kz</h1>
+                <input type="text" placeholder="Teu IBAN para levantamento">
+                <button class="btn-acao" style="width:100%">PEDIR PAGAMENTO</button>
+            </div>
+        </div>
+
+        <div id="lancar" class="secao">
+            <div class="perfil-box">
+                <h4>Enviar Música</h4>
+                <input type="text" placeholder="Título da Obra">
+                <button class="btn-acao" style="width:100%; margin-top:10px;">ANEXAR MP3 + CAPA</button>
             </div>
         </div>
     </main>
@@ -129,31 +144,29 @@
         el.classList.add('active');
     }
 
-    function preview(i) {
-        if(i.files[0]) {
-            let r = new FileReader();
-            r.onload = e => document.getElementById('usrFoto').src = e.target.result;
-            r.readAsDataURL(i.files[0]);
+    function preview(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('usrFoto').src=e.target.result; r.readAsDataURL(i.files[0]); } }
+
+    async function ganhar(valor) {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("users").doc(u.uid).update({
+                saldo: firebase.firestore.FieldValue.increment(valor)
+            });
+            alert("Ganhaste " + valor + " Kz! (Processado pela MAM)");
+            location.reload();
         }
     }
 
-    async function salvarTudo() {
+    async function salvarBD() {
         const u = auth.currentUser;
-        if(!u) return;
-        const btn = document.getElementById('btnSalvar');
-        btn.innerText = "A GUARDAR...";
-
-        try {
+        if(u) {
             await db.collection("users").doc(u.uid).set({
                 nome: document.getElementById('usrNome').value,
                 bio: document.getElementById('usrBio').value,
-                foto: document.getElementById('usrFoto').src 
+                foto: document.getElementById('usrFoto').src
             }, { merge: true });
-            alert("MAM: Perfil atualizado com sucesso!");
-        } catch (e) {
-            alert("Erro ao salvar: " + e.message);
+            alert("Perfil Guardado!");
         }
-        btn.innerText = "GUARDAR ALTERAÇÕES";
     }
 
     auth.onAuthStateChanged(u => {

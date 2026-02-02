@@ -11,23 +11,23 @@
     <style>
         :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; --grey: #1a1a1a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: var(--black); color: #fff; min-height: 100vh; }
+        body { background: var(--black); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1001; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 2000; }
         .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
         .ceo-label { color: #666; font-size: 10px; display: block; margin-top: 2px; }
 
-        .layout { display: flex; }
+        .layout { display: flex; position: relative; }
         
-        /* MENU CORRIGIDO */
-        nav { width: 220px; background: #050505; height: calc(100vh - 70px); padding: 15px; border-right: 1px solid var(--grey); position: fixed; top: 70px; z-index: 1000; }
-        .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 4px; border-left: 3px solid transparent; transition: 0.3s; }
+        /* MENU LATERAL FIXO */
+        nav { width: 220px; background: #050505; height: calc(100vh - 70px); padding: 15px; border-right: 1px solid var(--grey); position: fixed; left: 0; top: 70px; z-index: 1000; }
+        .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 4px; border-left: 3px solid transparent; }
         .nav-item.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
 
-        main { flex: 1; margin-left: 220px; padding: 20px; padding-bottom: 80px; width: 100%; }
+        main { flex: 1; margin-left: 220px; padding: 20px; padding-bottom: 120px; min-height: calc(100vh - 70px); }
         
-        /* CONTROLO DE PÁGINAS */
-        .secao { display: none; width: 100%; }
+        /* SEÇÕES */
+        .secao { display: none; }
         .secao.ativa { display: block !important; }
 
         .box { background: var(--dark); border: 1px solid var(--grey); padding: 20px; border-radius: 12px; margin-bottom: 15px; }
@@ -37,11 +37,12 @@
         .feed-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; }
         .disco-capa { min-width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--gold); background: #111; display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gold); text-align: center; }
 
+        footer { text-align: center; padding: 15px; font-size: 10px; color: var(--gold); background: #000; border-top: 1px solid #111; position: fixed; bottom: 0; width: 100%; z-index: 2000; }
+
         @media (max-width: 768px) {
             nav { width: 80px; padding: 5px; }
             main { margin-left: 80px; padding: 15px; }
-            .nav-item { font-size: 9px; text-align: center; border-left: none; border-bottom: 2px solid transparent; }
-            .nav-item.active { border-left: none; border-bottom: 2px solid var(--gold); }
+            .nav-item { font-size: 9px; text-align: center; border-left: none; }
         }
     </style>
 </head>
@@ -53,14 +54,14 @@
 </header>
 
 <div class="layout">
-    <nav id="menu-lateral">
-        <div class="nav-item active" onclick="navegar('home', this)">Início</div>
-        <div class="nav-item" onclick="navegar('perfil', this)">Perfil</div>
+    <nav>
+        <div class="nav-item active" onclick="navegar('home', this)">Página Inicial</div>
+        <div class="nav-item" onclick="navegar('perfil', this)">Meu Perfil</div>
         <div class="nav-item" onclick="navegar('musicas', this)">Minhas Músicas</div>
         <div class="nav-item" onclick="navegar('lancar', this)">Lançar Música</div>
         <div class="nav-item" onclick="navegar('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="navegar('stats', this)">Estatística</div>
-        <div class="nav-item" onclick="window.location.href='mailto:mamfilhos29@gmail.com'">Suporte</div>
+        <div class="nav-item" onclick="window.location.href='mailto:mamfilhos29@gmail.com'">Suporte MAM</div>
         <div class="nav-item" style="color:red; margin-top:20px;" onclick="location.reload()">Sair</div>
     </nav>
 
@@ -70,83 +71,133 @@
                 <h4 style="color:var(--gold)">APOIO AO CEO</h4>
                 <p style="font-size: 11px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
             </div>
-            <h4>Lançamentos</h4>
+            
+            <h4>Feed de Lançamentos</h4>
             <div class="feed-container">
                 <div class="disco-capa">PLAY SEAN</div><div class="disco-capa">NOVIDADE</div><div class="disco-capa">MAM BEAT</div>
             </div>
-            <h4 style="margin-top:20px">Recompensas</h4><br>
+
+            <h4 style="margin-top:20px">Caça Recompensa</h4><br>
+            
             <div class="box" style="display:flex; justify-content:space-between; align-items:center; padding:15px;">
-                <div><b>Vídeo Pago</b><br><small style="color:var(--gold)">+15 Kz</small></div>
+                <div><b>Assistir vídeo pago</b><br><small style="color:var(--gold)">Ganhe por visualização</small></div>
                 <button class="btn-acao" style="width:auto" onclick="ganhar(15)">ABRIR</button>
             </div>
+
             <div class="box" style="display:flex; justify-content:space-between; align-items:center; padding:15px;">
-                <div><b>Convidar Amigos</b><br><small style="color:var(--gold)">+500 Kz</small></div>
-                <button class="btn-acao" style="width:auto" onclick="alert('Link de convite copiado!')">CONVIDAR</button>
+                <div><b>Convidar amigos</b><br><small style="color:var(--gold)">Ganha 500 Kz por registo</small></div>
+                <button class="btn-acao" style="width:auto" onclick="alert('Link copiado!')">CONVIDAR</button>
             </div>
+
             <div class="box" style="display:flex; justify-content:space-between; align-items:center; padding:15px;">
-                <div><b>TikTok</b><br><small style="color:var(--gold)">500 Kz</small></div>
+                <div><b>Segue no Tiktok</b><br><small style="color:var(--gold)">Ganha 500 Kz (Play Sean Arsénio)</small></div>
                 <button class="btn-acao" style="width:auto; background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
+            </div>
+        </div>
+
+        <div id="perfil" class="secao">
+            <div class="box" style="text-align:center">
+                <img id="usrFoto" src="https://via.placeholder.com/100" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); object-fit:cover;">
+                <input type="file" id="fIn" style="display:none" onchange="preview(this)">
+                <button class="btn-acao" style="width:auto; margin:10px 0; padding:5px 10px;" onclick="document.getElementById('fIn').click()">Mudar Foto</button>
+                <input type="text" id="usrNome" placeholder="Nome Artístico">
+                <textarea id="usrBio" placeholder="Sua Biografia..."></textarea>
+                <button class="btn-acao" onclick="salvarBD()">GUARDAR PERFIL</button>
             </div>
         </div>
 
         <div id="musicas" class="secao">
             <h3>Minhas Músicas</h3>
             <div class="box" id="listaMusicas">
-                <p style="color:#444; text-align:center;">Sem divulgações para mostrar.</p>
+                <p style="text-align:center; color:#444">Nenhuma divulgação encontrada.</p>
             </div>
         </div>
 
         <div id="lancar" class="secao">
             <h3>Lançar Música</h3>
             <div class="box">
-                <input type="text" id="lnTitulo" placeholder="Título da Música">
-                <input type="text" id="lnColab" placeholder="Colaboração (Feat.)">
-                <input type="text" id="lnProd" placeholder="Produtor/Beatmaker">
-                <label style="font-size:10px; color:var(--gold)">DATA DE LANÇAMENTO:</label>
+                <input type="text" id="lnTitulo" placeholder="Título">
+                <input type="text" id="lnColab" placeholder="Colaboração">
+                <input type="text" id="lnProd" placeholder="Produtor">
+                <label style="font-size:10px; color:var(--gold)">DATA:</label>
                 <input type="date" id="lnData">
-                <select id="lnGen"><option>Kuduro</option><option>Kizomba</option><option>Rap</option></select>
-                <button class="btn-acao" onclick="solicitarLancamento()">ENVIAR PARA A MAM</button>
+                <button class="btn-acao" onclick="solicitarLancamento()">ENVIAR PARA MAM</button>
             </div>
         </div>
 
         <div id="carteira" class="secao">
-            <h3>Carteira e Saques</h3>
             <div class="box" style="text-align:center">
-                <small>SALDO</small>
-                <h1 id="usrSaldo" style="color:var(--gold)">0,00 Kz</h1>
-                <select>
-                    <option>BFA (Angola)</option><option>BAI (Angola)</option><option>BIC (Angola)</option>
-                    <option>Visa/Wise</option><option>PayPal</option><option>Pix</option>
+                <small>MEU SALDO</small>
+                <h2 id="usrSaldo" style="color:var(--gold)">0,00 Kz</h2>
+                <select id="bancoSel">
+                    <option>BFA</option><option>BAI</option><option>BIC</option><option>Express</option>
+                    <option>PayPal</option><option>Visa</option>
                 </select>
-                <input type="text" placeholder="IBAN ou Dados">
-                <button class="btn-acao">PEDIR LEVANTAMENTO</button>
+                <input type="text" placeholder="IBAN ou Conta">
+                <button class="btn-acao">PEDIR SAQUE</button>
             </div>
         </div>
 
         <div id="stats" class="secao">
             <h3>Estatística</h3>
             <div class="box">
-                <div style="display:flex; gap:10px; align-items:flex-end; height:120px; border-bottom:1px solid #222;">
+                <div style="height:100px; border-bottom:1px solid #333; display:flex; align-items:flex-end; gap:5px;">
                     <div style="flex:1; background:var(--gold); height:40%"></div>
-                    <div style="flex:1; background:var(--gold); height:75%"></div>
-                    <div style="flex:1; background:var(--gold); height:90%"></div>
+                    <div style="flex:1; background:var(--gold); height:80%"></div>
+                    <div style="flex:1; background:var(--gold); height:60%"></div>
                 </div>
-                <p style="font-size:11px; text-align:center; margin-top:10px;">Desempenho Real</p>
-            </div>
-        </div>
-
-        <div id="perfil" class="secao">
-            <div class="box" style="text-align:center">
-                <img id="usrFoto" src="https://via.placeholder.com/110" style="width:110px; height:110px; border-radius:50%; border:2px solid var(--gold); object-fit:cover;">
-                <input type="file" id="fIn" style="display:none" onchange="preview(this)">
-                <button class="btn-acao" style="font-size:9px; margin:10px 0; width:auto; padding:5px 15px;" onclick="document.getElementById('fIn').click()">Mudar Foto</button>
-                <input type="text" id="usrNome" placeholder="Seu Nome Artístico">
-                <textarea id="usrBio" placeholder="Sua bio artística..."></textarea>
-                <button class="btn-acao" onclick="salvarBD()">GUARDAR TUDO</button>
+                <p style="font-size:10px; text-align:center; margin-top:10px;">Alcance Semanal</p>
             </div>
         </div>
     </main>
 </div>
 
+<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
+
 <script>
-    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376
+    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
+    firebase.initializeApp(cfg);
+    const auth = firebase.auth(), db = firebase.firestore();
+
+    function navegar(id, el) {
+        // Esconde todas as seções por força bruta
+        const secoes = document.getElementsByClassName('secao');
+        for(let s of secoes) { s.style.display = 'none'; s.classList.remove('ativa'); }
+        
+        // Mostra a selecionada
+        const alvo = document.getElementById(id);
+        alvo.style.display = 'block';
+        alvo.classList.add('ativa');
+
+        // Estilo do menu
+        const itens = document.getElementsByClassName('nav-item');
+        for(let i of itens) { i.classList.remove('active'); }
+        el.classList.add('active');
+    }
+
+    function preview(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('usrFoto').src=e.target.result; r.readAsDataURL(i.files[0]); } }
+
+    async function ganhar(v) {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("users").doc(u.uid).update({ saldo: firebase.firestore.FieldValue.increment(v) });
+            alert("Sucesso! +"+v+" Kz");
+            location.reload();
+        }
+    }
+
+    async function solicitarLancamento() {
+        const u = auth.currentUser;
+        if(!u) return;
+        await db.collection("musicas").add({
+            titulo: document.getElementById('lnTitulo').value,
+            status: "Pendente",
+            userId: u.uid
+        });
+        alert("Enviado!");
+        navegar('musicas', document.querySelectorAll('.nav-item')[2]);
+    }
+
+    async function salvarBD() {
+        const u = auth.currentUser;
+        if(u) {

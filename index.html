@@ -3,34 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora</title>
+    <title>MAM Distribuidora | Oficial</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <style>
-        :root { --gold: #D4AF37; --black: #000; --grey: #1a1a1a; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; --grey: #1a1a1a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #000; color: #fff; }
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 9999; }
+        body { background: var(--black); color: #fff; min-height: 100vh; }
+
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 3000; }
         .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
-        .ceo-label { color: #666; font-size: 10px; display: block; }
+        .ceo-label { color: #666; font-size: 10px; display: block; margin-top: 2px; }
+
+        .layout { display: flex; min-height: calc(100vh - 70px); }
         
-        .layout { display: flex; }
-        nav { width: 200px; background: #050505; height: 100vh; position: fixed; padding: 15px; border-right: 1px solid var(--grey); }
-        .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; }
-        .nav-item.active { color: var(--gold); font-weight: bold; background: #111; border-radius: 4px; }
+        nav { width: 200px; background: #050505; border-right: 1px solid var(--grey); padding: 15px; position: fixed; height: 100%; }
+        .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 4px; text-decoration: none; }
+        .nav-item.active { background: #111; color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); }
+
+        main { flex: 1; margin-left: 200px; padding: 20px; padding-bottom: 100px; }
         
-        main { flex: 1; margin-left: 200px; padding: 20px; padding-bottom: 80px; }
         .secao { display: none; }
         .secao.ativa { display: block !important; }
 
-        .box { background: #0a0a0a; border: 1px solid var(--grey); padding: 20px; border-radius: 12px; margin-bottom: 15px; }
-        .btn-acao { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 10px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
+        .box { background: var(--dark); border: 1px solid var(--grey); padding: 20px; border-radius: 12px; margin-bottom: 15px; }
+        .btn-acao { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 10px; text-transform: uppercase; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
 
-        footer { text-align: center; padding: 15px; font-size: 10px; color: var(--gold); background: #000; border-top: 1px solid #111; position: fixed; bottom: 0; width: 100%; }
+        .feed-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; }
+        .disco-capa { min-width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); background: #111; display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gold); text-align: center; }
 
-        @media (max-width: 768px) { nav { width: 70px; } main { margin-left: 70px; } .nav-item { font-size: 8px; text-align: center; } }
+        footer { text-align: center; padding: 15px; font-size: 10px; color: var(--gold); background: #000; border-top: 1px solid #111; width: 100%; position: fixed; bottom: 0; z-index: 2000; }
+
+        @media (max-width: 768px) {
+            nav { width: 80px; padding: 5px; }
+            main { margin-left: 80px; }
+            .nav-item { font-size: 8px; text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -42,99 +53,21 @@
 
 <div class="layout">
     <nav>
-        <div class="nav-item active" onclick="tab('home', this)">Página Inicial</div>
-        <div class="nav-item" onclick="tab('perfil', this)">Meu Perfil</div>
-        <div class="nav-item" onclick="tab('musicas', this)">Minhas Músicas</div>
-        <div class="nav-item" onclick="tab('lancar', this)">Lançar Música</div>
-        <div class="nav-item" onclick="tab('carteira', this)">Carteira</div>
-        <div class="nav-item" onclick="tab('stats', this)">Estatística</div>
+        <div class="nav-item active" onclick="mudar('home', this)">Início</div>
+        <div class="nav-item" onclick="mudar('perfil', this)">Meu Perfil</div>
+        <div class="nav-item" onclick="mudar('musicas', this)">Minhas Músicas</div>
+        <div class="nav-item" onclick="mudar('lancar', this)">Lançar Música</div>
+        <div class="nav-item" onclick="mudar('carteira', this)">Carteira</div>
+        <div class="nav-item" onclick="mudar('stats', this)">Estatística</div>
+        <div class="nav-item" style="color:red; margin-top:20px;" onclick="auth.signOut().then(()=>location.reload())">Sair</div>
     </nav>
 
-    <main>
+    <main id="root">
         <div id="home" class="secao ativa">
             <div class="box" style="border: 1px dashed var(--gold);">
                 <h4 style="color:var(--gold)">APOIO AO CEO</h4>
                 <p style="font-size: 11px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
             </div>
-            <h4>Caça Recompensa</h4><br>
-            <div class="box" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>Assistir video pago e ganha</b></div>
-                <button class="btn-acao" onclick="alert('+15 Kz')">ABRIR</button>
-            </div>
-            <div class="box" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>Convidar amigos e ganha 500 kz</b></div>
-                <button class="btn-acao" onclick="alert('Link copiado')">CONVIDAR</button>
-            </div>
-            <div class="box" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>Segue no Tiktok e ganha 500</b></div>
-                <button class="btn-acao" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
-            </div>
-        </div>
-
-        <div id="perfil" class="secao">
-            <h3>Meu Perfil</h3>
-            <div class="box">
-                <input type="text" id="n" placeholder="Nome Artístico">
-                <textarea id="b" placeholder="Sua Bio"></textarea>
-                <button class="btn-acao" onclick="alert('Guardado')">GUARDAR</button>
-            </div>
-        </div>
-
-        <div id="musicas" class="secao">
-            <h3>Minhas Músicas</h3>
-            <div class="box" id="lista">Nenhuma música divulgada.</div>
-        </div>
-
-        <div id="lancar" class="secao">
-            <h3>Lançar Música</h3>
-            <div class="box">
-                <input type="text" placeholder="Título">
-                <input type="text" placeholder="Colaboração">
-                <input type="text" placeholder="Produtor">
-                <input type="date">
-                <button class="btn-acao" style="width:100%">LANÇAR AGORA</button>
-            </div>
-        </div>
-
-        <div id="carteira" class="secao">
-            <h3>Carteira</h3>
-            <div class="box" style="text-align:center">
-                <h1 style="color:var(--gold)">0,00 Kz</h1>
-                <select>
-                    <option>BFA</option><option>BAI</option><option>BIC</option><option>Express</option>
-                    <option>PayPal</option><option>Visa/Wise</option><option>Pix</option><option>Payoneer</option>
-                </select>
-                <input type="text" placeholder="IBAN ou Conta">
-                <button class="btn-acao" style="width:100%">PEDIR SAQUE</button>
-            </div>
-        </div>
-
-        <div id="stats" class="secao">
-            <h3>Estatística</h3>
-            <div class="box">
-                <div style="height:100px; border-bottom:1px solid #333; display:flex; align-items:flex-end; gap:5px;">
-                    <div style="flex:1; background:var(--gold); height:40%"></div>
-                    <div style="flex:1; background:var(--gold); height:90%"></div>
-                    <div style="flex:1; background:var(--gold); height:60%"></div>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-
-<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
-
-<script>
-    // FUNÇÃO DE TROCA DE ABAS - AGORA INFALÍVEL
-    function tab(id, el) {
-        // Esconde tudo
-        document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
-        // Mostra a certa
-        document.getElementById(id).style.display = 'block';
-        // Estilo menu
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-    }
-</script>
-</body>
-</html>
+            <h4>Lançamentos</h4>
+            <div class="feed-container">
+                <div class="disco-capa">PLAY SEAN</div><div class="disco-capa">NOVIDADE</div><div class="disco-

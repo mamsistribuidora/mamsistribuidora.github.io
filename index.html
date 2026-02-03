@@ -12,48 +12,55 @@
     <style>
         :root { --gold: #D4AF37; --black: #000; --dark: #0f0f0f; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--black); color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+        body { background: var(--black); color: #fff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 9999; display: flex; justify-content: space-between; }
         .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
 
         .layout { display: flex; flex: 1; }
         
-        nav { width: 100px; background: #050505; border-right: 1px solid #222; padding: 10px 5px; height: 100vh; position: sticky; top: 60px; }
-        .nav-item { padding: 15px 5px; color: #777; cursor: pointer; display: block; font-size: 10px; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; }
+        /* Menu Lateral Estilo Mobile que aprovastes */
+        nav { width: 110px; background: #050505; border-right: 1px solid #222; padding: 10px 5px; position: fixed; height: 100%; z-index: 8888; }
+        .nav-item { padding: 12px 2px; color: #777; cursor: pointer; display: block; font-size: 10px; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; }
         .nav-item.active { color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); background: #111; }
 
-        main { flex: 1; padding: 20px; padding-bottom: 80px; }
+        /* Área de Conteúdo */
+        main { flex: 1; margin-left: 110px; padding: 20px; padding-bottom: 80px; }
         .secao { display: none; }
         .secao.ativa { display: block !important; }
 
-        /* Design Aprovado */
-        .box-apoio { border: 1px dashed var(--gold); padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(212,175,55,0.05); }
-        .box-item { background: #0f0f0f; border: 1px solid #222; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 10px; }
+        /* Página Inicial Aprovada */
+        .box-apoio { border: 1px dashed var(--gold); padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(212, 175, 55, 0.05); }
+        .feed-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+        .disco { min-width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 8px; text-align: center; color: var(--gold); font-weight: bold; }
         
-        .feed-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; margin-bottom: 20px; }
-        .disco { min-width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gold); text-align: center; font-weight: bold; }
-
-        .perfil-foto { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 15px; display: block; object-fit: cover; background: #222; }
+        .tarefa { background: #0f0f0f; border: 1px solid #222; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 10px; text-transform: uppercase; }
+        
+        /* Formulários */
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        footer { background: #000; color: var(--gold); text-align: center; padding: 10px; font-size: 9px; position: fixed; bottom: 0; width: 100%; }
+        .perfil-foto { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 15px; display: block; object-fit: cover; background: #222; }
+
+        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); background: #000; position: fixed; bottom: 0; width: 100%; z-index: 9999; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">MAM DISTRIBUIDORA</div>
-    <div id="statusLogin" style="font-size: 9px; color: var(--gold);">Sincronizando...</div>
+    <div id="statusEmail" style="font-size: 9px; color: var(--gold);"></div>
 </header>
 
 <div class="layout">
     <nav>
-        <button class="nav-item active" onclick="trocar('home', this)">Início</button>
-        <button class="nav-item" onclick="trocar('perfil', this)">Perfil</button>
-        <button class="nav-item" onclick="trocar('lancar', this)">Lançar</button>
-        <button class="nav-item" onclick="trocar('carteira', this)">Carteira</button>
-        <button class="nav-item" style="color:red; margin-top:20px;" onclick="auth.signOut().then(()=>location.reload())">Sair</button>
+        <button class="nav-item active" onclick="ir('home', this)">Página Inicial</button>
+        <button class="nav-item" onclick="ir('perfil', this)">Meu Perfil</button>
+        <button class="nav-item" onclick="ir('lancar', this)">Lançar Música</button>
+        <button class="nav-item" onclick="ir('musicas', this)">Minhas Músicas</button>
+        <button class="nav-item" onclick="ir('carteira', this)">Carteira</button>
+        <button class="nav-item" onclick="ir('stats', this)">Estatística</button>
+        <button id="adminBtn" class="nav-item" style="color:#55acee; display:none;" onclick="ir('admin', this)">PAINEL ADMIN</button>
+        <button class="nav-item" style="color:red; margin-top:20px;" onclick="auth.signOut().then(()=>location.reload())">SAIR</button>
     </nav>
 
     <main>
@@ -65,57 +72,70 @@
             
             <h3>Feed de Lançamentos</h3>
             <div class="feed-container">
-                <div class="disco">PLAY SEAN</div><div class="disco">MAM BEAT</div><div class="disco">NOVIDADE</div>
+                <div class="disco">PLAY SEAN</div><div class="disco">MAM BEAT</div><div class="disco">NOVIDADE</div><div class="disco">MAM TV</div>
             </div>
 
-            <h3>Caça Recompensa (3 Tarefas)</h3>
-            <div class="box-item">
-                <div><b>Vídeo Pago</b><br><small>Ganha 15 Kz</small></div>
+            <h3>Caça Recompensa</h3>
+            <div class="tarefa">
+                <div><b>Assistir Vídeo Pago</b><br><small style="color:var(--gold)">+15 Kz de bónus</small></div>
                 <button class="btn-gold" onclick="ganhar(15)">ABRIR</button>
             </div>
-            <div class="box-item">
-                <div><b>Convidar Artistas</b><br><small>Ganha 500 Kz</small></div>
-                <button class="btn-gold" onclick="convidarWA()">LINK</button>
+            <div class="tarefa">
+                <div><b>Convidar Artistas</b><br><small style="color:var(--gold)">+500 Kz no registo</small></div>
+                <button class="btn-gold" onclick="convidar()">LINK</button>
             </div>
-            <div class="box-item">
-                <div><b>Segue no Tiktok</b><br><small>Play Sean Arsénio</small></div>
+            <div class="tarefa">
+                <div><b>Segue no Tiktok</b><br><small style="color:var(--gold)">@playseanarsenio</small></div>
                 <button class="btn-gold" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
             </div>
         </div>
 
         <div id="perfil" class="secao">
-            <h3>Editar Perfil</h3>
-            <div class="box-item" style="display:block; text-align:center;">
-                <img id="imgPerfil" src="" class="perfil-foto">
-                <input type="file" id="fotoInput" accept="image/*" style="font-size: 10px;">
-                <input type="text" id="pNome" placeholder="Seu Nome Artístico">
+            <h3>Gestão de Perfil</h3>
+            <div class="tarefa" style="display:block; text-align:center;">
+                <img id="imgPerfil" src="https://via.placeholder.com/110" class="perfil-foto">
+                <input type="file" id="fotoInput" accept="image/*" style="font-size:10px;">
+                <input type="text" id="pNome" placeholder="Nome Artístico">
                 <textarea id="pBio" placeholder="Sua Biografia"></textarea>
-                <button class="btn-gold" style="width:100%" onclick="salvarPerfil()">GUARDAR PERFIL</button>
+                <button class="btn-gold" style="width:100%" onclick="salvarPerfil()">GUARDAR EDIÇÃO</button>
             </div>
         </div>
 
         <div id="lancar" class="secao">
-            <h3>Distribuição Profissional</h3>
-            <div class="box-item" style="display:block">
-                <label><small>Título da Música:</small></label>
-                <input type="text" id="lTitulo" placeholder="Ex: Meu Sucesso">
-                <label><small>Estilo Musical:</small></label>
-                <select id="lEstilo">
-                    <option>Kuduro</option><option>Rap/Hip Hop</option><option>Semba</option><option>Gospel</option>
-                </select>
-                <label><small>Código ISRC (Se tiver):</small></label>
-                <input type="text" id="lIsrc" placeholder="AO-XXX-XX-XXXXX">
-                <button class="btn-gold" style="width:100%; margin-top:10px;" onclick="lancarMusica()">LANÇAR AGORA</button>
+            <h3>Novo Lançamento</h3>
+            <div class="tarefa" style="display:block;">
+                <label><small>Título:</small></label>
+                <input type="text" id="mTitulo" placeholder="Título da Obra">
+                <label><small>Gênero:</small></label>
+                <select id="mEstilo"><option>Kuduro</option><option>Rap</option><option>Semba</option></select>
+                <label><small>ISRC:</small></label>
+                <input type="text" id="mIsrc" placeholder="Código ISRC">
+                <button class="btn-gold" style="width:100%" onclick="lancarMusica()">DISTRIBUIR AGORA</button>
             </div>
         </div>
 
+        <div id="musicas" class="secao">
+            <h3>Meu Catálogo</h3>
+            <div id="listaMusicas">Lendo base de dados...</div>
+        </div>
+
         <div id="carteira" class="secao">
-            <h3>Saldo e Levantamentos</h3>
-            <div class="box-item" style="display:block; text-align:center">
+            <h3>Minha Carteira</h3>
+            <div class="tarefa" style="display:block; text-align:center;">
                 <h1 id="usrSaldo" style="color:var(--gold); font-size:40px;">0,00 Kz</h1>
-                <input type="text" id="sIban" placeholder="Introduza o seu IBAN">
-                <button class="btn-gold" style="width:100%">SOLICITAR SAQUE</button>
+                <input type="text" id="sIban" placeholder="Seu IBAN">
+                <button class="btn-gold" style="width:100%" onclick="alert('Pedido enviado!')">SOLICITAR SAQUE</button>
             </div>
+        </div>
+
+        <div id="stats" class="secao">
+            <h3>Estatísticas Reais</h3>
+            <div class="tarefa">Streams Totais: <b id="totalStreams" style="color:var(--gold)">0</b></div>
+        </div>
+
+        <div id="admin" class="secao">
+            <h3>Painel do CEO</h3>
+            <div id="listaAdmin">Sem pedidos pendentes.</div>
         </div>
     </main>
 </div>
@@ -127,7 +147,7 @@
     firebase.initializeApp(cfg);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    function trocar(id, btn) {
+    function ir(id, btn) {
         document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
         document.getElementById(id).style.display = 'block';
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -135,4 +155,58 @@
         window.scrollTo(0,0);
     }
 
-    function convidarWA() {
+    function convidar() {
+        window.open("https://wa.me/?text=" + encodeURIComponent("Vem para a MAM Distribuidora: https://mam-distribuidora.web.app"));
+    }
+
+    async function ganhar(v) {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("users").doc(u.uid).update({ saldo: firebase.firestore.FieldValue.increment(v) });
+            alert("Ganhastes " + v + " Kz!");
+        }
+    }
+
+    async function salvarPerfil() {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("users").doc(u.uid).set({
+                nome: document.getElementById('pNome').value,
+                bio: document.getElementById('pBio').value
+            }, { merge: true });
+            alert("Perfil Atualizado!");
+        }
+    }
+
+    async function lancarMusica() {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("musicas").add({
+                titulo: document.getElementById('mTitulo').value,
+                estilo: document.getElementById('mEstilo').value,
+                isrc: document.getElementById('mIsrc').value,
+                userId: u.uid, status: "Pendente", data: new Date()
+            });
+            alert("Música enviada para análise!");
+            ir('musicas', document.querySelectorAll('.nav-item')[3]);
+        }
+    }
+
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            document.getElementById('statusEmail').innerText = u.email;
+            if(u.email === "mamfilhos29@gmail.com") document.getElementById('adminBtn').style.display = "block";
+            
+            db.collection("users").doc(u.uid).onSnapshot(doc => {
+                if(doc.exists) document.getElementById('usrSaldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
+            });
+
+            db.collection("musicas").where("userId", "==", u.uid).onSnapshot(snap => {
+                const div = document.getElementById('listaMusicas'); div.innerHTML = "";
+                snap.forEach(d => { div.innerHTML += `<div class="tarefa">🎵 ${d.data().titulo} - ${d.data().status}</div>`; });
+            });
+        }
+    });
+</script>
+</body>
+</html>

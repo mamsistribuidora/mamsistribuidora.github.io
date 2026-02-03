@@ -4,182 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
-    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; --grey: #1a1a1a; }
+        :root { --gold: #D4AF37; --black: #000; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: var(--black); color: #fff; min-height: 100vh; overflow-x: hidden; }
-
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
-
-        .layout { display: flex; flex-direction: row; }
+        body { background: var(--black); color: #fff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* MENU ADAPTÁVEL */
-        nav { width: 220px; background: #050505; height: calc(100vh - 60px); padding: 15px; border-right: 1px solid var(--grey); position: sticky; top: 60px; overflow-y: auto; }
-        .nav-item { padding: 12px; color: #888; cursor: pointer; display: block; font-size: 13px; margin-bottom: 5px; border-radius: 4px; text-decoration: none; }
-        .nav-item:hover, .nav-item.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        
+        .layout { display: flex; flex: 1; overflow: hidden; }
+        
+        nav { width: 100px; background: #050505; border-right: 1px solid #222; display: flex; flex-direction: column; padding-top: 10px; }
+        .nav-item { padding: 15px 5px; color: #777; cursor: pointer; border: none; background: transparent; font-size: 10px; text-align: center; text-transform: uppercase; }
+        .nav-item.active { color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); background: #111; }
 
-        main { flex: 1; padding: 20px; padding-bottom: 80px; }
+        main { flex: 1; padding: 20px; overflow-y: auto; padding-bottom: 100px; }
         .secao { display: none; }
-        .secao.ativa { display: block; }
+        .secao.ativa { display: block !important; }
 
-        /* FEED E CARDS */
-        .feed-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; margin-bottom: 25px; }
-        .disco-capa { min-width: 90px; height: 90px; background: #111; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--gold); text-align: center; }
-
-        .card-task { background: var(--dark); border: 1px solid var(--grey); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-acao { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; }
-
-        /* PERFIL */
-        .perfil-box { max-width: 400px; margin: 0 auto; text-align: center; background: var(--dark); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
-        .foto-u { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; background: #111; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 5px; }
-
-        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); border-top: 1px solid #111; background: #000; position: fixed; bottom: 0; width: 100%; z-index: 1000; }
-
-        /* RESPONSIVIDADE PARA TELEMÓVEL */
-        @media (max-width: 768px) {
-            nav { width: 70px; padding: 5px; }
-            .nav-item { font-size: 9px; text-align: center; padding: 10px 2px; }
-            main { padding: 15px; }
-            .card-task { flex-direction: column; text-align: center; gap: 10px; }
-        }
+        .card { background: #0f0f0f; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        footer { background: #000; color: var(--gold); text-align: center; padding: 10px; font-size: 9px; position: fixed; bottom: 0; width: 100%; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">MAM DISTRIBUIDORA</div>
-    <div id="uEmail" style="font-size: 10px; color: var(--gold);"></div>
+    <div style="color:var(--gold); font-weight:bold; font-size:14px;">MAM DISTRIBUIDORA</div>
+    <div id="userTag" style="font-size:9px; color:var(--gold)">...</div>
 </header>
 
 <div class="layout">
     <nav>
         <div class="nav-item active" onclick="ver('home', this)">Início</div>
-        <div class="nav-item" onclick="ver('perfil', this)">Perfil</div>
         <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
         <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="ver('stats', this)">Stats</div>
-        <div class="nav-item" onclick="window.location.href='mailto:mamfilhos29@gmail.com'">Suporte</div>
-        <div class="nav-item" style="color:red; margin-top:20px;" onclick="location.reload()">Sair</div>
+        <div class="nav-item" style="color:red; margin-top:auto; padding-bottom:30px;" onclick="fazerSair()">SAIR</div>
     </nav>
 
     <main>
         <div id="home" class="secao ativa">
-            <div style="border: 1px dashed var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px; background: #050505;">
+            <div class="card" style="border: 1px dashed var(--gold);">
                 <h4 style="color:var(--gold)">APOIO AO CEO</h4>
-                <p style="font-size: 12px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
+                <p style="font-size: 11px; margin-top:5px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
             </div>
-
-            <h4>Feed de Lançamentos</h4>
-            <div class="feed-container">
-                <div class="disco-capa">PLAY SEAN</div>
-                <div class="disco-capa">NOVIDADE</div>
-                <div class="disco-capa">MAM BEAT</div>
-                <div class="disco-capa">CURADORIA</div>
-            </div>
-
-            <h4>Caça Recompensa</h4><br>
-            <div class="card-task">
-                <div><b>Assistir Vídeo Pago</b><br><small style="color:#D4AF37">+ 15 Kz por vídeo</small></div>
-                <button class="btn-acao" onclick="ganhar(15)">ABRIR</button>
-            </div>
-            <div class="card-task">
-                <div><b>Convidar Amigos</b><br><small style="color:#D4AF37">+ 500 Kz por registo</small></div>
-                <button class="btn-acao" onclick="alert('Link copiado!')">CONVIDAR</button>
-            </div>
-            <div class="card-task">
-                <div><b>Seguir no TikTok</b><br><small style="color:#D4AF37">Ganha 500 Kz (Play Sean Arsénio)</small></div>
-                <button class="btn-acao" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
-            </div>
-        </div>
-
-        <div id="perfil" class="secao">
-            <div class="perfil-box">
-                <img id="usrFoto" src="https://via.placeholder.com/110" class="foto-u">
-                <br>
-                <input type="file" id="fIn" style="display:none" onchange="preview(this)">
-                <button class="btn-acao" style="font-size:9px;" onclick="document.getElementById('fIn').click()">MUDAR FOTO</button>
-                <input type="text" id="usrNome" placeholder="Seu Nome Artístico">
-                <textarea id="usrBio" placeholder="Sua biografia..." rows="3"></textarea>
-                <button class="btn-acao" style="width:100%; padding:15px;" onclick="salvarBD()">GUARDAR PERFIL</button>
-            </div>
-        </div>
-
-        <div id="carteira" class="secao">
-            <div class="perfil-box">
-                <small style="color:#444">MEU SALDO ACUMULADO</small>
-                <h1 id="usrSaldo" style="color:var(--gold); margin:10px 0;">0,00 Kz</h1>
-                <input type="text" placeholder="Teu IBAN para levantamento">
-                <button class="btn-acao" style="width:100%">PEDIR PAGAMENTO</button>
+            <h3>Lançamentos</h3>
+            <div style="display:flex; gap:10px; padding:15px 0;">
+                <div style="width:70px; height:70px; border-radius:50%; border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; font-size:8px; text-align:center;">PLAY SEAN</div>
             </div>
         </div>
 
         <div id="lancar" class="secao">
-            <div class="perfil-box">
-                <h4>Enviar Música</h4>
-                <input type="text" placeholder="Título da Obra">
-                <button class="btn-acao" style="width:100%; margin-top:10px;">ANEXAR MP3 + CAPA</button>
+            <div class="card">
+                <h3>Enviar Obra</h3>
+                <input type="text" id="mTitulo" placeholder="Título da Música">
+                <input type="file" id="fMp3" style="display:none;" multiple>
+                <button class="btn-gold" onclick="document.getElementById('fMp3').click()">ANEXAR MÚSICA + CAPA</button>
+                <button class="btn-gold" style="background:#fff; margin-top:20px;" onclick="alert('Enviando para o CEO...')">FINALIZAR LANÇAMENTO</button>
+            </div>
+        </div>
+
+        <div id="carteira" class="secao">
+            <div class="card" style="text-align:center">
+                <p style="font-size:10px; color:#777">SALDO ATUAL</p>
+                <h1 id="usrSaldo" style="color:var(--gold); font-size:40px; margin:10px 0;">0,00 Kz</h1>
+                <input type="text" id="sIban" placeholder="Introduza o IBAN de destino">
+                <button class="btn-gold" onclick="alert('Solicitação de Saque Enviada!')">SOLICITAR PAGAMENTO</button>
+            </div>
+        </div>
+
+        <div id="stats" class="secao">
+            <div class="card">
+                <h3>Estatísticas Reais</h3>
+                <div style="display:flex; justify-content:space-around; margin-top:20px;">
+                    <div><p>Ouvintes</p><h2 style="color:var(--gold)">0</h2></div>
+                    <div><p>Músicas</p><h2 style="color:var(--gold)">0</h2></div>
+                </div>
             </div>
         </div>
     </main>
 </div>
 
-<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
+<footer>MAM DISTRIBUIDORA DIGITAL | CEO Matias Arsénio Manuel</footer>
 
 <script>
-    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
-    firebase.initializeApp(cfg);
+    const firebaseConfig = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    function ver(id, el) {
+    // NAVEGAÇÃO QUE ISOLA AS TELAS
+    function ver(id, btn) {
         document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
         document.getElementById(id).classList.add('ativa');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
+        btn.classList.add('active');
     }
 
-    function preview(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>document.getElementById('usrFoto').src=e.target.result; r.readAsDataURL(i.files[0]); } }
-
-    async function ganhar(valor) {
-        const u = auth.currentUser;
-        if(u) {
-            await db.collection("users").doc(u.uid).update({
-                saldo: firebase.firestore.FieldValue.increment(valor)
+    // BOTÃO SAIR QUE REALMENTE FUNCIONA
+    function fazerSair() {
+        if(confirm("Deseja mesmo sair da conta MAM?")) {
+            auth.signOut().then(() => {
+                window.location.href = "index.html";
+            }).catch(err => {
+                alert("Erro ao sair. Recarregue a página.");
             });
-            alert("Ganhaste " + valor + " Kz! (Processado pela MAM)");
-            location.reload();
-        }
-    }
-
-    async function salvarBD() {
-        const u = auth.currentUser;
-        if(u) {
-            await db.collection("users").doc(u.uid).set({
-                nome: document.getElementById('usrNome').value,
-                bio: document.getElementById('usrBio').value,
-                foto: document.getElementById('usrFoto').src
-            }, { merge: true });
-            alert("Perfil Guardado!");
         }
     }
 
     auth.onAuthStateChanged(u => {
         if(u) {
-            document.getElementById('uEmail').innerText = u.email;
-            db.collection("users").doc(u.uid).get().then(doc => {
-                if(doc.exists) {
-                    const d = doc.data();
-                    document.getElementById('usrNome').value = d.nome || "";
-                    document.getElementById('usrBio').value = d.bio || "";
-                    document.getElementById('usrSaldo').innerText = (d.saldo || 0).toLocaleString() + " Kz";
-                    if(d.foto) document.getElementById('usrFoto').src = d.foto;
-                }
+            document.getElementById('userTag').innerText = u.email.split('@')[0];
+            db.collection("users").doc(u.uid).onSnapshot(doc => {
+                if(doc.exists) document.getElementById('usrSaldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
             });
         }
     });

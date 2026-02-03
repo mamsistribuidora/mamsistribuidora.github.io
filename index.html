@@ -3,88 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Painel</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: var(--black); color: #fff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        :root { --gold: #D4AF37; --black: #000; --grey: #1a1a1a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--black); color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        
-        .layout { display: flex; flex: 1; overflow: hidden; }
-        
-        nav { width: 100px; background: #050505; border-right: 1px solid #222; display: flex; flex-direction: column; padding-top: 10px; }
-        .nav-item { padding: 15px 5px; color: #777; cursor: pointer; border: none; background: transparent; font-size: 10px; text-align: center; text-transform: uppercase; }
-        .nav-item.active { color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); background: #111; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
+        .logo-txt { color: var(--gold); font-weight: bold; letter-spacing: 1px; }
 
-        main { flex: 1; padding: 20px; overflow-y: auto; padding-bottom: 100px; }
-        .secao { display: none; }
-        .secao.ativa { display: block !important; }
-
-        .card { background: #0f0f0f; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .container { display: flex; flex: 1; overflow: hidden; }
         
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        footer { background: #000; color: var(--gold); text-align: center; padding: 10px; font-size: 9px; position: fixed; bottom: 0; width: 100%; border-top: 1px solid #222; }
+        /* Menu Lateral Estilo Mobile */
+        nav { width: 100px; background: #050505; border-right: 1px solid var(--grey); display: flex; flex-direction: column; }
+        .nav-btn { padding: 18px 5px; color: #666; cursor: pointer; border: none; background: transparent; font-size: 10px; text-align: center; text-transform: uppercase; transition: 0.3s; }
+        .nav-btn.active { color: var(--gold); font-weight: bold; background: #111; border-left: 3px solid var(--gold); }
+
+        /* Área Principal */
+        main { flex: 1; padding: 20px; overflow-y: auto; background: #080808; padding-bottom: 60px; }
+        .page { display: none; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+
+        /* Estilo dos Blocos (Cards) */
+        .card { background: #111; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 14px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        
+        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 14px; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        footer { background: #000; color: var(--gold); text-align: center; padding: 10px; font-size: 10px; position: fixed; bottom: 0; width: 100%; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:var(--gold); font-weight:bold; font-size:14px;">MAM DISTRIBUIDORA</div>
-    <div id="userTag" style="font-size:9px; color:var(--gold)">...</div>
+    <div class="logo-txt">MAM DISTRIBUIDORA</div>
+    <div id="userEmail" style="font-size: 10px; color: var(--gold);"></div>
 </header>
 
-<div class="layout">
+<div class="container">
     <nav>
-        <div class="nav-item active" onclick="ver('home', this)">Início</div>
-        <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
-        <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
-        <div class="nav-item" onclick="ver('stats', this)">Stats</div>
-        <div class="nav-item" style="color:red; margin-top:auto; padding-bottom:30px;" onclick="fazerSair()">SAIR</div>
+        <button class="nav-btn active" onclick="showPage('home', this)">Início</button>
+        <button class="nav-btn" onclick="showPage('lancar', this)">Lançar</button>
+        <button class="nav-btn" onclick="showPage('carteira', this)">Carteira</button>
+        <button class="nav-btn" onclick="showPage('stats', this)">Stats</button>
+        <button class="nav-btn" style="color: #ff4444; margin-top: auto; padding-bottom: 40px;" onclick="logout()">SAIR</button>
     </nav>
 
     <main>
-        <div id="home" class="secao ativa">
-            <div class="card" style="border: 1px dashed var(--gold);">
-                <h4 style="color:var(--gold)">APOIO AO CEO</h4>
-                <p style="font-size: 11px; margin-top:5px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
+        <div id="home" class="page active">
+            <div class="card" style="border: 1px dashed var(--gold); text-align: center;">
+                <h3 style="color: var(--gold); margin-bottom: 5px;">APOIO AO CEO</h3>
+                <p style="font-size: 13px; font-weight: bold;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
             </div>
-            <h3>Lançamentos</h3>
-            <div style="display:flex; gap:10px; padding:15px 0;">
-                <div style="width:70px; height:70px; border-radius:50%; border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; font-size:8px; text-align:center;">PLAY SEAN</div>
+            
+            <h3>Feed de Lançamentos</h3>
+            <div style="display: flex; gap: 15px; padding: 15px 0; overflow-x: auto;">
+                <div style="min-width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 9px; text-align: center;">PLAY SEAN</div>
+                <div style="min-width: 80px; height: 80px; border-radius: 50%; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #444;">NOVO</div>
+            </div>
+
+            <h3>Tarefas Rápidas</h3>
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                <div><b>Vídeo Promocional</b><br><small style="color: var(--gold);">+15 Kz</small></div>
+                <button class="btn-gold" style="width: auto; padding: 8px 15px;" onclick="alert('Vídeo em breve!')">ABRIR</button>
             </div>
         </div>
 
-        <div id="lancar" class="secao">
+        <div id="lancar" class="page">
             <div class="card">
-                <h3>Enviar Obra</h3>
+                <h2 style="color: var(--gold); margin-bottom: 15px;">Nova Distribuição</h2>
                 <input type="text" id="mTitulo" placeholder="Título da Música">
-                <input type="file" id="fMp3" style="display:none;" multiple>
-                <button class="btn-gold" onclick="document.getElementById('fMp3').click()">ANEXAR MÚSICA + CAPA</button>
-                <button class="btn-gold" style="background:#fff; margin-top:20px;" onclick="alert('Enviando para o CEO...')">FINALIZAR LANÇAMENTO</button>
+                <select id="mGenero">
+                    <option>Kuduro</option><option>Rap</option><option>Semba</option><option>Gospel</option>
+                </select>
+                <input type="text" id="mIsrc" placeholder="ISRC (Opcional)">
+                <p style="font-size: 11px; color: #777; margin-top: 10px;">Anexe os ficheiros (MP3 e Capa):</p>
+                <input type="file" id="mFiles" multiple style="border: none; padding: 5px;">
+                <button class="btn-gold" onclick="alert('Música enviada para o CEO Matias!')">LANÇAR AGORA</button>
             </div>
         </div>
 
-        <div id="carteira" class="secao">
-            <div class="card" style="text-align:center">
-                <p style="font-size:10px; color:#777">SALDO ATUAL</p>
-                <h1 id="usrSaldo" style="color:var(--gold); font-size:40px; margin:10px 0;">0,00 Kz</h1>
-                <input type="text" id="sIban" placeholder="Introduza o IBAN de destino">
-                <button class="btn-gold" onclick="alert('Solicitação de Saque Enviada!')">SOLICITAR PAGAMENTO</button>
+        <div id="carteira" class="page">
+            <div class="card" style="text-align: center;">
+                <p style="font-size: 12px; color: #888;">SALDO DISPONÍVEL</p>
+                <h1 id="usrSaldo" style="color: var(--gold); font-size: 45px; margin: 15px 0;">0,00 Kz</h1>
+                <input type="text" id="sIban" placeholder="Introduza o seu IBAN para receber">
+                <button class="btn-gold" onclick="alert('Pedido de saque registado!')">PEDIR PAGAMENTO</button>
             </div>
         </div>
 
-        <div id="stats" class="secao">
+        <div id="stats" class="page">
             <div class="card">
-                <h3>Estatísticas Reais</h3>
-                <div style="display:flex; justify-content:space-around; margin-top:20px;">
-                    <div><p>Ouvintes</p><h2 style="color:var(--gold)">0</h2></div>
-                    <div><p>Músicas</p><h2 style="color:var(--gold)">0</h2></div>
+                <h3>Minhas Estatísticas</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                    <div class="card" style="margin:0; text-align: center;">Streams<br><b style="color:var(--gold)">0</b></div>
+                    <div class="card" style="margin:0; text-align: center;">Ouvintes<br><b style="color:var(--gold)">0</b></div>
                 </div>
             </div>
         </div>
@@ -94,33 +112,33 @@
 <footer>MAM DISTRIBUIDORA DIGITAL | CEO Matias Arsénio Manuel</footer>
 
 <script>
+    // Configuração Firebase do Matias
     const firebaseConfig = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    // NAVEGAÇÃO QUE ISOLA AS TELAS
-    function ver(id, btn) {
-        document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
-        document.getElementById(id).classList.add('ativa');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    // NAVEGAÇÃO REAL QUE ISOLA AS PÁGINAS
+    function showPage(id, btn) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     }
 
-    // BOTÃO SAIR QUE REALMENTE FUNCIONA
-    function fazerSair() {
-        if(confirm("Deseja mesmo sair da conta MAM?")) {
+    // BOTÃO SAIR QUE REALMENTE TERMINA A SESSÃO
+    function logout() {
+        if(confirm("Deseja sair da sua conta na MAM?")) {
             auth.signOut().then(() => {
-                window.location.href = "index.html";
-            }).catch(err => {
-                alert("Erro ao sair. Recarregue a página.");
+                window.location.reload(); 
             });
         }
     }
 
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('userTag').innerText = u.email.split('@')[0];
-            db.collection("users").doc(u.uid).onSnapshot(doc => {
+    // SINCRONIZAÇÃO DE DADOS
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('userEmail').innerText = user.email;
+            db.collection("users").doc(user.uid).onSnapshot(doc => {
                 if(doc.exists) document.getElementById('usrSaldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
             });
         }

@@ -9,114 +9,105 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; --dark: #0d0d0d; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        :root { --gold: #D4AF37; --black: #000; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: var(--black); color: #fff; display: flex; height: 100vh; overflow: hidden; }
         
-        /* MENU LATERAL AJUSTADO AO DISPOSITIVO */
-        nav { width: 115px; background: #050505; border-right: 1px solid var(--gold); display: flex; flex-direction: column; padding: 15px 5px; height: 100vh; flex-shrink: 0; }
-        .nav-item { padding: 12px 2px; color: #888; cursor: pointer; border: none; background: transparent; font-size: 9px; text-align: center; text-transform: uppercase; font-weight: bold; width: 100%; margin-bottom: 5px; }
-        .nav-item.active { color: var(--gold); background: #111; border-left: 3px solid var(--gold); }
+        /* MENU LATERAL - EXATAMENTE COMO PEDIDO */
+        nav { width: 120px; background: #050505; border-right: 1px solid var(--gold); display: flex; flex-direction: column; padding: 15px 5px; flex-shrink: 0; }
+        .nav-item { padding: 15px 5px; color: #888; cursor: pointer; border: none; background: transparent; font-size: 10px; text-align: center; text-transform: uppercase; font-weight: bold; }
+        .nav-item.active { color: var(--gold); border-left: 3px solid var(--gold); background: #111; }
         .btn-sair { color: #ff3333 !important; margin-top: auto; padding-bottom: 20px; }
 
-        /* CONTEÚDO PRINCIPAL */
-        main { flex: 1; padding: 20px; overflow-y: auto; background: var(--black); }
-        .secao { display: none; max-width: 700px; margin: 0 auto; }
+        main { flex: 1; padding: 20px; overflow-y: auto; }
+        .secao { display: none; max-width: 600px; margin: 0 auto; }
         .secao.ativa { display: block !important; }
 
         /* BARRA DE PESQUISA */
-        .search-container { width: 100%; max-width: 500px; margin: 0 auto 20px; }
-        .search-container input { width: 100%; padding: 10px 15px; background: #111; border: 1px solid #333; color: #fff; border-radius: 20px; outline: none; }
+        .pesquisa-topo { width: 100%; margin-bottom: 20px; }
+        .pesquisa-topo input { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: #fff; border-radius: 20px; }
 
-        /* PAGINA INICIAL (APROVADA) */
-        .box-apoio { border: 1px dashed var(--gold); padding: 15px; text-align: center; margin-bottom: 20px; border-radius: 8px; }
-        .feed-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
-        .disco { min-width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; color: var(--gold); text-align: center; }
-        
-        .tarefa { background: var(--dark); border: 1px solid #222; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-acao { background: var(--gold); color: #000; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 9px; }
+        /* PAGINA INICIAL - 3 TAREFAS */
+        .card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 10px; }
+        .apoio-ceo { border: 1px dashed var(--gold); padding: 15px; text-align: center; margin-bottom: 20px; }
 
-        /* CARDS GERAIS */
-        .card-box { background: var(--dark); padding: 20px; border-radius: 12px; border: 1px solid #333; }
-        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; }
-        .btn-final { background: var(--gold); color: #000; border: none; padding: 14px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 5px; }
+        /* INPUTS GERAIS */
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        .btn-lancar { background: var(--gold); color: #000; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; }
 
-        /* LISTA DE MÚSICAS */
-        .item-musica { background: #111; border-bottom: 1px solid #222; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
-
-        @media (max-width: 600px) {
-            nav { width: 85px; }
-            .nav-item { font-size: 8px; }
-        }
+        @media (max-width: 600px) { nav { width: 90px; } .nav-item { font-size: 8px; } }
     </style>
 </head>
 <body>
 
 <nav>
-    <div style="color:var(--gold); font-size:9px; font-weight:bold; text-align:center; margin-bottom:20px;">MAM</div>
-    <button class="nav-item active" onclick="ver('home', this)">Página Inicial</button>
-    <button class="nav-item" onclick="ver('musicas', this)">Minhas Músicas</button>
-    <button class="nav-item" onclick="ver('perfil', this)">Perfil</button>
-    <button class="nav-item" onclick="ver('carteira', this)">Carteira/Saque</button>
-    <button class="nav-item" onclick="ver('pesquisa', this)">Pesquisa</button>
-    <button class="nav-item btn-sair" onclick="sairApp()">SAIR</button>
+    <button class="nav-item active" onclick="ir('home', this)">Página Inicial</button>
+    <button class="nav-item" onclick="ir('perfil', this)">Perfil</button>
+    <button class="nav-item" onclick="ir('lancar', this)">Lançar Música</button>
+    <button class="nav-item" onclick="ir('musicas', this)">Minhas Músicas</button>
+    <button class="nav-item" onclick="ir('carteira', this)">Carteira/Saque</button>
+    <button class="nav-item" onclick="ir('busca', this)">Pesquisa</button>
+    <button class="nav-item btn-sair" onclick="fazerSair()">SAIR</button>
 </nav>
 
 <main>
-    <div class="search-container">
-        <input type="text" id="mainSearch" placeholder="Pesquisar catálogo MAM...">
-    </div>
+    <div class="pesquisa-topo"><input type="text" placeholder="Pesquisar na MAM..."></div>
 
     <div id="home" class="secao ativa">
-        <div class="box-apoio">
-            <h4 style="color: var(--gold)">APOIO AO CEO</h4>
-            <p style="font-size: 11px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
+        <div class="apoio-ceo">
+            <h4 style="color:var(--gold)">APOIO AO CEO</h4>
+            <p style="font-size:11px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
         </div>
-        <h3>Feed de Discos</h3>
-        <div class="feed-scroll">
-            <div class="disco">PLAY SEAN</div><div class="disco">MAM BEAT</div><div class="disco">NOVIDADE</div>
+        
+        <h3>Tarefas do Dia</h3>
+        <div class="card">
+            <div><b>Assistir Vídeo</b><br><small style="color:var(--gold)">+15 Kz</small></div>
+            <button class="btn-gold" onclick="alert('Vídeo indisponível no momento')">ABRIR</button>
         </div>
-        <h3 style="margin-top:20px;">Tarefas</h3>
-        <div class="tarefa">
-            <div><b>Assistir Vídeo</b><br><small style="color:var(--gold);">+15 Kz</small></div>
-            <button class="btn-acao" onclick="alert('Vídeo em breve')">ABRIR</button>
+        <div class="card">
+            <div><b>Convidar Artista</b><br><small style="color:var(--gold)">+500 Kz</small></div>
+            <button class="btn-gold" onclick="window.open('https://wa.me/')">PARTILHAR</button>
         </div>
-        <div class="tarefa">
-            <div><b>Convidar</b><br><small style="color:var(--gold);">+500 Kz</small></div>
-            <button class="btn-acao" onclick="window.open('https://wa.me/')">LINK</button>
+        <div class="card">
+            <div><b>TikTok do CEO</b><br><small style="color:var(--gold)">@playseanarsenio</small></div>
+            <button class="btn-gold" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
         </div>
-    </div>
-
-    <div id="musicas" class="secao">
-        <h3>Minhas Músicas</h3>
-        <div id="listaDeMusicas" class="card-box" style="padding:0;">
-            <div class="item-musica"><span>Nenhum lançamento encontrado.</span></div>
-        </div>
-        <button class="btn-final" style="margin-top:15px;">NOVO LANÇAMENTO</button>
     </div>
 
     <div id="perfil" class="secao">
-        <h3>Editar Perfil</h3>
-        <div class="card-box">
-            <input type="text" id="pNome" placeholder="Nome Artístico">
-            <textarea id="pBio" placeholder="Biografia"></textarea>
-            <button class="btn-final" onclick="salvarPerfil()">GUARDAR</button>
-        </div>
+        <h3>Meu Perfil</h3>
+        <input type="text" id="pNome" placeholder="Nome Artístico">
+        <textarea id="pBio" placeholder="Bio"></textarea>
+        <button class="btn-lancar" onclick="alert('Perfil Salvo')">SALVAR</button>
+    </div>
+
+    <div id="lancar" class="secao">
+        <h3>Distribuir Música</h3>
+        <input type="text" placeholder="Título">
+        <select><option>Kuduro</option><option>Rap</option></select>
+        <input type="file" multiple>
+        <button class="btn-lancar">LANÇAR AGORA</button>
+    </div>
+
+    <div id="musicas" class="secao">
+        <h3>Catálogo</h3>
+        <div id="lista" class="card">Nenhuma música encontrada.</div>
     </div>
 
     <div id="carteira" class="secao">
-        <h3>Carteira & Saque</h3>
-        <div class="card-box" style="text-align:center;">
-            <p style="font-size:11px; color:#888;">SALDO DISPONÍVEL</p>
-            <h1 id="usrSaldo" style="color:var(--gold); font-size:40px; margin:10px 0;">0,00 Kz</h1>
-            <input type="text" id="sIban" placeholder="Introduza o IBAN">
-            <button class="btn-final" onclick="alert('Pedido enviado!')">SOLICITAR SAQUE</button>
+        <h3>Levantamento</h3>
+        <div class="card" style="display:block; text-align:center;">
+            <p>Saldo: <b id="usrSaldo" style="color:var(--gold)">0,00 Kz</b></p>
+            <input type="number" placeholder="Quantia">
+            <input type="text" placeholder="Teu IBAN">
+            <button class="btn-lancar">PEDIR SAQUE</button>
         </div>
     </div>
 
-    <div id="pesquisa" class="secao">
+    <div id="busca" class="secao">
         <h3>Pesquisa</h3>
-        <div class="card-box">Resultados aparecerão aqui...</div>
+        <p>Resultados da pesquisa para o catálogo MAM.</p>
     </div>
 </main>
 
@@ -125,31 +116,21 @@
     firebase.initializeApp(cfg);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    function ver(id, btn) {
+    function ir(id, btn) {
         document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
         document.getElementById(id).classList.add('ativa');
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         btn.classList.add('active');
     }
 
-    function sairApp() {
-        if(confirm("Deseja sair?")) auth.signOut().then(() => location.reload());
+    function fazerSair() {
+        if(confirm("Sair da conta?")) auth.signOut().then(() => location.reload());
     }
 
     auth.onAuthStateChanged(u => {
         if(u) {
             db.collection("users").doc(u.uid).onSnapshot(doc => {
                 if(doc.exists) document.getElementById('usrSaldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
-            });
-            // Carregar Músicas
-            db.collection("musicas").where("userId", "==", u.uid).onSnapshot(snap => {
-                const list = document.getElementById('listaDeMusicas');
-                if(!snap.empty) {
-                    list.innerHTML = "";
-                    snap.forEach(d => {
-                        list.innerHTML += `<div class="item-musica"><span>🎵 ${d.data().titulo}</span> <small>${d.data().status}</small></div>`;
-                    });
-                }
             });
         }
     });

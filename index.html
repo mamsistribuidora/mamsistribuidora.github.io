@@ -9,43 +9,163 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; --grey: #1a1a1a; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0f0f0f; --grey: #222; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--black); color: #fff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background: var(--black); color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
 
         header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 9999; }
-        .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; }
-        .ceo-label { color: #888; font-size: 10px; display: block; margin-top: 2px; }
+        .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
+        .ceo-label { color: #888; font-size: 10px; }
 
         .layout { display: flex; flex: 1; }
         
-        /* Menu Lateral Estilo Mobile Reativo */
-        nav { width: 90px; background: #050505; border-right: 1px solid var(--grey); padding: 5px; position: fixed; height: 100%; z-index: 8888; }
-        .nav-item { padding: 12px 2px; color: #777; cursor: pointer; display: block; font-size: 9px; margin-bottom: 8px; border-radius: 6px; border: none; background: transparent; width: 100%; text-align: center; transition: 0.3s; }
-        .nav-item.active { background: #111; color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); }
+        /* Menu Lateral conforme a imagem */
+        nav { width: 100px; background: #050505; border-right: 1px solid var(--grey); padding: 10px 5px; position: fixed; height: 100%; z-index: 8888; }
+        .nav-item { padding: 12px 2px; color: #777; cursor: pointer; display: block; font-size: 10px; margin-bottom: 10px; border: none; background: transparent; width: 100%; text-align: center; }
+        .nav-item.active { color: var(--gold); font-weight: bold; }
+        .nav-item.sair { color: #ff4444; margin-top: 20px; }
 
-        /* Área de Conteúdo Isolada */
-        main { flex: 1; margin-left: 90px; padding: 15px; padding-bottom: 100px; }
-        .secao { display: none; width: 100%; }
+        main { flex: 1; margin-left: 100px; padding: 15px; padding-bottom: 80px; }
+        .secao { display: none; }
         .secao.ativa { display: block !important; }
 
-        /* Estilo Caixas MAM */
-        .box { background: #0f0f0f; border: 1px solid #222; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .btn-amarelo { background: var(--gold); color: #000; border: none; padding: 12px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; width: 100%; }
+        /* Estilo Caixas da tua Captura de Ecrã */
+        .box-apoio { border: 1px dashed var(--gold); padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 25px; background: rgba(212, 175, 55, 0.05); }
+        .box-recompensa { background: var(--dark); border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1a1a1a; }
         
-        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 13px; }
-        label { font-size: 10px; color: var(--gold); font-weight: bold; display: block; margin-top: 5px; text-transform: uppercase; }
+        .btn-amarelo { background: var(--gold); color: #000; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; }
+        .btn-branco { background: #fff; color: #000; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; }
 
-        /* Discos do Feed */
-        .feed-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; }
-        .disco-capa { min-width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gold); text-align: center; background: #000; padding: 5px; font-weight: bold; }
+        /* Feed de Discos Circulares */
+        .feed-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; margin-bottom: 25px; }
+        .disco { min-width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--gold); text-align: center; font-weight: bold; background: #000; }
 
-        footer { text-align: center; padding: 12px; font-size: 9px; color: var(--gold); background: #000; border-top: 1px solid #111; position: fixed; bottom: 0; width: 100%; z-index: 9999; }
+        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); background: #000; position: fixed; bottom: 0; width: 100%; z-index: 9999; }
+        h3 { font-size: 18px; margin-bottom: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">MAM DISTRIBUIDORA</div>
-    <span class="ceo-label">Matias Arsénio Manuel</span>
+    <div class="ceo-label">Matias Arsénio Manuel</div>
 </header>
+
+<div class="layout">
+    <nav>
+        <button class="nav-item active" onclick="ir('home', this)">Página<br>Inicial</button>
+        <button class="nav-item" onclick="ir('perfil', this)">Meu Perfil</button>
+        <button class="nav-item" onclick="ir('musicas', this)">Minhas<br>Músicas</button>
+        <button class="nav-item" onclick="ir('lancar', this)">Lançar<br>Música</button>
+        <button class="nav-item" onclick="ir('carteira', this)">Carteira</button>
+        <button class="nav-item" onclick="ir('stats', this)">Estatística</button>
+        <button class="nav-item" onclick="ir('suporte', this)">Suporte<br>MAM</button>
+        <button class="nav-item sair" onclick="auth.signOut().then(()=>location.reload())">Sair</button>
+    </nav>
+
+    <main>
+        <div id="home" class="secao ativa">
+            <div class="box-apoio">
+                <h2 style="color:var(--gold); font-size: 20px; margin-bottom: 5px;">APOIO AO CEO</h2>
+                <p style="font-size: 13px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
+            </div>
+            
+            <h3>Feed de Lançamentos</h3>
+            <div class="feed-container">
+                <div class="disco">PLAY SEAN</div>
+                <div class="disco">NOVIDADE</div>
+                <div class="disco">MAM BEAT</div>
+            </div>
+
+            <h3>Caça Recompensa</h3>
+            
+            <div class="box-recompensa">
+                <div><b>Assistir vídeo pago</b><br><small style="color:#888">Ganhe por visualização</small></div>
+                <button class="btn-amarelo" onclick="ganhar(15)">ABRIR</button>
+            </div>
+
+            <div class="box-recompensa">
+                <div><b>Convidar amigos</b><br><small style="color:#888">Ganha 500 Kz por registo</small></div>
+                <button class="btn-amarelo" onclick="convidarWhatsApp()">CONVIDAR</button>
+            </div>
+
+            <div class="box-recompensa">
+                <div><b>Segue no Tiktok</b><br><small style="color:#888">Ganha 500 Kz (Play Sean Arsénio)</small></div>
+                <button class="btn-branco" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
+            </div>
+        </div>
+
+        <div id="perfil" class="secao">
+            <h3>Meu Perfil Profissional</h3>
+            <div class="box-recompensa" style="display:block; text-align:center;">
+                <img id="usrFoto" src="https://via.placeholder.com/100" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin-bottom:15px;">
+                <input type="text" id="usrNome" placeholder="Nome Artístico" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; color:#fff; border-radius:8px;">
+                <button class="btn-amarelo" style="width:100%" onclick="salvarP()">GUARDAR ALTERAÇÕES</button>
+            </div>
+        </div>
+
+        <div id="lancar" class="secao">
+            <h3>Lançar Música</h3>
+            <div class="box-recompensa" style="display:block;">
+                <input type="text" id="mTitulo" placeholder="Título da Música" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; color:#fff; border-radius:8px;">
+                <button class="btn-amarelo" style="width:100%" onclick="alert('Lançamento enviado!')">ENVIAR AGORA</button>
+            </div>
+        </div>
+
+        <div id="carteira" class="secao">
+            <h3>Minha Carteira</h3>
+            <div class="box-recompensa" style="display:block; text-align:center;">
+                <h1 id="saldo" style="color:var(--gold); font-size:32px;">0,00 Kz</h1>
+                <button class="btn-amarelo" style="width:100%; margin-top:15px;" onclick="alert('Funcionalidade de saque em processamento.')">SOLICITAR SAQUE</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
+
+<script>
+    // Configurações do teu Firebase
+    const firebaseConfig = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(), db = firebase.firestore();
+
+    // NAVEGAÇÃO QUE LIMPA O ECRÃ
+    function ir(id, btn) {
+        document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    // CONVITE WHATSAPP (RESOLVE O ERRO DE LINK NÃO ENCONTRADO)
+    function convidarWhatsApp() {
+        const texto = encodeURIComponent("Olá! Convido-te para a MAM Distribuidora. Lança as tuas músicas para o mundo e ganha dinheiro com streams. Regista-te aqui: https://mam-distribuidora.web.app");
+        window.open("https://wa.me/?text=" + texto);
+    }
+
+    async function salvarP() {
+        const u = auth.currentUser; if(!u) return;
+        await db.collection("users").doc(u.uid).set({ nome: document.getElementById('usrNome').value }, { merge: true });
+        alert("✅ Perfil Atualizado!");
+    }
+
+    async function ganhar(v) {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("users").doc(u.uid).update({ saldo: firebase.firestore.FieldValue.increment(v) });
+            alert("Bónus de " + v + " Kz adicionado!");
+        }
+    }
+
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            db.collection("users").doc(u.uid).onSnapshot(doc => {
+                if(doc.exists) document.getElementById('saldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
+            });
+        }
+    });
+</script>
+</body>
+</html>

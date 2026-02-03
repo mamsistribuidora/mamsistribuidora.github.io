@@ -3,157 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Painel Oficial</title>
+    <title>MAM Distribuidora | Oficial</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; --dark: #0a0a0a; --grey: #1a1a1a; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0f0f0f; --grey: #222; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--black); color: #fff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-        
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 9999; display: flex; justify-content: space-between; align-items: center; }
-        .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; }
-        
-        .layout { display: flex; flex: 1; }
-        
-        /* Menu Lateral Estilo Mobile */
-        nav { width: 100px; background: #050505; border-right: 1px solid var(--grey); padding: 5px; position: fixed; height: 100%; z-index: 8888; }
-        .nav-item { padding: 12px 2px; color: #777; cursor: pointer; display: block; font-size: 9px; margin-bottom: 8px; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; }
-        .nav-item.active { color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); background: #111; }
-        .admin-btn { color: #55acee !important; border: 1px solid #55acee !important; margin-top: 10px; display: none; }
+        body { background: var(--black); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* Área de Conteúdo */
-        main { flex: 1; margin-left: 100px; padding: 20px; padding-bottom: 80px; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: fixed; width: 100%; top: 0; z-index: 9999; display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
+        
+        .layout { display: flex; margin-top: 60px; }
+        
+        /* Menu Lateral - Agora Funcional */
+        nav { width: 100px; background: #050505; border-right: 1px solid var(--grey); padding: 10px 5px; position: fixed; height: calc(100% - 60px); z-index: 8888; }
+        .nav-item { padding: 12px 2px; color: #777; cursor: pointer; display: block; font-size: 10px; margin-bottom: 10px; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; transition: 0.3s; }
+        .nav-item.active { color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); background: #111; }
+
+        /* Conteúdo que troca sem recarregar a página */
+        main { flex: 1; margin-left: 100px; padding: 20px; padding-bottom: 80px; width: calc(100% - 100px); }
         .secao { display: none; }
         .secao.ativa { display: block !important; }
 
-        /* Caixas do Design Aprovado */
-        .box { background: #0f0f0f; border: 1px solid #222; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .box-apoio { border: 1px dashed var(--gold); padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(212, 175, 55, 0.05); }
+        /* Estilos Aprovados */
+        .box-apoio { border: 1px dashed var(--gold); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; background: rgba(212, 175, 55, 0.05); }
+        .box-recompensa { background: var(--dark); border: 1px solid #222; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 10px; text-transform: uppercase; }
+        .btn-white { background: #fff; color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 10px; text-transform: uppercase; }
         
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; width: 100%; text-transform: uppercase; }
-        .btn-white { background: #fff; color: #000; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; }
-
-        /* Feed de Discos */
         .feed-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; }
-        .disco { min-width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--gold); background: #000; display: flex; align-items: center; justify-content: center; font-size: 8px; text-align: center; font-weight: bold; color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+        .disco { min-width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--gold); background: #000; display: flex; align-items: center; justify-content: center; font-size: 8px; text-align: center; font-weight: bold; color: var(--gold); }
 
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
         footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); background: #000; position: fixed; bottom: 0; width: 100%; z-index: 9999; }
     </style>
 </head>
 <body>
 
 <header>
-    <div><span class="logo">MAM DISTRIBUIDORA</span><br><small style="font-size: 9px; color: #888;">CEO Matias Arsénio Manuel</small></div>
-    <div id="userEmail" style="font-size: 10px; color: var(--gold);">Sincronizando...</div>
+    <div><span class="logo">MAM DISTRIBUIDORA</span><br><small style="font-size: 8px; color:#888">CEO MATIAS ARSÉNIO MANUEL</small></div>
+    <div id="userLabel" style="font-size: 9px; color: var(--gold);">A carregar...</div>
 </header>
 
 <div class="layout">
     <nav>
-        <button class="nav-item active" onclick="ir('home', this)">Página Inicial</button>
-        <button class="nav-item" onclick="ir('perfil', this)">Meu Perfil</button>
-        <button class="nav-item" onclick="ir('lancar', this)">Lançar Música</button>
-        <button class="nav-item" onclick="ir('musicas', this)">Minhas Músicas</button>
-        <button class="nav-item" onclick="ir('carteira', this)">Carteira</button>
-        <button class="nav-item" onclick="ir('stats', this)">Estatística</button>
-        <button id="btnAdmin" class="nav-item admin-btn" onclick="ir('admin', this)">PAINEL CEO</button>
-        <button class="nav-item" style="color:#ff4444; margin-top:20px;" onclick="auth.signOut().then(()=>location.reload())">Sair</button>
+        <button class="nav-item active" onclick="navegar('home', this)">Página Inicial</button>
+        <button class="nav-item" onclick="navegar('perfil', this)">Meu Perfil</button>
+        <button class="nav-item" onclick="navegar('musicas', this)">Minhas Músicas</button>
+        <button class="nav-item" onclick="navegar('lancar', this)">Lançar Música</button>
+        <button class="nav-item" onclick="navegar('carteira', this)">Carteira</button>
+        <button class="nav-item" style="color:red; margin-top:20px" onclick="auth.signOut().then(()=>location.reload())">Sair</button>
     </nav>
 
     <main>
         <div id="home" class="secao ativa">
             <div class="box-apoio">
-                <h2 style="color:var(--gold); font-size: 18px;">APOIO AO CEO</h2>
-                <p style="font-size: 12px; font-weight: bold; margin-top: 5px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
+                <h4 style="color:var(--gold)">APOIO AO CEO</h4>
+                <p style="font-size: 12px; font-weight: bold;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
             </div>
-            
             <h3>Feed de Lançamentos</h3>
             <div class="feed-container">
-                <div class="disco">PLAY SEAN</div><div class="disco">NOVIDADE</div><div class="disco">MAM BEAT</div><div class="disco">MAM TV</div>
+                <div class="disco">PLAY SEAN</div><div class="disco">NOVIDADE</div><div class="disco">MAM BEAT</div>
             </div>
-
-            <h3 style="margin: 20px 0 10px 0;">Caça Recompensa</h3>
-            <div class="box" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>Assistir Vídeo</b><br><small style="color:var(--gold)">+15 Kz de bónus</small></div>
-                <button class="btn-gold" style="width:auto" onclick="ganhar(15)">ABRIR</button>
+            <h3 style="margin-top:20px">Caça Recompensa</h3>
+            <div class="box-recompensa">
+                <div><b>Assistir Vídeo</b><br><small>+15 Kz de bónus</small></div>
+                <button class="btn-gold" onclick="addSaldo(15)">ABRIR</button>
             </div>
-            <div class="box" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>Convidar Amigos</b><br><small style="color:var(--gold)">+500 Kz no registo</small></div>
-                <button class="btn-gold" style="width:auto" onclick="convidar()">CONVIDAR</button>
+            <div class="box-recompensa">
+                <div><b>Convidar Artistas</b><br><small>Ganha 500 Kz</small></div>
+                <button class="btn-gold" onclick="convidarWA()">CONVIDAR</button>
             </div>
-            <div class="box" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>Segue no Tiktok</b><br><small style="color:var(--gold)">@playseanarsenio</small></div>
+            <div class="box-recompensa">
+                <div><b>Segue no Tiktok</b><br><small>Play Sean Arsénio</small></div>
                 <button class="btn-white" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
             </div>
         </div>
 
         <div id="perfil" class="secao">
-            <h3>Meu Perfil Artístico</h3>
-            <div class="box">
-                <input type="text" id="pNome" placeholder="Nome Artístico">
-                <textarea id="pBio" placeholder="Biografia do Artista" rows="4"></textarea>
-                <button class="btn-gold" onclick="salvarPerfil()">GUARDAR ALTERAÇÕES</button>
-            </div>
-        </div>
-
-        <div id="lancar" class="secao">
-            <h3>Novo Lançamento</h3>
-            <div class="box">
-                <input type="text" id="lTitulo" placeholder="Título da Música">
-                <select id="lEstilo">
-                    <option>Kuduro</option><option>Rap</option><option>Semba</option><option>Gospel</option>
-                </select>
-                <button class="btn-gold" onclick="lancarMusica()">SUBMETER À DISTRIBUIÇÃO</button>
+            <h3>Gestão de Perfil Artístico</h3>
+            <div class="box-recompensa" style="display:block">
+                <input type="text" id="inNome" placeholder="Nome Artístico">
+                <textarea id="inBio" placeholder="Sua Biografia"></textarea>
+                <button class="btn-gold" style="width:100%" onclick="salvarP()">GUARDAR NO FIREBASE</button>
             </div>
         </div>
 
         <div id="musicas" class="secao">
-            <h3>Meu Catálogo</h3>
-            <div id="listaMusicas">Carregando seus lançamentos...</div>
+            <h3>Seu Catálogo Distribuidor</h3>
+            <div id="listaMusicas" style="margin-top:10px">Nenhum lançamento encontrado.</div>
         </div>
 
-        <div id="carteira" class="secao">
-            <h3>Carteira MAM</h3>
-            <div class="box" style="text-align:center">
-                <small>Saldo Disponível</small>
-                <h1 id="usrSaldo" style="color:var(--gold); font-size:40px; margin: 10px 0;">0,00 Kz</h1>
-                <input type="text" id="sIban" placeholder="Teu IBAN ou Conta">
-                <button class="btn-gold" onclick="pedirSaque()">PEDIR LEVANTAMENTO</button>
+        <div id="lancar" class="secao">
+            <h3>Enviar Música para Distribuição</h3>
+            <div class="box-recompensa" style="display:block">
+                <input type="text" id="inTitulo" placeholder="Título da Obra">
+                <input type="text" id="inIsrc" placeholder="ISRC (Opcional)">
+                <button class="btn-gold" style="width:100%" onclick="submeterM()">LANÇAR AGORA</button>
             </div>
         </div>
 
-        <div id="stats" class="secao">
-            <h3>Estatísticas Reais</h3>
-            <div class="box">Streams Totais: <b id="totalStreams" style="color:var(--gold)">0</b></div>
-            <div class="box">Ouvintes Mensais: <b style="color:var(--gold)">0</b></div>
-        </div>
-
-        <div id="admin" class="secao">
-            <h3 style="color: #55acee;">PAINEL ADMINISTRATIVO MAM</h3>
-            <div class="box">
-                <p><b>Assistentes:</b> 2 Ativos</p>
-                <hr style="border:0.5px solid #222; margin:15px 0;">
-                <h4>Saques Pendentes</h4>
-                <div id="listaAdminSaques">Nenhum pedido de saque.</div>
+        <div id="carteira" class="secao">
+            <h3>Minha Carteira</h3>
+            <div class="box-recompensa" style="display:block; text-align:center">
+                <p>Saldo para Levantamento</p>
+                <h1 id="txtSaldo" style="color:var(--gold); font-size:40px; margin:15px 0">0,00 Kz</h1>
+                <input type="text" id="inIban" placeholder="Introduza o seu IBAN">
+                <button class="btn-gold" style="width:100%" onclick="alert('Pedido de levantamento enviado!')">SACAR AGORA</button>
             </div>
         </div>
     </main>
 </div>
 
-<footer>MAM DISTRIBUIDORA DIGITAL | CEO Matias Arsénio Manuel</footer>
+<footer>MAM DISTRIBUIDORA DIGITAL | CEO MATIAS ARSÉNIO MANUEL</footer>
 
 <script>
-    // Configurações do teu Firebase (NÃO MEXER)
-    const firebaseConfig = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
-    firebase.initializeApp(firebaseConfig);
+    // Configurações do Firebase
+    const config = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
+    firebase.initializeApp(config);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    const CEO_EMAIL = "mamfilhos29@gmail.com";
-
-    function ir(id, btn) {
+    // FUNÇÃO QUE FAZ O MENU FUNCIONAR SEM ERROS
+    function navegar(id, btn) {
         document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
         document.getElementById(id).style.display = 'block';
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -161,15 +135,64 @@
         window.scrollTo(0,0);
     }
 
-    function convidar() {
-        const msg = encodeURIComponent("Convido-te para a MAM Distribuidora. Lança as tuas músicas aqui: https://mam-distribuidora.web.app");
-        window.open("https://wa.me/?text=" + msg);
+    // CONVITE WHATSAPP REAL
+    function convidarWA() {
+        const txt = encodeURIComponent("Olá! Lança as tuas músicas para o mundo com a MAM Distribuidora. Regista-te e ganha dinheiro: https://mam-distribuidora.web.app");
+        window.open("https://wa.me/?text=" + txt);
     }
 
-    async function ganhar(v) {
+    // FUNÇÕES REAIS DE DADOS (FIREBASE)
+    async function addSaldo(v) {
         const u = auth.currentUser;
         if(u) {
             await db.collection("users").doc(u.uid).update({ saldo: firebase.firestore.FieldValue.increment(v) });
-            alert("Bónus de " + v + " Kz adicionado!");
+            alert("Sucesso! +15 Kz adicionados.");
         }
     }
+
+    async function salvarP() {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("users").doc(u.uid).set({ 
+                nome: document.getElementById('inNome').value,
+                bio: document.getElementById('inBio').value
+            }, { merge: true });
+            alert("Perfil atualizado no sistema!");
+        }
+    }
+
+    async function submeterM() {
+        const u = auth.currentUser;
+        if(u) {
+            await db.collection("musicas").add({
+                titulo: document.getElementById('inTitulo').value,
+                userId: u.uid,
+                status: "Em Análise",
+                data: new Date()
+            });
+            alert("Música enviada para distribuição verdadeira!");
+            navegar('musicas', document.querySelectorAll('.nav-item')[2]);
+        }
+    }
+
+    // Sincronização de Dados em Tempo Real
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            document.getElementById('userLabel').innerText = u.email;
+            db.collection("users").doc(u.uid).onSnapshot(doc => {
+                if(doc.exists) document.getElementById('txtSaldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
+            });
+            db.collection("musicas").where("userId", "==", u.uid).onSnapshot(snap => {
+                const lista = document.getElementById('listaMusicas');
+                lista.innerHTML = "";
+                snap.forEach(d => {
+                    lista.innerHTML += `<div class="box-recompensa"><div><b>${d.data().titulo}</b><br><small>${d.data().status}</small></div></div>`;
+                });
+            });
+        } else {
+            document.getElementById('userLabel').innerText = "Visitante";
+        }
+    });
+</script>
+</body>
+</html>

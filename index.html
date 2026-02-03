@@ -7,54 +7,53 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --black: #000; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        :root { --gold: #D4AF37; --black: #000; --dark: #0f0f0f; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--black); color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
         
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 9999; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 999; display: flex; justify-content: space-between; }
         .logo { color: var(--gold); font-weight: bold; text-transform: uppercase; font-size: 14px; }
-        
+
         .layout { display: flex; flex: 1; }
         
-        /* Menu lateral que tu aprovastes */
-        nav { width: 100px; background: #050505; border-right: 1px solid #222; padding: 10px 5px; position: fixed; height: 100%; }
-        .nav-item { padding: 12px 5px; color: #777; cursor: pointer; display: block; font-size: 10px; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; }
+        nav { width: 100px; background: #050505; border-right: 1px solid #222; padding: 10px 5px; height: 100vh; position: sticky; top: 60px; }
+        .nav-item { padding: 15px 5px; color: #777; cursor: pointer; display: block; font-size: 10px; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; }
         .nav-item.active { color: var(--gold); font-weight: bold; border-left: 3px solid var(--gold); background: #111; }
 
-        main { flex: 1; margin-left: 100px; padding: 20px; padding-bottom: 80px; }
+        main { flex: 1; padding: 20px; padding-bottom: 80px; }
         .secao { display: none; }
         .secao.ativa { display: block !important; }
 
-        /* Boxes da tua edição de ontem */
-        .box-apoio { border: 1px dashed var(--gold); padding: 20px; text-align: center; margin-bottom: 20px; }
-        .box-item { background: #0f0f0f; border: 1px solid #222; padding: 15px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        
+        /* Design Aprovado */
+        .box-apoio { border: 1px dashed var(--gold); padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(212,175,55,0.05); }
+        .box-item { background: #0f0f0f; border: 1px solid #222; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .btn-gold { background: var(--gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 10px; }
         
-        .feed-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
+        .feed-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; margin-bottom: 20px; }
         .disco { min-width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gold); text-align: center; font-weight: bold; }
 
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        footer { text-align: center; padding: 10px; font-size: 9px; color: var(--gold); background: #000; position: fixed; bottom: 0; width: 100%; }
+        .perfil-foto { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 15px; display: block; object-fit: cover; background: #222; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        footer { background: #000; color: var(--gold); text-align: center; padding: 10px; font-size: 9px; position: fixed; bottom: 0; width: 100%; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">MAM DISTRIBUIDORA</div>
-    <div id="statusEmail" style="font-size: 9px; color: var(--gold);"></div>
+    <div id="statusLogin" style="font-size: 9px; color: var(--gold);">Sincronizando...</div>
 </header>
 
 <div class="layout">
     <nav>
-        <button class="nav-item active" onclick="ir('home', this)">Início</button>
-        <button class="nav-item" onclick="ir('perfil', this)">Perfil</button>
-        <button class="nav-item" onclick="ir('lancar', this)">Lançar</button>
-        <button class="nav-item" onclick="ir('musicas', this)">Músicas</button>
-        <button class="nav-item" onclick="ir('carteira', this)">Carteira</button>
-        <button class="nav-item" style="color:red; margin-top:20px;" onclick="sair()">Sair</button>
+        <button class="nav-item active" onclick="trocar('home', this)">Início</button>
+        <button class="nav-item" onclick="trocar('perfil', this)">Perfil</button>
+        <button class="nav-item" onclick="trocar('lancar', this)">Lançar</button>
+        <button class="nav-item" onclick="trocar('carteira', this)">Carteira</button>
+        <button class="nav-item" style="color:red; margin-top:20px;" onclick="auth.signOut().then(()=>location.reload())">Sair</button>
     </nav>
 
     <main>
@@ -63,120 +62,77 @@
                 <h4 style="color:var(--gold)">APOIO AO CEO</h4>
                 <p style="font-size: 11px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
             </div>
-            <h3>Lançamentos</h3>
+            
+            <h3>Feed de Lançamentos</h3>
             <div class="feed-container">
                 <div class="disco">PLAY SEAN</div><div class="disco">MAM BEAT</div><div class="disco">NOVIDADE</div>
             </div>
-            <h3>Caça Recompensa</h3>
+
+            <h3>Caça Recompensa (3 Tarefas)</h3>
             <div class="box-item">
-                <div><b>Vídeo Pago</b><br><small>+15 Kz</small></div>
+                <div><b>Vídeo Pago</b><br><small>Ganha 15 Kz</small></div>
                 <button class="btn-gold" onclick="ganhar(15)">ABRIR</button>
             </div>
             <div class="box-item">
-                <div><b>Convidar</b><br><small>+500 Kz</small></div>
-                <button class="btn-gold" onclick="convidar()">LINK</button>
+                <div><b>Convidar Artistas</b><br><small>Ganha 500 Kz</small></div>
+                <button class="btn-gold" onclick="convidarWA()">LINK</button>
+            </div>
+            <div class="box-item">
+                <div><b>Segue no Tiktok</b><br><small>Play Sean Arsénio</small></div>
+                <button class="btn-gold" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
             </div>
         </div>
 
         <div id="perfil" class="secao">
-            <h3>Meu Perfil</h3>
-            <div class="box-item" style="display:block">
-                <input type="text" id="pNome" placeholder="Nome Artístico">
-                <textarea id="pBio" placeholder="Biografia"></textarea>
-                <button class="btn-gold" style="width:100%" onclick="salvarPerfil()">SALVAR NO BANCO</button>
+            <h3>Editar Perfil</h3>
+            <div class="box-item" style="display:block; text-align:center;">
+                <img id="imgPerfil" src="" class="perfil-foto">
+                <input type="file" id="fotoInput" accept="image/*" style="font-size: 10px;">
+                <input type="text" id="pNome" placeholder="Seu Nome Artístico">
+                <textarea id="pBio" placeholder="Sua Biografia"></textarea>
+                <button class="btn-gold" style="width:100%" onclick="salvarPerfil()">GUARDAR PERFIL</button>
             </div>
         </div>
 
         <div id="lancar" class="secao">
-            <h3>Novo Lançamento</h3>
+            <h3>Distribuição Profissional</h3>
             <div class="box-item" style="display:block">
-                <input type="text" id="mTitulo" placeholder="Título da Música">
-                <button class="btn-gold" style="width:100%" onclick="lancarMusica()">ENVIAR MÚSICA</button>
+                <label><small>Título da Música:</small></label>
+                <input type="text" id="lTitulo" placeholder="Ex: Meu Sucesso">
+                <label><small>Estilo Musical:</small></label>
+                <select id="lEstilo">
+                    <option>Kuduro</option><option>Rap/Hip Hop</option><option>Semba</option><option>Gospel</option>
+                </select>
+                <label><small>Código ISRC (Se tiver):</small></label>
+                <input type="text" id="lIsrc" placeholder="AO-XXX-XX-XXXXX">
+                <button class="btn-gold" style="width:100%; margin-top:10px;" onclick="lancarMusica()">LANÇAR AGORA</button>
             </div>
         </div>
 
-        <div id="musicas" class="secao">
-            <h3>Minhas Músicas</h3>
-            <div id="listaMusicas"></div>
-        </div>
-
         <div id="carteira" class="secao">
-            <h3>Minha Carteira</h3>
+            <h3>Saldo e Levantamentos</h3>
             <div class="box-item" style="display:block; text-align:center">
-                <h1 id="usrSaldo" style="color:var(--gold); font-size:36px;">0,00 Kz</h1>
-                <input type="text" id="sIban" placeholder="Seu IBAN">
-                <button class="btn-gold" style="width:100%" onclick="alert('Pedido enviado!')">SACAR</button>
+                <h1 id="usrSaldo" style="color:var(--gold); font-size:40px;">0,00 Kz</h1>
+                <input type="text" id="sIban" placeholder="Introduza o seu IBAN">
+                <button class="btn-gold" style="width:100%">SOLICITAR SAQUE</button>
             </div>
         </div>
     </main>
 </div>
 
-<footer>MAM DISTRIBUIDORA DIGITAL | Matias Arsénio Manuel</footer>
+<footer>MAM DISTRIBUIDORA DIGITAL | CEO Matias Arsénio Manuel</footer>
 
 <script>
-    // Configurações do teu Firebase
     const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
     firebase.initializeApp(cfg);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    // Navegação que funciona
-    function ir(id, btn) {
+    function trocar(id, btn) {
         document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
         document.getElementById(id).style.display = 'block';
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        window.scrollTo(0,0);
     }
 
-    function convidar() {
-        window.open("https://wa.me/?text=Vem para a MAM Distribuidora: https://mam-distribuidora.web.app");
-    }
-
-    function sair() {
-        auth.signOut().then(() => location.reload());
-    }
-
-    async function ganhar(v) {
-        const u = auth.currentUser;
-        if(u) {
-            await db.collection("users").doc(u.uid).update({ saldo: firebase.firestore.FieldValue.increment(v) });
-            alert("Bónus adicionado!");
-        }
-    }
-
-    async function salvarPerfil() {
-        const u = auth.currentUser;
-        if(u) {
-            await db.collection("users").doc(u.uid).set({ 
-                nome: document.getElementById('pNome').value,
-                bio: document.getElementById('pBio').value 
-            }, { merge: true });
-            alert("Perfil salvo com sucesso!");
-        }
-    }
-
-    async function lancarMusica() {
-        const u = auth.currentUser;
-        if(u) {
-            await db.collection("musicas").add({ 
-                titulo: document.getElementById('mTitulo').value, 
-                userId: u.uid, status: "Pendente" 
-            });
-            alert("Música enviada!");
-        }
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            document.getElementById('statusEmail').innerText = u.email;
-            db.collection("users").doc(u.uid).onSnapshot(doc => {
-                if(doc.exists) document.getElementById('usrSaldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
-            });
-            db.collection("musicas").where("userId", "==", u.uid).onSnapshot(snap => {
-                const div = document.getElementById('listaMusicas'); div.innerHTML = "";
-                snap.forEach(d => { div.innerHTML += `<div class="box-item">${d.data().titulo} - ${d.data().status}</div>`; });
-            });
-        }
-    });
-</script>
-</body>
-</html>
+    function convidarWA() {

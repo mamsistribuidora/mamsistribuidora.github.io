@@ -5,72 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
     <style>
-        /* CONFIGURAÇÃO GERAL */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 90%;
-        }
-
-        h1 { color: #1a1a1a; margin-bottom: 10px; }
-        p { color: #666; margin-bottom: 30px; }
-
-        /* OS BOTÕES COM EFEITO QUE PEDISTE */
-        .btn-whatsapp {
-            display: inline-block;
-            background-color: #25D366;
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: all 0.3s ease; /* Efeito de suavidade */
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-        }
-
-        .btn-whatsapp:hover {
-            transform: translateY(-5px) scale(1.05); /* Sobe e aumenta um pouco */
-            background-color: #128C7E;
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.5);
-        }
-
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #aaa;
-        }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #0b0c10; color: white; text-align: center; }
+        header { background: #1f2833; padding: 25px; border-bottom: 3px solid #45a29e; }
+        .container { padding: 20px; max-width: 450px; margin: auto; }
+        .card { background: #1f2833; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #45a29e; }
+        .saldo-label { color: #66fcf1; font-size: 14px; letter-spacing: 2px; }
+        .saldo { font-size: 50px; font-weight: bold; color: white; margin: 15px 0; }
+        .btn { display: block; width: 100%; padding: 18px; margin: 15px 0; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn-play { background: #66fcf1; color: #0b0c10; }
+        .btn-saque { background: #45a29e; color: white; }
+        .btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(102, 252, 241, 0.3); }
+        input { width: 90%; padding: 12px; background: #0b0c10; border: 1px solid #45a29e; border-radius: 8px; color: white; margin-bottom: 15px; outline: none; }
+        .info-parceria { font-size: 11px; color: #45a29e; margin-top: 20px; border-top: 1px solid #333; padding-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>MAM Distribuidora</h1>
-        <p>Distribuidora Musical Angola - Qualidade e Confiança.</p>
-        
-        <a href="https://wa.me/244900000000" target="_blank" class="btn-whatsapp">
-            Falar no WhatsApp
-        </a>
+<header>
+    <h1 style="margin:0; color: #66fcf1;">MAM DISTRIBUIDORA</h1>
+    <p style="font-size: 12px; margin-top: 5px;">SISTEMA DE GANHOS REAIS - ANGOLA</p>
+</header>
 
-        <div class="footer">
-            Desenvolvido por Matias Arsénio Manuel
+<div class="container">
+    <div class="card">
+        <span class="saldo-label">CARTEIRA DO OUVINTE</span>
+        <div class="saldo"><span id="saldo-user">0</span> KZ</div>
+        
+        <p id="status-saque" style="font-size: 13px; color: #ff4c4c;">Mínimo para saque: 10.000 KZ</p>
+        
+        <button class="btn btn-play" onclick="ouvirMusica()">
+            ▶️ OUVIR MÚSICA NO FEED (+300 KZ)
+        </button>
+        
+        <div style="margin: 25px 0;"></div>
+        
+        <input type="text" id="iban-field" placeholder="Digite seu IBAN para Receber">
+        <button id="btn-saque" class="btn btn-saque" onclick="processarSaque()" disabled>
+            SOLICITAR SAQUE AGORA
+        </button>
+
+        <div class="info-parceria">
+            SISTEMA DE SATÉLITE ATIVO: 1 OUVINTE = +5.000 KZ (ADMIN)
         </div>
     </div>
+</div>
+
+<script>
+    let saldoOuvinte = 0;
+    const MINIMO_SAQUE = 10000;
+    const GANHO_POR_MUSICA = 300;
+
+    function ouvirMusica() {
+        // O ouvinte ganha 300 KZ por cada música
+        saldoOuvinte += GANHO_POR_MUSICA;
+        document.getElementById('saldo-user').innerText = saldoOuvinte.toLocaleString();
+        
+        // Regra de libertação do botão de saque
+        const btn = document.getElementById('btn-saque');
+        const status = document.getElementById('status-saque');
+        
+        if (saldoOuvinte >= MINIMO_SAQUE) {
+            btn.disabled = false;
+            status.innerText = "SAQUE AUTORIZADO!";
+            status.style.color = "#66fcf1";
+        }
+    }
+
+    function processarSaque() {
+        const iban = document.getElementById('iban-field').value;
+        if (iban.length < 10) {
+            alert("ERRO: O IBAN inserido é inválido. Verifique os dados.");
+            return;
+        }
+
+        alert("PEDIDO DE SAQUE REALIZADO COM SUCESSO!\n\nValor: " + saldoOuvinte + " KZ\nIBAN: " + iban + "\n\nO pagamento será processado em breve pela MAM Distribuidora.");
+        
+        // Reinicia o saldo após o pedido
+        saldoOuvinte = 0;
+        document.getElementById('saldo-user').innerText = "0";
+        document.getElementById('btn-saque').disabled = true;
+        document.getElementById('status-saque').innerText = "Mínimo para saque: 10.000 KZ";
+        document.getElementById('status-saque').style.color = "#ff4c4c";
+    }
+</script>
 
 </body>
 </html>

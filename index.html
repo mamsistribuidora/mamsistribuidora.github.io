@@ -3,130 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Oficial</title>
+    <title>MAM Distribuidora | Sistema Real</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --dark: #0a0a0a; --gray: #1a1a1a; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; display: flex; }
-        
-        /* Sidebar conforme imagem */
-        .sidebar { width: 200px; background: var(--dark); border-right: 1px solid var(--gold); height: 100vh; position: fixed; padding-top: 20px; text-align: left; }
-        .sidebar a { display: block; padding: 15px; color: #888; text-decoration: none; font-size: 13px; border-left: 3px solid transparent; }
-        .sidebar a.active { color: var(--gold); border-left: 3px solid var(--gold); background: rgba(212, 175, 55, 0.1); }
+        :root { --gold: #d4af37; --dark-bg: #000000; --card-bg: #111111; --text-gray: #888; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark-bg); color: white; margin: 0; display: flex; }
 
-        .main-content { margin-left: 200px; width: 100%; padding: 20px; }
-        header { border-bottom: 1px solid var(--gold); padding-bottom: 10px; margin-bottom: 20px; text-align: left; }
+        /* Menu Lateral (Sidebar) */
+        .sidebar { width: 220px; background: var(--dark-bg); border-right: 1px solid #222; height: 100vh; position: fixed; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 25px 15px; font-weight: bold; color: var(--gold); border-bottom: 1px solid #222; font-size: 18px; }
+        .sidebar a { padding: 15px 20px; color: var(--text-gray); text-decoration: none; font-size: 14px; transition: 0.3s; border-left: 4px solid transparent; cursor: pointer; }
+        .sidebar a:hover, .sidebar a.active { color: var(--gold); background: #111; border-left-color: var(--gold); }
+
+        /* Conteúdo Principal */
+        .main { margin-left: 220px; flex: 1; padding: 30px; min-height: 100vh; }
+        .page { display: none; animation: fadeIn 0.5s; }
+        .page.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Estilo dos Cards (Conforme imagem) */
+        .header-title { border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 30px; text-align: left; }
+        .header-title h2 { color: var(--gold); margin: 0; text-transform: uppercase; }
+
+        .card-tarefa { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .btn-acao { background: var(--gold); color: black; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         
-        /* Cards de Tarefas e Carteira */
-        .card { background: var(--gray); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
-        .btn-gold { background: var(--gold); color: black; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .saldo-display { font-size: 48px; font-weight: bold; color: var(--gold); margin: 10px 0; }
-        
-        select, input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 8px; margin: 10px 0; }
-        audio { width: 100%; margin-top: 10px; filter: sepia(100%) saturate(200%) hue-rotate(10deg); }
+        .apoio-ceo { border: 1px dashed var(--gold); padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+        .saldo-grande { font-size: 55px; color: var(--gold); font-weight: bold; margin: 20px 0; }
+
+        input, select, textarea { width: 100%; padding: 12px; background: #080808; border: 1px solid #333; color: white; border-radius: 8px; margin-top: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div style="padding: 15px; font-weight: bold; color: var(--gold);">MAM DISTRIBUIDORA</div>
-    <a href="#" class="active">Página Inicial</a>
-    <a href="#">Meu Perfil</a>
-    <a href="#">Minhas Músicas</a>
-    <a href="#">Lançar Música</a>
-    <a href="#">Carteira</a>
-    <a href="#" style="margin-top: 50px; color: red;">Sair</a>
-</div>
-
-<div class="main-content">
-    <header>
-        <h2 style="margin:0; color: var(--gold);">Página Inicial</h2>
-        <small>Matias Arsénio Manuel</small>
-    </header>
-
-    <div style="border: 2px dashed var(--gold); padding: 15px; border-radius: 10px; margin-bottom: 30px;">
-        <span style="color: var(--gold); font-weight: bold;">APOIO AO CEO</span><br>
-        <small>IBAN BFA: 0006.0000.8631.6866.3015.2</small>
+    <div class="sidebar">
+        <div class="sidebar-header">MAM DISTRIBUIDORA</div>
+        <a onclick="showPage('home')" id="link-home" class="active">PÁGINA INICIAL</a>
+        <a onclick="showPage('perfil')">PERFIL</a>
+        <a onclick="showPage('lancar')">LANÇAR MÚSICA</a>
+        <a onclick="showPage('musicas')">MINHAS MÚSICAS</a>
+        <a onclick="showPage('carteira')">CARTEIRA/SAQUE</a>
+        <a onclick="showPage('estatistica')">ESTATÍSTICA</a>
+        <a style="margin-top: auto; color: #ff4444;">SAIR</a>
     </div>
 
-    <h3>Tarefas do Dia</h3>
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <strong>Ouvir Lançamento (+300 Moedas)</strong><br>
-                <small>Ouça até ao fim para validar o ganho real.</small>
+    <div class="main">
+
+        <div id="home" class="page active">
+            <div class="header-title"><h2>Página Inicial</h2><small>Bem-vindo, Matias Arsénio Manuel</small></div>
+            
+            <div class="apoio-ceo">
+                <div style="color: var(--gold); font-weight: bold; font-size: 14px;">APOIO AO CEO</div>
+                <div style="font-size: 12px; margin-top: 5px;">IBAN BFA: 0006.0000.8631.6866.3015.2</div>
             </div>
-            <span id="status-task" style="color: var(--gold);">Disponível</span>
+
+            <h3>Tarefas do Dia</h3>
+            <div class="card-tarefa">
+                <div><strong>Assistir Vídeo</strong><br><span style="color: var(--gold);">+15 Kz</span></div>
+                <button class="btn-acao">ABRIR</button>
+            </div>
+            <div class="card-tarefa">
+                <div><strong>Convidar Artista</strong><br><span style="color: var(--gold);">+500 Kz</span></div>
+                <button class="btn-acao">PARTILHAR</button>
+            </div>
+            <div class="card-tarefa">
+                <div><strong>TikTok do CEO</strong><br><span style="color: var(--text-gray);">@playseanarsenio</span></div>
+                <button class="btn-acao">SEGUIR</button>
+            </div>
         </div>
-        <audio id="player-real" controls onended="confirmarGanho()">
-            <source src="sua-musica.mp3" type="audio/mpeg">
-        </audio>
+
+        <div id="carteira" class="page">
+            <div class="header-title"><h2>Minha Carteira MAM</h2></div>
+            <div class="card-tarefa" style="display:block; text-align:center;">
+                <small>SALDO ATUAL</small>
+                <div class="saldo-grande"><span id="meu-saldo">0,00</span> Kz</div>
+                
+                <label style="text-align:left; display:block;">MÉTODO DE LEVANTAMENTO:</label>
+                <select id="banco">
+                    <option>BFA</option><option>BAI</option><option>BIC</option>
+                    <option>Multicaixa Express</option><option>PayPal</option>
+                </select>
+                <input type="text" id="iban" placeholder="Insira o IBAN ou Conta de Destino">
+                <button class="btn-acao" style="width:100%; margin-top:20px;" onclick="sacar()">SOLICITAR LEVANTAMENTO</button>
+            </div>
+        </div>
+
+        <div id="lancar" class="page">
+            <div class="header-title"><h2>Lançar Nova Obra</h2></div>
+            <div class="card-tarefa" style="display:block;">
+                <label>CAPA DA OBRA (JPG):</label><input type="file">
+                <label>FICHEIRO DE ÁUDIO (MP3):</label><input type="file">
+                <input type="text" placeholder="Título da Música">
+                <input type="text" placeholder="Artista Principal">
+                <select><option>Kuduro</option><option>Kizomba</option><option>Semba</option></select>
+                <button class="btn-acao" style="width:100%; margin-top:20px;">FINALIZAR E LANÇAR AGORA</button>
+            </div>
+        </div>
+
+        <div id="estatistica" class="page">
+            <div class="header-title"><h2>Estatística Profissional</h2></div>
+            <div class="card-tarefa" style="background: #111; padding: 40px; text-align:center;">
+                <p>O processamento de streams mundiais está a ser sincronizado...</p>
+            </div>
+        </div>
+
     </div>
 
-    <h3>Minha Carteira MAM</h3>
-    <div class="card">
-        <small>SALDO ATUAL</small>
-        <div class="saldo-display"><span id="valor-saldo">0,00</span> Moedas</div>
-        
-        <label>MÉTODO DE LEVANTAMENTO:</label>
-        <select id="metodo-banco">
-            <option value="BFA">BFA</option>
-            <option value="BAI">BAI</option>
-            <option value="BIC">BIC</option>
-            <option value="Multicaixa Express">Multicaixa Express</option>
-            <option value="PayPal">PayPal</option>
-        </select>
-        
-        <input type="text" id="iban-cliente" placeholder="Insira o IBAN ou Conta de Destino">
-        <button id="btn-levantar" class="btn-gold" style="width: 100%;" onclick="processarLevantamento()" disabled>SOLICITAR LEVANTAMENTO</button>
-    </div>
-</div>
+    <script>
+        // Inicializa EmailJS
+        (function(){ emailjs.init("vuAVZ5U4lRBZcsIon"); })();
 
-<script>
-    // Configuração Real com os teus dados da imagem
-    (function(){
-        emailjs.init("vuAVZ5U4lRBZcsIon");
-    })();
-
-    let saldoReal = 0;
-
-    function confirmarGanho() {
-        saldoReal += 300;
-        document.getElementById('valor-saldo').innerText = saldoReal.toLocaleString() + ",00";
-        document.getElementById('status-task').innerText = "✅ Concluída";
-        alert("Ganho validado pelo satélite! +300 Moedas na conta.");
-        
-        if(saldoReal >= 10000) {
-            document.getElementById('btn-levantar').disabled = false;
+        // Troca de Páginas (Navegação Real)
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
-    }
 
-    function processarLevantamento() {
-        const banco = document.getElementById('metodo-banco').value;
-        const iban = document.getElementById('iban-cliente').value;
+        // Função de Saque Real
+        function sacar() {
+            const iban = document.getElementById('iban').value;
+            if(!iban) { alert("Preencha o IBAN!"); return; }
 
-        if(!iban) { alert("Por favor, insira os dados da conta."); return; }
+            const dados = {
+                from_name: "Matias Manuel",
+                iban_cliente: iban,
+                valor_moedas: "Saldo Atual",
+                metodo_banco: document.getElementById('banco').value
+            };
 
-        const templateParams = {
-            from_name: "MAM Ouvinte",
-            iban_cliente: iban,
-            metodo_banco: banco,
-            valor_moedas: saldoReal,
-            to_email: "mamfilhos29@gmail.com"
-        };
-
-        // Usa o teu Service ID da imagem
-        emailjs.send("service_gmwnj3w", "TEU_TEMPLATE_ID", templateParams)
-            .then(() => {
-                alert("PEDIDO REALIZADO! O valor será convertido e enviado para o seu " + banco);
-                saldoReal = 0;
-                document.getElementById('valor-saldo').innerText = "0,00";
-                document.getElementById('btn-levantar').disabled = true;
-            }, (err) => {
-                alert("Erro no servidor de e-mail. Verifique o Template ID.");
-            });
-    }
-</script>
-
+            emailjs.send("service_gmwnj3w", "template_id_aqui", dados)
+                .then(() => { alert("Levantamento solicitado com sucesso!"); })
+                .catch(() => { alert("Erro ao enviar. Verifique o Template ID no EmailJS."); });
+        }
+    </script>
 </body>
 </html>

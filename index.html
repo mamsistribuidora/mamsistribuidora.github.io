@@ -1,139 +1,76 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Oficial</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
     <style>
-        :root { --gold: #D4AF37; --black: #000; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: var(--black); color: #fff; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* MENU LATERAL - EXATAMENTE COMO PEDIDO */
-        nav { width: 120px; background: #050505; border-right: 1px solid var(--gold); display: flex; flex-direction: column; padding: 15px 5px; flex-shrink: 0; }
-        .nav-item { padding: 15px 5px; color: #888; cursor: pointer; border: none; background: transparent; font-size: 10px; text-align: center; text-transform: uppercase; font-weight: bold; }
-        .nav-item.active { color: var(--gold); border-left: 3px solid var(--gold); background: #111; }
-        .btn-sair { color: #ff3333 !important; margin-top: auto; padding-bottom: 20px; }
+        /* CONFIGURAÇÃO GERAL */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #333;
+        }
 
-        main { flex: 1; padding: 20px; overflow-y: auto; }
-        .secao { display: none; max-width: 600px; margin: 0 auto; }
-        .secao.ativa { display: block !important; }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+        }
 
-        /* BARRA DE PESQUISA */
-        .pesquisa-topo { width: 100%; margin-bottom: 20px; }
-        .pesquisa-topo input { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: #fff; border-radius: 20px; }
+        h1 { color: #1a1a1a; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 30px; }
 
-        /* PAGINA INICIAL - 3 TAREFAS */
-        .card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 10px; }
-        .apoio-ceo { border: 1px dashed var(--gold); padding: 15px; text-align: center; margin-bottom: 20px; }
+        /* OS BOTÕES COM EFEITO QUE PEDISTE */
+        .btn-whatsapp {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            transition: all 0.3s ease; /* Efeito de suavidade */
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
 
-        /* INPUTS GERAIS */
-        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        .btn-lancar { background: var(--gold); color: #000; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .btn-whatsapp:hover {
+            transform: translateY(-5px) scale(1.05); /* Sobe e aumenta um pouco */
+            background-color: #128C7E;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.5);
+        }
 
-        @media (max-width: 600px) { nav { width: 90px; } .nav-item { font-size: 8px; } }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
 
-<nav>
-    <button class="nav-item active" onclick="ir('home', this)">Página Inicial</button>
-    <button class="nav-item" onclick="ir('perfil', this)">Perfil</button>
-    <button class="nav-item" onclick="ir('lancar', this)">Lançar Música</button>
-    <button class="nav-item" onclick="ir('musicas', this)">Minhas Músicas</button>
-    <button class="nav-item" onclick="ir('carteira', this)">Carteira/Saque</button>
-    <button class="nav-item" onclick="ir('busca', this)">Pesquisa</button>
-    <button class="nav-item btn-sair" onclick="fazerSair()">SAIR</button>
-</nav>
-
-<main>
-    <div class="pesquisa-topo"><input type="text" placeholder="Pesquisar na MAM..."></div>
-
-    <div id="home" class="secao ativa">
-        <div class="apoio-ceo">
-            <h4 style="color:var(--gold)">APOIO AO CEO</h4>
-            <p style="font-size:11px;">IBAN BFA: 0006.0000.8631.6866.3015.2</p>
-        </div>
+    <div class="container">
+        <h1>MAM Distribuidora</h1>
+        <p>Distribuidora Musical Angola - Qualidade e Confiança.</p>
         
-        <h3>Tarefas do Dia</h3>
-        <div class="card">
-            <div><b>Assistir Vídeo</b><br><small style="color:var(--gold)">+15 Kz</small></div>
-            <button class="btn-gold" onclick="alert('Vídeo indisponível no momento')">ABRIR</button>
-        </div>
-        <div class="card">
-            <div><b>Convidar Artista</b><br><small style="color:var(--gold)">+500 Kz</small></div>
-            <button class="btn-gold" onclick="window.open('https://wa.me/')">PARTILHAR</button>
-        </div>
-        <div class="card">
-            <div><b>TikTok do CEO</b><br><small style="color:var(--gold)">@playseanarsenio</small></div>
-            <button class="btn-gold" style="background:#fff" onclick="window.open('https://tiktok.com/@playseanarsenio')">SEGUIR</button>
+        <a href="https://wa.me/244900000000" target="_blank" class="btn-whatsapp">
+            Falar no WhatsApp
+        </a>
+
+        <div class="footer">
+            Desenvolvido por Matias Arsénio Manuel
         </div>
     </div>
 
-    <div id="perfil" class="secao">
-        <h3>Meu Perfil</h3>
-        <input type="text" id="pNome" placeholder="Nome Artístico">
-        <textarea id="pBio" placeholder="Bio"></textarea>
-        <button class="btn-lancar" onclick="alert('Perfil Salvo')">SALVAR</button>
-    </div>
-
-    <div id="lancar" class="secao">
-        <h3>Distribuir Música</h3>
-        <input type="text" placeholder="Título">
-        <select><option>Kuduro</option><option>Rap</option></select>
-        <input type="file" multiple>
-        <button class="btn-lancar">LANÇAR AGORA</button>
-    </div>
-
-    <div id="musicas" class="secao">
-        <h3>Catálogo</h3>
-        <div id="lista" class="card">Nenhuma música encontrada.</div>
-    </div>
-
-    <div id="carteira" class="secao">
-        <h3>Levantamento</h3>
-        <div class="card" style="display:block; text-align:center;">
-            <p>Saldo: <b id="usrSaldo" style="color:var(--gold)">0,00 Kz</b></p>
-            <input type="number" placeholder="Quantia">
-            <input type="text" placeholder="Teu IBAN">
-            <button class="btn-lancar">PEDIR SAQUE</button>
-        </div>
-    </div>
-
-    <div id="busca" class="secao">
-        <h3>Pesquisa</h3>
-        <p>Resultados da pesquisa para o catálogo MAM.</p>
-    </div>
-</main>
-
-<script>
-    const cfg = { apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", authDomain: "mam-distribuidora.firebaseapp.com", projectId: "mam-distribuidora", storageBucket: "mam-distribuidora.appspot.com", messagingSenderId: "670857002452", appId: "1:670857002452:web:404822b5376075e520ea41" };
-    firebase.initializeApp(cfg);
-    const auth = firebase.auth(), db = firebase.firestore();
-
-    function ir(id, btn) {
-        document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
-        document.getElementById(id).classList.add('ativa');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    function fazerSair() {
-        if(confirm("Sair da conta?")) auth.signOut().then(() => location.reload());
-    }
-
-    auth.onAuthStateChanged(u => {
-        if(u) {
-            db.collection("users").doc(u.uid).onSnapshot(doc => {
-                if(doc.exists) document.getElementById('usrSaldo').innerText = (doc.data().saldo || 0).toLocaleString() + ",00 Kz";
-            });
-        }
-    });
-</script>
 </body>
 </html>

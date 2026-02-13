@@ -3,106 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Sistema Profissional</title>
+    <title>MAM Distribuidora | Portal Oficial</title>
     <style>
         :root { --ouro: #d4af37; --fundo: #000; --card: #111; --texto: #888; --borda: #222; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo); color: white; margin: 0; display: flex; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo); color: white; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
         
-        /* Menu Lateral Completo */
+        /* Menu Lateral - Ajustado ao Dispositivo */
         .barra-lateral { width: 240px; background: var(--fundo); border-right: 1px solid var(--borda); height: 100vh; position: fixed; display: flex; flex-direction: column; z-index: 100; }
-        .cabecalho-barra { padding: 30px 20px; font-weight: bold; color: var(--ouro); font-size: 1.2rem; border-bottom: 1px solid var(--borda); }
-        .menu-lista { list-style: none; padding: 20px 0; margin: 0; flex-grow: 1; }
+        .cabecalho-barra { padding: 30px 20px; font-weight: bold; color: var(--ouro); border-bottom: 1px solid var(--borda); }
         .menu-item { padding: 15px 25px; color: var(--texto); cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         .menu-item:hover, .menu-item.ativo { color: var(--ouro); background: #0a0a0a; border-left: 4px solid var(--ouro); }
         
-        /* Área de Conteúdo */
-        .conteudo-principal { margin-left: 240px; padding: 40px; width: 100%; min-height: 100vh; box-sizing: border-box; }
+        /* Conteúdo Principal */
+        .conteudo-principal { margin-left: 240px; padding: 40px; width: calc(100% - 240px); box-sizing: border-box; flex-grow: 1; }
         .secao { display: none; animation: fadeIn 0.4s ease; }
         .secao.ativa { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Estilos Profissionais de Distribuidora */
+        /* Componentes de Design */
         .cartao { background: var(--card); border-radius: 12px; padding: 25px; border: 1px solid var(--borda); margin-bottom: 20px; }
-        .grid-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .capa-album { width: 100%; aspect-ratio: 1/1; background: #222; border-radius: 8px; border: 1px solid #333; margin-bottom: 10px; }
+        .grid-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .capa-album { width: 100%; aspect-ratio: 1/1; background: #222; border-radius: 6px; border: 1px solid #333; margin-bottom: 5px; }
         
-        /* Formulário Estilo OneMP3 / Freshtunes */
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #050505; border: 1px solid #333; color: white; border-radius: 6px; }
-        label { font-size: 12px; color: var(--ouro); text-transform: uppercase; font-weight: bold; }
-        .btn-mam { background: var(--ouro); color: black; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #050505; border: 1px solid #333; color: white; border-radius: 6px; }
+        .btn-mam { background: var(--ouro); color: black; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-mam:hover { filter: brightness(1.2); }
 
-        /* Ajuste Mobile */
+        /* Rodapé */
+        footer { background: var(--card); border-top: 1px solid var(--borda); padding: 40px 20px; text-align: center; color: var(--texto); margin-left: 240px; }
+        .perfil-sugestao { border: 1px solid var(--ouro); display: inline-block; padding: 10px 20px; border-radius: 30px; color: var(--ouro); text-decoration: none; margin-top: 15px; font-weight: bold; }
+
         @media (max-width: 768px) {
             .barra-lateral { width: 70px; }
             .menu-texto { display: none; }
-            .conteudo-principal { margin-left: 70px; padding: 20px; }
+            .conteudo-principal, footer { margin-left: 70px; width: calc(100% - 70px); }
         }
     </style>
 </head>
 <body>
 
-<nav class="barra-lateral">
-    <div class="cabecalho-barra">MAM DISTRIBUIDORA</div>
-    <ul class="menu-lista">
-        <li class="menu-item ativo" onclick="mudarPagina('home', this)"><span class="menu-texto">PÁGINA INICIAL</span></li>
-        <li class="menu-item" onclick="mudarPagina('perfil', this)"><span class="menu-texto">PERFIL</span></li>
-        <li class="menu-item" onclick="mudarPagina('lancar', this)"><span class="menu-texto">LANÇAR MÚSICA</span></li>
-        <li class="menu-item" onclick="mudarPagina('musicas', this)"><span class="menu-texto">MINHAS MÚSICAS</span></li>
-        <li class="menu-item" onclick="mudarPagina('carteira', this)"><span class="menu-texto">CARTEIRA / SAQUE</span></li>
-        <li class="menu-item" onclick="mudarPagina('estatistica', this)"><span class="menu-texto">ESTATÍSTICA</span></li>
-    </ul>
-    <div class="menu-item" style="color: #ff4444; border-top: 1px solid var(--borda);">SAIR</div>
-</nav>
+<div style="display: flex; flex: 1;">
+    <nav class="barra-lateral">
+        <div class="cabecalho-barra">MAM DISTRIBUIDORA</div>
+        <div class="menu-item ativo" onclick="mudarPagina('home', this)"><span class="menu-texto">PÁGINA INICIAL</span></div>
+        <div class="menu-item" onclick="mudarPagina('lancar', this)"><span class="menu-texto">LANÇAR MÚSICA</span></div>
+        <div class="menu-item" onclick="mudarPagina('musicas', this)"><span class="menu-texto">MINHAS MÚSICAS</span></div>
+        <div class="menu-item" onclick="mudarPagina('carteira', this)"><span class="menu-texto">CARTEIRA / SAQUE</span></div>
+        <div class="menu-item" style="margin-top: auto; color: #ff4444; border-top: 1px solid var(--borda);">SAIR</div>
+    </nav>
 
-<main class="conteudo-principal">
+    <main class="conteudo-principal">
+        <div id="home" class="secao ativa">
+            <h2>Página Inicial</h2>
+            <div class="cartao" style="border-left: 5px solid var(--ouro);">
+                <small>CEO MAM | Matias Arsénio Manuel</small>
+                <div style="font-size: 1.5rem; color: var(--ouro); font-weight: bold; margin-top: 5px;">IBANBFA: 0006.0000.8631.6866.3015.2</div>
+            </div>
 
-    <div id="home" class="secao ativa">
-        <h2>Página Inicial</h2>
-        <p style="color: var(--texto);">Bem-vindo, Matias Arsénio Manuel</p>
-        
-        <div class="cartao" style="border: 1px dashed var(--ouro);">
-            <small>CEO MAM - IBANBFA</small>
-            <div style="font-size: 24px; color: var(--ouro); font-weight: bold;">0006.0000.8631.6866.3015.2</div>
+            <h3>📻 Lançamentos Recentes</h3>
+            <div class="grid-feed">
+                <div class="item-feed"><div class="capa-album"></div><strong>Single Exemplo</strong><br><small>Artista MAM</small></div>
+            </div>
+
+            <h3 style="margin-top: 40px;">🌎 Todas as Músicas (Comunidade)</h3>
+            <div class="grid-feed">
+                <div class="item-feed"><div class="capa-album"></div><strong>Música 01</strong><br><small>Usuário A</small></div>
+                <div class="item-feed"><div class="capa-album"></div><strong>Música 02</strong><br><small>Usuário B</small></div>
+            </div>
+
+            <div class="cartao" style="margin-top: 50px; border: 1px solid #333; background: #050505;">
+                <h3 style="color: var(--ouro); margin: 0;">🎁 Convide um Artista</h3>
+                <p style="font-size: 14px;">Ganhe 500 KZ por indicação. Copie o seu link abaixo:</p>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="linkConvite" value="https://mamsistribuidora.github.io/index.html?ref=mam_user" readonly>
+                    <button class="btn-mam" style="width: auto; white-space: nowrap;" onclick="copiarLink()">COPIAR LINK</button>
+                </div>
+            </div>
         </div>
 
-        <h3>📻 Feed de Lançamentos Recentes</h3>
-        <div class="grid-feed">
-            <div class="item-feed">
-                <div class="capa-album"></div>
-                <strong>Título da Faixa</strong><br><small>Artista Exemplo</small>
-            </div>
-            </div>
-    </div>
-
-    <div id="lancar" class="secao">
-        <h2>Lançar Nova Música</h2>
-        <div class="cartao">
-            <form id="form-distribuicao">
-                <label>Título do Lançamento</label>
-                <input type="text" placeholder="Ex: Nome do Álbum ou Single" required>
-
-                <label>Artista Principal</label>
-                <input type="text" placeholder="Nome do Artista" required>
-
-                <div style="display: flex; gap: 15px;">
-                    <div style="flex:1;">
-                        <label>Gênero Musical</label>
-                        <select>
-                            <option>Kizomba</option>
-                            <option>Semba</option>
-                            <option>Hip Hop</option>
-                            <option>Afro House</option>
-                        </select>
-                    </div>
-                    <div style="flex:1;">
-                        <label>Data de Lançamento</label>
-                        <input type="date" required>
-                    </div>
-                </div>
-
-                <label>Arquivo de Áudio (Link Drive/Dropbox)</label>
-                <input type="url" placeholder="Link para WAV ou MP3 320kbps" required>
-
-                <label>Capa da Obra (Link da Imagem 3000x3000px)</label>
-                <input type
+        <div id="lancar" class="secao">
+            <h2>Lançar Música Profissional</h2>
+            <div class="cartao">
+                <form id="form-upload">
+                    <label>Título do Lançamento</label><input type="text" placeholder="Ex: Nome da Música" required>
+                    <label>Link do Áudio (WAV ou MP3 320kbps)</label><input type="url" placeholder="Google Drive ou Dropbox"

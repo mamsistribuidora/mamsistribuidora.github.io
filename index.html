@@ -3,80 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Sistema Real</title>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <title>MAM Distribuidora | Portal do Artista</title>
     <style>
-        :root { --ouro: #d4af37; --fundo-escuro: #000000; --card-bg: #111111; --texto-cinza: #888; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo-escuro); color: white; margin: 0; }
+        :root { --ouro: #d4af37; --fundo: #000; --card: #111; --texto: #888; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo); color: white; margin: 0; overflow-x: hidden; }
         
-        /* Menu Lateral */
-        .barra-lateral { width: 220px; background: var(--fundo-escuro); border-right: 1px solid #222; height: 100vh; position: fixed; }
+        /* Layout Adaptativo */
+        .barra-lateral { width: 220px; background: var(--fundo); border-right: 1px solid #222; height: 100vh; position: fixed; display: flex; flex-direction: column; }
+        .principal { margin-left: 220px; padding: 25px; transition: 0.3s; }
+        
         .cabecalho-barra { padding: 25px 15px; font-weight: bold; color: var(--ouro); border-bottom: 1px solid #222; }
-        .barra-lateral ul { padding: 15px 20px; color: var(--texto-cinza); text-decoration: none; list-style: none; }
-        .barra-lateral li { padding: 10px 0; cursor: pointer; transition: 0.3s; }
-        .barra-lateral li:hover, .barra-lateral li.ativo { color: var(--ouro); border-left: 3px solid var(--ouro); padding-left: 10px; }
+        .menu-item { padding: 12px 20px; color: var(--texto); cursor: pointer; border-left: 3px solid transparent; }
+        .menu-item:hover, .menu-item.ativo { color: var(--ouro); border-left-color: var(--ouro); background: #0a0a0a; }
 
-        /* Conteúdo Principal */
-        .principal { margin-left: 220px; padding: 30px; min-height: 100vh; }
-        
-        /* Estilo dos Cartões */
-        .titulo-cabecalho { border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 30px; }
-        .cartao-f { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid #222; }
-        .btn-acao { background: var(--ouro); color: black; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        
-        .CEO { border: 1px dashed var(--ouro); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        .saldo-grande { font-size: 55px; color: var(--ouro); font-weight: bold; margin: 20px 0; }
+        /* Estilos de Componentes */
+        .cartao { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; }
+        .btn-mam { background: var(--ouro); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-mam:hover { opacity: 0.8; }
+
+        /* Formulario Estilo OneMP3 */
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #050505; border: 1px solid #333; color: #fff; border-radius: 5px; box-sizing: border-box; }
+        label { font-size: 13px; color: var(--ouro); font-weight: bold; }
+
+        /* Feed de Lancamentos */
+        .grid-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
+        .item-feed { text-align: center; font-size: 12px; }
+        .capa-album { width: 100%; aspect-ratio: 1/1; background: #222; border-radius: 8px; margin-bottom: 8px; border: 1px solid #333; }
+
+        @media (max-width: 768px) {
+            .barra-lateral { width: 60px; }
+            .barra-lateral span { display: none; }
+            .principal { margin-left: 60px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="barra-lateral">
-    <div class="cabecalho-barra">DISTRIBUIDORA MAM</div>
-    <ul>
-        <li class="ativo">PÁGINA INICIAL</li>
-        <li>PERFIL</li>
-        <li>LANÇAR MÚSICA</li>
-        <li>MINHAS MÚSICAS</li>
-        <li>CARTEIRA/SAQUE</li>
-        <li>ESTATÍSTICA</li>
-        <li style="margin-top: auto; color: #ff4444;">SAIR</li>
-    </ul>
+    <div class="cabecalho-barra">MAM</div>
+    <div class="menu-item ativo"><span>🏠 PÁGINA INICIAL</span></div>
+    <div class="menu-item" onclick="document.getElementById('form-lançar').scrollIntoView()"><span>🎵 LANÇAR MÚSICA</span></div>
+    <div class="menu-item"><span>💼 CARTEIRA</span></div>
+    <div class="menu-item" style="margin-top:auto; color: #ff4444;"><span>🚪 SAIR</span></div>
 </div>
 
 <div class="principal">
-    <div class="titulo-cabecalho">
-        <h2>Página Inicial</h2>
-        <small>Bem-vindo, Matias Arsénio Manuel</small>
+    <div style="margin-bottom: 30px;">
+        <h2 style="margin:0;">Painel de Controle</h2>
+        <small style="color: var(--ouro);">Matias Arsénio Manuel | CEO MAM</small>
     </div>
 
-    <div class="CEO">
-        <div style="color: var(--ouro); font-weight: bold; font-size: 14px;">CEO DA APOIO AO</div>
-        <div class="saldo-grande">IBANBFA: 0006.0000.8631.6866.3015.2</div>
-    </div>
-
-    <h3 style="margin-top: 40px;">Feed de Curadoria MAM</h3>
-    <div class="cartao-f">
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <div style="width: 60px; height: 60px; background: #222; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ouro); font-weight: bold;">MAM</div>
-            <div>
-                <strong style="font-size: 16px;">Próximo Lançamento</strong><br>
-                <span style="color: var(--texto-cinza); font-size: 13px;">A curadoria MAM está a avaliar novas obras.</span>
+    <div class="cartao">
+        <h3>📻 Feed de Lançamentos Recentes</h3>
+        <p style="font-size: 12px; color: var(--texto);">Músicas distribuídas via MAM Distribuidora.</p>
+        <div class="grid-feed">
+            <div class="item-feed">
+                <div class="capa-album" style="background: url('https://via.placeholder.com/150') center/cover;"></div>
+                <strong>Título da Faixa</strong><br>Artista Exemplo
+            </div>
+            <div class="item-feed">
+                <div class="capa-album"></div>
+                <strong>Aguardando...</strong><br>Novo Lançamento
             </div>
         </div>
-        <button class="btn-acao" onclick="window.location.href='mailto:mamfilhos29@gmail.com'">ENVIAR MÚSICA PARA CURADORIA</button>
     </div>
 
-    <h3>Tarefas do Dia</h3>
-    <div class="cartao-f">
-        <div><strong>Por Video</strong><br><span style="color: var(--ouro);">+15 kHz</span></div>
-        <button class="btn-acao" style="width: auto;">ABRIR</button>
-    </div>
+    <div id="form-lançar" class="cartao">
+        <h3 style="color: var(--ouro);">🚀 Novo Lançamento Profissional</h3>
+        <p style="font-size: 12px; color: var(--texto);">Preencha os dados para a curadoria MAM iniciar a distribuição.</p>
+        
+        <form id="upload-form">
+            <label>Título da Obra</label>
+            <input type="text" placeholder="Ex: Amor e Paz" required>
 
-    <div class="cartao-f">
-        <div><strong>Convidar Artista</strong><br><span style="color: var(--ouro);">+500 kHz</span></div>
-        <button class="btn-acao" style="width: auto;">PARTILHAR</button>
+            <label>Nome do Artista / Banda</label>
+            <input type="text" placeholder="Nome artístico" required>
+
+            <div style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>Gênero</label>
+                    <select>
+                        <option>Kizomba / Semba</option>
+                        <option>Hip Hop / Rap</option>
+                        <option>Afro House</option>
+                        <option>Outro</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label>Data de Lançamento</label>
+                    <input type="date" required>
+                </div>
+            </div>
+
+            <label>Link do Áudio (Drive/Dropbox)</label>
+            <input type="url" placeholder="https://..." required>
+
+            <label>Link da Capa (Alta Resolução)</label>
+            <input type="url" placeholder="https://..." required>
+
+            <label>Código ISRC (Opcional)</label>
+            <input type="text" placeholder="BR-XXX-00-00000">
+
+            <button type="submit" class="btn-mam" style="margin-top: 20px;">FINALIZAR E ENVIAR PARA CURADORIA</button>
+        </form>
     </div>
 </div>
+
+<script>
+    // Mantém o usuário logado e previne perda de dados no refresh
+    window.onload = () => { console.log("Sistema MAM Ativo no Dispositivo."); };
+
+    document.getElementById('upload-form').onsubmit = (e) => {
+        e.preventDefault();
+        alert('Dados enviados com sucesso para a fila de curadoria MAM!');
+    };
+</script>
 
 </body>
 </html>

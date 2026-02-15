@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel MAM | Matias Arsénio Manuel</title>
     <style>
-        /* DESIGN DARK ORIGINAL */
+        /* DESIGN DARK - MAM DISTRIBUIDORA */
         body {
             background-color: #000;
             color: #fff;
@@ -13,25 +13,22 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column; /* Essencial para mobile */
+            flex-direction: row;
         }
 
-        /* MENU LATERAL (SIDEBAR) - AJUSTADO */
+        /* MENU LATERAL (SIDEBAR) */
         .sidebar {
-            width: 260px;
+            width: 250px;
             background: #0a0a0a;
-            height: 100vh;
-            position: fixed;
+            min-height: 100vh;
             border-right: 1px solid #1a1a1a;
             display: flex;
             flex-direction: column;
-            z-index: 1000;
-            transition: 0.3s;
+            flex-shrink: 0;
         }
 
-        /* IDENTIDADE NO MENU */
         .sidebar-header {
-            padding: 25px 20px;
+            padding: 20px;
             border-bottom: 1px solid #1a1a1a;
         }
 
@@ -40,7 +37,6 @@
             font-size: 18px;
             font-weight: bold;
             display: block;
-            margin-bottom: 4px;
         }
 
         .utilizador-nome {
@@ -55,7 +51,6 @@
             color: #ccc;
             font-size: 14px;
             border-bottom: 1px solid #111;
-            transition: 0.3s;
         }
 
         .nav-link:hover, .nav-link.active {
@@ -63,7 +58,6 @@
             background: #111;
         }
 
-        /* BOTÃO TERMINAR SESSÃO */
         .logout-link {
             margin-top: auto;
             color: #ff4d4d !important;
@@ -72,12 +66,12 @@
 
         /* CONTEÚDO PRINCIPAL */
         .main-content {
-            margin-left: 260px; /* Espaço da sidebar no desktop */
+            flex-grow: 1;
             padding: 20px;
-            flex: 1;
+            overflow-y: auto;
         }
 
-        /* CARD DE APOIO */
+        /* CARD APOIA ESTE PROJETO */
         .card-apoio {
             background: #111;
             border-left: 4px solid #FFD700;
@@ -85,7 +79,7 @@
             border-radius: 12px;
             margin-bottom: 25px;
         }
-        .tag-apoio { color: #888; font-size: 11px; text-transform: uppercase; }
+        .tag-apoio { color: #888; font-size: 11px; }
         .iban-txt { color: #FFD700; font-size: 16px; font-weight: bold; margin-top: 5px; }
 
         /* SEÇÕES DE MÚSICA */
@@ -110,4 +104,88 @@
         }
         .btn-gold {
             background: #FFD700; color: #000; border: none;
-            padding: 1
+            padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;
+        }
+
+        /* AJUSTE PARA TELEMÓVEL (MOBILE) */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                min-height: auto; 
+                border-right: none; 
+                border-bottom: 1px solid #1a1a1a; 
+            }
+            .main-content { padding: 15px; }
+            .logout-link { margin-top: 0; }
+            .input-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <span class="distribuidora-nome">MAM Distribuidora</span>
+            <span class="utilizador-nome">Matias Arsénio Manuel</span>
+        </div>
+        
+        <a href="#" class="nav-link active">Página Inicial</a>
+        <a href="#" class="nav-link">Perfil</a>
+        <a href="#" class="nav-link">Minhas Músicas</a>
+        <a href="#" class="nav-link">Lança Música</a>
+        <a href="#" class="nav-link">Carteira</a>
+        <a href="#" class="nav-link">Suporte</a>
+        
+        <a href="javascript:void(0)" id="btnLogout" class="nav-link logout-link">Terminar Sessão</a>
+    </nav>
+
+    <main class="main-content">
+        <h2 style="font-size: 1.1rem; margin-top: 0;">Página Inicial</h2>
+
+        <div class="card-apoio">
+            <div class="tag-apoio">Apoia este projeto | Matias Arsénio Manuel</div>
+            <div class="iban-txt">IBAN BFA: 0006.0000.8631.6866.3015.2</div>
+        </div>
+
+        <div class="secao-titulo">📻 Lançamentos Recentes</div>
+        <div style="max-width: 140px; margin-bottom: 20px;">
+            <div class="capa"></div>
+            <div class="info"><b>Single Exemplo</b><span>Artista MAM</span></div>
+        </div>
+
+        <div class="secao-titulo">🌎 Todas as Músicas (Comunidade)</div>
+        <div class="grid-musicas">
+            <div><div class="capa"></div><div class="info"><b>Música 01</b><span>Usuário A</span></div></div>
+            <div><div class="capa"></div><div class="info"><b>Música 02</b><span>Usuário B</span></div></div>
+        </div>
+
+        <div class="card-convite">
+            <h3 style="color: #FFD700; margin: 0; font-size: 15px;">🎁 Convide um Artista</h3>
+            <p style="font-size: 11px; color: #888; margin: 5px 0;">Ganhe 500 KZ por indicação.</p>
+            <div class="input-group">
+                <input type="text" id="linkConvite" value="https://mamsistribuidora.github.io/index.html?ref=mam_user" readonly>
+                <button class="btn-gold" id="btnCopiar">COPIAR LINK</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('btnCopiar').onclick = function() {
+            const input = document.getElementById('linkConvite');
+            input.select();
+            navigator.clipboard.writeText(input.value).then(() => {
+                this.innerText = "COPIADO!";
+                setTimeout(() => { this.innerText = "COPIAR LINK"; }, 2000);
+            });
+        };
+
+        document.getElementById('btnLogout').onclick = function() {
+            if(confirm("Deseja realmente sair?")) {
+                sessionStorage.clear();
+                window.location.href = "login.html";
+            }
+        };
+    </script>
+</body>
+</html>

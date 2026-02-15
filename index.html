@@ -3,88 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Portal Oficial</title>
     <style>
-        :root { --ouro: #d4af37; --fundo: #000; --card: #111; --texto: #888; --borda: #222; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo); color: white; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        /* CONFIGURAÇÃO RESPONSIVA DA MAM DISTRIBUIDORA */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
         
-        /* Menu Lateral - Ajustado ao Dispositivo */
-        .barra-lateral { width: 240px; background: var(--fundo); border-right: 1px solid var(--borda); height: 100vh; position: fixed; display: flex; flex-direction: column; z-index: 100; }
-        .cabecalho-barra { padding: 30px 20px; font-weight: bold; color: var(--ouro); border-bottom: 1px solid var(--borda); }
-        .menu-item { padding: 15px 25px; color: var(--texto); cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .menu-item:hover, .menu-item.ativo { color: var(--ouro); background: #0a0a0a; border-left: 4px solid var(--ouro); }
+        .container-mam { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* Conteúdo Principal */
-        .conteudo-principal { margin-left: 240px; padding: 40px; width: calc(100% - 240px); box-sizing: border-box; flex-grow: 1; }
-        .secao { display: none; animation: fadeIn 0.4s ease; }
-        .secao.ativa { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Componentes de Design */
-        .cartao { background: var(--card); border-radius: 12px; padding: 25px; border: 1px solid var(--borda); margin-bottom: 20px; }
-        .grid-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .capa-album { width: 100%; aspect-ratio: 1/1; background: #222; border-radius: 6px; border: 1px solid #333; margin-bottom: 5px; }
+        .secao { margin-bottom: 30px; text-align: center; }
         
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #050505; border: 1px solid #333; color: white; border-radius: 6px; }
-        .btn-mam { background: var(--ouro); color: black; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
-        .btn-mam:hover { filter: brightness(1.2); }
+        h3 { color: #004a99; margin-bottom: 15px; font-size: 1.2rem; }
 
-        /* Rodapé */
-        footer { background: var(--card); border-top: 1px solid var(--borda); padding: 40px 20px; text-align: center; color: var(--texto); margin-left: 240px; }
-        .perfil-sugestao { border: 1px solid var(--ouro); display: inline-block; padding: 10px 20px; border-radius: 30px; color: var(--ouro); text-decoration: none; margin-top: 15px; font-weight: bold; }
-
-        @media (max-width: 768px) {
-            .barra-lateral { width: 70px; }
-            .menu-texto { display: none; }
-            .conteudo-principal, footer { margin-left: 70px; width: calc(100% - 70px); }
+        /* Estilo dos Botões - Ajuste Automático por Dispositivo */
+        .btn-mam {
+            display: inline-block;
+            width: 100%; /* No telemóvel ocupa tudo */
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
         }
+
+        .btn-convidar { background-color: #007bff; color: white; margin-bottom: 10px; }
+        .btn-convidar:active { transform: scale(0.98); background-color: #0056b3; }
+
+        .btn-sair { background-color: #dc3545; color: white; margin-top: 20px; }
+        .btn-sair:active { transform: scale(0.98); background-color: #a71d2a; }
+
+        /* Seção de Apoio - Dados Bancários */
+        .caixa-apoio {
+            background-color: #eef4ff;
+            border-left: 5px solid #004a99;
+            padding: 15px;
+            text-align: left;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .caixa-apoio p { margin: 5px 0; font-size: 15px; }
+
+        /* AJUSTE PARA DESKTOP (Computadores) */
+        @media (min-width: 768px) {
+            .btn-mam { width: auto; min-width: 250px; }
+            .caixa-apoio { display: inline-block; width: 80%; }
+        }
+
+        hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
     </style>
 </head>
 <body>
 
-<div style="display: flex; flex: 1;">
-    <nav class="barra-lateral">
-        <div class="cabecalho-barra">MAM DISTRIBUIDORA</div>
-        <div class="menu-item ativo" onclick="mudarPagina('home', this)"><span class="menu-texto">PÁGINA INICIAL</span></div>
-        <div class="menu-item" onclick="mudarPagina('lancar', this)"><span class="menu-texto">LANÇAR MÚSICA</span></div>
-        <div class="menu-item" onclick="mudarPagina('musicas', this)"><span class="menu-texto">MINHAS MÚSICAS</span></div>
-        <div class="menu-item" onclick="mudarPagina('carteira', this)"><span class="menu-texto">CARTEIRA / SAQUE</span></div>
-        <div class="menu-item" style="margin-top: auto; color: #ff4444; border-top: 1px solid var(--borda);">SAIR</div>
-    </nav>
+<div class="container-mam">
+    
+    <div class="secao">
+        <h3>Convidar Amigos</h3>
+        <p>Partilhe o link da nossa rede com os seus amigos.</p>
+        <button id="btn-convidar-mam" class="btn-mam btn-convidar">Copiar Link de Cadastro</button>
+    </div>
 
-    <main class="conteudo-principal">
-        <div id="home" class="secao ativa">
-            <h2>Página Inicial</h2>
-            <div class="cartao" style="border-left: 5px solid var(--ouro);">
-                <small>CEO MAM | Matias Arsénio Manuel</small>
-                <div style="font-size: 1.5rem; color: var(--ouro); font-weight: bold; margin-top: 5px;">IBANBFA: 0006.0000.8631.6866.3015.2</div>
-            </div>
+    <hr>
 
-            <h3>📻 Lançamentos Recentes</h3>
-            <div class="grid-feed">
-                <div class="item-feed"><div class="capa-album"></div><strong>Single Exemplo</strong><br><small>Artista MAM</small></div>
-            </div>
-
-            <h3 style="margin-top: 40px;">🌎 Todas as Músicas (Comunidade)</h3>
-            <div class="grid-feed">
-                <div class="item-feed"><div class="capa-album"></div><strong>Música 01</strong><br><small>Usuário A</small></div>
-                <div class="item-feed"><div class="capa-album"></div><strong>Música 02</strong><br><small>Usuário B</small></div>
-            </div>
-
-            <div class="cartao" style="margin-top: 50px; border: 1px solid #333; background: #050505;">
-                <h3 style="color: var(--ouro); margin: 0;">🎁 Convide um Artista</h3>
-                <p style="font-size: 14px;">Ganhe 500 KZ por indicação. Copie o seu link abaixo:</p>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="linkConvite" value="https://mamsistribuidora.github.io/index.html?ref=mam_user" readonly>
-                    <button class="btn-mam" style="width: auto; white-space: nowrap;" onclick="copiarLink()">COPIAR LINK</button>
-                </div>
-            </div>
+    <div class="secao">
+        <h3>Apoiar este projeto</h3>
+        <p>Contribua para o crescimento da MAM Distribuidora:</p>
+        <div class="caixa-apoio">
+            <p><strong>Banco:</strong> BFA</p>
+            <p><strong>Nome:</strong> Matias Arsénio Manuel</p>
+            <p><strong>IBAN:</strong> AO06.0006.0000.3788.1307.1015.6</p>
         </div>
+    </div>
 
-        <div id="lancar" class="secao">
-            <h2>Lançar Música Profissional</h2>
-            <div class="cartao">
-                <form id="form-upload">
-                    <label>Título do Lançamento</label><input type="text" placeholder="Ex: Nome da Música" required>
-                    <label>Link do Áudio (WAV ou MP3 320kbps)</label><input type="url" placeholder="Google Drive ou Dropbox"
+    <hr>
+
+    <div class="secao

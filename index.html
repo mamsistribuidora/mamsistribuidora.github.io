@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora</title>
+    <title>Painel MAM</title>
     <style>
         /* DESIGN DARK ORIGINAL */
         body {
@@ -46,7 +46,6 @@
             margin-top: auto;
             color: #ff4d4d;
             border-top: 1px solid #1a1a1a;
-            border-bottom: none;
         }
 
         /* CONTEÚDO PRINCIPAL */
@@ -56,15 +55,15 @@
             flex: 1;
         }
 
-        /* CARD IBAN (APOIO) */
-        .card-iban {
+        /* CARD DE APOIO (RETIFICADO) */
+        .card-apoio {
             background: #111;
             border-left: 4px solid #FFD700;
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 25px;
         }
-        .tag-ceo { color: #666; font-size: 11px; text-transform: uppercase; }
+        .tag-apoio { color: #888; font-size: 11px; text-transform: uppercase; }
         .iban-txt { color: #FFD700; font-size: 16px; font-weight: bold; margin-top: 5px; }
 
         /* SEÇÕES DE MÚSICA */
@@ -92,11 +91,10 @@
             padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;
         }
 
-        /* RESPONSIVIDADE MOBILE */
+        /* RESPONSIVIDADE */
         @media (max-width: 768px) {
             .sidebar { width: 100%; height: auto; position: relative; border-right: none; }
             .main-content { margin-left: 0; }
-            .logout-link { margin-top: 0; }
             .input-group { flex-direction: column; }
         }
     </style>
@@ -115,8 +113,8 @@
     <div class="main-content">
         <h2 style="font-size: 1.2rem;">Página Inicial</h2>
 
-        <div class="card-iban">
-            <div class="tag-ceo">CEO MAM | Matias Arsénio Manuel</div>
+        <div class="card-apoio">
+            <div class="tag-apoio">Apoia este projeto | Matias Arsénio Manuel</div>
             <div class="iban-txt">IBAN BFA: 0006.0000.8631.6866.3015.2</div>
         </div>
 
@@ -134,7 +132,7 @@
 
         <div class="card-convite">
             <h3 style="color: #FFD700; margin: 0; font-size: 16px;">🎁 Convide um Artista</h3>
-            <p style="font-size: 12px; color: #888; margin: 5px 0;">Ganhe 500 KZ por indicação. Copie o seu link abaixo:</p>
+            <p style="font-size: 12px; color: #888; margin: 5px 0;">Ganhe 500 KZ por indicação.</p>
             <div class="input-group">
                 <input type="text" id="linkConvite" value="https://mamsistribuidora.github.io/index.html?ref=mam_user" readonly>
                 <button class="btn-gold" id="btnCopiar">COPIAR LINK</button>
@@ -143,22 +141,21 @@
     </div>
 
     <script>
-        // Função Copiar Link
+        // Copiar Link
         document.getElementById('btnCopiar').onclick = function() {
             const input = document.getElementById('linkConvite');
             input.select();
-            input.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(input.value).then(() => {
                 this.innerText = "COPIADO!";
                 setTimeout(() => { this.innerText = "COPIAR LINK"; }, 2000);
             });
         };
 
-        // Função Terminar Sessão (Sair)
+        // Terminar Sessão
         document.getElementById('btnLogout').onclick = function() {
             if(confirm("Deseja realmente sair?")) {
                 sessionStorage.clear();
-                window.location.href = "login.html"; // Ajuste para sua página de login
+                window.location.href = "login.html";
             }
         };
     </script>

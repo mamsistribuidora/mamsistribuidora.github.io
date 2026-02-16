@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel MAM | Matias Arsénio Manuel</title>
     <style>
-        /* DESIGN DARK - MAM DISTRIBUIDORA */
+        /* DESIGN ORIGINAL DARK CONFORME IMAGEM */
         body {
             background-color: #000;
             color: #fff;
@@ -13,10 +13,10 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
         }
 
-        /* MENU LATERAL (SIDEBAR) */
+        /* MENU LATERAL RESPONSIVO */
         .sidebar {
             width: 250px;
             background: #0a0a0a;
@@ -24,7 +24,8 @@
             border-right: 1px solid #1a1a1a;
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
+            position: fixed;
+            z-index: 1000;
         }
 
         .sidebar-header {
@@ -32,18 +33,8 @@
             border-bottom: 1px solid #1a1a1a;
         }
 
-        .distribuidora-nome {
-            color: #FFD700;
-            font-size: 18px;
-            font-weight: bold;
-            display: block;
-        }
-
-        .utilizador-nome {
-            color: #888;
-            font-size: 11px;
-            text-transform: uppercase;
-        }
+        .distribuidora-nome { color: #FFD700; font-size: 18px; font-weight: bold; }
+        .utilizador-nome { color: #888; font-size: 11px; text-transform: uppercase; }
 
         .nav-link {
             padding: 15px 20px;
@@ -53,25 +44,17 @@
             border-bottom: 1px solid #111;
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: #FFD700;
-            background: #111;
-        }
+        .nav-link:hover, .nav-link.active { color: #FFD700; background: #111; }
 
-        .logout-link {
-            margin-top: auto;
-            color: #ff4d4d !important;
-            border-top: 1px solid #1a1a1a;
-        }
+        /* OPÇÃO CRIAR CONTA NO MENU */
+        .link-cadastro { color: #FFD700 !important; font-weight: bold; }
+
+        .logout-link { margin-top: auto; color: #ff4d4d !important; border-top: 1px solid #1a1a1a; }
 
         /* CONTEÚDO PRINCIPAL */
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
+        .main-content { margin-left: 250px; padding: 20px; flex-grow: 1; }
 
-        /* CARD APOIA ESTE PROJETO */
+        /* CARD APOIA ESTE PROJETO (IGUAL À IMAGEM) */
         .card-apoio {
             background: #111;
             border-left: 4px solid #FFD700;
@@ -107,16 +90,21 @@
             padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;
         }
 
-        /* AJUSTE PARA TELEMÓVEL (MOBILE) */
+        /* RODAPÉ (FOOTER) */
+        .footer-mam {
+            text-align: center;
+            padding: 30px 20px;
+            background: #050505;
+            border-top: 1px solid #1a1a1a;
+            margin-top: 50px;
+            color: #555;
+            font-size: 12px;
+        }
+
+        /* AJUSTE PARA TELEMÓVEL */
         @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { 
-                width: 100%; 
-                min-height: auto; 
-                border-right: none; 
-                border-bottom: 1px solid #1a1a1a; 
-            }
-            .main-content { padding: 15px; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; }
+            .main-content { margin-left: 0; padding: 15px; }
             .logout-link { margin-top: 0; }
             .input-group { flex-direction: column; }
         }
@@ -130,12 +118,13 @@
             <span class="utilizador-nome">Matias Arsénio Manuel</span>
         </div>
         
-        <a href="#" class="nav-link active">Página Inicial</a>
+        <a href="index.html" class="nav-link active">Página Inicial</a>
         <a href="#" class="nav-link">Perfil</a>
         <a href="#" class="nav-link">Minhas Músicas</a>
         <a href="#" class="nav-link">Lança Música</a>
         <a href="#" class="nav-link">Carteira</a>
         <a href="#" class="nav-link">Suporte</a>
+        <a href="cadastro.html" class="nav-link link-cadastro">Criar Conta</a>
         
         <a href="javascript:void(0)" id="btnLogout" class="nav-link logout-link">Terminar Sessão</a>
     </nav>
@@ -160,32 +149,4 @@
             <div><div class="capa"></div><div class="info"><b>Música 02</b><span>Usuário B</span></div></div>
         </div>
 
-        <div class="card-convite">
-            <h3 style="color: #FFD700; margin: 0; font-size: 15px;">🎁 Convide um Artista</h3>
-            <p style="font-size: 11px; color: #888; margin: 5px 0;">Ganhe 500 KZ por indicação.</p>
-            <div class="input-group">
-                <input type="text" id="linkConvite" value="https://mamsistribuidora.github.io/index.html?ref=mam_user" readonly>
-                <button class="btn-gold" id="btnCopiar">COPIAR LINK</button>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        document.getElementById('btnCopiar').onclick = function() {
-            const input = document.getElementById('linkConvite');
-            input.select();
-            navigator.clipboard.writeText(input.value).then(() => {
-                this.innerText = "COPIADO!";
-                setTimeout(() => { this.innerText = "COPIAR LINK"; }, 2000);
-            });
-        };
-
-        document.getElementById('btnLogout').onclick = function() {
-            if(confirm("Deseja realmente sair?")) {
-                sessionStorage.clear();
-                window.location.href = "login.html";
-            }
-        };
-    </script>
-</body>
-</html>
+        <div class="card-conv

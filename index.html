@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora | Painel</title>
+    <title>Painel MAM | Matias Arsénio Manuel</title>
     <style>
-        /* ESTILO ORIGINAL DARK CONFORME IMAGEM */
+        /* DESIGN DARK - CONFIGURAÇÃO POR DISPOSITIVO */
         body {
             background-color: #000;
             color: #fff;
@@ -13,9 +13,10 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: row;
         }
 
-        /* MENU LATERAL (SIDEBAR) */
+        /* SIDEBAR (MENU LATERAL) */
         .sidebar {
             width: 250px;
             background: #0a0a0a;
@@ -27,24 +28,26 @@
             z-index: 1000;
         }
 
-        /* IDENTIDADE NO MENU - CONFORME ORIENTAÇÃO */
+        /* TOPO DO MENU - NOMES SOLICITADOS */
         .sidebar-header {
             padding: 25px 20px;
             border-bottom: 1px solid #1a1a1a;
         }
         .dist-nome { color: #FFD700; font-size: 18px; font-weight: bold; display: block; }
-        .user-nome { color: #888; font-size: 11px; text-transform: uppercase; }
+        .user-nome { color: #888; font-size: 11px; text-transform: uppercase; margin-top: 5px; }
 
+        /* LINKS DO MENU - ORDEM SOLICITADA */
         .nav-link {
             padding: 15px 20px;
             text-decoration: none;
             color: #ccc;
             font-size: 14px;
             border-bottom: 1px solid #111;
+            transition: 0.2s;
         }
         .nav-link:hover, .nav-link.active { color: #FFD700; background: #111; }
 
-        /* TERMINAR SESSÃO NO LOCAL DE SEMPRE */
+        /* BOTÃO TERMINAR SESSÃO - NO FINAL DO MENU */
         .logout-link { 
             margin-top: auto; 
             color: #ff4d4d !important; 
@@ -52,10 +55,10 @@
             cursor: pointer;
         }
 
-        /* CONTEÚDO PRINCIPAL */
+        /* CONTEÚDO PRINCIPAL (MANTENDO PAINEL ANTIGO) */
         .main-content { margin-left: 250px; padding: 20px; flex: 1; }
 
-        /* APOIA ESTE PROJETO - RETIFICADO */
+        /* APOIA ESTE PROJETO (RETIFICADO) */
         .card-apoio {
             background: #111;
             border-left: 4px solid #FFD700;
@@ -65,32 +68,24 @@
         }
         .iban-txt { color: #FFD700; font-size: 16px; font-weight: bold; margin-top: 5px; }
 
-        /* SEÇÕES DA IMAGEM */
+        /* SEÇÕES DE MÚSICA DA IMAGEM */
         .secao-titulo { margin: 25px 0 15px; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         .grid-musicas { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
-        .capa { background: #1a1a1a; aspect-ratio: 1/1; border-radius: 8px; }
+        .capa { background: #1a1a1a; aspect-ratio: 1/1; border-radius: 8px; width: 100%; }
 
-        /* CARD CONVITE */
-        .card-convite {
-            background: #050505;
-            border: 1px solid #1a1a1a;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 30px;
-        }
-
-        /* RODAPÉ - ADICIONADO */
-        footer {
+        /* RODAPÉ (ADICIONADO) */
+        .footer-mam {
             text-align: center;
             padding: 40px 20px;
             color: #444;
             font-size: 11px;
-            margin-top: 40px;
             border-top: 1px solid #111;
+            margin-top: 50px;
         }
 
         /* AJUSTE PARA DISPOSITIVO MÓVEL */
         @media (max-width: 768px) {
+            body { flex-direction: column; }
             .sidebar { width: 100%; height: auto; position: relative; border-right: none; }
             .main-content { margin-left: 0; }
             .logout-link { margin-top: 0; }
@@ -105,7 +100,7 @@
             <span class="user-nome">Matias Arsénio Manuel</span>
         </div>
         
-        <a href="./" class="nav-link active">Página Inicial</a>
+        <a href="javascript:void(0)" onclick="home()" class="nav-link active">Página Inicial</a>
         <a href="#" class="nav-link">Perfil</a>
         <a href="#" class="nav-link">Minhas Músicas</a>
         <a href="#" class="nav-link">Lança Música</a>
@@ -113,7 +108,7 @@
         <a href="#" class="nav-link">Suporte</a>
         <a href="#" class="nav-link" style="color: #FFD700;">Criar Conta</a>
         
-        <a onclick="sair()" class="nav-link logout-link">Terminar Sessão</a>
+        <a onclick="sairDefinitivo()" class="nav-link logout-link">Terminar Sessão</a>
     </nav>
 
     <main class="main-content">
@@ -127,7 +122,7 @@
         <div class="secao-titulo">📻 Lançamentos Recentes</div>
         <div style="max-width: 140px;">
             <div class="capa"></div>
-            <div style="margin-top: 8px; font-size: 12px;"><b>Single Exemplo</b><br><span style="color:#666;">Artista MAM</span></div>
+            <div style="margin-top:8px; font-size:12px;"><b>Single Exemplo</b></div>
         </div>
 
         <div class="secao-titulo">🌎 Todas as Músicas (Comunidade)</div>
@@ -136,26 +131,24 @@
             <div><div class="capa"></div><div style="margin-top:8px; font-size:12px;"><b>Música 02</b></div></div>
         </div>
 
-        <div class="card-convite">
-            <h3 style="color: #FFD700; margin: 0; font-size: 15px;">🎁 Convide um Artista</h3>
-            <p style="font-size: 11px; color: #888;">Ganhe 500 KZ por indicação.</p>
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <input type="text" value="https://mamsistribuidora.github.io/index.html" readonly style="background:#000; border:1px solid #222; color:#fff; padding:12px; border-radius:6px; flex:1;">
-                <button style="background:#FFD700; color:#000; border:none; padding:10px; border-radius:6px; font-weight:bold;">COPIAR</button>
-            </div>
-        </div>
-
-        <footer>
+        <footer class="footer-mam">
             <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
-            <p>Matias Arsénio Manuel - Curadoria Digital</p>
+            <p>Matias Arsénio Manuel - Curadoria e Gestão Digital</p>
         </footer>
     </main>
 
     <script>
-        function sair() {
+        // Função para garantir que volta à página inicial/login
+        function home() {
+            window.location.href = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/';
+        }
+
+        // FUNÇÃO DE SAÍDA CORRIGIDA PARA EVITAR 404 NO GITHUB
+        function sairDefinitivo() {
             if(confirm("Deseja realmente sair?")) {
                 sessionStorage.clear();
-                // Redireciona para a raiz, onde o GitHub Pages carrega o index.html automaticamente
+                localStorage.clear();
+                // Redireciona para o diretório raiz do site (onde está o index.html)
                 window.location.href = "./"; 
             }
         }

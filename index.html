@@ -5,57 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora | Login</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .auth-container { border: 2px solid #FFD700; border-radius: 20px; padding: 30px; width: 100%; max-width: 400px; text-align: center; background: #000; }
-        .logo-mam { width: 80px; height: 80px; border: 3px solid #FFD700; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px; font-weight: bold; color: #FFD700; font-size: 20px; }
-        h1 { color: #FFD700; font-size: 1.4rem; margin-bottom: 5px; }
+        body { background: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .box { border: 2px solid #FFD700; border-radius: 25px; padding: 30px; width: 320px; text-align: center; background: #000; }
+        .logo-circulo { width: 80px; height: 80px; border: 3px solid #FFD700; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px; font-weight: bold; color: #FFD700; font-size: 20px; }
+        h1 { color: #FFD700; font-size: 20px; margin-bottom: 5px; text-transform: uppercase; }
         input, select { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; border-radius: 10px; color: #fff; box-sizing: border-box; }
         .btn-gold { width: 100%; padding: 14px; background: #FFD700; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-outline { width: 100%; padding: 12px; background: transparent; border: 1px solid #FFD700; color: #FFD700; border-radius: 10px; margin-top: 15px; cursor: pointer; }
-        .footer-site { margin-top: 20px; font-size: 10px; color: #444; }
+        .btn-link { background: none; border: 1px solid #FFD700; color: #FFD700; width: 100%; padding: 10px; border-radius: 10px; margin-top: 15px; cursor: pointer; }
+        footer { margin-top: 20px; font-size: 10px; color: #444; text-align: center; }
     </style>
 </head>
 <body>
-    <div class="auth-container" id="box-login">
-        <div class="logo-mam">MAM</div>
+    <div class="box" id="login-box">
+        <div class="logo-circulo">MAM</div>
         <h1>MAM DISTRIBUIDORA</h1>
-        <p style="font-size: 12px; color: #888;">INICIAR SESSÃO</p>
+        <p style="font-size: 11px; color: #888;">INICIAR SESSÃO</p>
         <form onsubmit="event.preventDefault(); window.location.href='painel.html';">
             <input type="email" placeholder="E-mail" required>
             <input type="password" placeholder="Senha" required>
             <button type="submit" class="btn-gold">ENTRAR</button>
         </form>
-        <div style="margin: 15px 0; color: #444;">OU</div>
-        <button class="btn-outline" onclick="toggleAuth()">CRIAR CONTA</button>
-        <div class="footer-site">© 2026 MAM Distribuidora | Matias Arsénio Manuel</div>
+        <div style="margin: 15px 0; color: #333;">OU</div>
+        <button class="btn-link" onclick="irParaRegistro()">CRIAR CONTA</button>
+        <footer>© 2026 MAM Distribuidora | Matias Arsénio Manuel</footer>
     </div>
 
-    <div class="auth-container" id="box-registro" style="display: none;">
+    <div class="box" id="registro-box" style="display: none;">
         <h1>CRIAR CONTA</h1>
-        <form onsubmit="registrar(event)">
+        <form onsubmit="finalizarRegistro(event)">
             <input type="text" placeholder="Nome Completo" required>
             <input type="text" placeholder="Nome Artístico" required>
             <input type="email" placeholder="E-mail" required>
             <input type="text" placeholder="País" required>
-            <input type="password" id="p1" placeholder="Senha" required>
-            <input type="password" id="p2" placeholder="Confirmar Senha" required>
+            <input type="password" id="s1" placeholder="Senha" required>
+            <input type="password" id="s2" placeholder="Confirmar Senha" required>
             <button type="submit" class="btn-gold">FINALIZAR REGISTO</button>
         </form>
-        <button class="btn-outline" onclick="toggleAuth()">VOLTAR AO LOGIN</button>
+        <button class="btn-link" onclick="irParaLogin()">VOLTAR AO LOGIN</button>
+        <footer>© 2026 MAM Distribuidora</footer>
     </div>
 
     <script>
-        function toggleAuth() {
-            const login = document.getElementById('box-login');
-            const registro = document.getElementById('box-registro');
-            login.style.display = login.style.display === 'none' ? 'block' : 'none';
-            registro.style.display = registro.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function registrar(e) {
+        function irParaRegistro() { document.getElementById('login-box').style.display='none'; document.getElementById('registro-box').style.display='block'; }
+        function irParaLogin() { document.getElementById('login-box').style.display='block'; document.getElementById('registro-box').style.display='none'; }
+        function finalizarRegistro(e) {
             e.preventDefault();
-            if(document.getElementById('p1').value !== document.getElementById('p2').value) return alert("Senhas não coincidem!");
-            // Lógica de Ganhos Reais via Satélite ao criar conta
+            if(document.getElementById('s1').value !== document.getElementById('s2').value) return alert("As senhas não coincidem!");
             alert("Conta Criada! Satélite pagou 2.000 KZ de bónus inicial.");
             window.location.href = 'painel.html';
         }

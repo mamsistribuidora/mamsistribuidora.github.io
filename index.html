@@ -1,159 +1,285 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel MAM | Matias Arsénio Manuel</title>
+    <title>MAM Distribuidora - Oficial</title>
     <style>
-        :root { --gold: #FFD700; --bg: #000; --side: #080808; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; display: flex; }
-
-        /* MENU COMPLETO APROVADO */
-        .sidebar { width: 280px; background: var(--side); height: 100vh; position: fixed; border-right: 1px solid #111; display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar-header { padding: 25px; border-bottom: 1px solid #111; }
-        .sidebar-header h2 { color: var(--gold); margin: 0; font-size: 18px; }
-        .sidebar-header p { margin: 0; font-size: 10px; color: #555; text-transform: uppercase; }
-
-        .nav-link { padding: 15px 25px; text-decoration: none; color: #999; font-size: 13px; border-bottom: 1px solid #0f0f0f; display: flex; align-items: center; cursor: pointer; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { background: #111; color: var(--gold); border-left: 4px solid var(--gold); }
-        .logout-btn { margin-top: auto; color: #ff4444 !important; border-top: 1px solid #222; }
-
-        /* CONTEÚDO DINÂMICO */
-        .main-content { margin-left: 280px; padding: 40px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
-        .section { display: none; }
-        .section.active { display: block; }
-        
-        .card { background: #0c0c0c; border: 1px solid #1a1a1a; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .btn-action { background: var(--gold); border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        
-        /* TABELA DE NÍVEIS */
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .price-item { background: #0f0f0f; border: 1px solid #222; padding: 20px; border-radius: 10px; text-align: center; }
-        .price-item h4 { color: var(--gold); margin-top: 0; }
-
-        footer { margin-top: auto; padding: 20px 0; text-align: center; color: #333; font-size: 11px; border-top: 1px solid #111; }
-        
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main-content { margin-left: 0; padding: 20px; }
+        :root {
+            --primary: #2563eb;
+            --gold: #ffd700;
+            --dark: #1a1a1a;
+            --light: #f4f4f4;
         }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light); color: var(--dark); }
+        
+        /* Menu e Logo */
+        nav { background: var(--dark); color: white; padding: 1rem; position: sticky; top: 0; z-index: 100; }
+        .logo-container { line-height: 1; margin-bottom: 10px; }
+        .logo-main { font-size: 1.5rem; font-weight: bold; display: block; }
+        .logo-sub { font-size: 0.8rem; color: #ccc; }
+        
+        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        button { cursor: pointer; padding: 8px 15px; border: none; border-radius: 4px; background: #333; color: white; transition: 0.3s; }
+        button:hover { background: var(--primary); }
+        .btn-active { background: var(--primary); }
+
+        /* Seções */
+        .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
+        .active { display: block; }
+
+        /* Cards e Layout */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        /* Formulários */
+        form { display: flex; flex-direction: column; gap: 10px; background: white; padding: 20px; border-radius: 8px; }
+        input, select, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        
+        /* Rodapé */
+        footer { background: #111; color: white; text-align: center; padding: 20px; margin-top: 50px; }
+        
+        /* Estilo Disco */
+        .vinyl { width: 100px; height: 100px; border-radius: 50%; background: black; border: 5px solid #333; margin: auto; animation: rotate 5s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h2>MAM Distribuidora</h2>
-            <p>Matias Arsénio Manuel</p>
+<nav id="mainNav" style="display:none;">
+    <div class="logo-container">
+        <span class="logo-main">MAM Distribuidora</span>
+        <span class="logo-sub">Matias Arsénio Manuel</span>
+    </div>
+    <div class="nav-buttons">
+        <button onclick="showSection('home')">Página Inicial</button>
+        <button onclick="showSection('edit-profile')">Editar Perfil</button>
+        <button onclick="showSection('my-music')">Minhas Músicas</button>
+        <button onclick="showSection('upload')">Lançar Música</button>
+        <button onclick="showSection('wallet')">Carteira</button>
+        <button onclick="showSection('stats')">Estatísticas</button>
+        <button onclick="logout()" style="background: #e11d48;">Terminar Sessão</button>
+    </div>
+</nav>
+
+<div id="auth-section" class="section active">
+    <div id="login-form">
+        <h2>Iniciar Sessão</h2>
+        <form onsubmit="login(event)">
+            <input type="email" id="login-email" placeholder="E-mail" required>
+            <input type="password" id="login-pass" placeholder="Senha" required>
+            <button type="submit" style="background: var(--primary);">Entrar</button>
+            <p>Não tem conta? <a href="#" onclick="toggleAuth(false)">Criar Conta</a></p>
+        </form>
+    </div>
+    <div id="register-form" style="display:none;">
+        <h2>Criar Conta - MAM</h2>
+        <form onsubmit="register(event)">
+            <input type="text" id="reg-name" placeholder="Nome Completo" required>
+            <input type="text" id="reg-art" placeholder="Nome Artístico" required>
+            <input type="email" id="reg-email" placeholder="E-mail" required>
+            <input type="text" id="reg-country" placeholder="País" required>
+            <input type="password" id="reg-pass" placeholder="Senha" required>
+            <input type="password" id="reg-confirm" placeholder="Confirmar Senha" required>
+            <button type="submit" style="background: #10b981;">Registrar Agora</button>
+            <p>Já tem conta? <a href="#" onclick="toggleAuth(true)">Fazer Login</a></p>
+        </form>
+    </div>
+</div>
+
+<div id="home" class="section">
+    <h2>Bem-vindo à MAM</h2>
+    <div class="card" style="background: #e0f2fe; margin-bottom: 20px;">
+        <h3>Apoie este projeto</h3>
+        <p>Ajude a MAM a revolucionar a curadoria musical independente.</p>
+    </div>
+
+    <h3>Níveis de Perfil (Upgrade)</h3>
+    <div class="grid">
+        <div class="card">
+            <h4>Básico</h4>
+            <p>Até 10 Artistas</p>
+            <button onclick="buyLevel('Básico', 30000)">30.000 Kz</button>
         </div>
-        <div class="nav-link active" onclick="show('home')">Página Inicial</div>
-        <div class="nav-link" onclick="show('niveis')">Compra de Nível</div>
-        <div class="nav-link" onclick="show('editar')">Editar Perfil</div>
-        <div class="nav-link" onclick="show('galeria')">Minhas Músicas</div>
-        <div class="nav-link" onclick="show('lancar')">Lança Música</div>
-        <div class="nav-link" onclick="show('carteira')">Carteira</div>
-        <div class="nav-link" onclick="show('stats')">Estatística</div>
-        <div class="nav-link logout-btn" onclick="terminarSessao()">Terminar a sessão</div>
-    </nav>
-
-    <main class="main-content">
-        
-        <div id="home" class="section active">
-            <h2>Bem-vindo, Matias</h2>
-            <div class="card" style="border-left: 4px solid var(--gold);">
-                <small>APOIA ESTE PROJETO</small>
-                <div style="font-size: 18px; font-weight: bold; color: var(--gold); margin-top: 5px;">IBAN BFA: 0006.0000.8631.6866.3015.2</div>
-            </div>
-            <h3>📻 Último Lançamento</h3>
-            <div class="card">Nenhuma música lançada recentemente.</div>
-            <h3>🌍 Feed Global</h3>
-            <div id="feed">Músicas da comunidade MAM aparecem aqui...</div>
+        <div class="card">
+            <h4>Médio</h4>
+            <p>Até 30 Artistas</p>
+            <button onclick="buyLevel('Médio', 50000)">50.000 Kz</button>
         </div>
-
-        <div id="niveis" class="section">
-            <h2>Nível de Perfil</h2>
-            <p>Aumente os seus ganhos e luxo consoante o seu nível.</p>
-            <div class="pricing-grid">
-                <div class="price-item">
-                    <h4>Perfil Free</h4>
-                    <p>1 Artista apenas</p>
-                    <button class="btn-action" disabled>ATIVO</button>
-                </div>
-                <div class="price-item">
-                    <h4>Básico (30.000 kz)</h4>
-                    <p>Até 10 Artistas</p>
-                    <button class="btn-action">COMPRAR</button>
-                </div>
-                <div class="price-item">
-                    <h4>Médio (50.000 kz)</h4>
-                    <p>Até 30 Artistas</p>
-                    <button class="btn-action">COMPRAR</button>
-                </div>
-                <div class="price-item">
-                    <h4>PROMAX</h4>
-                    <p>Artistas Ilimitados</p>
-                    <button class="btn-action">SOLICITAR</button>
-                </div>
-            </div>
+        <div class="card">
+            <h4>Promax</h4>
+            <p>Artistas Ilimitados</p>
+            <button onclick="buyLevel('Promax', 100000)">Comprar Nível</button>
         </div>
+    </div>
 
-        <div id="carteira" class="section">
-            <h2>Minha Carteira</h2>
-            <div class="card">
-                <p>Saldo em Streams:</p>
-                <h1 id="saldo-real">2.500,00 KZ</h1>
-                <small>Mínimo de levantamento: 10.000 KZ</small>
-            </div>
-            <h3>Levantar Fundos</h3>
-            <select id="banco-saque">
-                <option>Banco BFA</option>
-                <option>Banco BAI</option>
-                <option>Banco PBC</option>
-                <option>Multicaixa Express</option>
-                <option>Visa / Wise / PayPal</option>
-                <option>Payonne</option>
-            </select>
-            <input type="number" placeholder="Quantia para sacar">
-            <button class="btn-action" onclick="alert('O Admin Matias analisará o seu pedido de saque.')">SACAR AGORA</button>
+    <h3>Últimos Lançamentos</h3>
+    <div id="feed-músicas" class="grid">
         </div>
+</div>
 
-        <div id="lancar" class="section">
-            <h2>Formulário de Lançamento</h2>
-            <div class="card">
-                <input type="text" placeholder="Título da Música">
-                <input type="text" placeholder="Artista">
-                <input type="text" placeholder="Colaboração">
-                <input type="text" placeholder="Produtor/Produtora">
-                <input type="date">
-                <p style="font-size: 12px; margin-top: 15px;">Onde deseja lançar?</p>
-                <select>
-                    <option>Lançar em todas plataformas (Recomendado)</option>
-                    <option>Selecionar plataformas manualmente</option>
-                </select>
-                <button class="btn-action">ENVIAR PARA DISTRIBUIÇÃO</button>
-            </div>
-        </div>
+<div id="wallet" class="section">
+    <h2>Minha Carteira (Real)</h2>
+    <div class="card">
+        <h1 id="balance-display">0.00 Kz</h1>
+        <p>Nível Atual: <strong id="user-level-display">-</strong></p>
+        <hr>
+        <h4>Sacar Fundos (Mínimo 10.000 Kz)</h4>
+        <select id="withdraw-method">
+            <option>Banco BFA</option>
+            <option>Banco BAI</option>
+            <option>Multicaixa Express</option>
+            <option>Visa/Wise</option>
+            <option>PayPal</option>
+        </select>
+        <input type="number" id="withdraw-amount" placeholder="Quantia">
+        <button onclick="withdraw()">Solicitar Saque</button>
+    </div>
+</div>
 
-        <footer>
-            MAM Distribuidora | Diretor & C.E.O: Matias Arsénio Manuel<br>
-            Curation and Real Satellite Distribution System © 2026
-        </footer>
-    </main>
+<div id="upload" class="section">
+    <h2>Lançar Nova Música</h2>
+    <form onsubmit="handleUpload(event)">
+        <input type="text" id="track-title" placeholder="Título da Música" required>
+        <input type="text" id="track-artist" placeholder="Artista" required>
+        <input type="text" id="track-colab" placeholder="Colaboração">
+        <input type="text" id="track-prod" placeholder="Produtor/Produtora">
+        <select id="track-genre">
+            <option>Kizomba / Semba</option>
+            <option>Afro House</option>
+            <option>Kuduro</option>
+            <option>Rap / Hip Hop</option>
+            <option>Outro</option>
+        </select>
+        <label><input type="checkbox" id="all-platforms"> Lançar em todas as plataformas do mundo</label>
+        <button type="submit">Enviar Lançamento</button>
+    </form>
+</div>
 
-    <script>
-        function show(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active');
+<footer>
+    <p>&copy; 2026 MAM Distribuidora - Matias Arsénio Manuel. Curadoria Exclusiva.</p>
+    <p>Contato: mamfilhos29@gmail.com</p>
+</footer>
+
+<script>
+    // Banco de Dados Local Simulado
+    let currentUser = JSON.parse(localStorage.getItem('mam_user')) || null;
+    let songs = JSON.parse(localStorage.getItem('mam_songs')) || [];
+    let mam_vault = 0; // Carteira central da MAM
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        updateUI();
+    }
+
+    function toggleAuth(showLogin) {
+        document.getElementById('login-form').style.display = showLogin ? 'block' : 'none';
+        document.getElementById('register-form').style.display = showLogin ? 'none' : 'block';
+    }
+
+    function register(e) {
+        e.preventDefault();
+        const newUser = {
+            name: document.getElementById('reg-name').value,
+            artistic: document.getElementById('reg-art').value,
+            email: document.getElementById('reg-email').value,
+            level: 'Free',
+            balance: 2000, // Pagamento do Satélite ao usuário
+            isAdmin: false
+        };
+        // Matias é sempre Admin Max
+        if(newUser.email === 'mamfilhos29@gmail.com') {
+            newUser.level = 'Promax';
+            newUser.isAdmin = true;
         }
+        localStorage.setItem('mam_user', JSON.stringify(newUser));
+        currentUser = newUser;
+        alert("Conta criada! O Satélite creditou 2000 Kz para você e 5000 Kz para MAM.");
+        loginSuccess();
+    }
 
-        function terminarSessao() {
-            if(confirm("Deseja realmente terminar a sessão?")) {
-                window.location.href = 'index.html';
+    function login(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        if(email) {
+            // Simulação de login
+            loginSuccess();
+        }
+    }
+
+    function loginSuccess() {
+        document.getElementById('auth-section').classList.remove('active');
+        document.getElementById('mainNav').style.display = 'block';
+        showSection('home');
+    }
+
+    function logout() {
+        localStorage.removeItem('mam_user');
+        location.reload();
+    }
+
+    function updateUI() {
+        if(currentUser) {
+            document.getElementById('balance-display').innerText = currentUser.balance.toLocaleString() + " Kz";
+            document.getElementById('user-level-display').innerText = currentUser.level;
+            renderFeed();
+        }
+    }
+
+    function handleUpload(e) {
+        e.preventDefault();
+        const newTrack = {
+            title: document.getElementById('track-title').value,
+            artist: document.getElementById('track-artist').value,
+            date: new Date().toLocaleDateString()
+        };
+        songs.push(newTrack);
+        localStorage.setItem('mam_songs', JSON.stringify(songs));
+        alert("Música enviada com sucesso!");
+        showSection('home');
+    }
+
+    function renderFeed() {
+        const feed = document.getElementById('feed-músicas');
+        feed.innerHTML = songs.map(s => `
+            <div class="card" style="text-align:center;">
+                <div class="vinyl"></div>
+                <h4>${s.title}</h4>
+                <p>${s.artist}</p>
+                <small>Lançado em: ${s.date}</small>
+            </div>
+        `).join('');
+    }
+
+    function buyLevel(level, price) {
+        if(currentUser.balance >= price) {
+            currentUser.balance -= price;
+            currentUser.level = level;
+            localStorage.setItem('mam_user', JSON.stringify(currentUser));
+            alert(`Nível ${level} ativado! Valor enviado para carteira MAM.`);
+            updateUI();
+        } else {
+            alert("Saldo insuficiente na carteira.");
+        }
+    }
+
+    function withdraw() {
+        const amt = document.getElementById('withdraw-amount').value;
+        if(currentUser.isAdmin || amt >= 10000) {
+            if(currentUser.balance >= amt) {
+                currentUser.balance -= amt;
+                alert("Saque processado com sucesso!");
+                updateUI();
             }
+        } else {
+            alert("Mínimo para saque: 10.000 Kz (Exceto Admin).");
         }
-    </script>
+    }
+
+    // Auto-login se já existir dados
+    if(currentUser) loginSuccess();
+</script>
+
 </body>
 </html>

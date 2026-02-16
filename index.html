@@ -5,105 +5,155 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel MAM | Matias Arsénio Manuel</title>
     <style>
-        :root { --gold: #FFD700; --bg: #000; --sidebar: #050505; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; }
-        
-        /* MENU LATERAL REAL */
-        .sidebar { width: 260px; background: var(--sidebar); height: 100vh; position: fixed; border-right: 1px solid #111; display: flex; flex-direction: column; }
+        :root { --gold: #FFD700; --bg: #000; --side: #080808; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; display: flex; }
+
+        /* MENU COMPLETO APROVADO */
+        .sidebar { width: 280px; background: var(--side); height: 100vh; position: fixed; border-right: 1px solid #111; display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar-header { padding: 25px; border-bottom: 1px solid #111; }
-        .sidebar-header h2 { color: var(--gold); margin: 0; font-size: 16px; text-transform: uppercase; }
-        .sidebar-header p { margin: 2px 0 0; font-size: 10px; color: #444; }
+        .sidebar-header h2 { color: var(--gold); margin: 0; font-size: 18px; }
+        .sidebar-header p { margin: 0; font-size: 10px; color: #555; text-transform: uppercase; }
 
-        .nav-link { padding: 14px 25px; text-decoration: none; color: #888; font-size: 13px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #0a0a0a; cursor: pointer; }
-        .nav-link:hover, .nav-link.active { background: #0a0a0a; color: var(--gold); border-left: 4px solid var(--gold); }
-        .logout { margin-top: auto; color: #ff4d4d !important; border-top: 1px solid #111; }
+        .nav-link { padding: 15px 25px; text-decoration: none; color: #999; font-size: 13px; border-bottom: 1px solid #0f0f0f; display: flex; align-items: center; cursor: pointer; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { background: #111; color: var(--gold); border-left: 4px solid var(--gold); }
+        .logout-btn { margin-top: auto; color: #ff4444 !important; border-top: 1px solid #222; }
 
-        /* CONTEÚDO */
-        .content { margin-left: 260px; padding: 30px; flex: 1; }
-        .page { display: none; }
-        .page.active { display: block; }
+        /* CONTEÚDO DINÂMICO */
+        .main-content { margin-left: 280px; padding: 40px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+        .section { display: none; }
+        .section.active { display: block; }
         
-        .card-gold { background: #0a0a0a; border-left: 4px solid var(--gold); padding: 20px; border-radius: 10px; margin-bottom: 30px; }
-        .balance { font-size: 24px; font-weight: bold; color: var(--gold); margin: 10px 0; }
+        .card { background: #0c0c0c; border: 1px solid #1a1a1a; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .btn-action { background: var(--gold); border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
         
-        .grid-music { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
-        .music-item { background: #080808; padding: 10px; border-radius: 10px; text-align: center; }
-        .capa { background: #1a1a1a; aspect-ratio: 1/1; border-radius: 8px; margin-bottom: 10px; }
+        /* TABELA DE NÍVEIS */
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .price-item { background: #0f0f0f; border: 1px solid #222; padding: 20px; border-radius: 10px; text-align: center; }
+        .price-item h4 { color: var(--gold); margin-top: 0; }
 
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; }
-
-        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .content { margin-left: 0; } }
+        footer { margin-top: auto; padding: 20px 0; text-align: center; color: #333; font-size: 11px; border-top: 1px solid #111; }
+        
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; padding: 20px; }
+        }
     </style>
 </head>
 <body>
 
-<nav class="sidebar">
-    <div class="sidebar-header">
-        <h2>MAM Distribuidora</h2>
-        <p>MATIAS ARSÉNIO MANUEL</p>
-    </div>
-    <div class="nav-link active" onclick="nav('home')">Página Inicial</div>
-    <div class="nav-link" onclick="nav('niveis')">Nível de Perfil</div>
-    <div class="nav-link" onclick="nav('editar')">Editar Perfil</div>
-    <div class="nav-link" onclick="nav('minhas')">Minhas Músicas</div>
-    <div class="nav-link" onclick="nav('lancar')">Lança Música</div>
-    <div class="nav-link" onclick="nav('carteira')">Carteira</div>
-    <div class="nav-link" onclick="nav('stats')">Estatística</div>
-    <div class="nav-link logout" onclick="sair()">Terminar Sessão</div>
-</nav>
-
-<main class="content">
-    <div id="home" class="page active">
-        <h2>Página Inicial</h2>
-        <div class="card-gold">
-            <small style="color:#555">APOIA ESTE PROJETO | MATIAS ARSÉNIO MANUEL</small>
-            <div style="font-size: 18px; font-weight: bold; color: var(--gold);">IBAN BFA: 0006.0000.8631.6866.3015.2</div>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>MAM Distribuidora</h2>
+            <p>Matias Arsénio Manuel</p>
         </div>
-        <h3>📻 Últimos Lançamentos</h3>
-        <div class="grid-music">
-            <div class="music-item"><div class="capa"></div><small>Single Exemplo</small></div>
+        <div class="nav-link active" onclick="show('home')">Página Inicial</div>
+        <div class="nav-link" onclick="show('niveis')">Compra de Nível</div>
+        <div class="nav-link" onclick="show('editar')">Editar Perfil</div>
+        <div class="nav-link" onclick="show('galeria')">Minhas Músicas</div>
+        <div class="nav-link" onclick="show('lancar')">Lança Música</div>
+        <div class="nav-link" onclick="show('carteira')">Carteira</div>
+        <div class="nav-link" onclick="show('stats')">Estatística</div>
+        <div class="nav-link logout-btn" onclick="terminarSessao()">Terminar a sessão</div>
+    </nav>
+
+    <main class="main-content">
+        
+        <div id="home" class="section active">
+            <h2>Bem-vindo, Matias</h2>
+            <div class="card" style="border-left: 4px solid var(--gold);">
+                <small>APOIA ESTE PROJETO</small>
+                <div style="font-size: 18px; font-weight: bold; color: var(--gold); margin-top: 5px;">IBAN BFA: 0006.0000.8631.6866.3015.2</div>
+            </div>
+            <h3>📻 Último Lançamento</h3>
+            <div class="card">Nenhuma música lançada recentemente.</div>
+            <h3>🌍 Feed Global</h3>
+            <div id="feed">Músicas da comunidade MAM aparecem aqui...</div>
         </div>
-    </div>
 
-    <div id="carteira" class="page">
-        <h2>Minha Carteira</h2>
-        <div class="card-gold">
-            <p>Saldo em Stream:</p>
-            <div class="balance">12.500,00 KZ</div>
-            <small>Mínimo para saque: 10.000 KZ</small>
+        <div id="niveis" class="section">
+            <h2>Nível de Perfil</h2>
+            <p>Aumente os seus ganhos e luxo consoante o seu nível.</p>
+            <div class="pricing-grid">
+                <div class="price-item">
+                    <h4>Perfil Free</h4>
+                    <p>1 Artista apenas</p>
+                    <button class="btn-action" disabled>ATIVO</button>
+                </div>
+                <div class="price-item">
+                    <h4>Básico (30.000 kz)</h4>
+                    <p>Até 10 Artistas</p>
+                    <button class="btn-action">COMPRAR</button>
+                </div>
+                <div class="price-item">
+                    <h4>Médio (50.000 kz)</h4>
+                    <p>Até 30 Artistas</p>
+                    <button class="btn-action">COMPRAR</button>
+                </div>
+                <div class="price-item">
+                    <h4>PROMAX</h4>
+                    <p>Artistas Ilimitados</p>
+                    <button class="btn-action">SOLICITAR</button>
+                </div>
+            </div>
         </div>
-        <h3>Levantar via:</h3>
-        <select>
-            <option>BFA / BAI / PBC / Multicaixa Express</option>
-            <option>Visa / Wise / PayPal</option>
-        </select>
-        <input type="number" placeholder="Valor a sacar">
-        <button style="background:var(--gold); border:none; padding:15px; width:100%; border-radius:8px; font-weight:bold; cursor:pointer;">EFETUAR SAQUE REAL</button>
-    </div>
 
-    <div id="niveis" class="page">
-        <h2>Níveis de Perfil</h2>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-            <div class="card-gold"><h4>BÁSICO (30.000 KZ)</h4><small>Até 10 Artistas</small></div>
-            <div class="card-gold"><h4>PROMAX (ILIMITADO)</h4><small>Artistas ilimitados</small></div>
+        <div id="carteira" class="section">
+            <h2>Minha Carteira</h2>
+            <div class="card">
+                <p>Saldo em Streams:</p>
+                <h1 id="saldo-real">2.500,00 KZ</h1>
+                <small>Mínimo de levantamento: 10.000 KZ</small>
+            </div>
+            <h3>Levantar Fundos</h3>
+            <select id="banco-saque">
+                <option>Banco BFA</option>
+                <option>Banco BAI</option>
+                <option>Banco PBC</option>
+                <option>Multicaixa Express</option>
+                <option>Visa / Wise / PayPal</option>
+                <option>Payonne</option>
+            </select>
+            <input type="number" placeholder="Quantia para sacar">
+            <button class="btn-action" onclick="alert('O Admin Matias analisará o seu pedido de saque.')">SACAR AGORA</button>
         </div>
-    </div>
 
-    <footer style="text-align:center; padding:40px; color:#222; font-size:10px;">
-        © 2026 MAM DISTRIBUIDORA | MATIAS ARSÉNIO MANUEL
-    </footer>
-</main>
+        <div id="lancar" class="section">
+            <h2>Formulário de Lançamento</h2>
+            <div class="card">
+                <input type="text" placeholder="Título da Música">
+                <input type="text" placeholder="Artista">
+                <input type="text" placeholder="Colaboração">
+                <input type="text" placeholder="Produtor/Produtora">
+                <input type="date">
+                <p style="font-size: 12px; margin-top: 15px;">Onde deseja lançar?</p>
+                <select>
+                    <option>Lançar em todas plataformas (Recomendado)</option>
+                    <option>Selecionar plataformas manualmente</option>
+                </select>
+                <button class="btn-action">ENVIAR PARA DISTRIBUIÇÃO</button>
+            </div>
+        </div>
 
-<script>
-    function nav(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-    function sair() {
-        if(confirm("Deseja sair da MAM Distribuidora?")) window.location.href = 'index.html';
-    }
-</script>
+        <footer>
+            MAM Distribuidora | Diretor & C.E.O: Matias Arsénio Manuel<br>
+            Curation and Real Satellite Distribution System © 2026
+        </footer>
+    </main>
+
+    <script>
+        function show(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function terminarSessao() {
+            if(confirm("Deseja realmente terminar a sessão?")) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
 </body>
 </html>

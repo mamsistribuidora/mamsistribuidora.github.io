@@ -24,7 +24,7 @@
         
         /* DISCO VINIL */
         .disco-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 20px 0; }
-        .disco { width: 130px; height: 130px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 3px solid #1a1a1a; position: relative; animation: rodar 6s linear infinite; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1); }
+        .disco { width: 130px; height: 130px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 3px solid #1a1a1a; position: relative; animation: rodar 6s linear infinite; }
         .disco::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; background: var(--gold); border-radius: 50%; border: 3px solid #000; }
         @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -43,7 +43,7 @@
         <div class="nav-item active" onclick="ver('home', this)">Início</div>
         <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
         <div class="nav-item" onclick="ver('musicas', this)">Músicas</div>
-        <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
+        <div class="nav-item" onclick="ver('perfil', this)">Perfil</div>
         <div class="nav-item" onclick="ver('stats', this)">Stats</div>
         <div class="nav-item btn-sair" onclick="sessaoSair()">Sair</div>
     </nav>
@@ -51,23 +51,19 @@
     <div id="home" class="seccao active-seccao">
         <div class="card" style="border-left: 4px solid var(--gold);">
             <h4 style="font-size: 0.8rem;">Bem-vindo à MAM Distribuidora</h4>
-            <p style="font-size: 0.65rem; color:#888;">Curadoria que as grandes plataformas não oferecem.</p>
+            <p style="font-size: 0.65rem; color:#888;">Curadoria profissional Play Sean Arsénio.</p>
         </div>
 
         <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Último Lançamento</p>
         <div class="card" style="text-align:center;">
             <div class="disco-container">
                 <div class="disco"></div>
-                <p id="nome-disco" style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Nenhum lançamento ativo</p>
-                <p style="font-size:0.55rem; color:#555;">MAM Distribution</p>
+                <p id="nome-disco" style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Aguardando Lançamento</p>
             </div>
         </div>
 
-        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Feed MAM Distribuidora</p>
-        <div class="card">
-            <p style="font-size:0.65rem; color:var(--gold); font-weight:bold;">Novidade no Sistema!</p>
-            <p style="font-size:0.6rem; color:#888; margin-top:5px;">O sistema de visualização de discos e upgrade de planos já está online para todos os artistas.</p>
-        </div>
+        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Feed MAM</p>
+        <div class="card"><p style="font-size:0.6rem; color:#888;">Sistema de upgrade e curadoria musical atualizado.</p></div>
 
         <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight:bold; text-transform:uppercase;">Alterar Plano de Perfil</p>
         <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:5px; margin-bottom: 5px;">
@@ -100,5 +96,74 @@
         </div>
 
         <div class="card" style="margin-top:15px;">
-            <h4 style="font-size:0.65rem; color:var(--gold);">APOIA O PROJETO</h4>
-            <p style="font-size:0.7rem; margin-top:5px;">IBAN: 0006 0000 863
+            <h4 style="font-size:0.65rem; color:var(--gold);">APOIA ESTE PROJETO</h4>
+            <p style="font-size:0.7rem; margin-top:5px; font-weight:bold;">IBAN: 0006 0000 86316866301 52</p>
+            <p style="font-size:0.65rem; color:#888;">Titular: Matias Arsénio Manuel</p>
+            <p style="font-size:0.7rem; margin-top:3px;">WhatsApp: 937 881 307</p>
+        </div>
+    </div>
+
+    <div id="perfil" class="seccao">
+        <div class="card">
+            <h4>Perfil de Artista</h4>
+            <label style="font-size:0.6rem;">NOME ARTÍSTICO</label><input type="text" value="Play Sean Arsénio">
+            <label style="font-size:0.6rem;">EMAIL</label><input type="text" value="mamfilhos29@gmail.com">
+            <button class="btn-gold">ATUALIZAR DADOS</button>
+        </div>
+    </div>
+
+    <div id="checkout" class="seccao">
+        <div class="card" style="text-align:center;">
+            <h4 style="color:var(--gold);">Confirmar Alteração</h4>
+            <div style="text-align:left; background:#000; padding:15px; border-radius:8px; border:1px solid #222; margin:15px 0;">
+                <p style="font-size:0.75rem;">Plano: <span id="p-nome" style="color:var(--gold); font-weight:bold;"></span></p>
+                <p style="font-size:0.7rem; color:#888;" id="p-desc"></p>
+                <p style="font-size:0.8rem; margin-top:10px; font-weight:bold; color:var(--gold);">IBAN: 0006 0000 86316866301 52</p>
+            </div>
+            <button class="btn-gold" onclick="enviarComprovativo()">ENVIAR COMPROVATIVO</button>
+            <button onclick="ver('home')" style="background:none; border:none; color:#555; margin-top:15px; font-size:0.65rem;">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="lancar" class="seccao"><div class="card"><h4>Nova Obra</h4><input type="text" id="track-t" placeholder="Título"><button class="btn-gold" onclick="postar()">DISTRIBUIR</button></div></div>
+    <div id="musicas" class="seccao"><div class="card" style="text-align:center;"><h4>Minhas Músicas</h4><div id="lista-discos" class="disco-container"><p style="font-size:0.6rem;">Vazio</p></div></div></div>
+    <div id="stats" class="seccao"><div class="card" style="text-align:center;"><h4>Estatísticas</h4><h1>0</h1></div></div>
+
+    <footer>
+        <p><strong>MAM Distribuidora</strong></p>
+        <p>937 881 307 | mamfilhos29@gmail.com</p>
+    </footer>
+
+    <script>
+        let pSel = "";
+        function ver(id, btn) {
+            document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
+            const target = document.getElementById(id);
+            if(target) target.classList.add('active-seccao');
+            if(btn) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            window.scrollTo(0,0);
+        }
+        function irPag(n, v, d) {
+            pSel = n;
+            document.getElementById('p-nome').innerText = n;
+            document.getElementById('p-desc').innerText = `Valor: ${v} Kz | ${d}`;
+            ver('checkout');
+        }
+        function enviarComprovativo() {
+            window.open(`https://wa.me/244937881307?text=Confirmo alteração para plano ${pSel}`);
+        }
+        function postar() {
+            const t = document.getElementById('track-t').value;
+            if(!t) return alert("Título!");
+            document.getElementById('nome-disco').innerText = t;
+            ver('home');
+        }
+        function sessaoSair() {
+            if(confirm("Sair?")) window.location.reload();
+        }
+    </script>
+</body>
+</html>

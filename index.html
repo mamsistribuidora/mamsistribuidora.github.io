@@ -9,31 +9,39 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: var(--black); color: white; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* AUTH STYLE */
+        /* AJUSTE POR DISPOSITIVO (RESPONSIVIDADE) */
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .auth-card { padding: 30px 15px !important; }
+            h1 { font-size: 1.4rem !important; }
+        }
+
+        /* ESTILO DA AUTENTICAÇÃO */
         .auth-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .auth-card { width: 100%; max-width: 420px; border: 2.5px solid var(--gold); border-radius: 35px; padding: 45px 30px; background: var(--black); text-align: center; }
-        .logo-circle { width: 95px; height: 95px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-weight: bold; font-size: 1.5rem; color: var(--gold); }
-        input, select { width: 100%; padding: 16px; margin-bottom: 12px; background: var(--input-bg); border: 1px solid #333; border-radius: 12px; color: white; }
+        .logo-circle { width: 90px; height: 90px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-weight: bold; font-size: 1.5rem; color: var(--gold); }
+        input, select { width: 100%; padding: 15px; margin-bottom: 12px; background: var(--input-bg); border: 1px solid #333; border-radius: 12px; color: white; outline: none; }
 
-        /* SITE CONTENT */
+        /* MENU (MANTENDO A SUA ESTRUTURA ORIGINAL) */
         #site-main { display: none; }
-        nav { background: var(--black); padding: 20px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
-        .menu-btn { background: #151515; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-        
-        .section { padding: 25px; max-width: 1100px; margin: auto; display: none; }
+        nav { background: var(--black); padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
+        .menu-btn { background: #1a1a1a; border: 1px solid var(--gold); color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+
+        /* SEÇÕES E CARDS */
+        .section { padding: 20px; max-width: 1000px; margin: auto; display: none; }
         .active-section { display: block; }
-        .card { background: var(--dark-card); border: 1px solid #222; padding: 25px; border-radius: 18px; margin-bottom: 20px; }
+        .card { background: var(--dark-card); border: 1px solid #222; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 
-        /* FEED DE DISCOS */
-        .feed-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
-        .vinyl-card { background: #1a1a1a; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #333; }
-        .vinyl-disc { width: 120px; height: 120px; background: radial-gradient(circle, #333 10%, #000 70%); border-radius: 50%; border: 3px solid #111; margin: 0 auto 10px; animation: spin 5s linear infinite; position: relative; }
-        .vinyl-disc::after { content: ''; position: absolute; top: 50%; left: 50%; width: 30px; height: 30px; background: var(--gold); border-radius: 50%; transform: translate(-50%, -50%); }
+        /* FEED DE DISCOS ROTATIVOS */
+        .feed-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
+        .vinyl-card { background: #151515; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #222; }
+        .vinyl-disc { width: 100px; height: 100px; background: radial-gradient(circle, #333 10%, #000 70%); border-radius: 50%; border: 2px solid #111; margin: 0 auto 10px; animation: spin 6s linear infinite; position: relative; }
+        .vinyl-disc::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; background: var(--gold); border-radius: 50%; transform: translate(-50%, -50%); }
         @keyframes spin { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
 
-        footer { background: #080808; text-align: center; padding: 40px 20px; border-top: 1.5px solid var(--gold); margin-top: auto; font-size: 0.85rem; }
+        footer { background: #080808; text-align: center; padding: 30px 20px; border-top: 1.5px solid var(--gold); margin-top: auto; font-size: 0.8rem; color: #666; }
     </style>
 </head>
 <body>
@@ -41,8 +49,9 @@
     <div id="auth-screen" class="auth-container">
         <div class="auth-card">
             <div class="logo-circle">MAM</div>
-            <h1 style="color:var(--gold); font-size:1.6rem;">MAM Distribuidora</h1>
-            <p id="auth-subtitle" style="color:#888; margin-bottom:25px;">INICIAR SESSÃO</p>
+            <h1 style="color:var(--gold); margin-bottom:5px;">MAM Distribuidora</h1>
+            <p id="auth-subtitle" style="color:#888; margin-bottom:25px; font-size: 0.8rem;">INICIAR SESSÃO</p>
+            
             <input type="email" id="email" placeholder="E-mail">
             <div id="reg-fields" style="display: none;">
                 <input type="text" id="full-name" placeholder="Nome Completo">
@@ -50,135 +59,156 @@
                 <input type="password" id="conf-pass" placeholder="Confirmar Senha">
             </div>
             <input type="password" id="pass" placeholder="Senha">
+            
             <button class="btn-gold" onclick="handleAuth()">Confirmar</button>
-            <p style="margin-top:20px; cursor:pointer;" onclick="toggleMode()">
-                <span id="toggle-link">Ainda não tem conta? <span style="color:var(--gold);">Criar Conta</span></span>
+            
+            <p id="toggle-container" style="margin-top:20px; cursor:pointer; font-size: 0.85rem;" onclick="toggleMode()">
+                Ainda não tem conta? <span style="color:var(--gold);">Criar Conta</span>
             </p>
         </div>
     </div>
 
     <div id="site-main">
         <nav>
-            <h2 style="color:var(--gold);">MAM Distribuidora</h2>
-            <p style="font-size:0.75rem;">C.E.O Matias Arsénio Manuel</p>
+            <div style="text-align: left;">
+                <h2 style="color:var(--gold); font-size: 1.2rem;">MAM Distribuidora</h2>
+                <p style="font-size:0.7rem; color: #fff;">Matias Arsénio Manuel (MAM) | CEO Oficial [cite: 2026-01-27]</p>
+            </div>
             <div class="menu-grid">
-                <button class="menu-btn" onclick="navPage('home')">Início</button>
+                <button class="menu-btn" onclick="navPage('home')">Página Inicial</button>
                 <button class="menu-btn" onclick="navPage('upload')">Lançar Música</button>
-                <button class="menu-btn" onclick="navPage('feed')">Feed MAM</button>
+                <button class="menu-btn" onclick="navPage('my-songs')">Minhas Músicas</button>
                 <button class="menu-btn" onclick="navPage('wallet')">Carteira</button>
+                <button class="menu-btn" onclick="navPage('stats')">Estatística</button>
+                <button class="menu-btn" onclick="navPage('profile')">Editar Perfil</button>
                 <button class="menu-btn" style="border-color:red; color:red;" onclick="logout()">Sair</button>
             </div>
         </nav>
 
         <div id="home" class="section active-section">
             <div class="card" style="border-left: 5px solid var(--gold);">
-                <h3>Boas-vindas à Elite</h3>
-                <p>Curadoria profissional para artistas que buscam o topo.</p>
+                <h3>Bem-vindo à MAM Distribuidora</h3>
+                <p>Curadoria que grandes plataformas não oferecem [cite: 2026-01-28].</p>
             </div>
 
             <div class="card">
-                <h4 style="color:var(--gold);">Apoia o Meu Projeto (MAM)</h4>
-                <p style="font-size:0.9rem; margin:10px 0;">Contribua para a manutenção da nossa infraestrutura:</p>
-                <p><strong>IBAN BFA:</strong> AO06 0000 0000 0000 0000 0</p>
-                <p><strong>Nº Conta:</strong> 937881307</p>
-                <button class="btn-gold" style="margin-top:10px; background:#222; color:var(--gold);" onclick="copyInvite()">Convidar Amigos (+500 Kz)</button>
+                <h4 style="color:var(--gold);">Apoia meu projeto</h4>
+                <p style="font-size:0.85rem; margin:8px 0;">Dados para suporte direto ao C.E.O:</p>
+                <p><strong>Conta/IBAN:</strong> 937881307 [cite: 2026-01-22]</p>
+                <p><strong>Banco:</strong> BFA [cite: 2026-01-31]</p>
+                <button class="btn-gold" style="margin-top:10px; background:#1a1a1a; color:var(--gold); border: 1px solid var(--gold);" onclick="copyInvite()">Convidar Amigos (+500 Kz)</button>
             </div>
 
-            <h3>Upgrade de Perfil</h3>
-            <div class="menu-grid">
-                <div class="card">
-                    <h4>Básico</h4><p>30.000 Kz</p>
-                    <button class="btn-gold" style="padding:10px;" onclick="openPay('Básico', 30000)">Pagar Agora</button>
+            <h3>Último Lançamento</h3>
+            <div class="card" style="display:flex; align-items:center; gap:15px;">
+                <div class="vinyl-disc" style="animation-duration: 8s; margin:0;"></div>
+                <div>
+                    <h4 id="last-t">Sem lançamentos</h4>
+                    <p style="color:#888; font-size: 0.8rem;">Distribuição MAM</p>
                 </div>
-                <div class="card">
-                    <h4>PROMAX</h4><p>Ilimitado</p>
-                    <button class="btn-gold" style="padding:10px;" onclick="openPay('Promax', 100000)">Pagar Agora</button>
+            </div>
+
+            <h3>Feed de Lançamentos MAM</h3>
+            <div class="feed-container" id="global-feed">
+                </div>
+
+            <h3 style="margin-top:25px;">Venda de Perfil</h3>
+            <div class="menu-grid">
+                <div class="card" style="text-align:center;">
+                    <h4 style="color:var(--gold);">Básico</h4>
+                    <p><strong>30.000 Kz</strong></p>
+                    <p style="font-size:0.7rem; color:#888;">Limite: 3 Artistas</p>
+                    <button class="btn-gold" style="padding:8px; font-size:0.7rem;" onclick="openPay('Básico', 30000)">Comprar</button>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <h4 style="color:var(--gold);">Médio</h4>
+                    <p><strong>50.000 Kz</strong></p>
+                    <p style="font-size:0.7rem; color:#888;">Limite: 10 Artistas</p>
+                    <button class="btn-gold" style="padding:8px; font-size:0.7rem;" onclick="openPay('Médio', 50000)">Comprar</button>
+                </div>
+                <div class="card" style="text-align:center; border: 1px solid var(--gold);">
+                    <h4 style="color:var(--gold);">Promax</h4>
+                    <p><strong>100.000 Kz</strong></p>
+                    <p style="font-size:0.7rem; color:#888;">Limite: Ilimitado</p>
+                    <button class="btn-gold" style="padding:8px; font-size:0.7rem;" onclick="openPay('Promax', 100000)">Comprar</button>
                 </div>
             </div>
         </div>
 
-        <div id="payment-screen" class="section">
+        <div id="pay-screen" class="section">
             <div class="card">
                 <h2>Confirmar Pagamento</h2>
-                <p id="pay-info">Envie o valor para o IBAN acima e anexe o comprovativo.</p>
-                <input type="file" id="proof" accept="image/*, .pdf">
-                <button class="btn-gold" onclick="sendProof()">Enviar Comprovativo para Matias</button>
-                <button class="btn-gold" style="background:#333; margin-top:10px;" onclick="navPage('home')">Cancelar</button>
+                <p id="pay-msg" style="margin:15px 0;"></p>
+                <input type="file" id="proof-img" accept="image/*">
+                <button class="btn-gold" onclick="confirmPayment()">Enviar Comprovativo</button>
+                <button class="btn-gold" style="background:#333; margin-top:10px;" onclick="navPage('home')">Voltar</button>
             </div>
         </div>
 
-        <div id="feed" class="section">
-            <h2 style="color:var(--gold); margin-bottom:20px;">Lançamentos MAM</h2>
-            <div class="feed-container" id="global-feed">
-                <div class="vinyl-card">
-                    <div class="vinyl-disc"></div>
-                    <p><strong>Música Exemplo</strong></p>
-                    <p style="font-size:0.8rem; color:#888;">Artista MAM</p>
-                    <audio controls style="width:100%; margin-top:10px; height:30px;"><source src="#" type="audio/mpeg"></audio>
-                </div>
-            </div>
-        </div>
-
-        <div id="wallet" class="section">
-            <div class="card">
-                <h3>Minha Carteira Real</h3>
-                <h1 id="user-bal" style="color:var(--gold); font-size:3rem;">0 Kz</h1>
-                <p>Status: <span id="user-lvl">Free</span></p>
-                <button class="btn-gold" style="margin-top:20px;" onclick="alert('Mínimo 10.000 Kz para saque.')">Solicitar Levantamento</button>
-            </div>
-        </div>
+        <div id="upload" class="section"><div class="card"><h2>Lançar Música</h2><input type="text" id="m-t" placeholder="Título"><button class="btn-gold" onclick="addMusic()">Enviar</button></div></div>
+        <div id="wallet" class="section"><div class="card"><h2>Carteira</h2><h1 id="bal">0 Kz</h1></div></div>
     </div>
 
     <footer>
-        <p><strong>MAM Distribuidora</strong> - CEO Matias Arsénio Manuel</p>
-        <p>Email: mamfilhos29@gmail.com | Tel: 937881307</p>
-        <p>Siga o perfil MAM: @MAM_Distributor</p>
+        <p><strong>MAM Distribuidora</strong> - Matias Arsénio Manuel [cite: 2026-01-27]</p>
+        <p>Email: mamfilhos29@gmail.com | 937881307 [cite: 2026-01-23, 2026-01-22]</p>
+        <p>Siga o perfil MAM criado por Matias Arsénio Manuel [cite: 2026-01-22].</p>
     </footer>
 
     <script>
         let isLogin = true;
-        let loggedUser = JSON.parse(localStorage.getItem('mam_logged'));
+        let user = JSON.parse(localStorage.getItem('mam_session'));
+        let musics = JSON.parse(localStorage.getItem('mam_db')) || [];
 
         function toggleMode() {
             isLogin = !isLogin;
             document.getElementById('reg-fields').style.display = isLogin ? 'none' : 'block';
             document.getElementById('auth-subtitle').innerText = isLogin ? 'INICIAR SESSÃO' : 'CRIAR CONTA';
-            document.getElementById('toggle-link').innerHTML = isLogin ? 'Ainda não tem conta? <span style="color:var(--gold);">Criar Conta</span>' : 'Já tem uma conta? <span style="color:var(--gold);">Iniciar Sessão</span>';
+            document.getElementById('toggle-container').innerHTML = isLogin ? 
+                'Ainda não tem conta? <span style="color:var(--gold);">Criar Conta</span>' : 
+                'Já tem uma conta? <span style="color:var(--gold);">Iniciar Sessão</span>';
         }
 
         function handleAuth() {
             const email = document.getElementById('email').value;
             if(email === "mamfilhos29@gmail.com") {
-                loggedUser = { name: "Matias Manuel", balance: 0, level: "ADMIN MAX", email: email };
+                user = { name: "Matias Manuel", bal: 0, level: "ADMIN", email: email };
             } else if(!isLogin) {
-                loggedUser = { name: document.getElementById('full-name').value, balance: 2000, level: "Free", email: email };
-                notifyAdmin("Novo Registo", `O artista ${loggedUser.name} entrou na MAM.`);
+                if(document.getElementById('pass').value !== document.getElementById('conf-pass').value) return alert("Senhas não coincidem!");
+                user = { name: document.getElementById('full-name').value, bal: 2000, level: "Free", email: email };
+                sendEmail("Novo Registo", `O artista ${user.name} entrou na MAM.`);
             } else { return alert("Crie uma conta primeiro."); }
-            localStorage.setItem('mam_logged', JSON.stringify(loggedUser));
+            localStorage.setItem('mam_session', JSON.stringify(user));
             location.reload();
         }
 
         function openPay(lvl, price) {
-            document.getElementById('pay-info').innerText = `Pagar nível ${lvl}: ${price.toLocaleString()} Kz para o IBAN da MAM.`;
-            navPage('payment-screen');
+            document.getElementById('pay-msg').innerText = `Pague ${price.toLocaleString()} Kz para o IBAN 937881307 e anexe o comprovativo do nível ${lvl}.`;
+            navPage('pay-screen');
         }
 
-        function sendProof() {
-            const file = document.getElementById('proof').files[0];
-            if(!file) return alert("Anexe o comprovativo!");
-            notifyAdmin("Comprovativo de Pagamento", `O utilizador ${loggedUser.name} enviou um comprovativo.`);
-            alert("Enviado! Aguarde a confirmação de Matias Arsénio Manuel para o saldo entrar na carteira.");
+        function confirmPayment() {
+            if(!document.getElementById('proof-img').files[0]) return alert("Anexe o comprovativo!");
+            sendEmail("Comprovativo de Pagamento", `Usuário ${user.email} enviou pagamento.`);
+            alert("Enviado! Aguarde a confirmação de Matias Manuel para o saldo entrar na carteira [cite: 2026-01-31].");
             navPage('home');
         }
 
-        function copyInvite() {
-            const link = "https://mamsistribuidora.github.io/?invite=" + loggedUser.name;
-            navigator.clipboard.writeText(link);
-            alert("Link de convite copiado! Ganhe 500 Kz por cada amigo que se registar.");
+        function addMusic() {
+            const m = { title: document.getElementById('m-t').value, artist: user.name };
+            musics.push(m);
+            localStorage.setItem('mam_db', JSON.stringify(musics));
+            sendEmail("Novo Lançamento", `Música ${m.title} enviada.`);
+            location.reload();
         }
 
-        function notifyAdmin(subject, body) {
-            window.open(`mailto:mamfilhos29@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+        function copyInvite() {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link de convite copiado! Ganhe 500 Kz por registo [cite: 2026-01-31].");
+        }
+
+        function sendEmail(subj, body) {
+            window.open(`mailto:mamfilhos29@gmail.com?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`);
         }
 
         function navPage(id) {
@@ -186,6 +216,21 @@
             document.getElementById(id).classList.add('active-section');
         }
 
-        function logout() { localStorage.removeItem('mam_logged'); location.reload(); }
+        function logout() { localStorage.removeItem('mam_session'); location.reload(); }
 
         window.onload = () => {
+            if(user) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('site-main').style.display = 'block';
+                document.getElementById('bal').innerText = user.bal.toLocaleString() + " Kz";
+                
+                const feed = document.getElementById('global-feed');
+                musics.reverse().forEach(m => {
+                    feed.innerHTML += `<div class="vinyl-card"><div class="vinyl-disc"></div><p style="font-size:0.7rem;"><strong>${m.title}</strong></p></div>`;
+                });
+                if(musics.length > 0) document.getElementById('last-t').innerText = musics[0].title;
+            }
+        };
+    </script>
+</body>
+</html>

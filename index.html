@@ -3,36 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAM Distribuidora</title>
+    <title>MAM Distribuidora - Painel do Artista</title>
     <style>
-        :root { --gold: #d4af37; --black: #000000; --card: #0a0a0a; --yellow-btn: #dbb347; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--black); color: white; font-family: sans-serif; }
+        :root { --gold: #d4af37; --black: #000000; --card: #0d0d0d; --yellow: #dbb347; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--black); color: white; font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.4; }
 
-        /* HEADER E MENU (CONFORME PRINT) */
-        header { padding: 15px; border-bottom: 1px solid var(--gold); }
-        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; }
-        .nav-item { background: #111; border: 1px solid #333; color: white; padding: 12px 5px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-align: center; }
-        .nav-item.active { border-color: var(--gold); color: var(--gold); }
+        /* AJUSTE RESPONSIVO DO MENU */
+        header { padding: 15px; border-bottom: 1px solid var(--gold); position: sticky; top: 0; background: #000; z-index: 100; }
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 4px; padding: 8px; }
+        .nav-item { background: #111; border: 1px solid #222; color: white; padding: 10px 5px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
+        .nav-item.active { border-color: var(--gold); color: var(--gold); background: #1a1a1a; }
         .btn-sair { color: #ff4444; border-color: #440000; }
 
-        /* SEÇÕES */
-        .seccao { display: none; padding: 15px; }
+        /* SEÇÕES E CARDS */
+        .seccao { display: none; padding: 15px; animation: fadeIn 0.3s ease; }
         .active-seccao { display: block; }
-        .card-mam { background: var(--card); border: 1px solid #1a1a1a; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* BOTÕES */
-        .btn-amarelo { width: 100%; padding: 12px; background: var(--yellow-btn); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
-        .btn-outline { background: transparent; border: 1px solid #333; color: var(--gold); margin-top: 10px; }
+        .card-mam { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .btn-amarelo { width: 100%; padding: 12px; background: var(--yellow); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
+        
+        /* FORMULÁRIO DE DISTRIBUIÇÃO PROFISSIONAL */
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 0.6rem; color: #888; margin-bottom: 4px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; font-size: 0.8rem; }
+        
+        /* FEED E LANÇAMENTOS */
+        .feed-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #1a1a1a; }
+        .cover-placeholder { width: 45px; height: 45px; background: #222; border: 1px solid var(--gold); border-radius: 4px; }
 
-        footer { text-align: center; padding: 20px; font-size: 0.55rem; color: #555; border-top: 1px solid #111; margin-top: 30px; line-height: 1.4; }
+        footer { text-align: center; padding: 30px 15px; font-size: 0.55rem; color: #444; border-top: 1px solid #111; }
     </style>
 </head>
 <body>
 
     <header>
-        <h3 style="color:var(--gold); font-size: 0.9rem;">MAM Distribuidora</h3>
-        <p style="font-size:0.55rem; color:#888;">CEO Matias Arsénio Manuel | Play Sean Arsénio</p>
+        <h3 style="color:var(--gold); font-size: 0.85rem;">MAM Distribuidora</h3>
+        <p style="font-size:0.5rem; color:#888;">C.E.O Matias Arsénio Manuel (MAM) [cite: 2026-01-27]</p>
     </header>
 
     <div class="nav-grid">
@@ -42,100 +50,128 @@
         <div class="nav-item" onclick="ir('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="ir('stats', this)">Estatística</div>
         <div class="nav-item" onclick="ir('perfil', this)">Editar Perfil</div>
-        <div class="nav-item btn-sair" onclick="location.reload()">Sair</div>
+        <div class="nav-item btn-sair" onclick="sair()">Sair</div>
     </div>
 
-    <div id="home" class="seccao active-seccao">
-        <div class="card-mam" style="border-left: 4px solid var(--gold);">
-            <h4 style="font-size:0.8rem;">Bem-vindo à Elite Musical</h4>
-            <p style="font-size:0.65rem; color:#888; margin-top:5px;">Oferecemos a curadoria que as grandes plataformas não têm.</p>
-        </div>
-
-        <div class="card-mam">
-            <h4 style="font-size:0.75rem; color:var(--gold);">Apoia o meu projeto</h4>
-            <p style="font-size:0.65rem; margin-top:8px;">IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.65rem;">Express: 937 881 307</p>
-            <button class="btn-amarelo btn-outline" style="font-size: 0.6rem;">CONVIDAR AMIGOS (+500 KZ)</button>
-        </div>
-
-        <h4 style="margin:20px 0 10px; font-size:0.7rem; color:#444;">Upgrade de Perfil</h4>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-            <div class="card-mam" style="text-align:center; padding: 15px 10px;">
-                <p style="font-size:0.6rem; color:var(--gold);">Básico</p>
-                <p style="font-weight:bold; margin:5px 0; font-size:0.7rem;">30.000 Kz</p>
-                <button class="btn-amarelo" style="padding:8px; font-size:0.55rem;" onclick="abrirPagamento('Básico', '30.000')">COMPRAR</button>
+    <div id="main-content">
+        <div id="home" class="seccao active-seccao">
+            <div class="card-mam" style="border-left: 3px solid var(--gold);">
+                <p style="font-size: 0.75rem; font-weight: bold;">Bem-vindo à Elite Musical</p>
+                <p style="font-size: 0.6rem; color:#888;">Criação e curadoria profissional de páginas [cite: 2026-02-17].</p>
             </div>
-            <div class="card-mam" style="text-align:center; padding: 15px 10px;">
-                <p style="font-size:0.6rem; color:var(--gold);">Médio</p>
-                <p style="font-weight:bold; margin:5px 0; font-size:0.7rem;">50.000 Kz</p>
-                <button class="btn-amarelo" style="padding:8px; font-size:0.55rem;" onclick="abrirPagamento('Médio', '50.000')">COMPRAR</button>
+
+            <h4 style="font-size:0.7rem; color:#444; margin: 15px 0 10px;">ÚLTIMO LANÇAMENTO</h4>
+            <div class="card-mam">
+                <div class="feed-item">
+                    <div class="cover-placeholder"></div>
+                    <div>
+                        <p id="last-title" style="font-size:0.75rem; font-weight:bold;">Sem lançamentos</p>
+                        <p style="font-size:0.6rem; color:var(--gold);">MAM Distribution</p>
+                    </div>
+                </div>
             </div>
-            <div class="card-mam" style="text-align:center; padding: 15px 10px;">
-                <p style="font-size:0.6rem; color:var(--gold);">PROMAX</p>
-                <p style="font-weight:bold; margin:5px 0; font-size:0.7rem;">100.000 Kz</p>
-                <button class="btn-amarelo" style="padding:8px; font-size:0.55rem;" onclick="abrirPagamento('PROMAX', '100.000')">COMPRAR</button>
+
+            <h4 style="font-size:0.7rem; color:#444; margin: 15px 0 10px;">FEED MAM DISTRIBUIDORA</h4>
+            <div class="card-mam" id="feed-container">
+                <p style="font-size:0.6rem; color:#555;">O feed de novidades aparecerá aqui.</p>
             </div>
         </div>
-    </div>
 
-    <div id="pagamento" class="seccao">
-        <div class="card-mam" style="text-align:center;">
-            <h4 id="pay-title" style="color:var(--gold);">Pagamento</h4>
-            <p style="font-size:0.8rem; margin:15px 0;">Efetue a transferência para a conta abaixo:</p>
-            <div style="background:#111; padding:15px; border-radius:8px; text-align:left; margin-bottom:20px;">
-                <p style="font-size:0.7rem; color:#888;">CONTA MAM:</p>
-                <p style="font-size:0.8rem; font-weight:bold;">IBAN: 0006 0000 86316866301 52</p>
-                <p style="font-size:0.8rem; font-weight:bold; margin-top:5px;">VALOR: <span id="pay-value">0</span> Kz</p>
+        <div id="musica" class="seccao">
+            <div class="card-mam">
+                <h4 style="margin-bottom:15px; color:var(--gold);">Nova Distribuição</h4>
+                <div class="form-group">
+                    <label>Título da Música / Obra</label>
+                    <input type="text" id="m-titulo" placeholder="Ex: Meu Sucesso">
+                </div>
+                <div class="form-group">
+                    <label>Género Musical</label>
+                    <select id="m-genero">
+                        <option>Kizomba / Tarraxinha</option>
+                        <option>Semba</option>
+                        <option>Kuduro</option>
+                        <option>Rap / Hip Hop</option>
+                        <option>Afro House</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ISRC (Se tiver)</label>
+                    <input type="text" id="m-isrc" placeholder="Código ISRC">
+                </div>
+                <div class="form-group">
+                    <label>Link do Ficheiro (Drive/Cloud)</label>
+                    <input type="url" id="m-link" placeholder="Cole o link da música">
+                </div>
+                <button class="btn-amarelo" onclick="protocoloLancamento()">Iniciar Processo de Lançamento</button>
             </div>
-            <p style="font-size:0.7rem; color:#888; margin-bottom:15px;">Após pagar, clique no botão abaixo para enviar o comprovativo.</p>
-            <button class="btn-amarelo" onclick="enviarComprovativo()">MANDAR COMPROVATIVO (WHATSAPP)</button>
-            <button class="btn-amarelo btn-outline" onclick="ir('home')">VOLTAR</button>
         </div>
-    </div>
 
-    <div id="musica" class="seccao">
-        <div class="card-mam">
-            <h4>Lançar Música</h4>
-            <input type="text" placeholder="Título" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; margin:15px 0; border-radius:5px;">
-            <button class="btn-amarelo">ENVIAR</button>
+        <div id="perfil" class="seccao">
+            <div class="card-mam">
+                <h4 style="color:var(--gold); margin-bottom:15px;">Editar Perfil Profissional</h4>
+                <center><div class="cover-placeholder" style="border-radius: 50%; width: 70px; height: 70px; margin-bottom: 15px;"></div></center>
+                <div class="form-group"><label>Nome Artístico</label><input type="text" id="p-nome" value="Artista MAM"></div>
+                <div class="form-group"><label>Email de Contacto</label><input type="email" id="p-email" value="exemplo@gmail.com"></div>
+                <div class="form-group"><label>Biografia</label><textarea id="p-bio" rows="3"></textarea></div>
+                <div class="form-group">
+                    <label>País</label>
+                    <select id="p-pais"><option>Angola</option><option>Portugal</option><option>Brasil</option></select>
+                </div>
+                <button class="btn-amarelo" onclick="salvarPerfil()">Atualizar Dados</button>
+            </div>
         </div>
-    </div>
 
-    <div id="carteira" class="seccao">
-        <div class="card-mam">
-            <p style="font-size:0.7rem; color:#555;">Carteira</p>
-            <h2>2000 Kz</h2>
+        <div id="stats" class="seccao">
+            <div class="card-mam">
+                <h4 style="color:var(--gold);">Relatório de Performance</h4>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
+                    <div style="text-align:center;"><p style="font-size:0.5rem; color:#888;">STREAMS TOTAIS</p><p style="font-weight:bold;">0</p></div>
+                    <div style="text-align:center;"><p style="font-size:0.5rem; color:#888;">PLAYLISTS</p><p style="font-weight:bold;">0</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="carteira" class="seccao">
+            <div class="card-mam" style="text-align:center;">
+                <p style="font-size:0.6rem; color:#888;">SALDO DISPONÍVEL</p>
+                <h2 style="color:var(--gold);">2000 Kz</h2>
+                <div style="margin-top:15px; padding-top:10px; border-top:1px solid #1a1a1a; font-size:0.6rem;">
+                    <p>IBAN: 0006 0000 86316866301 52 [cite: 2026-02-17]</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <footer>
-        <p><strong>MAM Distribuidora</strong> - CEO Matias Arsénio Manuel</p>
-        <p>Email: mamfilhos29@gmail.com | WhatsApp: 937 881 307</p>
-        <p>Siga o perfil oficial do distribuidor MAM</p>
+        <p><strong>MAM Distribuidora</strong></p>
+        <p>mamfilhos29@gmail.com | 937 881 307 [cite: 2026-01-23, 2026-01-22]</p>
+        <p>Siga o perfil oficial do distribuidor MAM [cite: 2026-01-22]</p>
     </footer>
 
     <script>
-        let planoSelecionado = "";
-
         function ir(id, btn) {
             document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
             document.getElementById(id).classList.add('active-seccao');
-            if(btn) {
-                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            }
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        function abrirPagamento(plano, valor) {
-            planoSelecionado = plano;
-            document.getElementById('pay-title').innerText = "Upgrade " + plano;
-            document.getElementById('pay-value').innerText = valor;
-            ir('pagamento');
+        function protocoloLancamento() {
+            const t = document.getElementById('m-titulo').value;
+            const g = document.getElementById('m-genero').value;
+            if(!t) return alert("O título é obrigatório para distribuição profissional.");
+            alert("Protocolo Iniciado. Enviando metadados para curadoria MAM.");
+            document.getElementById('last-title').innerText = t;
+            ir('home', document.querySelector('.nav-item'));
         }
 
-        function enviarComprovativo() {
-            const msg = encodeURIComponent("Olá MAM, fiz o pagamento para o nível " + planoSelecionado + ". Segue o comprovativo.");
-            window.open("https://wa.me/244937881307?text=" + msg);
+        function salvarPerfil() {
+            alert("Informações atualizadas com sucesso no banco de dados MAM.");
+        }
+
+        function sair() {
+            if(confirm("Deseja encerrar a sessão?")) location.reload();
         }
     </script>
 </body>

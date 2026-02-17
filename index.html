@@ -51,7 +51,7 @@
     <div id="home" class="seccao active-seccao">
         <div class="card" style="border-left: 4px solid var(--gold);">
             <h4 style="font-size: 0.8rem;">Bem-vindo à MAM Distribuidora</h4>
-            <p style="font-size: 0.65rem; color:#888;">Criação e curadoria profissional de páginas.</p>
+            <p style="font-size: 0.65rem; color:#888;">Curadoria que as grandes plataformas não oferecem.</p>
         </div>
 
         <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Último Lançamento</p>
@@ -63,7 +63,13 @@
             </div>
         </div>
 
-        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Alterar Plano de Perfil</p>
+        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Feed MAM Distribuidora</p>
+        <div class="card">
+            <p style="font-size:0.65rem; color:var(--gold); font-weight:bold;">Novidade no Sistema!</p>
+            <p style="font-size:0.6rem; color:#888; margin-top:5px;">O sistema de visualização de discos e upgrade de planos já está online para todos os artistas.</p>
+        </div>
+
+        <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight:bold; text-transform:uppercase;">Alterar Plano de Perfil</p>
         <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:5px; margin-bottom: 5px;">
             <div class="card" style="text-align:center; padding:10px 2px;">
                 <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">FREE</p>
@@ -95,93 +101,4 @@
 
         <div class="card" style="margin-top:15px;">
             <h4 style="font-size:0.65rem; color:var(--gold);">APOIA O PROJETO</h4>
-            <p style="font-size:0.7rem; margin-top:5px;">IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.7rem;">WhatsApp: 937 881 307</p>
-        </div>
-    </div>
-
-    <div id="checkout" class="seccao">
-        <div class="card" style="text-align:center;">
-            <h4 style="color:var(--gold); margin-bottom:15px;">Confirmar Alteração</h4>
-            <div style="text-align:left; background:#000; padding:15px; border-radius:8px; border:1px solid #222;">
-                <p style="font-size:0.75rem;">Plano: <span id="p-nome" style="color:var(--gold); font-weight:bold;"></span></p>
-                <p style="font-size:0.7rem; color:#888; margin:5px 0;" id="p-desc"></p>
-                <hr style="border:0; border-top:1px solid #222; margin:10px 0;">
-                <p style="font-size:0.65rem; color:#666; text-transform:uppercase;">Dados para Pagamento:</p>
-                <p style="font-size:0.8rem; margin-top:5px; font-weight:bold; color:var(--gold);">IBAN: 0006 0000 86316866301 52</p>
-                <p style="font-size:0.7rem; margin-top:5px;">Titular: Matias Arsénio Manuel</p>
-            </div>
-            <button class="btn-gold" style="margin-top:20px;" onclick="enviarComprovativo()">ENVIAR COMPROVATIVO POR WHATSAPP</button>
-            <button onclick="ver('home')" style="background:none; border:none; color:#555; margin-top:15px; font-size:0.65rem; cursor:pointer;">CANCELAR</button>
-        </div>
-    </div>
-
-    <div id="lancar" class="seccao">
-        <div class="card">
-            <h4 style="margin-bottom:15px; color:var(--gold);">Nova Distribuição</h4>
-            <label style="font-size:0.6rem; color:#555;">TÍTULO</label><input type="text" id="track-t">
-            <label style="font-size:0.6rem; color:#555;">GÊNERO</label><select><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
-            <label style="font-size:0.6rem; color:#555;">LINK DO ÁUDIO</label><input type="url">
-            <button class="btn-gold" onclick="postar()">DISTRIBUIR DISCO</button>
-        </div>
-    </div>
-
-    <div id="musicas" class="seccao">
-        <div class="card" style="text-align:center;">
-            <h4>Minhas Músicas</h4>
-            <div id="lista-discos" class="disco-container">
-                <p style="font-size:0.65rem; color:#444;">Nenhuma música lançada.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="stats" class="seccao"><div class="card" style="text-align:center;"><h4>Desempenho</h4><h1>0</h1><p style="font-size:0.6rem; color:#666;">Streams globais</p></div></div>
-    <div id="carteira" class="seccao"><div class="card"><h4>Saldo</h4><h2>2.000 Kz</h2></div></div>
-
-    <footer>
-        <p><strong>MAM Distribuidora</strong></p>
-        <p>mamfilhos29@gmail.com | 937 881 307</p>
-    </footer>
-
-    <script>
-        let planoSelecionado = "";
-
-        function ver(id, btn) {
-            document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
-            document.getElementById(id).classList.add('active-seccao');
-            if(btn) {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                btn.classList.add('active');
-            }
-            window.scrollTo(0,0);
-        }
-
-        function irPag(nome, preco, desc) {
-            planoSelecionado = nome;
-            document.getElementById('p-nome').innerText = nome;
-            document.getElementById('p-desc').innerText = `Capacidade: ${desc} | Valor: ${preco} Kz`;
-            ver('checkout');
-        }
-
-        function enviarComprovativo() {
-            const mensagem = encodeURIComponent(`Olá MAM, gostaria de confirmar a alteração para o plano ${planoSelecionado}. Aqui está o meu comprovativo.`);
-            window.open(`https://wa.me/244937881307?text=${mensagem}`);
-        }
-
-        function postar() {
-            const t = document.getElementById('track-t').value;
-            if(!t) return alert("Indique o título!");
-            document.getElementById('nome-disco').innerText = t;
-            document.getElementById('lista-discos').innerHTML = `<div class="disco"></div><p style="color:var(--gold); font-weight:bold;">${t}</p>`;
-            alert("Música enviada para a curadoria MAM!");
-            ver('home');
-        }
-
-        function sessaoSair() {
-            if(confirm("Deseja mesmo terminar a sessão?")) {
-                window.location.reload();
-            }
-        }
-    </script>
-</body>
-</html>
+            <p style="font-size:0.7rem; margin-top:5px;">IBAN: 0006 0000 863

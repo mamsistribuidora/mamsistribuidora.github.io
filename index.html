@@ -6,38 +6,35 @@
     <title>MAM Distribuidora</title>
     <style>
         :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: var(--black); color: white; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--black); color: white; padding-bottom: 20px; }
 
-        /* HEADER E MENU */
+        /* CABEÇALHO */
         header { padding: 15px; border-bottom: 1px solid var(--gold); }
         .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; }
         .nav-item { background: #111; border: 1px solid #333; color: white; padding: 12px 5px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-align: center; }
         .nav-item.active { border-color: var(--gold); color: var(--gold); }
         .btn-sair { color: #ff4444; border-color: #440000; }
 
-        /* SEÇÕES */
+        /* CONTEÚDO */
         .seccao { display: none; padding: 15px; }
         .active-seccao { display: block; }
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
         
-        /* BOTÕES */
+        /* BOTÕES E INPUTS */
         .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
         .btn-outline { background: transparent; border: 1px solid #333; color: var(--gold); margin-top: 10px; width: 100%; padding: 10px; font-size: 0.65rem; border-radius: 6px; cursor: pointer; }
-
-        /* INPUTS */
-        .field { margin-bottom: 12px; }
         label { display: block; font-size: 0.55rem; color: #888; margin-bottom: 4px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 5px; font-size: 0.85rem; }
+        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 5px; font-size: 0.85rem; margin-bottom: 12px; }
 
-        footer { text-align: center; padding: 30px 15px; font-size: 0.55rem; color: #444; border-top: 1px solid #111; }
+        footer { text-align: center; padding: 25px; font-size: 0.55rem; color: #444; border-top: 1px solid #111; }
     </style>
 </head>
 <body>
 
     <header>
         <h3 style="color:var(--gold); font-size: 0.9rem;">MAM Distribuidora</h3>
-        <p style="font-size:0.55rem; color:#888;">CEO Matias Arsénio Manuel | Play Sean Arsénio [cite: 2026-01-27]</p>
+        <p style="font-size:0.55rem; color:#888;">CEO Matias Arsénio Manuel | Play Sean Arsénio</p>
     </header>
 
     <nav class="nav-grid">
@@ -47,100 +44,94 @@
         <div class="nav-item" onclick="ir('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="ir('stats', this)">Estatística</div>
         <div class="nav-item" onclick="ir('perfil', this)">Editar Perfil</div>
-        <div class="nav-item btn-sair" onclick="fazerLogout()">Sair</div>
+        <div class="nav-item btn-sair" onclick="sair()">Sair</div>
     </nav>
 
     <div id="home" class="seccao active-seccao">
         <div class="card" style="border-left: 4px solid var(--gold);">
             <h4 style="font-size: 0.8rem;">Bem-vindo à Elite Musical</h4>
-            <p style="font-size: 0.65rem; color:#888; margin-top:5px;">Oferecemos a curadoria que as grandes plataformas não têm [cite: 2026-01-28].</p>
+            <p style="font-size: 0.65rem; color:#888;">Curadoria exclusiva MAM Distribuidora.</p>
         </div>
 
         <div class="card">
             <h4 style="font-size:0.75rem; color:var(--gold);">Apoia o meu projeto</h4>
             <p style="font-size:0.65rem; margin-top:8px;">IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.65rem;">Express: 937 881 307 [cite: 2026-01-22]</p>
+            <p style="font-size:0.65rem;">WhatsApp/Express: 937 881 307</p>
             <button class="btn-outline">CONVIDAR AMIGOS (+500 KZ)</button>
         </div>
 
-        <p style="font-size:0.65rem; color:#444; margin-bottom:10px;">ÚLTIMO LANÇAMENTO</p>
+        <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">ÚLTIMO LANÇAMENTO</p>
         <div class="card" style="display:flex; align-items:center; gap:15px;">
-            <div style="width:50px; height:50px; background:#111; border:1px solid var(--gold); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:bold;">MAM</div>
+            <div style="width:50px; height:50px; background:#111; border:1px solid var(--gold); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--gold);">MAM</div>
             <div>
                 <p id="label-ultimo" style="font-size:0.75rem; font-weight:bold;">Nenhum lançamento</p>
-                <p style="font-size:0.6rem; color:#888;">Status: Processando</p>
+                <p style="font-size:0.6rem; color:#888;">Status: Verificação</p>
             </div>
         </div>
 
-        <p style="font-size:0.65rem; color:#444; margin-bottom:10px;">FEED MAM DISTRIBUIDORA</p>
-        <div class="card">
-            <p style="font-size:0.65rem; color:#555;">O feed de novidades aparecerá aqui.</p>
-        </div>
+        <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">FEED MAM DISTRIBUIDORA</p>
+        <div class="card"><p style="font-size:0.65rem; color:#555;">Sem novidades no momento.</p></div>
 
-        <p style="font-size:0.65rem; color:#444; margin-bottom:10px;">UPGRADE DE PERFIL</p>
+        <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">UPGRADE DE PERFIL</p>
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
             <div class="card" style="text-align:center; padding:10px 5px;">
                 <p style="font-size:0.55rem; color:var(--gold);">Básico</p>
-                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="checkout('Básico', '30.000')">30.000 Kz</button>
+                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="pagar('Básico', '30.000')">30.000 Kz</button>
             </div>
             <div class="card" style="text-align:center; padding:10px 5px;">
                 <p style="font-size:0.55rem; color:var(--gold);">Médio</p>
-                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="checkout('Médio', '50.000')">50.000 Kz</button>
+                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="pagar('Médio', '50.000')">50.000 Kz</button>
             </div>
             <div class="card" style="text-align:center; padding:10px 5px;">
                 <p style="font-size:0.55rem; color:var(--gold);">PROMAX</p>
-                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="checkout('PROMAX', '100.000')">100.000 Kz</button>
+                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="pagar('PROMAX', '100.000')">100.000 Kz</button>
             </div>
         </div>
     </div>
 
     <div id="pg-box" class="seccao">
         <div class="card" style="text-align:center;">
-            <h4 style="color:var(--gold); margin-bottom:20px;">Pagamento Direto</h4>
+            <h4 style="color:var(--gold); margin-bottom:20px;">Pagamento</h4>
             <div style="background:#000; padding:20px; border:1px solid #222; border-radius:8px; text-align:left; margin-bottom:20px;">
-                <p style="font-size:0.75rem; font-weight:bold;">IBAN: 0006 0000 86316866301 52</p>
-                <p style="font-size:0.75rem; font-weight:bold; margin-top:10px;">VALOR: <span id="pg-valor">0</span> Kz</p>
+                <p style="font-size:0.8rem; font-weight:bold;">IBAN: 0006 0000 86316866301 52</p>
+                <p style="font-size:0.8rem; font-weight:bold; margin-top:10px;">VALOR: <span id="pg-valor">0</span> Kz</p>
             </div>
-            <button class="btn-gold" onclick="mandarZap()">ENVIAR COMPROVATIVO</button>
+            <button class="btn-gold" onclick="zap('pagamento')">ENVIAR COMPROVATIVO</button>
             <button class="btn-outline" onclick="ir('home')">VOLTAR</button>
+        </div>
+    </div>
+
+    <div id="lancamento" class="seccao">
+        <div class="card">
+            <h4 style="color:var(--gold); margin-bottom:15px;">Nova Obra</h4>
+            <label>Título da Música</label><input type="text" id="m-tit">
+            <label>Álbum / EP</label><input type="text">
+            <label>Género</label><select><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
+            <label>Link do Áudio</label><input type="url">
+            <button class="btn-gold" onclick="enviarMusica()">DISTRIBUIR AGORA</button>
         </div>
     </div>
 
     <div id="perfil" class="seccao">
         <div class="card">
             <h4 style="color:var(--gold); margin-bottom:15px;">Editar Perfil</h4>
-            <div class="field"><label>Nome Artístico</label><input type="text" value="Play Sean Arsénio"></div>
-            <div class="field"><label>Email</label><input type="email" value="mamfilhos29@gmail.com"></div>
-            <div class="field"><label>Biografia</label><textarea rows="3"></textarea></div>
-            <div class="field"><label>País</label><select><option>Angola</option><option>Portugal</option></select></div>
-            <button class="btn-gold">SALVAR</button>
+            <label>Nome Artístico</label><input type="text" value="Play Sean Arsénio">
+            <label>Email</label><input type="email" value="mamfilhos29@gmail.com">
+            <label>Biografia</label><textarea rows="3"></textarea>
+            <label>País</label><select><option>Angola</option><option>Portugal</option></select>
+            <button class="btn-gold" onclick="alert('Dados guardados!')">ATUALIZAR</button>
         </div>
     </div>
 
-    <div id="lancamento" class="seccao">
-        <div class="card">
-            <h4 style="color:var(--gold); margin-bottom:15px;">Lançar Música</h4>
-            <div class="field"><label>Título</label><input type="text" id="m-tit"></div>
-            <div class="field"><label>Álbum</label><input type="text"></div>
-            <div class="field"><label>Gênero</label><select><option>Kizomba</option><option>Rap</option></select></div>
-            <div class="field"><label>Link do Áudio</label><input type="url"></div>
-            <button class="btn-gold" onclick="fazerLancamento()">DISTRIBUIR</button>
-        </div>
-    </div>
-
-    <div id="stats" class="seccao">
-        <div class="card">
-            <h4 style="color:var(--gold);">Minha Estatística</h4>
-            <p style="font-size:0.7rem; color:#888; margin-top:10px;">Streams este mês: 0</p>
-        </div>
-    </div>
+    <div id="stats" class="seccao"><div class="card"><h4>Estatística</h4><p style="font-size:0.7rem; color:#888; margin-top:10px;">Streams: 0</p></div></div>
+    
+    <div id="minhas" class="seccao"><div class="card"><h4>Minhas Músicas</h4><p style="font-size:0.7rem; color:#888; margin-top:10px;">Vazio.</p></div></div>
 
     <div id="carteira" class="seccao"><div class="card"><h4>Carteira</h4><h2>2.000 Kz</h2></div></div>
-    <div id="minhas" class="seccao"><div class="card"><h4>Minhas Músicas</h4><p style="font-size:0.7rem;">Vazio.</p></div></div>
 
     <footer>
         <p><strong>MAM Distribuidora</strong> - CEO Matias Arsénio Manuel</p>
-        <p>Email: mamfilhos29@gmail.com | WhatsApp: 937 881 307 [cite: 2026-01-23, 2026-01-22]</p>
+        <p>mamfilhos29@gmail.com | 937 881 307</p>
     </footer>
 
     <script>
@@ -152,18 +143,15 @@
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 btn.classList.add('active');
             }
+            window.scrollTo(0,0);
         }
-        function checkout(p, v) { pSel = p; document.getElementById('pg-valor').innerText = v; ir('pg-box'); }
-        function mandarZap() { window.open(`https://wa.me/244937881307?text=Pagamento ${pSel}`); }
-        function fazerLancamento() { 
+        function pagar(p, v) { pSel = p; document.getElementById('pg-valor').innerText = v; ir('pg-box'); }
+        function zap(tipo) { window.open(`https://wa.me/244937881307?text=Pagamento ${pSel}`); }
+        function enviarMusica() {
             const t = document.getElementById('m-tit').value;
             if(t) { document.getElementById('label-ultimo').innerText = t; ir('home', document.querySelector('.nav-item')); }
         }
-        function fazerLogout() {
-            if(confirm("Deseja mesmo sair?")) {
-                window.location.href = "about:blank"; // Ou o link da tua landing page
-            }
-        }
+        function sair() { if(confirm("Deseja sair?")) window.location.href = "https://google.com"; }
     </script>
 </body>
 </html>

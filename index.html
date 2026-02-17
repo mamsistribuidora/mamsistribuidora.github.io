@@ -7,17 +7,17 @@
     <style>
         :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--black); color: white; padding-bottom: 20px; }
+        body { background: var(--black); color: white; overflow-x: hidden; }
 
-        /* CABEÇALHO */
+        /* MENU RESPONSIVO */
         header { padding: 15px; border-bottom: 1px solid var(--gold); }
-        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; }
+        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; position: sticky; top: 0; background: #000; z-index: 1000; }
         .nav-item { background: #111; border: 1px solid #333; color: white; padding: 12px 5px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-align: center; }
         .nav-item.active { border-color: var(--gold); color: var(--gold); }
         .btn-sair { color: #ff4444; border-color: #440000; }
 
-        /* CONTEÚDO */
-        .seccao { display: none; padding: 15px; }
+        /* SEÇÕES */
+        .seccao { display: none; padding: 15px; min-height: 80vh; }
         .active-seccao { display: block; }
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
         
@@ -44,7 +44,7 @@
         <div class="nav-item" onclick="ir('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="ir('stats', this)">Estatística</div>
         <div class="nav-item" onclick="ir('perfil', this)">Editar Perfil</div>
-        <div class="nav-item btn-sair" onclick="sair()">Sair</div>
+        <div class="nav-item btn-sair" onclick="fazerSair()">Sair</div>
     </nav>
 
     <div id="home" class="seccao active-seccao">
@@ -56,7 +56,7 @@
         <div class="card">
             <h4 style="font-size:0.75rem; color:var(--gold);">Apoia o meu projeto</h4>
             <p style="font-size:0.65rem; margin-top:8px;">IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.65rem;">WhatsApp/Express: 937 881 307</p>
+            <p style="font-size:0.65rem;">WhatsApp: 937 881 307</p>
             <button class="btn-outline">CONVIDAR AMIGOS (+500 KZ)</button>
         </div>
 
@@ -64,78 +64,77 @@
         <div class="card" style="display:flex; align-items:center; gap:15px;">
             <div style="width:50px; height:50px; background:#111; border:1px solid var(--gold); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--gold);">MAM</div>
             <div>
-                <p id="label-ultimo" style="font-size:0.75rem; font-weight:bold;">Nenhum lançamento</p>
-                <p style="font-size:0.6rem; color:#888;">Status: Verificação</p>
+                <p id="txt-ultimo" style="font-size:0.75rem; font-weight:bold;">Nenhum lançamento</p>
+                <p style="font-size:0.6rem; color:#888;">Distribuição Profissional</p>
             </div>
         </div>
 
         <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">FEED MAM DISTRIBUIDORA</p>
-        <div class="card"><p style="font-size:0.65rem; color:#555;">Sem novidades no momento.</p></div>
+        <div class="card"><p id="feed-p" style="font-size:0.65rem; color:#555;">O feed de novidades aparecerá aqui.</p></div>
 
         <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">UPGRADE DE PERFIL</p>
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-            <div class="card" style="text-align:center; padding:10px 5px;">
-                <p style="font-size:0.55rem; color:var(--gold);">Básico</p>
-                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="pagar('Básico', '30.000')">30.000 Kz</button>
-            </div>
-            <div class="card" style="text-align:center; padding:10px 5px;">
-                <p style="font-size:0.55rem; color:var(--gold);">Médio</p>
-                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="pagar('Médio', '50.000')">50.000 Kz</button>
-            </div>
-            <div class="card" style="text-align:center; padding:10px 5px;">
-                <p style="font-size:0.55rem; color:var(--gold);">PROMAX</p>
-                <button class="btn-gold" style="padding:6px; font-size:0.5rem; margin-top:10px;" onclick="pagar('PROMAX', '100.000')">100.000 Kz</button>
-            </div>
+            <div class="card" style="text-align:center; padding:10px 5px;"><p style="font-size:0.5rem;">Básico</p><button class="btn-gold" style="font-size:0.45rem; margin-top:8px;" onclick="irPag('Básico','30.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center; padding:10px 5px;"><p style="font-size:0.5rem;">Médio</p><button class="btn-gold" style="font-size:0.45rem; margin-top:8px;" onclick="irPag('Médio','50.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center; padding:10px 5px;"><p style="font-size:0.5rem;">PROMAX</p><button class="btn-gold" style="font-size:0.45rem; margin-top:8px;" onclick="irPag('PROMAX','100.000')">COMPRAR</button></div>
         </div>
     </div>
 
-    <div id="pg-box" class="seccao">
+    <div id="pagamento" class="seccao">
         <div class="card" style="text-align:center;">
-            <h4 style="color:var(--gold); margin-bottom:20px;">Pagamento</h4>
-            <div style="background:#000; padding:20px; border:1px solid #222; border-radius:8px; text-align:left; margin-bottom:20px;">
-                <p style="font-size:0.8rem; font-weight:bold;">IBAN: 0006 0000 86316866301 52</p>
-                <p style="font-size:0.8rem; font-weight:bold; margin-top:10px;">VALOR: <span id="pg-valor">0</span> Kz</p>
+            <h4 style="color:var(--gold); margin-bottom:20px;">Finalizar Compra</h4>
+            <div style="text-align:left; background:#000; padding:15px; border-radius:8px; border:1px solid #222;">
+                <p style="font-size:0.7rem;">Plano: <span id="plano-nome"></span></p>
+                <p style="font-size:0.7rem; margin-top:5px;">Valor: <span id="plano-valor"></span> Kz</p>
+                <p style="font-size:0.7rem; margin-top:10px; border-top:1px solid #222; pt-10">IBAN: 0006 0000 86316866301 52</p>
             </div>
-            <button class="btn-gold" onclick="zap('pagamento')">ENVIAR COMPROVATIVO</button>
+            <button class="btn-gold" style="margin-top:20px;" onclick="window.open('https://wa.me/244937881307')">ENVIAR COMPROVATIVO</button>
             <button class="btn-outline" onclick="ir('home')">VOLTAR</button>
         </div>
     </div>
 
     <div id="lancamento" class="seccao">
         <div class="card">
-            <h4 style="color:var(--gold); margin-bottom:15px;">Nova Obra</h4>
-            <label>Título da Música</label><input type="text" id="m-tit">
-            <label>Álbum / EP</label><input type="text">
-            <label>Género</label><select><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
-            <label>Link do Áudio</label><input type="url">
-            <button class="btn-gold" onclick="enviarMusica()">DISTRIBUIR AGORA</button>
+            <h4 style="color:var(--gold); margin-bottom:15px;">Formulário de Distribuição</h4>
+            <label>Título da Música</label><input type="text" id="m-titulo">
+            <label>Nome do Álbum / Single</label><input type="text" id="m-album">
+            <label>Gênero</label><select id="m-genero"><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
+            <label>ISRC</label><input type="text" placeholder="Ex: AO-MAM-26-00001">
+            <label>Link da Música (Drive/Cloud)</label><input type="url" id="m-link">
+            <button class="btn-gold" onclick="postMusica()">ENVIAR PARA CURADORIA</button>
         </div>
     </div>
 
     <div id="perfil" class="seccao">
         <div class="card">
-            <h4 style="color:var(--gold); margin-bottom:15px;">Editar Perfil</h4>
+            <h4 style="color:var(--gold); margin-bottom:20px;">Editar Perfil</h4>
             <label>Nome Artístico</label><input type="text" value="Play Sean Arsénio">
             <label>Email</label><input type="email" value="mamfilhos29@gmail.com">
-            <label>Biografia</label><textarea rows="3"></textarea>
+            <label>Biografia</label><textarea rows="3">MAM Distribuidora</textarea>
             <label>País</label><select><option>Angola</option><option>Portugal</option></select>
-            <button class="btn-gold" onclick="alert('Dados guardados!')">ATUALIZAR</button>
+            <button class="btn-gold" onclick="alert('Perfil guardado com sucesso!')">SALVAR ALTERAÇÕES</button>
         </div>
     </div>
 
-    <div id="stats" class="seccao"><div class="card"><h4>Estatística</h4><p style="font-size:0.7rem; color:#888; margin-top:10px;">Streams: 0</p></div></div>
-    
-    <div id="minhas" class="seccao"><div class="card"><h4>Minhas Músicas</h4><p style="font-size:0.7rem; color:#888; margin-top:10px;">Vazio.</p></div></div>
+    <div id="stats" class="seccao">
+        <div class="card">
+            <h4 style="color:var(--gold);">Estatística de Streams</h4>
+            <div style="margin-top:20px; text-align:center;">
+                <p style="font-size:2rem; font-weight:bold;">0</p>
+                <p style="font-size:0.6rem; color:#888;">Ouvintes este mês</p>
+            </div>
+        </div>
+    </div>
 
-    <div id="carteira" class="seccao"><div class="card"><h4>Carteira</h4><h2>2.000 Kz</h2></div></div>
+    <div id="minhas" class="seccao"><div class="card"><h4>Minhas Músicas</h4><p style="font-size:0.6rem; color:#444;">Lista vazia.</p></div></div>
+    <div id="carteira" class="seccao"><div class="card"><h4>Carteira</h4><h2>2000 Kz</h2></div></div>
 
     <footer>
-        <p><strong>MAM Distribuidora</strong> - CEO Matias Arsénio Manuel</p>
+        <p><strong>MAM Distribuidora</strong></p>
         <p>mamfilhos29@gmail.com | 937 881 307</p>
     </footer>
 
     <script>
-        let pSel = "";
         function ir(id, btn) {
             document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
             document.getElementById(id).classList.add('active-seccao');
@@ -145,13 +144,23 @@
             }
             window.scrollTo(0,0);
         }
-        function pagar(p, v) { pSel = p; document.getElementById('pg-valor').innerText = v; ir('pg-box'); }
-        function zap(tipo) { window.open(`https://wa.me/244937881307?text=Pagamento ${pSel}`); }
-        function enviarMusica() {
-            const t = document.getElementById('m-tit').value;
-            if(t) { document.getElementById('label-ultimo').innerText = t; ir('home', document.querySelector('.nav-item')); }
+        function irPag(n, v) {
+            document.getElementById('plano-nome').innerText = n;
+            document.getElementById('plano-valor').innerText = v;
+            ir('pagamento');
         }
-        function sair() { if(confirm("Deseja sair?")) window.location.href = "https://google.com"; }
+        function postMusica() {
+            const t = document.getElementById('m-titulo').value;
+            if(!t) return alert("Título é obrigatório!");
+            document.getElementById('txt-ultimo').innerText = t;
+            alert("Música enviada para análise profissional MAM.");
+            ir('home', document.querySelector('.nav-item'));
+        }
+        function fazerSair() {
+            if(confirm("Deseja mesmo encerrar a sessão?")) {
+                location.reload(); 
+            }
+        }
     </script>
 </body>
 </html>

@@ -5,212 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora - Oficial</title>
     <style>
-        :root { --gold: #d4af37; --black: #000000; --dark-card: #121212; --input-bg: #1a1a1a; }
+        :root { --gold: #d4af37; --yellow-btn: #dbb347; --black: #000000; --card-bg: #0a0a0a; --nav-bg: #050505; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--black); color: white; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: var(--black); color: white; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        /* DESIGN DE LOGIN (FOTOS 1 E 4) */
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-box { width: 100%; max-width: 400px; border: 2px solid var(--gold); border-radius: 30px; padding: 40px 25px; background: var(--black); text-align: center; }
+        .logo-circle { width: 80px; height: 80px; border: 3px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-weight: bold; color: var(--gold); font-size: 1.2rem; }
+        .auth-title { color: var(--gold); font-size: 1.5rem; margin-bottom: 5px; text-transform: uppercase; }
+        .auth-subtitle { color: #666; font-size: 0.75rem; margin-bottom: 25px; text-transform: uppercase; }
         
-        /* AJUSTE DISPOSITIVOS */
-        @media (max-width: 600px) {
-            .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
-            .auth-card { padding: 30px 15px !important; }
-        }
+        input { width: 100%; padding: 14px; margin-bottom: 12px; background: #151515; border: 1px solid #333; border-radius: 10px; color: white; outline: none; }
+        .btn-main { width: 100%; padding: 15px; background: var(--yellow-btn); color: black; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* LOGIN/REGISTO */
-        .auth-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { width: 100%; max-width: 420px; border: 2.5px solid var(--gold); border-radius: 35px; padding: 45px 30px; background: var(--black); text-align: center; }
-        .logo-circle { width: 90px; height: 90px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-weight: bold; font-size: 1.5rem; color: var(--gold); }
-        input, select { width: 100%; padding: 15px; margin-bottom: 12px; background: var(--input-bg); border: 1px solid #333; border-radius: 12px; color: white; outline: none; }
+        /* NOVO MENU (FOTOS 5 E 8) */
+        #site-main { display: none; padding-bottom: 80px; }
+        header { padding: 15px; background: var(--nav-bg); border-bottom: 1px solid var(--gold); }
+        .ceo-info { font-size: 0.65rem; color: var(--gold); margin-top: 2px; font-weight: bold; }
+        
+        .nav-container { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; background: #000; }
+        .nav-btn { flex: 1; min-width: 100px; background: #111; border: 1px solid #333; color: white; padding: 10px 5px; border-radius: 4px; font-size: 0.65rem; cursor: pointer; font-weight: bold; text-align: center; }
+        .nav-btn.active { border-color: var(--gold); color: var(--gold); background: #1a1a1a; }
+        .btn-sair { color: #ff4444; border-color: #440000; }
 
-        /* MENU ORIGINAL MAM */
-        #site-main { display: none; }
-        nav { background: var(--black); padding: 15px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
-        .menu-btn { background: #1a1a1a; border: 1px solid var(--gold); color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-
-        /* SEÇÕES */
-        .section { padding: 20px; max-width: 1000px; margin: auto; display: none; }
-        .active-section { display: block; }
-        .card { background: var(--dark-card); border: 1px solid #222; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-
-        /* FEED DE DISCOS */
-        .feed-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
-        .vinyl-card { background: #151515; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #222; }
-        .vinyl-disc { width: 90px; height: 90px; background: radial-gradient(circle, #333 10%, #000 70%); border-radius: 50%; border: 2px solid #111; margin: 0 auto 10px; animation: spin 6s linear infinite; position: relative; }
-        .vinyl-disc::after { content: ''; position: absolute; top: 50%; left: 50%; width: 18px; height: 18px; background: var(--gold); border-radius: 50%; transform: translate(-50%, -50%); }
-        @keyframes spin { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
-
-        footer { background: #080808; text-align: center; padding: 30px 20px; border-top: 1.5px solid var(--gold); margin-top: auto; font-size: 0.8rem; color: #666; }
+        /* CONTEÚDO E CARDS */
+        .content { padding: 15px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .welcome-card { background: #0a0a0a; border: 1px solid #222; border-left: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        
+        .grid-levels { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 600px) { .grid-levels { grid-template-columns: repeat(3, 1fr); } }
+        
+        .level-card { background: #0a0a0a; padding: 25px; border-radius: 12px; text-align: center; border: 1px solid #1a1a1a; }
+        .level-card h4 { margin-bottom: 8px; font-size: 0.85rem; color: var(--gold); }
+        .level-card .price { font-weight: bold; margin-bottom: 15px; display: block; font-size: 0.9rem; }
+        
+        footer { width: 100%; background: #000; border-top: 1px solid #222; padding: 20px; text-align: center; font-size: 0.6rem; color: #555; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="auth-container">
-        <div class="auth-card">
+        <div class="auth-box">
             <div class="logo-circle">MAM</div>
-            <h1 style="color:var(--gold);">MAM Distribuidora</h1>
-            <p id="auth-subtitle" style="color:#888; margin-bottom:25px; font-size: 0.8rem;">INICIAR SESSÃO</p>
+            <h1 class="auth-title">MAM Distribuidora</h1>
+            <p id="auth-subtitle" class="auth-subtitle">Iniciar Sessão</p>
             
-            <input type="email" id="email" placeholder="E-mail">
-            <div id="reg-fields" style="display: none;">
-                <input type="text" id="full-name" placeholder="Nome Completo">
-                <input type="text" id="art-name" placeholder="Nome Artístico">
-                <input type="password" id="conf-pass" placeholder="Confirmar Senha">
+            <div id="reg-inputs" style="display: none;">
+                <input type="text" id="reg-name" placeholder="Nome Completo">
+                <input type="text" id="reg-art" placeholder="Nome Artístico">
+                <input type="text" id="reg-country" placeholder="País">
             </div>
+            <input type="email" id="email" placeholder="E-mail">
             <input type="password" id="pass" placeholder="Senha">
-            <button class="btn-gold" onclick="handleAuth()">Confirmar</button>
-            <p id="toggle-container" style="margin-top:20px; cursor:pointer; font-size: 0.85rem;" onclick="toggleMode()">
-                Ainda não tem conta? <span style="color:var(--gold);">Criar Conta</span>
+            <button class="btn-main" id="auth-btn" onclick="processAuth()">Entrar</button>
+            
+            <p style="margin-top:20px; font-size: 0.75rem; color: #888;">
+                <span id="toggle-text">Ainda não tem conta?</span> 
+                <span style="color:var(--gold); cursor:pointer;" onclick="toggleAuth()">Criar Conta</span>
             </p>
         </div>
     </div>
 
     <div id="site-main">
-        <nav>
-            <div style="text-align: left;">
-                <h2 style="color:var(--gold); font-size: 1.2rem;">MAM Distribuidora</h2>
-                <p style="font-size:0.7rem; color: #fff;">CEO Matias Arsénio Manuel | Play Sean Arsénio</p>
-            </div>
-            <div class="menu-grid">
-                <button class="menu-btn" onclick="navPage('home')">Página Inicial</button>
-                <button class="menu-btn" onclick="navPage('upload')">Lançar Música</button>
-                <button class="menu-btn" onclick="navPage('my-songs')">Minhas Músicas</button>
-                <button class="menu-btn" onclick="navPage('wallet')">Carteira</button>
-                <button class="menu-btn" onclick="navPage('stats')">Estatística</button>
-                <button class="menu-btn" onclick="navPage('profile')">Editar Perfil</button>
-                <button class="menu-btn" style="border-color:red; color:red;" onclick="logout()">Sair</button>
-            </div>
-        </nav>
+        <header>
+            <h2 style="font-size: 1rem; color: var(--gold);">MAM Distribuidora</h2>
+            <p class="ceo-info">Matias Arsénio Manuel (MAM) | CEO Oficial</p>
+        </header>
 
-        <div id="home" class="section active-section">
-            <div class="card" style="border-left: 5px solid var(--gold);">
-                <h3>Bem-vindo à Elite Musical</h3>
-                <p>Oferecemos a curadoria que as grandes plataformas não têm [cite: 2026-01-28].</p>
-            </div>
-
-            <div class="card">
-                <h4 style="color:var(--gold);">Apoia o meu projeto</h4>
-                <p style="font-size:0.85rem; margin:10px 0;">Dados Oficiais MAM para Suporte:</p>
-                <p><strong>IBAN:</strong> 0006 0000 86316866301 52</p>
-                <p><strong>Express:</strong> 937 881 307 [cite: 2026-01-22]</p>
-                <button class="btn-gold" style="margin-top:10px; background:#1a1a1a; color:var(--gold); border: 1px solid var(--gold);" onclick="copyInvite()">Convidar Amigos (+500 Kz)</button>
-            </div>
-
-            <h3>Feed MAM Distribuidora</h3>
-            <div class="feed-container" id="global-feed"></div>
-
-            <h3 style="margin-top:30px;">Upgrade de Perfil</h3>
-            <div class="menu-grid">
-                <div class="card" style="text-align:center;">
-                    <h4 style="color:var(--gold);">Básico (30.000 Kz)</h4>
-                    <p style="font-size:0.75rem; color:#888;">Até 3 Artistas</p>
-                    <button class="btn-gold" style="padding:8px; font-size:0.75rem;" onclick="openPay('Básico', 30000)">Comprar</button>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <h4 style="color:var(--gold);">Médio (50.000 Kz)</h4>
-                    <p style="font-size:0.75rem; color:#888;">Até 10 Artistas</p>
-                    <button class="btn-gold" style="padding:8px; font-size:0.75rem;" onclick="openPay('Médio', 50000)">Comprar</button>
-                </div>
-                <div class="card" style="text-align:center; border: 1px solid var(--gold);">
-                    <h4 style="color:var(--gold);">Promax (100.000 Kz)</h4>
-                    <p style="font-size:0.75rem; color:#888;">Ilimitado</p>
-                    <button class="btn-gold" style="padding:8px; font-size:0.75rem;" onclick="openPay('Promax', 100000)">Comprar</button>
-                </div>
-            </div>
+        <div class="nav-container">
+            <button class="nav-btn active" onclick="showSec('home', this)">Página Inicial</button>
+            <button class="nav-btn" onclick="showSec('upload', this)">Lançar Música</button>
+            <button class="nav-btn" onclick="showSec('my-songs', this)">Minhas Músicas</button>
+            <button class="nav-btn" onclick="showSec('wallet', this)">Carteira</button>
+            <button class="nav-btn" onclick="showSec('stats', this)">Estatística</button>
+            <button class="nav-btn" onclick="showSec('profile', this)">Editar Perfil</button>
+            <button class="nav-btn btn-sair" onclick="logout()">Sair</button>
         </div>
 
-        <div id="pay-screen" class="section">
-            <div class="card">
-                <h2>Confirmar Pagamento</h2>
-                <p style="margin:15px 0;"><strong>IBAN:</strong> 0006 0000 86316866301 52<br><strong>Express:</strong> 937 881 307</p>
-                <p>Anexe o comprovativo da transferência:</p>
-                <input type="file" id="proof-img">
-                <button class="btn-gold" onclick="confirmPay()">Enviar Comprovativo</button>
-                <button class="btn-gold" style="background:#333; margin-top:10px;" onclick="navPage('home')">Voltar</button>
+        <div class="content">
+            <div id="home" class="section active">
+                <div class="welcome-card">
+                    <h3 style="font-size: 0.85rem;">Bem-vindo à MAM Distribuidora</h3>
+                    <p style="font-size: 0.7rem; color: #888; margin-top:5px;">Oferecemos a curadoria que as grandes plataformas ignoram. O seu sucesso começa aqui.</p>
+                </div>
+
+                <h3 style="margin: 20px 0 15px; font-size: 0.8rem; text-transform: uppercase; color: #666;">Níveis de Perfil</h3>
+                <div class="grid-levels">
+                    <div class="level-card">
+                        <h4>Básico</h4>
+                        <span class="price">30.000 Kz</span>
+                        <button class="btn-main" style="padding: 10px; font-size: 0.65rem;" onclick="buy(30000, 'Básico')">COMPRAR</button>
+                    </div>
+                    <div class="level-card">
+                        <h4>Médio</h4>
+                        <span class="price">50.000 Kz</span>
+                        <button class="btn-main" style="padding: 10px; font-size: 0.65rem;" onclick="buy(50000, 'Médio')">COMPRAR</button>
+                    </div>
+                    <div class="level-card">
+                        <h4>PROMAX</h4>
+                        <span class="price">Ilimitado</span>
+                        <button class="btn-main" style="padding: 10px; font-size: 0.65rem;" onclick="buy(100000, 'Promax')">COMPRAR</button>
+                    </div>
+                </div>
             </div>
+
+            <div id="wallet" class="section">
+                <div class="level-card">
+                    <h3>Saldo na Carteira</h3>
+                    <h1 id="bal-view" style="color: var(--gold); margin: 20px 0;">0 Kz</h1>
+                    <p style="font-size: 0.75rem; color: #888;">IBAN: 0006 0000 86316866301 52</p>
+                    <p style="font-size: 0.75rem; color: #888;">Express: 937 881 307</p>
+                </div>
+            </div>
+            
+            <div id="upload" class="section"><div class="level-card"><h3>Lançar Música</h3><input type="text" placeholder="Título da Música"><button class="btn-main">Enviar</button></div></div>
         </div>
 
-        <div id="upload" class="section"><div class="card"><h2>Lançar Música</h2><input type="text" id="m-name" placeholder="Título"><button class="btn-gold" onclick="addM()">Enviar</button></div></div>
-        <div id="wallet" class="section"><div class="card"><h2>Carteira</h2><h1 id="user-bal">0 Kz</h1></div></div>
+        <footer>
+            <p>MAM Distribuidora - CEO Matias Arsénio Manuel</p>
+            <p>Email: mamfilhos29@gmail.com | WhatsApp/Express: 937 881 307</p>
+            <p>Siga o perfil oficial do distribuidor MAM</p>
+        </footer>
     </div>
 
-    <footer>
-        <p><strong>MAM Distribuidora</strong> - C.E.O Matias Arsénio Manuel [cite: 2026-01-27]</p>
-        <p>Email: mamfilhos29@gmail.com | WhatsApp/Express: 937 881 307 [cite: 2026-01-23]</p>
-        <p>Siga o perfil oficial do distribuidor <strong>MAM</strong> [cite: 2026-01-22].</p>
-    </footer>
-
     <script>
-        let isLogin = true;
-        let user = JSON.parse(localStorage.getItem('mam_session'));
-        let musics = JSON.parse(localStorage.getItem('mam_db')) || [];
+        let mode = 'login';
+        let currentUser = JSON.parse(localStorage.getItem('mam_user'));
 
-        function toggleMode() {
-            isLogin = !isLogin;
-            document.getElementById('reg-fields').style.display = isLogin ? 'none' : 'block';
-            document.getElementById('auth-subtitle').innerText = isLogin ? 'INICIAR SESSÃO' : 'CRIAR CONTA';
-            document.getElementById('toggle-container').innerHTML = isLogin ? 
-                'Ainda não tem conta? <span style="color:var(--gold);">Criar Conta</span>' : 
-                'Já tem uma conta? <span style="color:var(--gold);">Iniciar Sessão</span>';
+        function toggleAuth() {
+            mode = (mode === 'login') ? 'reg' : 'login';
+            document.getElementById('auth-subtitle').innerText = mode === 'login' ? 'Iniciar Sessão' : 'Criar Conta';
+            document.getElementById('reg-inputs').style.display = mode === 'login' ? 'none' : 'block';
+            document.getElementById('auth-btn').innerText = mode === 'login' ? 'Entrar' : 'Confirmar';
+            document.getElementById('toggle-text').innerText = mode === 'login' ? 'Ainda não tem conta?' : 'Já tem uma conta?';
         }
 
-        function handleAuth() {
+        function processAuth() {
             const email = document.getElementById('email').value;
-            if(!email) return alert("Insira o e-mail.");
+            if(!email) return alert("Preencha o e-mail");
 
-            if(email === "mamfilhos29@gmail.com") {
-                user = { name: "Matias Manuel", bal: 0, lvl: "ADMIN", email: email };
-                saveAndIn();
-            } else if(!isLogin) {
-                if(document.getElementById('pass').value !== document.getElementById('conf-pass').value) return alert("Senhas não coincidem.");
-                user = { name: document.getElementById('full-name').value, bal: 2000, lvl: "Free", email: email };
-                alert("Conta criada! Bem-vindo à MAM.");
-                saveAndIn();
+            if(mode === 'reg') {
+                currentUser = { email: email, name: document.getElementById('reg-name').value, bal: 2000 };
+                localStorage.setItem('u_' + email, JSON.stringify(currentUser));
+                alert("Conta criada! Boas-vindas à MAM.");
+                localStorage.setItem('mam_user', JSON.stringify(currentUser));
+                location.reload();
             } else {
-                const s = localStorage.getItem('u_'+email);
-                if(s) { user = JSON.parse(s); saveAndIn(); } else alert("Conta não encontrada.");
+                const stored = localStorage.getItem('u_' + email);
+                if(stored || email === "mamfilhos29@gmail.com") {
+                    currentUser = stored ? JSON.parse(stored) : { email: email, name: "Admin", bal: 0 };
+                    localStorage.setItem('mam_user', JSON.stringify(currentUser));
+                    location.reload();
+                } else {
+                    alert("Utilizador não encontrado. Por favor, crie uma conta.");
+                }
             }
         }
 
-        function saveAndIn() { localStorage.setItem('mam_session', JSON.stringify(user)); location.reload(); }
-        function openPay() { navPage('pay-screen'); }
-
-        function confirmPay() {
-            if(!document.getElementById('proof-img').files[0]) return alert("Anexe o comprovativo!");
-            window.open(`mailto:mamfilhos29@gmail.com?subject=Pagamento&body=Usuário ${user.email} enviou comprovativo.`);
-            alert("Enviado para Matias Manuel!");
-            navPage('home');
+        function showSec(id, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
         }
 
-        function addM() {
-            musics.push({ title: document.getElementById('m-name').value, art: user.name });
-            localStorage.setItem('mam_db', JSON.stringify(musics));
-            location.reload();
+        function buy(val, lvl) {
+            alert(`Para comprar o nível ${lvl}, envie ${val} Kz para o IBAN ou Express 937 881 307. O formulário de pagamento será aberto.`);
         }
 
-        function copyInvite() {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link de convite copiado!");
-        }
-
-        function navPage(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
-            document.getElementById(id).classList.add('active-section');
-        }
-
-        function logout() { localStorage.removeItem('mam_session'); location.reload(); }
+        function logout() { localStorage.removeItem('mam_user'); location.reload(); }
 
         window.onload = () => {
-            if(user) {
+            if(currentUser) {
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('site-main').style.display = 'block';
-                document.getElementById('user-bal').innerText = user.bal.toLocaleString() + " Kz";
-                const feed = document.getElementById('global-feed');
-                musics.slice().reverse().forEach(m => {
-                    feed.innerHTML += `<div class="vinyl-card"><div class="vinyl-disc"></div><p style="font-size:0.7rem;"><strong>${m.title}</strong></p></div>`;
-                });
+                document.getElementById('bal-view').innerText = currentUser.bal.toLocaleString() + " Kz";
             }
-        };
+        }
     </script>
 </body>
 </html>

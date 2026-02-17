@@ -22,7 +22,6 @@
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
         .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; }
         
-        /* DISCO VINIL */
         .disco-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 20px 0; }
         .disco { width: 130px; height: 130px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 3px solid #1a1a1a; position: relative; animation: rodar 6s linear infinite; }
         .disco::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; background: var(--gold); border-radius: 50%; border: 3px solid #000; }
@@ -53,7 +52,7 @@
         <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
         <div class="nav-item" onclick="ver('musicas', this)">Músicas</div>
         <div class="nav-item" onclick="ver('perfil', this)">Perfil</div>
-        <div class="nav-item" onclick="ver('stats', this)">Stats</div>
+        <div class="nav-item" onclick="ver('artistas', this)">Artistas</div>
         <div class="nav-item btn-sair" onclick="sessaoSair()">Sair</div>
     </nav>
 
@@ -63,130 +62,112 @@
             <p style="font-size: 0.65rem; color:#888;">Oferecemos a curadoria que as grandes plataformas não têm.</p>
         </div>
 
+        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Gestão Rápida</p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+            <button class="btn-gold" style="font-size:0.55rem;" onclick="ver('artistas')">+ CRIAR ARTISTA</button>
+            <button class="btn-gold" style="font-size:0.55rem; background:#111; color:var(--gold); border:1px solid var(--gold);" onclick="ver('lancar')">LANÇAR OBRA</button>
+        </div>
+
         <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Último Lançamento</p>
         <div class="card" style="text-align:center;">
             <div class="disco-container">
                 <div class="disco"></div>
-                <p id="nome-disco" style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Aguardando Lançamento</p>
+                <p id="nome-disco" style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Nenhum lançamento ativo</p>
             </div>
         </div>
 
-        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Feed MAM Distribuidora</p>
-        <div class="card">
-            <p style="font-size:0.65rem; color:var(--gold); font-weight:bold;">Sistema Atualizado!</p>
-            <p style="font-size:0.6rem; color:#888; margin-top:5px;">Upgrade de artistas e curadoria visual ativa. Entre em contacto para suporte.</p>
-        </div>
-
-        <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight:bold; text-transform:uppercase;">Alterar Plano de Perfil</p>
+        <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight:bold; text-transform:uppercase;">Planos Disponíveis</p>
         <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:5px; margin-bottom: 5px;">
             <div class="card" style="text-align:center; padding:10px 2px;">
                 <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">FREE</p>
                 <p style="font-size:0.4rem; color:#666; margin:2px 0;">1 Artista</p>
-                <p style="font-size:0.5rem; font-weight:bold; margin-bottom:5px;">Grátis</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px;" onclick="irPag('Free','Grátis','1 Artista')">ALTERAR</button>
+                <p style="font-size:0.5rem; font-weight:bold;">Grátis</p>
+                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('Free','Grátis','1 Artista')">ALTERAR</button>
             </div>
             <div class="card" style="text-align:center; padding:10px 2px;">
                 <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">BÁSICO</p>
                 <p style="font-size:0.4rem; color:#666; margin:2px 0;">10 Artistas</p>
-                <p style="font-size:0.5rem; font-weight:bold; margin-bottom:5px;">30.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px;" onclick="irPag('Básico','30.000','10 Artistas')">ALTERAR</button>
+                <p style="font-size:0.5rem; font-weight:bold;">30.000 Kz</p>
+                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('Básico','30.000','10 Artistas')">ALTERAR</button>
             </div>
         </div>
         <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:5px;">
             <div class="card" style="text-align:center; padding:10px 2px;">
                 <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">MÉDIO</p>
                 <p style="font-size:0.4rem; color:#666; margin:2px 0;">30 Artistas</p>
-                <p style="font-size:0.5rem; font-weight:bold; margin-bottom:5px;">50.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px;" onclick="irPag('Médio','50.000','30 Artistas')">ALTERAR</button>
+                <p style="font-size:0.5rem; font-weight:bold;">50.000 Kz</p>
+                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('Médio','50.000','30 Artistas')">ALTERAR</button>
             </div>
             <div class="card" style="text-align:center; padding:10px 2px;">
                 <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">PROMAX</p>
                 <p style="font-size:0.4rem; color:#666; margin:2px 0;">Ilimitado</p>
-                <p style="font-size:0.5rem; font-weight:bold; margin-bottom:5px;">100.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px;" onclick="irPag('PROMAX','100.000','Ilimitado')">ALTERAR</button>
+                <p style="font-size:0.5rem; font-weight:bold;">100.000 Kz</p>
+                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('PROMAX','100.000','Ilimitado')">ALTERAR</button>
             </div>
-        </div>
-
-        <div class="card" style="margin-top:15px; border-top: 2px solid var(--gold);">
-            <h4 style="font-size:0.65rem; color:var(--gold);">APOIA ESTE PROJETO</h4>
-            <p style="font-size:0.75rem; margin-top:5px; font-weight:bold;">IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.65rem; color:#aaa;">Titular: Matias Arsénio Manuel</p>
-            <p style="font-size:0.7rem; margin-top:3px;">WhatsApp: 937 881 307</p>
         </div>
     </div>
 
-    <div id="perfil" class="seccao">
+    <div id="artistas" class="seccao">
         <div class="card">
-            <h4>Perfil da Conta</h4>
-            <label style="font-size:0.6rem;">NOME ARTÍSTICO</label><input type="text" value="Play Sean Arsénio">
-            <label style="font-size:0.6rem;">EMAIL OFICIAL</label><input type="text" value="mamfilhos29@gmail.com">
-            <button class="btn-gold">ATUALIZAR DADOS</button>
-        </div>
-    </div>
-
-    <div id="checkout" class="seccao">
-        <div class="card" style="text-align:center;">
-            <h4 style="color:var(--gold);">Finalizar Alteração</h4>
-            <div style="text-align:left; background:#000; padding:15px; border-radius:8px; border:1px solid #222; margin:15px 0;">
-                <p style="font-size:0.75rem;">Plano: <span id="p-nome" style="color:var(--gold); font-weight:bold;"></span></p>
-                <p style="font-size:0.7rem; color:#888;" id="p-desc"></p>
-                <p style="font-size:0.8rem; margin-top:15px; font-weight:bold; color:var(--gold);">IBAN: 0006 0000 86316866301 52</p>
-                <p style="font-size:0.6rem; color:#555;">Transfira e anexe o comprovativo abaixo.</p>
+            <h4 style="color:var(--gold); margin-bottom:15px;">Gerir Artistas</h4>
+            <p style="font-size:0.6rem; color:#666; margin-bottom:10px;">Adicione os nomes dos artistas que pretende distribuir sob a sua conta.</p>
+            <input type="text" id="novo-artista" placeholder="Nome do Artista">
+            <button class="btn-gold" onclick="addArtista()">REGISTAR ARTISTA</button>
+            <div id="lista-artistas-registados" style="margin-top:20px;">
+                <p style="font-size:0.6rem; color:#444;">Nenhum artista registado.</p>
             </div>
-            <button class="btn-gold" onclick="enviarComprovativo()">ENVIAR COMPROVATIVO</button>
-            <button onclick="ver('home')" style="background:none; border:none; color:#555; margin-top:15px; font-size:0.65rem;">CANCELAR</button>
         </div>
     </div>
 
     <div id="lancar" class="seccao">
         <div class="card">
             <h4>Nova Distribuição</h4>
+            <label style="font-size:0.6rem;">SELECIONAR ARTISTA</label>
+            <select id="select-artista"><option>Play Sean Arsénio</option></select>
             <input type="text" id="track-t" placeholder="Título da Música">
-            <select><option>Kizomba</option><option>Rap</option><option>Kuduro</option><option>Afro House</option></select>
+            <select><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
             <input type="url" placeholder="Link do Ficheiro (Drive/Dropbox)">
             <button class="btn-gold" onclick="postar()">SOLICITAR DISTRIBUIÇÃO</button>
         </div>
     </div>
 
-    <div id="musicas" class="seccao">
-        <div class="card" style="text-align:center;">
-            <h4>Minha Coleção</h4>
-            <div id="lista-discos" class="disco-container">
-                <p style="font-size:0.6rem; color:#444;">Nenhuma obra distribuída ainda.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="stats" class="seccao">
-        <div class="card" style="text-align:center; padding:40px 10px;">
-            <h4 style="color:#444;">Streams Totais</h4>
-            <h1 style="font-size:3rem; color:var(--gold);">0</h1>
-        </div>
-    </div>
-
-    <div id="carteira" class="seccao">
+    <div id="perfil" class="seccao">
         <div class="card">
-            <h4>Saldo MAM</h4>
-            <h2 style="color:var(--gold); margin:10px 0;">2.000 Kz</h2>
-            <button class="btn-gold" style="background:#111; color:var(--gold); border:1px solid var(--gold);">LEVANTAR FUNDOS</button>
+            <h4>Dados da Conta</h4>
+            <label style="font-size:0.6rem;">NOME REAL</label><input type="text" value="Matias Arsénio Manuel">
+            <label style="font-size:0.6rem;">EMAIL</label><input type="text" value="mamfilhos29@gmail.com">
+            <button class="btn-gold">GUARDAR ALTERAÇÕES</button>
         </div>
     </div>
+
+    <div id="checkout" class="seccao">
+        <div class="card" style="text-align:center;">
+            <h4 style="color:var(--gold);">Finalizar Upgrade</h4>
+            <div style="text-align:left; background:#000; padding:15px; border-radius:8px; border:1px solid #222; margin:15px 0;">
+                <p style="font-size:0.75rem;">Plano: <span id="p-nome" style="color:var(--gold); font-weight:bold;"></span></p>
+                <p style="font-size:0.7rem; color:#888;" id="p-desc"></p>
+                <p style="font-size:0.8rem; margin-top:15px; font-weight:bold; color:var(--gold);">IBAN: 0006 0000 86316866301 52</p>
+            </div>
+            <button class="btn-gold" onclick="enviarComprovativo()">ENVIAR COMPROVATIVO</button>
+            <button onclick="ver('home')" style="background:none; border:none; color:#555; margin-top:15px; font-size:0.65rem;">VOLTAR</button>
+        </div>
+    </div>
+
+    <div id="musicas" class="seccao"><div class="card" style="text-align:center;"><h4>Coleção</h4><div id="lista-discos" class="disco-container">Vazio</div></div></div>
+    <div id="stats" class="seccao"><div class="card" style="text-align:center; padding:40px 10px;"><h4>Streams</h4><h1 style="color:var(--gold);">0</h1></div></div>
 
     <footer class="footer-premium">
         <div class="footer-logo">MAM DISTRIBUIDORA</div>
         <div class="footer-info">
             <p><strong>Matias Arsénio Manuel (CEO)</strong></p>
-            <p>Curadoria que as grandes plataformas não oferecem.</p>
             <p>Luanda, Angola | mamfilhos29@gmail.com</p>
         </div>
         <div class="footer-socials">
             <a href="https://wa.me/244937881307" class="social-icon">WA</a>
             <a href="mailto:mamfilhos29@gmail.com" class="social-icon">@</a>
-            <a href="#" class="social-icon">FB</a>
+            <a href="https://www.facebook.com/share/1aEMHxEKiA/" target="_blank" class="social-icon">FB</a>
         </div>
-        <div class="copyright">
-            &copy; 2026 MAM Distribuidora | Design by Matias Arsénio Manuel
-        </div>
+        <div class="copyright">&copy; 2026 MAM Distribuidora | Design by Matias Arsénio Manuel</div>
     </footer>
 
     <script>
@@ -202,6 +183,18 @@
             window.scrollTo(0,0);
         }
 
+        function addArtista() {
+            const nome = document.getElementById('novo-artista').value;
+            if(!nome) return alert("Digite o nome!");
+            const lista = document.getElementById('lista-artistas-registados');
+            const select = document.getElementById('select-artista');
+            if(lista.innerHTML.includes("Nenhum")) lista.innerHTML = "";
+            lista.innerHTML += `<div class="card" style="padding:10px; margin-bottom:5px; font-size:0.7rem;">${nome} <span style="color:var(--gold); float:right;">Ativo</span></div>`;
+            select.innerHTML += `<option>${nome}</option>`;
+            document.getElementById('novo-artista').value = "";
+            alert("Artista registado com sucesso!");
+        }
+
         function irPag(n, v, d) {
             pSel = n;
             document.getElementById('p-nome').innerText = n;
@@ -210,23 +203,20 @@
         }
 
         function enviarComprovativo() {
-            const msg = encodeURIComponent(`Olá MAM, fiz o pagamento para o plano ${pSel}. Segue o comprovativo.`);
-            window.open(`https://wa.me/244937881307?text=${msg}`);
+            window.open(`https://wa.me/244937881307?text=Pagamento plano ${pSel}`);
         }
 
         function postar() {
             const t = document.getElementById('track-t').value;
-            if(!t) return alert("Por favor, indique o título.");
+            if(!t) return alert("Título!");
             document.getElementById('nome-disco').innerText = t;
             document.getElementById('lista-discos').innerHTML = `<div class="disco"></div><p style="color:var(--gold); font-weight:bold;">${t}</p>`;
-            alert("Sucesso! A tua música foi enviada para curadoria.");
+            alert("Música enviada!");
             ver('home');
         }
 
         function sessaoSair() {
-            if(confirm("Deseja realmente terminar a sessão?")) {
-                window.location.reload();
-            }
+            if(confirm("Sair?")) window.location.reload();
         }
     </script>
 </body>

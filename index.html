@@ -5,145 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAM Distribuidora - Oficial</title>
     <style>
-        :root {
-            --gold: #d4af37;
-            --black: #000000;
-            --dark-card: #121212;
-            --input-bg: #1a1a1a;
-        }
+        :root { --gold: #d4af37; --black: #000000; --dark-card: #121212; --input-bg: #1a1a1a; }
+        body { background-color: var(--black); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* PAINEL DE ACESSO (CONFORME FOTO) */
+        .auth-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { width: 100%; max-width: 400px; border: 2px solid var(--gold); border-radius: 30px; padding: 40px 25px; background: var(--black); text-align: center; }
+        .logo-circle { width: 90px; height: 90px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-weight: bold; font-size: 1.4rem; color: var(--gold); }
+        
+        /* MENU COMPLETO */
+        #site-main { display: none; }
+        nav { background: var(--black); padding: 15px; border-bottom: 2px solid var(--gold); sticky: top; top: 0; z-index: 100; }
+        .nav-header { text-align: left; margin-bottom: 15px; }
+        .nav-header h1 { color: var(--gold); font-size: 1.5rem; margin: 0; }
+        .nav-header p { font-size: 0.75rem; color: #fff; margin: 0; }
+        
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+        .menu-btn { background: #1a1a1a; border: 1px solid var(--gold); color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .menu-btn:hover { background: var(--gold); color: black; }
 
-        body {
-            background-color: var(--black);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+        /* SEÇÕES */
+        .section { padding: 20px; max-width: 1000px; margin: auto; display: none; }
+        .active { display: block; }
+        .card { background: var(--dark-card); border: 1px solid #222; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        
+        /* FORMULÁRIOS */
+        input, select, textarea { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 10px; }
+        .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 
-        /* PAINEL DE ACESSO - CONFORME IMAGEM */
-        .auth-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .auth-card {
-            width: 100%;
-            max-width: 400px;
-            border: 2px solid var(--gold);
-            border-radius: 30px;
-            padding: 40px 25px;
-            background-color: var(--black);
-            text-align: center;
-        }
-
-        .logo-circle {
-            width: 90px;
-            height: 90px;
-            border: 2px solid var(--gold);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-weight: bold;
-            font-size: 1.4rem;
-            color: var(--gold);
-        }
-
-        h1 {
-            color: var(--gold);
-            font-size: 1.6rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-        }
-
-        input {
-            width: 100%;
-            padding: 18px;
-            margin-bottom: 15px;
-            background-color: var(--input-bg);
-            border: 1px solid #333;
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        .btn-entrar {
-            width: 100%;
-            padding: 18px;
-            background-color: var(--gold);
-            color: black;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            margin-top: 10px;
-        }
-
-        .toggle-link {
-            margin-top: 25px;
-            font-size: 0.9rem;
-            color: #777;
-            cursor: pointer;
-        }
-
-        .toggle-link span {
-            color: var(--gold);
-            text-decoration: underline;
-        }
-
-        /* CONTEÚDO DO SITE (LOGADO) */
-        #site-main {
-            display: none;
-        }
-
-        header {
-            padding: 20px;
-            border-bottom: 1px solid var(--gold);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-btn-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 20px;
-        }
-
-        .nav-item {
-            background: var(--dark-card);
-            border: 1px solid #333;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            color: var(--gold);
-            cursor: pointer;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            font-size: 0.8rem;
-            color: #555;
-            border-top: 1px solid #111;
-        }
+        /* RODAPÉ UNIVERSAL */
+        footer { background: #080808; text-align: center; padding: 30px; font-size: 0.8rem; color: #555; border-top: 1px solid var(--gold); margin-top: auto; }
     </style>
 </head>
 <body>
@@ -151,122 +42,133 @@
     <div id="auth-screen" class="auth-container">
         <div class="auth-card">
             <div class="logo-circle">MAM</div>
-            <h1 id="title-text">MAM Distribuidora</h1>
-            <p class="subtitle" id="subtitle-text">INICIAR SESSÃO</p>
-
-            <div id="form-fields">
+            <h1>MAM Distribuidora</h1>
+            <p style="color: #888; margin-bottom: 25px;" id="auth-sub">INICIAR SESSÃO</p>
+            <div id="auth-fields">
                 <input type="email" id="email" placeholder="E-mail">
-                <div id="reg-fields" style="display: none;">
-                    <input type="text" id="full-name" placeholder="Nome Completo">
-                    <input type="text" id="art-name" placeholder="Nome Artístico">
+                <div id="reg-extra" style="display:none;">
+                    <input type="text" id="r-name" placeholder="Nome Completo">
+                    <input type="text" id="r-art" placeholder="Nome Artístico">
+                    <input type="text" id="r-pais" placeholder="País">
                 </div>
                 <input type="password" id="pass" placeholder="Senha">
-                <button class="btn-entrar" onclick="handleAuth()">Entrar</button>
+                <button class="btn-gold" onclick="handleAuth()">Confirmar</button>
             </div>
-
-            <p class="toggle-link" id="toggle-btn" onclick="toggleForm()">
-                Ainda não tem conta? <span>Criar Conta</span>
+            <p style="margin-top:20px; font-size:0.9rem; cursor:pointer;" onclick="toggleAuth()">
+                <span id="auth-toggle-text">Ainda não tem conta? <span style="color:var(--gold);">Criar Conta</span></span>
             </p>
         </div>
     </div>
 
     <div id="site-main">
-        <header>
-            <div>
-                <strong style="color: var(--gold);">MAM Distribuidora</strong><br>
-                <small>Matias Arsénio Manuel</small>
+        <nav>
+            <div class="nav-header">
+                <h1>MAM Distribuidora</h1>
+                <p>Matias Arsénio Manuel</p>
             </div>
-            <button onclick="logout()" style="background: none; border: 1px solid red; color: red; padding: 5px; cursor: pointer;">Sair</button>
-        </header>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="showPage('home')">Página Inicial</button>
+                <button class="menu-btn" onclick="showPage('upload')">Lançar Música</button>
+                <button class="menu-btn" onclick="showPage('my-songs')">Minhas Músicas</button>
+                <button class="menu-btn" onclick="showPage('wallet')">Carteira</button>
+                <button class="menu-btn" onclick="showPage('stats')">Estatística</button>
+                <button class="menu-btn" onclick="showPage('profile')">Editar Perfil</button>
+                <button class="menu-btn" style="border-color:red; color:red;" onclick="logout()">Sair</button>
+            </div>
+        </nav>
 
-        <div style="padding: 20px;">
-            <div style="background: var(--dark-card); padding: 25px; border-radius: 20px; border: 1px solid #222;">
-                <p>Saldo em Carteira</p>
-                <h2 id="user-balance" style="font-size: 2.5rem; margin: 10px 0; color: var(--gold);">0 Kz</h2>
-                <p>Nível: <span id="user-level" style="color: var(--gold);">Free</span></p>
+        <div id="home" class="section active">
+            <div class="card" style="border-left: 5px solid var(--gold);">
+                <h3>Apoia este projeto</h3>
+                <p>Curation que grandes plataformas não oferecem.</p>
+            </div>
+            <h3>Compra de Nível de Perfil</h3>
+            <div class="menu-grid">
+                <div class="card"><h4>Básico</h4><p>30.000 Kz</p><button class="btn-gold" onclick="buy(30000, 'Básico')">Comprar</button></div>
+                <div class="card"><h4>Médio</h4><p>50.000 Kz</p><button class="btn-gold" onclick="buy(50000, 'Médio')">Comprar</button></div>
+                <div class="card"><h4>Promax</h4><p>Ilimitado</p><button class="btn-gold" onclick="buy(100000, 'Promax')">Comprar</button></div>
             </div>
         </div>
 
-        <div class="nav-btn-grid">
-            <div class="nav-item">Minhas Músicas</div>
-            <div class="nav-item">Lançar Música</div>
-            <div class="nav-item">Carteira</div>
-            <div class="nav-item">Estatísticas</div>
+        <div id="upload" class="section">
+            <div class="card">
+                <h2>Lançar Nova Música</h2>
+                <input type="text" placeholder="Título da Música">
+                <input type="text" placeholder="Artista">
+                <input type="text" placeholder="Colaboração">
+                <input type="text" placeholder="Produtor/Produtora">
+                <input type="date" placeholder="Data de Lançamento">
+                <select>
+                    <option>Kizomba</option><option>Semba</option><option>Afro House</option><option>Kuduro</option><option>Rap</option>
+                </select>
+                <label><input type="checkbox" checked> Lançar em todas as plataformas do mundo</label>
+                <button class="btn-gold">Mandar Música</button>
+            </div>
+        </div>
+
+        <div id="wallet" class="section">
+            <div class="card">
+                <h2>Carteira MAM</h2>
+                <h1 id="bal" style="color:var(--gold); font-size:3rem;">0 Kz</h1>
+                <p>Nível: <span id="lvl">Free</span></p>
+                <hr>
+                <h4>Sacar por:</h4>
+                <select id="bank">
+                    <option>Banco BFA</option><option>Banco BAI</option><option>Multicaixa Express</option><option>Visa/Wise</option><option>PayPal</option>
+                </select>
+                <input type="number" id="w-val" placeholder="Quantia (Mín. 10.000 Kz)">
+                <button class="btn-gold" onclick="sacar()">Confirmar Saque</button>
+            </div>
         </div>
     </div>
 
     <footer>
-        <p>MAM Distribuidora © 2026 - Todos os direitos reservados</p>
-        <p>Email: mamfilhos29@gmail.com</p>
+        <p><strong>MAM Distribuidora</strong> - Matias Arsénio Manuel</p>
+        <p>Email Oficial: mamfilhos29@gmail.com | Tel: 937881307</p>
+        <p>Siga o meu perfil MAM criado por Matias Arsénio Manuel.</p>
     </footer>
 
     <script>
         let isLogin = true;
+        let currentUser = JSON.parse(localStorage.getItem('mam_session'));
 
-        function toggleForm() {
+        function toggleAuth() {
             isLogin = !isLogin;
-            document.getElementById('reg-fields').style.display = isLogin ? 'none' : 'block';
-            document.getElementById('subtitle-text').innerText = isLogin ? 'INICIAR SESSÃO' : 'CRIAR CONTA';
-            document.getElementById('toggle-btn').innerHTML = isLogin ? 
-                'Ainda não tem conta? <span>Criar Conta</span>' : 
-                'Já tem uma conta? <span>Entrar</span>';
+            document.getElementById('reg-extra').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('auth-sub').innerText = isLogin ? 'INICIAR SESSÃO' : 'CRIAR CONTA';
         }
 
         function handleAuth() {
             const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-
-            // ACESSO MASTER PARA MATIAS
-            if (email === "mamfilhos29@gmail.com") {
-                const masterUser = {
-                    name: "Matias Arsénio Manuel",
-                    balance: "999.999 Kz",
-                    level: "ADMIN PROMAX"
-                };
-                localStorage.setItem('mam_session', JSON.stringify(masterUser));
-                loadSite();
-                return;
-            }
-
-            if (isLogin) {
-                const saved = localStorage.getItem('u_' + email);
-                if (saved) {
-                    localStorage.setItem('mam_session', saved);
-                    loadSite();
-                } else {
-                    alert("Utilizador não encontrado. Por favor, crie uma conta.");
-                }
-            } else {
-                // Registro
-                const newUser = {
-                    name: document.getElementById('full-name').value,
-                    balance: "2.000 Kz",
-                    level: "Free"
-                };
-                localStorage.setItem('u_' + email, JSON.stringify(newUser));
-                localStorage.setItem('mam_session', JSON.stringify(newUser));
-                alert("Conta criada com sucesso! Ganhou 2.000 Kz de bónus.");
-                loadSite();
-            }
+            if(email === "mamfilhos29@gmail.com") {
+                currentUser = { name: "Matias Manuel", balance: 5000, level: "ADMIN MAX" };
+                saveAndOpen();
+            } else if(!isLogin) {
+                currentUser = { name: "Novo Artista", balance: 2000, level: "Free" };
+                saveAndOpen();
+            } else { alert("Conta não encontrada. Por favor, crie uma conta."); }
         }
 
-        function loadSite() {
-            const session = JSON.parse(localStorage.getItem('mam_session'));
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('site-main').style.display = 'block';
-            document.getElementById('user-balance').innerText = session.balance;
-            document.getElementById('user-level').innerText = session.level;
-        }
-
-        function logout() {
-            localStorage.removeItem('mam_session');
+        function saveAndOpen() {
+            localStorage.setItem('mam_session', JSON.stringify(currentUser));
             location.reload();
         }
 
-        // Verifica se já está logado
-        window.onload = () => {
-            if (localStorage.getItem('mam_session')) loadSite();
+        function showPage(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
+
+        function logout() { localStorage.removeItem('mam_session'); location.reload(); }
+
+        window.onload = () => {
+            if(currentUser) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('site-main').style.display = 'block';
+                document.getElementById('bal').innerText = currentUser.balance.toLocaleString() + " Kz";
+                document.getElementById('lvl').innerText = currentUser.level;
+            }
+        };
     </script>
 </body>
 </html>

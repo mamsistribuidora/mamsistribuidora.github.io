@@ -2,140 +2,152 @@
 <html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MAM Distribuidora</title>
     <style>
         :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--black); color: white; overflow-x: hidden; }
 
-        /* MENU RESPONSIVO */
-        header { padding: 15px; border-bottom: 1px solid var(--gold); }
-        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; position: sticky; top: 0; background: #000; z-index: 1000; }
-        .nav-item { background: #111; border: 1px solid #333; color: white; padding: 12px 5px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-align: center; }
-        .nav-item.active { border-color: var(--gold); color: var(--gold); }
-        .btn-sair { color: #ff4444; border-color: #440000; }
+        /* NAVEGAÇÃO INTERNA (SPA) */
+        header { padding: 15px; border-bottom: 1px solid var(--gold); background: #000; position: sticky; top: 0; z-index: 1000; }
+        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; background: #050505; }
+        .nav-item { background: #111; border: 1px solid #333; color: #888; padding: 12px 2px; border-radius: 4px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+        .nav-item.active { border-color: var(--gold); color: var(--gold); background: #1a1500; }
+        .btn-sair { color: #ff4444 !important; border-color: #400 !important; }
 
         /* SEÇÕES */
         .seccao { display: none; padding: 15px; min-height: 80vh; }
-        .active-seccao { display: block; }
-        .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        
-        /* BOTÕES E INPUTS */
-        .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
-        .btn-outline { background: transparent; border: 1px solid #333; color: var(--gold); margin-top: 10px; width: 100%; padding: 10px; font-size: 0.65rem; border-radius: 6px; cursor: pointer; }
-        label { display: block; font-size: 0.55rem; color: #888; margin-bottom: 4px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 5px; font-size: 0.85rem; margin-bottom: 12px; }
+        .active-seccao { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        footer { text-align: center; padding: 25px; font-size: 0.55rem; color: #444; border-top: 1px solid #111; }
+        /* UI ELEMENTS */
+        .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
+        .btn-gold { width: 100%; padding: 14px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem; text-transform: uppercase; }
+        .btn-outline { background: transparent; border: 1px solid #333; color: var(--gold); margin-top: 8px; width: 100%; padding: 10px; font-size: 0.65rem; border-radius: 6px; cursor: pointer; }
+        
+        /* FORMULÁRIOS */
+        label { display: block; font-size: 0.6rem; color: #666; margin-bottom: 5px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; font-size: 0.9rem; margin-bottom: 15px; outline: none; }
+        input:focus { border-color: var(--gold); }
+
+        footer { text-align: center; padding: 30px 15px; font-size: 0.55rem; color: #333; border-top: 1px solid #111; }
     </style>
 </head>
 <body>
 
     <header>
-        <h3 style="color:var(--gold); font-size: 0.9rem;">MAM Distribuidora</h3>
-        <p style="font-size:0.55rem; color:#888;">CEO Matias Arsénio Manuel | Play Sean Arsénio</p>
+        <h3 style="color:var(--gold); font-size: 0.9rem;">MAM DISTRIBUIDORA</h3>
+        <p style="font-size:0.5rem; color:#666;">CEO Matias Arsénio Manuel</p>
     </header>
 
     <nav class="nav-grid">
-        <div class="nav-item active" onclick="ir('home', this)">Página Inicial</div>
-        <div class="nav-item" onclick="ir('lancamento', this)">Lançar Música</div>
-        <div class="nav-item" onclick="ir('minhas', this)">Minhas Músicas</div>
-        <div class="nav-item" onclick="ir('carteira', this)">Carteira</div>
-        <div class="nav-item" onclick="ir('stats', this)">Estatística</div>
-        <div class="nav-item" onclick="ir('perfil', this)">Editar Perfil</div>
-        <div class="nav-item btn-sair" onclick="fazerSair()">Sair</div>
+        <div class="nav-item active" onclick="ver('home', this)">Página Inicial</div>
+        <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
+        <div class="nav-item" onclick="ver('musicas', this)">Músicas</div>
+        <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
+        <div class="nav-item" onclick="ver('stats', this)">Stats</div>
+        <div class="nav-item" onclick="ver('perfil', this)">Perfil</div>
+        <div class="nav-item btn-sair" style="grid-column: span 3; margin-top: 5px;" onclick="sessaoSair()">SAIR DA CONTA</div>
     </nav>
 
     <div id="home" class="seccao active-seccao">
         <div class="card" style="border-left: 4px solid var(--gold);">
-            <h4 style="font-size: 0.8rem;">Bem-vindo à Elite Musical</h4>
-            <p style="font-size: 0.65rem; color:#888;">Curadoria exclusiva MAM Distribuidora [cite: 2026-01-28].</p>
+            <h4 style="font-size: 0.8rem;">Elite Musical MAM</h4>
+            <p style="font-size: 0.65rem; color:#888;">Oferecemos a curadoria que as grandes plataformas não têm.</p>
         </div>
 
         <div class="card">
-            <h4 style="font-size:0.75rem; color:var(--gold);">Apoia o meu projeto</h4>
-            <p style="font-size:0.65rem; margin-top:8px;">IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.65rem;">WhatsApp: 937 881 307 [cite: 2026-01-22]</p>
-            <button class="btn-outline">CONVIDAR AMIGOS (+500 KZ)</button>
+            <h4 style="font-size:0.7rem; color:var(--gold); text-transform: uppercase;">Apoia o meu projeto</h4>
+            <p style="font-size:0.65rem; margin-top:8px; color:#aaa;">Dados para suporte direto:</p>
+            <p style="font-size:0.75rem; font-weight:bold; color:var(--gold); margin-top:4px;">IBAN: 0006 0000 86316866301 52</p>
+            <p style="font-size:0.75rem; font-weight:bold;">WhatsApp: 937 881 307</p>
+            <button class="btn-outline">CONVIDAR ARTISTAS (+500 KZ)</button>
         </div>
 
-        <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">ÚLTIMO LANÇAMENTO</p>
-        <div class="card" style="display:flex; align-items:center; gap:15px;">
-            <div style="width:50px; height:50px; background:#111; border:1px solid var(--gold); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--gold);">MAM</div>
+        <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight: bold; text-transform: uppercase;">Último Lançamento</p>
+        <div class="card" style="display:flex; align-items:center; gap:12px;">
+            <div style="width:45px; height:45px; background:#111; border:1px solid #333; border-radius:4px; display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:bold;">MAM</div>
             <div>
-                <p id="txt-ultimo" style="font-size:0.75rem; font-weight:bold;">Nenhum lançamento</p>
-                <p style="font-size:0.6rem; color:#888;">Distribuição Profissional</p>
+                <p id="label-m" style="font-size:0.75rem; font-weight:bold;">Aguardando nova obra</p>
+                <p style="font-size:0.6rem; color:#666;">Distribuição MAM & Filhos</p>
             </div>
         </div>
 
-        <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">FEED MAM DISTRIBUIDORA</p>
-        <div class="card"><p id="feed-p" style="font-size:0.65rem; color:#555;">O feed de novidades aparecerá aqui.</p></div>
-
-        <p style="font-size:0.65rem; color:#444; margin-bottom:10px; font-weight:bold;">UPGRADE DE PERFIL</p>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-            <div class="card" style="text-align:center; padding:10px 5px;"><p style="font-size:0.5rem;">Básico</p><button class="btn-gold" style="font-size:0.45rem; margin-top:8px;" onclick="irPag('Básico','30.000')">COMPRAR</button></div>
-            <div class="card" style="text-align:center; padding:10px 5px;"><p style="font-size:0.5rem;">Médio</p><button class="btn-gold" style="font-size:0.45rem; margin-top:8px;" onclick="irPag('Médio','50.000')">COMPRAR</button></div>
-            <div class="card" style="text-align:center; padding:10px 5px;"><p style="font-size:0.5rem;">PROMAX</p><button class="btn-gold" style="font-size:0.45rem; margin-top:8px;" onclick="irPag('PROMAX','100.000')">COMPRAR</button></div>
-        </div>
-    </div>
-
-    <div id="pagamento" class="seccao">
-        <div class="card" style="text-align:center;">
-            <h4 style="color:var(--gold); margin-bottom:20px;">Finalizar Compra</h4>
-            <div style="text-align:left; background:#000; padding:15px; border-radius:8px; border:1px solid #222;">
-                <p style="font-size:0.7rem;">Plano: <span id="plano-nome"></span></p>
-                <p style="font-size:0.7rem; margin-top:5px;">Valor: <span id="plano-valor"></span> Kz</p>
-                <p style="font-size:0.7rem; margin-top:10px; border-top:1px solid #222; pt-10">IBAN: 0006 0000 86316866301 52</p>
-            </div>
-            <button class="btn-gold" style="margin-top:20px;" onclick="window.open('https://wa.me/244937881307')">ENVIAR COMPROVATIVO</button>
-            <button class="btn-outline" onclick="ir('home')">VOLTAR</button>
-        </div>
-    </div>
-
-    <div id="lancamento" class="seccao">
+        <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight: bold; text-transform: uppercase;">Feed MAM Distribuidora</p>
         <div class="card">
-            <h4 style="color:var(--gold); margin-bottom:15px;">Formulário de Distribuição</h4>
-            <label>Título da Música</label><input type="text" id="m-titulo">
-            <label>Nome do Álbum / Single</label><input type="text" id="m-album">
-            <label>Gênero</label><select id="m-genero"><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
-            <label>ISRC</label><input type="text" placeholder="Ex: AO-MAM-26-00001">
-            <label>Link da Música (Drive/Cloud)</label><input type="url" id="m-link">
-            <button class="btn-gold" onclick="postMusica()">ENVIAR PARA CURADORIA</button>
+            <p style="font-size:0.65rem; color:#444; font-style: italic;">O feed de atualizações aparecerá aqui brevemente.</p>
+        </div>
+
+        <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight: bold; text-transform: uppercase;">Venda de Perfil / Upgrade</p>
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
+            <div class="card" style="text-align:center; padding:12px 5px;">
+                <p style="font-size:0.5rem; color:var(--gold);">Básico</p>
+                <p style="font-size:0.6rem; margin:5px 0;">30.000 Kz</p>
+                <button class="btn-gold" style="padding:6px; font-size:0.45rem;" onclick="check('Básico', '30.000')">COMPRAR</button>
+            </div>
+            <div class="card" style="text-align:center; padding:12px 5px;">
+                <p style="font-size:0.5rem; color:var(--gold);">Médio</p>
+                <p style="font-size:0.6rem; margin:5px 0;">50.000 Kz</p>
+                <button class="btn-gold" style="padding:6px; font-size:0.45rem;" onclick="check('Médio', '50.000')">COMPRAR</button>
+            </div>
+            <div class="card" style="text-align:center; padding:12px 5px;">
+                <p style="font-size:0.5rem; color:var(--gold);">PROMAX</p>
+                <p style="font-size:0.6rem; margin:5px 0;">100.000 Kz</p>
+                <button class="btn-gold" style="padding:6px; font-size:0.45rem;" onclick="check('PROMAX', '100.000')">COMPRAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pagar" class="seccao">
+        <div class="card" style="text-align:center;">
+            <h4 style="color:var(--gold); margin-bottom:20px;">Checkout Seguro</h4>
+            <div style="text-align:left; background:#000; padding:15px; border:1px solid #222; border-radius:8px;">
+                <p style="font-size:0.75rem;">Plano: <span id="v-plano" style="color:var(--gold); font-weight:bold;"></span></p>
+                <p style="font-size:0.75rem; margin-top:5px;">Valor: <span id="v-preco"></span> Kz</p>
+                <hr style="margin:12px 0; border:0; border-top:1px solid #222;">
+                <p style="font-size:0.65rem; color:#888;">Transfira via IBAN:</p>
+                <p style="font-size:0.8rem; font-weight:bold; color:var(--gold); margin-top:5px;">0006 0000 86316866301 52</p>
+            </div>
+            <button class="btn-gold" style="margin-top:20px;" onclick="zapConfirmar()">ENVIAR COMPROVATIVO</button>
+            <button class="btn-outline" onclick="ver('home')">VOLTAR</button>
+        </div>
+    </div>
+
+    <div id="lancar" class="seccao">
+        <div class="card">
+            <h4 style="color:var(--gold); margin-bottom:15px;">Nova Distribuição MAM</h4>
+            <label>Título da Obra</label><input type="text" id="m-t" placeholder="Título da música">
+            <label>Álbum / Single</label><input type="text" placeholder="Nome do álbum">
+            <label>Gênero</label><select><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
+            <label>Link do Áudio</label><input type="url" id="m-l" placeholder="Link do Drive ou Dropbox">
+            <button class="btn-gold" onclick="enviarM()">SOLICITAR DISTRIBUIÇÃO</button>
         </div>
     </div>
 
     <div id="perfil" class="seccao">
         <div class="card">
-            <h4 style="color:var(--gold); margin-bottom:20px;">Editar Perfil</h4>
+            <h4 style="color:var(--gold); margin-bottom:15px;">Editar Minha Conta</h4>
             <label>Nome Artístico</label><input type="text" value="Play Sean Arsénio">
-            <label>Email</label><input type="email" value="mamfilhos29@gmail.com">
-            <label>Biografia</label><textarea rows="3">MAM Distribuidora [cite: 2026-01-28]</textarea>
+            <label>Email Oficial</label><input type="email" value="mamfilhos29@gmail.com">
+            <label>Biografia</label><textarea rows="3">Curadoria MAM Distribuidora</textarea>
             <label>País</label><select><option>Angola</option><option>Portugal</option></select>
-            <button class="btn-gold" onclick="alert('Perfil guardado com sucesso!')">SALVAR ALTERAÇÕES</button>
+            <button class="btn-gold" onclick="alert('Perfil guardado!')">SALVAR ALTERAÇÕES</button>
         </div>
     </div>
 
-    <div id="stats" class="seccao">
-        <div class="card">
-            <h4 style="color:var(--gold);">Estatística de Streams</h4>
-            <div style="margin-top:20px; text-align:center;">
-                <p style="font-size:2rem; font-weight:bold;">0</p>
-                <p style="font-size:0.6rem; color:#888;">Ouvintes este mês</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="minhas" class="seccao"><div class="card"><h4>Minhas Músicas</h4><p style="font-size:0.6rem; color:#444;">Lista vazia.</p></div></div>
-    <div id="carteira" class="seccao"><div class="card"><h4>Carteira</h4><h2>2000 Kz</h2></div></div>
+    <div id="stats" class="seccao"><div class="card" style="text-align:center;"><h4>Streams Totais</h4><h1 style="margin:20px 0; font-size:3rem; color:var(--gold);">0</h1><p style="font-size:0.65rem; color:#666;">Dados atualizados diariamente.</p></div></div>
+    <div id="musicas" class="seccao"><div class="card"><h4>Minhas Obras</h4><p style="font-size:0.6rem; color:#444;">Nenhuma música distribuída ainda.</p></div></div>
+    <div id="carteira" class="seccao"><div class="card"><h4>Carteira MAM</h4><h2 style="color:var(--gold); margin-top:10px;">2.000 Kz</h2><button class="btn-outline">SOLICITAR SAQUE</button></div></div>
 
     <footer>
-        <p><strong>MAM Distribuidora</strong> [cite: 2026-01-28]</p>
-        <p>mamfilhos29@gmail.com | 937 881 307 [cite: 2026-01-23, 2026-01-22]</p>
+        <p><strong>MAM Distribuidora</strong></p>
+        <p>mamfilhos29@gmail.com | 937 881 307</p>
     </footer>
 
     <script>
-        function ir(id, btn) {
+        let pAtivo = "";
+        function ver(id, btn) {
             document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
             document.getElementById(id).classList.add('active-seccao');
             if(btn) {
@@ -144,23 +156,16 @@
             }
             window.scrollTo(0,0);
         }
-        function irPag(n, v) {
-            document.getElementById('plano-nome').innerText = n;
-            document.getElementById('plano-valor').innerText = v;
-            ir('pagamento');
+        function check(p, v) { pAtivo = p; document.getElementById('v-plano').innerText = p; document.getElementById('v-preco').innerText = v; ver('pagar'); }
+        function zapConfirmar() { window.open(`https://wa.me/244937881307?text=Pagamento ${pAtivo}`); }
+        function enviarM() {
+            const t = document.getElementById('m-t').value;
+            if(!t) return alert("Título obrigatório!");
+            document.getElementById('label-m').innerText = t;
+            alert("Sucesso! Música enviada.");
+            ver('home', document.querySelector('.nav-item'));
         }
-        function postMusica() {
-            const t = document.getElementById('m-titulo').value;
-            if(!t) return alert("Título é obrigatório!");
-            document.getElementById('txt-ultimo').innerText = t;
-            alert("Música enviada para análise profissional MAM.");
-            ir('home', document.querySelector('.nav-item'));
-        }
-        function fazerSair() {
-            if(confirm("Deseja mesmo encerrar a sessão?")) {
-                location.reload(); 
-            }
-        }
+        function sessaoSair() { if(confirm("Deseja sair?")) location.reload(); }
     </script>
 </body>
 </html>

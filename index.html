@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MAM Distribuidora</title>
     <style>
-        :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; }
+        :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; --step-bg: #1a1a1a; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--black); color: white; overflow-x: hidden; }
 
@@ -22,13 +22,21 @@
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
         .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; }
         
-        .disco-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 20px 0; }
-        .disco { width: 130px; height: 130px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 3px solid #1a1a1a; position: relative; animation: rodar 6s linear infinite; }
+        /* FORMULÁRIO EM PASSOS (FRESH TUNES STYLE) */
+        .step-container { display: none; }
+        .step-active { display: block; }
+        .step-nav { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .step-dot { font-size: 0.5rem; color: #444; text-transform: uppercase; font-weight: bold; }
+        .step-dot.active { color: var(--gold); }
+        
+        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; margin-bottom: 15px; outline: none; font-size: 0.8rem; }
+        input:focus { border-color: var(--gold); }
+        label { font-size: 0.6rem; color: var(--gold); margin-bottom: 5px; display: block; font-weight: bold; }
+
+        .disco { width: 130px; height: 130px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 3px solid #1a1a1a; position: relative; animation: rodar 6s linear infinite; margin: 20px auto; }
         .disco::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; background: var(--gold); border-radius: 50%; border: 3px solid #000; }
         @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; margin-bottom: 15px; outline: none; }
-        
         /* RODAPÉ PREMIUM */
         .footer-premium { background: linear-gradient(180deg, #000 0%, #0a0a0a 100%); border-top: 1px solid #1a1a1a; padding: 40px 20px 20px; margin-top: 50px; text-align: center; }
         .footer-logo { color: var(--gold); font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; }
@@ -38,7 +46,7 @@
         .copyright { font-size: 0.5rem; color: #333; margin-top: 30px; border-top: 1px solid #111; padding-top: 15px; text-transform: uppercase; }
     </style>
 </head>
-<body id="app-body">
+<body>
 
     <header>
         <h3 style="color:var(--gold); font-size: 0.9rem;">MAM DISTRIBUIDORA</h3>
@@ -60,48 +68,16 @@
             <p style="font-size: 0.65rem; color:#888;">Curadoria profissional que as grandes plataformas não oferecem.</p>
         </div>
 
-        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Último Lançamento</p>
-        <div class="card" style="text-align:center;">
-            <div class="disco-container">
-                <div class="disco"></div>
-                <p id="nome-disco" style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Nenhum lançamento ativo</p>
-            </div>
-        </div>
-
         <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Feed MAM Distribuidora</p>
         <div class="card">
-            <p style="font-size:0.65rem; color:var(--gold); font-weight:bold;">Sistema Atualizado!</p>
-            <p style="font-size:0.6rem; color:#888; margin-top:5px;">Upgrade de planos e gestão de múltiplos artistas agora disponíveis.</p>
+            <p style="font-size:0.65rem; color:var(--gold); font-weight:bold;">Novo Formulário Ativo!</p>
+            <p style="font-size:0.6rem; color:#888; margin-top:5px;">Lançamentos agora seguem o padrão internacional de 4 etapas.</p>
         </div>
 
-        <p style="font-size:0.6rem; color:#444; margin: 15px 0 8px; font-weight:bold; text-transform:uppercase;">Alterar Plano de Perfil</p>
-        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:5px; margin-bottom: 5px;">
-            <div class="card" style="text-align:center; padding:10px 2px;">
-                <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">FREE</p>
-                <p style="font-size:0.4rem; color:#666; margin:2px 0;">1 Artista</p>
-                <p style="font-size:0.5rem; font-weight:bold;">Grátis</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('Free','Grátis','1 Artista')">ALTERAR</button>
-            </div>
-            <div class="card" style="text-align:center; padding:10px 2px;">
-                <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">BÁSICO</p>
-                <p style="font-size:0.4rem; color:#666; margin:2px 0;">10 Artistas</p>
-                <p style="font-size:0.5rem; font-weight:bold;">30.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('Básico','30.000','10 Artistas')">ALTERAR</button>
-            </div>
-        </div>
-        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:5px;">
-            <div class="card" style="text-align:center; padding:10px 2px;">
-                <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">MÉDIO</p>
-                <p style="font-size:0.4rem; color:#666; margin:2px 0;">30 Artistas</p>
-                <p style="font-size:0.5rem; font-weight:bold;">50.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('Médio','50.000','30 Artistas')">ALTERAR</button>
-            </div>
-            <div class="card" style="text-align:center; padding:10px 2px;">
-                <p style="font-size:0.45rem; color:var(--gold); font-weight:bold;">PROMAX</p>
-                <p style="font-size:0.4rem; color:#666; margin:2px 0;">Ilimitado</p>
-                <p style="font-size:0.5rem; font-weight:bold;">100.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.4rem; padding:6px; margin-top:5px;" onclick="irPag('PROMAX','100.000','Ilimitado')">ALTERAR</button>
-            </div>
+        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Último Lançamento</p>
+        <div class="card" style="text-align:center;">
+            <div class="disco"></div>
+            <p id="nome-disco" style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Aguardando Lançamento</p>
         </div>
 
         <div class="card" style="margin-top:15px; border-top: 2px solid var(--gold);">
@@ -112,113 +88,17 @@
         </div>
     </div>
 
-    <div id="artistas" class="seccao">
-        <div class="card">
-            <h4 style="color:var(--gold); margin-bottom:15px;">Criar Artista</h4>
-            <input type="text" id="novo-artista" placeholder="Nome Artístico">
-            <button class="btn-gold" onclick="addArtista()">REGISTAR PERFIL</button>
-            <div id="lista-artistas-registados" style="margin-top:20px;">
-                <p style="font-size:0.6rem; color:#444;">Nenhum artista registado.</p>
-            </div>
-        </div>
-    </div>
-
     <div id="lancar" class="seccao">
         <div class="card">
-            <h4>Distribuir Música</h4>
-            <select id="select-artista"><option>Play Sean Arsénio</option></select>
-            <input type="text" id="track-t" placeholder="Título">
-            <input type="url" placeholder="Link do Áudio">
-            <button class="btn-gold" onclick="postar()">LANÇAR AGORA</button>
-        </div>
-    </div>
-
-    <div id="perfil" class="seccao">
-        <div class="card">
-            <h4>Minha Conta</h4>
-            <label style="font-size:0.6rem;">NOME</label><input type="text" value="Matias Arsénio Manuel">
-            <label style="font-size:0.6rem;">EMAIL</label><input type="text" value="mamfilhos29@gmail.com">
-            <button class="btn-gold">GUARDAR</button>
-        </div>
-    </div>
-
-    <div id="checkout" class="seccao">
-        <div class="card" style="text-align:center;">
-            <h4 style="color:var(--gold);">Checkout</h4>
-            <div style="text-align:left; background:#000; padding:15px; border-radius:8px; border:1px solid #222; margin:15px 0;">
-                <p id="p-nome" style="color:var(--gold); font-weight:bold;"></p>
-                <p id="p-desc" style="font-size:0.7rem; color:#888;"></p>
-                <p style="font-size:0.8rem; margin-top:15px; font-weight:bold;">IBAN: 0006 0000 86316866301 52</p>
+            <div class="step-nav">
+                <span class="step-dot active" id="dot-1">1. Details</span>
+                <span class="step-dot" id="dot-2">2. Tracklist</span>
+                <span class="step-dot" id="dot-3">3. Delivery</span>
+                <span class="step-dot" id="dot-4">4. Review</span>
             </div>
-            <button class="btn-gold" onclick="enviarComprovativo()">ENVIAR COMPROVATIVO</button>
-            <button onclick="ver('home')" style="background:none; border:none; color:#555; margin-top:15px;">VOLTAR</button>
-        </div>
-    </div>
 
-    <div id="musicas" class="seccao"><div class="card" style="text-align:center;"><h4>Coleção</h4><div id="lista-discos" class="disco-container">Vazio</div></div></div>
-    <div id="stats" class="seccao"><div class="card" style="text-align:center; padding:40px 10px;"><h4>Streams</h4><h1 style="color:var(--gold);">0</h1></div></div>
-
-    <footer class="footer-premium">
-        <div class="footer-logo">MAM DISTRIBUIDORA</div>
-        <div class="footer-info">
-            <p><strong>Matias Arsénio Manuel (CEO)</strong></p>
-            <p>mamfilhos29@gmail.com</p>
-        </div>
-        <div class="footer-socials">
-            <a href="https://wa.me/244937881307" class="social-icon">WA</a>
-            <a href="mailto:mamfilhos29@gmail.com" class="social-icon">@</a>
-            <a href="https://www.facebook.com/share/1aEMHxEKiA/" target="_blank" class="social-icon">FB</a>
-        </div>
-        <div class="copyright">&copy; 2026 MAM Distribuidora | Design by Matias Arsénio Manuel</div>
-    </footer>
-
-    <script>
-        let pSel = "";
-        function ver(id, btn) {
-            document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
-            const target = document.getElementById(id);
-            if(target) target.classList.add('active-seccao');
-            if(btn) {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                btn.classList.add('active');
-            }
-            window.scrollTo(0,0);
-        }
-
-        function addArtista() {
-            const nome = document.getElementById('novo-artista').value;
-            if(!nome) return;
-            const lista = document.getElementById('lista-artistas-registados');
-            const select = document.getElementById('select-artista');
-            if(lista.innerHTML.includes("Nenhum")) lista.innerHTML = "";
-            lista.innerHTML += `<div class="card" style="padding:10px; font-size:0.7rem;">${nome}</div>`;
-            select.innerHTML += `<option>${nome}</option>`;
-            document.getElementById('novo-artista').value = "";
-            alert("Artista Registado!");
-        }
-
-        function irPag(n, v, d) {
-            pSel = n;
-            document.getElementById('p-nome').innerText = "Plano " + n;
-            document.getElementById('p-desc').innerText = `Valor: ${v} Kz | Limite: ${d}`;
-            ver('checkout');
-        }
-
-        function enviarComprovativo() {
-            window.open(`https://wa.me/244937881307?text=Comprovativo Plano ${pSel}`);
-        }
-
-        function postar() {
-            const t = document.getElementById('track-t').value;
-            if(!t) return;
-            document.getElementById('nome-disco').innerText = t;
-            alert("Enviado!");
-            ver('home');
-        }
-
-        function sessaoSair() {
-            if(confirm("Sair?")) window.location.reload();
-        }
-    </script>
-</body>
-</html>
+            <div id="step-1" class="step-container step-active">
+                <label>NOME DO LANÇAMENTO</label>
+                <input type="text" id="rel-name" placeholder="Ex: Álbum ou Single Name">
+                <label>GÉNERO PRINCIPAL</label>
+                <select

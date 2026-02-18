@@ -11,7 +11,7 @@
 
         header { padding: 15px; border-bottom: 1px solid var(--gold); background: #000; text-align: center; }
         .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; background: #050505; position: sticky; top: 0; z-index: 1000; }
-        .nav-item { background: #111; border: 1px solid #333; color: #888; padding: 12px 2px; border-radius: 4px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+        .nav-item { background: #111; border: 1px solid #333; color: #888; padding: 12px 2px; border-radius: 4px; font-size: 0.5rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
         .nav-item.active { border-color: var(--gold); color: var(--gold); }
         .btn-sair { color: #ff4444 !important; border-color: #400 !important; }
 
@@ -26,145 +26,114 @@
         .step-container { display: none; }
         .step-active { display: block; }
         .step-nav { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        .step-dot { font-size: 0.45rem; color: #444; text-transform: uppercase; font-weight: bold; }
+        .step-dot { font-size: 0.4rem; color: #444; text-transform: uppercase; font-weight: bold; }
         .step-dot.active { color: var(--gold); }
 
         input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; margin-bottom: 15px; outline: none; }
         label { font-size: 0.6rem; color: var(--gold); display: block; margin-bottom: 5px; }
 
-        /* RODAPÉ PREMIUM */
-        .footer-premium { background: linear-gradient(180deg, #000 0%, #0a0a0a 100%); border-top: 1px solid #1a1a1a; padding: 40px 20px 20px; margin-top: 50px; text-align: center; }
-        .footer-logo { color: var(--gold); font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; }
-        .footer-socials { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+        .disco-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 20px 0; }
+        .disco { width: 130px; height: 130px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 3px solid #1a1a1a; position: relative; animation: rodar 6s linear infinite; }
+        .disco::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; background: var(--gold); border-radius: 50%; border: 3px solid #000; }
+        @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .footer-premium { background: #000; border-top: 1px solid #1a1a1a; padding: 30px 20px; margin-top: 40px; text-align: center; }
+        .footer-socials { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
         .social-icon { width: 35px; height: 35px; background: #111; border: 1px solid #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 0.75rem; text-decoration: none; }
-        .copyright { font-size: 0.5rem; color: #333; margin-top: 30px; border-top: 1px solid #111; padding-top: 15px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <header>
         <h3 style="color:var(--gold); font-size: 0.9rem;">MAM Distribuidora</h3>
-        <p style="font-size:0.5rem; color:#666;">CEO Matias Arsénio Manuel | Play Sean Arsénio</p>
+        <p style="font-size:0.5rem; color:#666;">CEO Matias Arsénio Manuel [cite: 2026-01-27]</p>
     </header>
 
     <nav class="nav-grid">
         <div class="nav-item active" onclick="ver('home', this)">Página Inicial</div>
         <div class="nav-item" onclick="ver('lancar', this)">Lançar Música</div>
-        <div class="nav-item" onclick="ver('musicas', this)">Minhas Músicas</div>
+        <div class="nav-item" onclick="ver('artistas', this)">Artistas</div>
         <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="ver('stats', this)">Estatística</div>
-        <div class="nav-item btn-sair" onclick="sessaoSair()">Sair</div>
+        <div class="nav-item" onclick="ver('perfil', this)">Editar Perfil</div>
+        <div class="nav-item btn-sair" style="grid-column: span 3;" onclick="sessaoSair()">Sair</div>
     </nav>
 
     <div id="home" class="seccao active-seccao">
         <div class="card" style="border-left: 4px solid var(--gold);">
             <h4 style="font-size: 0.8rem;">Bem-vindo à Elite Musical</h4>
-            <p style="font-size: 0.65rem; color:#888;">Oferecemos a curadoria que as grandes plataformas não têm.</p>
+            <p style="font-size: 0.65rem; color:#888;">Curadoria exclusiva MAM [cite: 2026-01-28].</p>
+        </div>
+
+        <div class="disco-container">
+            <div class="disco"></div>
+            <p id="nome-disco" style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Nenhum lançamento ativo</p>
+            <p style="font-size:0.5rem; color:#666;">MAM Distribution</p>
         </div>
 
         <div class="card">
-            <h4 style="font-size:0.65rem; color:var(--gold);">Apoia o meu projeto</h4>
-            <p style="font-size:0.6rem; color:#aaa; margin-top:5px;">Dados Oficiais MAM para Suporte:</p>
+            <h4 style="font-size:0.65rem; color:var(--gold);">Apoia o meu projeto [cite: 2026-01-31]</h4>
             <p style="font-size:0.7rem; font-weight:bold; margin-top:5px;">IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.7rem; font-weight:bold;">Express: 937 881 307</p>
-            <button class="btn-gold" style="margin-top:10px; font-size:0.55rem;">CONVIDAR AMIGOS (+500 KZ)</button>
-        </div>
-
-        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Feed MAM Distribuidora</p>
-        <div class="card">
-            <p style="font-size:0.6rem; color:#888;">Nenhuma atualização no momento.</p>
-        </div>
-
-        <p style="font-size:0.6rem; color:#444; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Upgrade de Perfil</p>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:5px;">
-            <div class="card" style="text-align:center; padding:10px 2px;">
-                <p style="font-size:0.45rem; font-weight:bold;">Básico</p>
-                <p style="font-size:0.4rem; color:#666;">30.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.35rem; padding:5px; margin-top:5px;" onclick="irPag('Básico','30.000')">COMPRAR</button>
-            </div>
-            <div class="card" style="text-align:center; padding:10px 2px;">
-                <p style="font-size:0.45rem; font-weight:bold;">Médio</p>
-                <p style="font-size:0.4rem; color:#666;">50.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.35rem; padding:5px; margin-top:5px;" onclick="irPag('Médio','50.000')">COMPRAR</button>
-            </div>
-            <div class="card" style="text-align:center; padding:10px 2px;">
-                <p style="font-size:0.45rem; font-weight:bold;">Promax</p>
-                <p style="font-size:0.4rem; color:#666;">100.000 Kz</p>
-                <button class="btn-gold" style="font-size:0.35rem; padding:5px; margin-top:5px;" onclick="irPag('Promax','100.000')">COMPRAR</button>
-            </div>
+            <p style="font-size:0.7rem; font-weight:bold;">WhatsApp: 937 881 307 [cite: 2026-01-22]</p>
         </div>
     </div>
 
     <div id="lancar" class="seccao">
         <div class="card">
             <div class="step-nav">
-                <span class="step-dot active" id="dot-1">1. Details</span>
-                <span class="step-dot" id="dot-2">2. Tracklist</span>
-                <span class="step-dot" id="dot-3">3. Delivery</span>
-                <span class="step-dot" id="dot-4">4. Review</span>
+                <span class="step-dot active" id="dot-1">Details</span>
+                <span class="step-dot" id="dot-2">Tracklist</span>
+                <span class="step-dot" id="dot-3">Delivery</span>
+                <span class="step-dot" id="dot-4">Review</span>
             </div>
-
             <div id="step-1" class="step-container step-active">
-                <label>NOME DO LANÇAMENTO</label>
-                <input type="text" id="rel-name" placeholder="Título do álbum ou single">
-                <label>GÉNERO</label>
-                <select id="rel-genre"><option>Kizomba</option><option>Rap</option><option>Kuduro</option></select>
-                <button class="btn-gold" onclick="nextStep(2)">CONTINUAR</button>
+                <label>Release Title</label>
+                <input type="text" id="rel-name" placeholder="Título">
+                <button class="btn-gold" onclick="nextStep(2)">Continuar</button>
             </div>
+            <div id="step-2" class="step-container"><label>Audio Link</label><input type="url"><button class="btn-gold" onclick="nextStep(3)">Próximo</button></div>
+            <div id="step-3" class="step-container"><label>Date</label><input type="date"><button class="btn-gold" onclick="nextStep(4)">Revisão</button></div>
+            <div id="step-4" class="step-container"><div id="final-review"></div><button class="btn-gold" onclick="ver('home')">Finalizar</button></div>
+        </div>
+    </div>
 
-            <div id="step-2" class="step-container">
-                <label>FICHEIRO ÁUDIO (Link)</label>
-                <input type="url" id="rel-audio" placeholder="Link do Drive/Dropbox">
-                <label>ARTISTA</label>
-                <select><option>Play Sean Arsénio</option></select>
-                <button class="btn-gold" onclick="nextStep(3)">PRÓXIMO</button>
-            </div>
-
-            <div id="step-3" class="step-container">
-                <label>PLATAFORMAS</label>
-                <p style="font-size:0.6rem; color:#666; margin-bottom:10px;">Todas as lojas digitais incluídas.</p>
-                <label>DATA</label>
-                <input type="date">
-                <button class="btn-gold" onclick="nextStep(4)">REVISÃO</button>
-            </div>
-
-            <div id="step-4" class="step-container">
-                <h4 style="color:var(--gold);">Confirmar Dados</h4>
-                <div id="final-review" style="font-size:0.7rem; margin:15px 0;"></div>
-                <button class="btn-gold" onclick="finalizarLançamento()">FINALIZAR LANÇAMENTO</button>
-            </div>
+    <div id="artistas" class="seccao">
+        <div class="card">
+            <h4>Gestão de Artistas [cite: 2026-01-28]</h4>
+            <input type="text" id="new-art" placeholder="Nome do Artista">
+            <button class="btn-gold" onclick="alert('Artista Criado!')">Criar Artista</button>
         </div>
     </div>
 
     <div id="carteira" class="seccao">
         <div class="card" style="text-align:center;">
-            <h4 style="color:#444; font-size:0.6rem;">SALDO DISPONÍVEL</h4>
-            <h1 style="color:var(--gold); margin:10px 0;">0.00 Kz</h1>
-            <button class="btn-gold" style="background:#111; color:var(--gold); border:1px solid var(--gold);">LEVANTAR FUNDOS</button>
+            <p style="font-size:0.6rem;">SALDO</p>
+            <h1 style="color:var(--gold);">0.00 Kz</h1>
         </div>
     </div>
 
     <div id="stats" class="seccao">
-        <div class="card" style="text-align:center; padding:30px;">
-            <h4 style="color:#444;">Streams Totais</h4>
-            <h1 style="font-size:3rem; color:var(--gold);">0</h1>
+        <div class="card" style="text-align:center;">
+            <p style="font-size:0.6rem;">STREAMS</p>
+            <h1 style="color:var(--gold);">0</h1>
         </div>
     </div>
 
-    <div id="musicas" class="seccao"><div class="card"><h4>Minhas Músicas</h4><p style="font-size:0.6rem; color:#444; margin-top:10px;">Vazio.</p></div></div>
+    <div id="perfil" class="seccao">
+        <div class="card">
+            <h4>Editar Perfil [cite: 2026-01-27]</h4>
+            <label>Nome Real</label><input type="text" value="Matias Arsénio Manuel [cite: 2026-01-27]">
+            <label>Email</label><input type="text" value="mamfilhos29@gmail.com [cite: 2026-01-23]">
+            <button class="btn-gold">Guardar</button>
+        </div>
+    </div>
 
     <footer class="footer-premium">
-        <div class="footer-logo">MAM DISTRIBUIDORA</div>
-        <div class="footer-info">
-            <p><strong>Matias Arsénio Manuel (CEO)</strong></p>
-            <p>mamfilhos29@gmail.com | +244 937 881 307</p>
-        </div>
         <div class="footer-socials">
             <a href="https://wa.me/244937881307" class="social-icon">WA</a>
-            <a href="mailto:mamfilhos29@gmail.com" class="social-icon">@</a>
             <a href="https://www.facebook.com/share/1aEMHxEKiA/" target="_blank" class="social-icon">FB</a>
         </div>
-        <div class="copyright">&copy; 2026 MAM Distribuidora | Design by Matias Arsénio Manuel</div>
+        <p style="font-size:0.45rem; color:#333;">&copy; 2026 MAM Distribuidora [cite: 2026-01-27]</p>
     </footer>
 
     <script>
@@ -176,7 +145,13 @@
                 btn.classList.add('active');
             }
         }
-
-        function nextStep(step) {
+        function nextStep(s) {
             document.querySelectorAll('.step-container').forEach(c => c.classList.remove('step-active'));
-            document.querySelectorAll('.step-dot').forEach(d => d.classList
+            document.getElementById('step-'+s).classList.add('step-active');
+            document.querySelectorAll('.step-dot').forEach(d => d.classList.remove('active'));
+            document.getElementById('dot-'+s).classList.add('active');
+        }
+        function sessaoSair() { if(confirm("Sair?")) window.location.reload(); }
+    </script>
+</body>
+</html>

@@ -3,224 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora</title>
+    <title>MAM Distribuidora - Sistema Profissional</title>
     <style>
         :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--black); color: white; overflow-x: hidden; }
 
-        /* HEADER E NAVEGAÇÃO */
         header { padding: 15px; border-bottom: 1px solid var(--gold); text-align: center; background: #000; }
-        .nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 10px; background: #050505; border-bottom: 1px solid #222; }
-        .nav-item { background: #111; border: 1px solid #333; color: #666; padding: 10px 2px; border-radius: 4px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; background: #050505; position: sticky; top: 0; z-index: 1000; }
+        .nav-item { background: #111; border: 1px solid #333; color: #888; padding: 10px 5px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
         .nav-item.active { border-color: var(--gold); color: var(--gold); }
-        .admin-only { display: none; border-color: #0044ff !important; color: #0044ff !important; }
+        .admin-only { display: none; background: #001a33; border-color: #0044ff; color: #0044ff; }
 
-        /* SEÇÕES */
         .seccao { display: none; padding: 20px; min-height: 80vh; }
-        .active-seccao { display: block !important; }
+        .active-seccao { display: block; }
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         
         input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 6px; margin-bottom: 12px; }
         .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
 
-        /* DISCO */
         .disco-container { display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .disco { width: 140px; height: 140px; background: radial-gradient(circle, #333 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 4px solid #1a1a1a; position: relative; }
-        .rodando { animation: rodar 6s linear infinite; }
+        .disco { width: 150px; height: 150px; background: radial-gradient(circle, #333 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 4px solid #1a1a1a; position: relative; }
+        .rodando { animation: rodar 5s linear infinite; }
         @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* MODAL DE PAGAMENTO */
-        #modal-pagamento { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; padding: 20px; }
-        .modal-body { background: #111; border: 1px solid var(--gold); padding: 20px; border-radius: 10px; max-width: 400px; margin: 100px auto; text-align: center; }
-
-        footer { background: #000; border-top: 1px solid #1a1a1a; padding: 25px; text-align: center; font-size: 0.6rem; color: #444; }
+        footer { background: #000; border-top: 1px solid #1a1a1a; padding: 25px; text-align: center; font-size: 0.6rem; color: #555; }
     </style>
 </head>
 <body>
 
-<div id="auth-screen" class="active-seccao" style="padding-top: 50px;">
-    <center><h2 style="color:var(--gold); margin-bottom:30px;">MAM Distribuidora</h2></center>
-    <div id="login-box" class="card" style="max-width:350px; margin:auto;">
-        <h4>Iniciar Sessão</h4>
-        <input type="email" id="user-email" placeholder="Email">
-        <input type="password" placeholder="Palavra-passe">
-        <button class="btn-gold" onclick="fazerLogin()">Entrar</button>
-        <p style="text-align:center; font-size:0.7rem; margin-top:15px; cursor:pointer;" onclick="toggleAuth()">Criar conta</p>
-    </div>
-    <div id="register-box" class="card" style="max-width:350px; margin:auto; display:none;">
-        <h4>Criar Conta</h4>
-        <input type="text" placeholder="Nome Completo">
-        <input type="email" placeholder="Email">
-        <input type="password" id="p1" placeholder="Senha">
-        <input type="password" id="p2" placeholder="Confirmar Senha">
-        <select id="paises-lista"></select>
-        <button class="btn-gold" onclick="fazerLogin()">Registar</button>
-        <p style="text-align:center; font-size:0.7rem; margin-top:15px; cursor:pointer;" onclick="toggleAuth()">Já tenho conta</p>
+<div id="auth-screen" class="active-seccao">
+    <div style="padding: 50px 20px;">
+        <center><h2 style="color:var(--gold); margin-bottom:20px;">MAM Distribuidora</h2></center>
+        <div id="login-box" class="card">
+            <h4>Entrar</h4>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="pass" placeholder="Senha">
+            <button class="btn-gold" onclick="login()">Aceder Painel</button>
+            <p onclick="toggleAuth()" style="text-align:center; font-size:0.7rem; margin-top:10px; cursor:pointer;">Criar conta</p>
+        </div>
+        <div id="register-box" class="card" style="display:none;">
+            <h4>Registo</h4>
+            <input type="text" id="reg-nome" placeholder="Nome Completo">
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-pass" placeholder="Senha">
+            <input type="password" id="reg-pass2" placeholder="Confirmar Senha">
+            <select id="reg-pais"></select>
+            <button class="btn-gold" onclick="register()">Criar Conta</button>
+            <p onclick="toggleAuth()" style="text-align:center; font-size:0.7rem; margin-top:10px; cursor:pointer;">Já tenho conta</p>
+        </div>
     </div>
 </div>
 
-<div id="main-app" style="display:none;">
-    <header>
-        <h3 style="color:var(--gold);">MAM Distribuidora</h3>
-        <p style="font-size:0.5rem;">C.E.O Matias Arsénio Manuel</p>
-    </header>
-
+<div id="main-screen" style="display:none;">
     <nav class="nav-grid">
-        <div class="nav-item active" onclick="navegar('home', this)">Início</div>
-        <div class="nav-item" onclick="navegar('lancar', this)">Lançar</div>
-        <div class="nav-item" onclick="navegar('musicas', this)">Músicas</div>
-        <div class="nav-item" onclick="navegar('artistas', this)">Artistas</div>
-        <div class="nav-item" onclick="navegar('carteira', this)">Carteira</div>
-        <div class="nav-item" onclick="navegar('stats', this)">Stats</div>
-        <div class="nav-item" onclick="navegar('perfil', this)">Perfil</div>
-        <div class="nav-item admin-only" id="adm-menu" onclick="navegar('admin', this)">ADMIN</div>
+        <div class="nav-item active" onclick="ver('home', this)">Início</div>
+        <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
+        <div class="nav-item" onclick="ver('musicas', this)">Músicas</div>
+        <div class="nav-item" onclick="ver('artistas', this)">Artistas</div>
+        <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
+        <div class="nav-item admin-only" id="btn-admin" onclick="ver('admin', this)">ADMIN</div>
+        <div class="nav-item" style="color:red" onclick="logout()">Sair</div>
     </nav>
 
     <div id="home" class="seccao active-seccao">
-        <div class="card" style="border-left: 4px solid var(--gold);">
-            <h4>Apoia este projeto</h4>
-            <p style="font-size:0.7rem;">IBAN: 0006 0000 86316866301 52 (BFA)</p>
-            <p style="font-size:0.7rem;">WhatsApp: 937 881 307</p>
+        <div class="card">
+            <h4>Status do Perfil: <span id="user-plano" style="color:var(--gold);">FREE</span></h4>
+            <p id="user-limite" style="font-size:0.6rem;">Limite: 1 Artista</p>
         </div>
 
         <div class="card disco-container">
-            <div class="disco" id="player-disco"></div>
-            <p id="player-track" style="margin-top:10px; font-weight:bold;">MAM Distribution</p>
-            <audio id="main-audio" controls style="width:100%; margin-top:10px;"></audio>
+            <div class="disco" id="disco-home"></div>
+            <p id="now-playing" style="margin-top:10px; font-size:0.8rem;">MAM Distribution</p>
+            <audio id="audio-player" controls style="width:100%; margin-top:10px;"></audio>
         </div>
 
-        <h4>Planos de Perfil</h4>
+        <h4>Planos Disponíveis</h4>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem;">FREE (1 Artista)</p><button class="btn-gold" style="background:#222; color:#555; margin-top:5px;">ATIVO</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem;">BÁSICO (30k - 10 Art.)</p><button class="btn-gold" onclick="abrirPagamento('Básico', '30.000')" style="margin-top:5px;">COMPRAR</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem;">MÉDIO (50k - 30 Art.)</p><button class="btn-gold" onclick="abrirPagamento('Médio', '50.000')" style="margin-top:5px;">COMPRAR</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem; color:var(--gold);">PROMAX (100k - Ilim.)</p><button class="btn-gold" onclick="abrirPagamento('ProMax', '100.000')" style="margin-top:5px;">COMPRAR</button></div>
+            <div class="card" style="text-align:center;">
+                <p>BÁSICO (30k)</p><p style="font-size:0.5rem;">10 Artistas</p>
+                <button class="btn-gold" onclick="upgrade('Básico 30k')">Upgrade</button>
+            </div>
+            <div class="card" style="text-align:center;">
+                <p>MÉDIO (50k)</p><p style="font-size:0.5rem;">30 Artistas</p>
+                <button class="btn-gold" onclick="upgrade('Médio 50k')">Upgrade</button>
+            </div>
+            <div class="card" style="text-align:center;" id="card-promax">
+                <p>PROMAX (100k)</p><p style="font-size:0.5rem;">Ilimitado</p>
+                <button class="btn-gold" onclick="upgrade('Promax 100k')">Upgrade</button>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top:20px;">
+            <h4>Apoia este projeto</h4>
+            <p>IBAN: 0006 0000 86316866301 52 (BFA)</p>
+        </div>
+    </div>
+
+    <div id="admin" class="seccao">
+        <div class="card" style="border: 2px solid #0044ff;">
+            <h4 style="color:#0044ff;">Gestão Administrativa (MAM)</h4>
+            <label>Email do Utilizador</label>
+            <input type="email" id="adm-email" placeholder="Utilizador que pagou">
+            <label>Ativar Nível</label>
+            <select id="adm-nivel">
+                <option value="BÁSICO">BÁSICO (10 Artistas)</option>
+                <option value="MÉDIO">MÉDIO (30 Artistas)</option>
+                <option value="PROMAX">PROMAX (Ilimitado)</option>
+            </select>
+            <button class="btn-gold" style="background:#0044ff; color:white;" onclick="adminAtivar()">Confirmar Ativação</button>
         </div>
     </div>
 
     <div id="lancar" class="seccao">
         <div class="card">
-            <h4>Lançamento Profissional</h4>
-            <input type="text" id="m-tit" placeholder="Título da Música">
+            <h4>Novo Lançamento Mundial</h4>
+            <input type="text" id="m-tit" placeholder="Título">
             <input type="text" id="m-art" placeholder="Artista Principal">
-            <input type="text" placeholder="Colaboração">
-            <select id="estilos-lista"></select>
+            <select id="m-estilo"></select>
             <label>Capa</label><input type="file" accept="image/*">
-            <label>Áudio</label><input type="file" accept="audio/*">
-            <button class="btn-gold" onclick="finalizarLanc()">Lançar Agora</button>
+            <label>Áudio</label><input type="file" id="m-file" accept="audio/*">
+            <button class="btn-gold" onclick="salvarMusica()">Lançar Agora</button>
         </div>
     </div>
 
     <div id="carteira" class="seccao">
         <div class="card" style="text-align:center;">
-            <p>Saldo Total</p>
-            <h1 style="color:var(--gold);">0.00 Kz</h1>
+            <p>Saldo</p><h1 id="saldo-val">0.00 Kz</h1>
         </div>
         <div class="card">
-            <h4>Saque</h4>
-            <input type="number" id="sq-val" placeholder="Valor (Mínimo 15.000 Kz)">
-            <select><option>BFA</option><option>BAI</option><option>Wise</option><option>PayPal</option></select>
-            <button class="btn-gold" onclick="pedirSaque()">Solicitar</button>
-        </div>
-    </div>
-
-    <div id="admin" class="seccao">
-        <div class="card">
-            <h4 style="color:#0044ff;">Painel Admin</h4>
-            <input type="email" id="adm-email" placeholder="Email do Utilizador">
-            <select id="adm-nivel">
-                <option>BÁSICO</option><option>MÉDIO</option><option>PROMAX</option>
+            <h4>Levantamento</h4>
+            <input type="number" id="sq-val" placeholder="Valor">
+            <select id="sq-met">
+                <option>BFA</option><option>BAI</option><option>PayPal</option><option>Visa</option>
             </select>
-            <button class="btn-gold" style="background:#0044ff; color:white;" onclick="alert('Perfil Ativado!')">Ativar Plano</button>
+            <button class="btn-gold" onclick="pedirSaque()">Solicitar Saque</button>
         </div>
     </div>
 
-    <div id="musicas" class="seccao"><div class="card"><h4>Minhas Músicas</h4><p>Vazio.</p></div></div>
-    <div id="artistas" class="seccao"><div class="card"><h4>Gestão de Artistas</h4><input type="text" placeholder="Nome"><button class="btn-gold">Criar</button></div></div>
-    <div id="stats" class="seccao"><div class="card" style="text-align:center;"><h4>Estatísticas</h4><h1>0</h1></div></div>
-    <div id="perfil" class="seccao"><div class="card"><h4>Editar Perfil</h4><input type="text" value="Matias Arsénio Manuel"><button class="btn-gold">Guardar</button></div></div>
-
-    <footer>
-        <p>MAM Distribuidora - Matias Arsénio Manuel</p>
-        <p>&copy; 2026</p>
+    <footer class="footer-premium">
+        <p>MAM Distribuidora - CEO Matias Arsénio Manuel</p>
+        <p>WhatsApp: 937 881 307 | &copy; 2026</p>
     </footer>
 </div>
 
-<div id="modal-pagamento">
-    <div class="modal-body">
-        <h3 style="color:var(--gold);">Dados de Pagamento</h3>
-        <div style="text-align:left; margin: 20px 0; font-size:0.8rem;">
-            <p><strong>Plano:</strong> <span id="p-nome"></span></p>
-            <p><strong>Valor:</strong> <span id="p-preco"></span> Kz</p>
-            <p><strong>IBAN:</strong> 0006 0000 86316866301 52</p>
-            <p><strong>Banco:</strong> BFA</p>
-        </div>
-        <button class="btn-gold" onclick="irZap()">Enviar Comprovativo</button>
-        <button style="background:none; border:none; color:red; margin-top:15px;" onclick="fecharPag()">Fechar</button>
-    </div>
-</div>
-
 <script>
-    const paises = ["Angola", "Brasil", "Portugal", "Moçambique", "EUA"];
-    const estilos = ["Kizomba", "Semba", "Rap", "Afro House", "Gospel"];
+    // --- LÓGICA DE DADOS ---
+    const adminEmail = "mamfilhos29@gmail.com";
+    const paises = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "EUA"];
+    const estilos = ["Afro House", "Kizomba", "Rap", "Semba", "Gospel", "Pop"];
 
-    window.onload = function() {
-        const pList = document.getElementById('paises-lista');
-        const eList = document.getElementById('estilos-lista');
-        paises.forEach(p => pList.innerHTML += `<option>${p}</option>`);
-        estilos.forEach(e => eList.innerHTML += `<option>${e}</option>`);
-    };
-
-    function toggleAuth() {
-        const lb = document.getElementById('login-box');
-        const rb = document.getElementById('register-box');
-        lb.style.display = lb.style.display === 'none' ? 'block' : 'none';
-        rb.style.display = rb.style.display === 'none' ? 'block' : 'none';
+    function init() {
+        const sP = document.getElementById('reg-pais');
+        const sE = document.getElementById('m-estilo');
+        paises.forEach(p => sP.innerHTML += `<option>${p}</option>`);
+        estilos.forEach(e => sE.innerHTML += `<option>${e}</option>`);
     }
 
-    function fazerLogin() {
-        const email = document.getElementById('user-email').value;
+    function login() {
+        const email = document.getElementById('email').value;
+        if(!email) return alert("Insira o email");
+        
+        localStorage.setItem("userEmail", email);
         document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-        if(email === "mamfilhos29@gmail.com") document.getElementById('adm-menu').style.display = 'block';
+        document.getElementById('main-screen').style.display = 'block';
+
+        if(email === adminEmail) {
+            document.getElementById('btn-admin').style.display = 'block';
+        }
+        carregarDados();
     }
 
-    function navegar(id, btn) {
-        document.querySelectorAll('.seccao').forEach(s => s.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        btn.classList.add('active');
+    function register() {
+        const p1 = document.getElementById('reg-pass').value;
+        const p2 = document.getElementById('reg-pass2').value;
+        if(p1 !== p2) return alert("Senhas não coincidem!");
+        login();
     }
 
-    function abrirPagamento(nome, preco) {
-        document.getElementById('p-nome').innerText = nome;
-        document.getElementById('p-preco').innerText = preco;
-        document.getElementById('modal-pagamento').style.display = 'block';
+    function logout() {
+        localStorage.clear();
+        location.reload();
     }
 
-    function fecharPag() { document.getElementById('modal-pagamento').style.display = 'none'; }
-
-    function irZap() {
-        const n = document.getElementById('p-nome').innerText;
-        window.location.href = `https://wa.me/244937881307?text=Paguei o plano ${n}`;
+    function carregarDados() {
+        const email = localStorage.getItem("userEmail");
+        const planoSalvo = localStorage.getItem("plano_" + email) || "FREE";
+        document.getElementById('user-plano').innerText = planoSalvo;
+        
+        const limites = {"FREE": "1 Artista", "BÁSICO": "10 Artistas", "MÉDIO": "30 Artistas", "PROMAX": "Ilimitado"};
+        document.getElementById('user-limite').innerText = "Limite: " + limites[planoSalvo];
     }
 
-    function finalizarLanc() {
-        const t = document.getElementById('m-tit').value;
-        if(!t) return alert("Título obrigatório!");
-        document.getElementById('player-track').innerText = t;
-        document.getElementById('player-disco').classList.add('rodando');
-        alert("Enviado!");
-        navegar('home', document.querySelectorAll('.nav-item')[0]);
-    }
-
-    function pedirSaque() {
-        const v = document.getElementById('sq-val').value;
-        const e = document.getElementById('user-email').value;
-        if(e !== "mamfilhos29@gmail.com" && v < 15000) return alert("Mínimo 15.000 Kz");
-        alert("Solicitado!");
-    }
-</script>
-</body>
-</html>
+    // --- FUNÇÃO QUE TU PEDISTE: ATIVAR PELO ADMIN ---
+    function adminAtivar() {
+        const targetEmail = document.getElementById('adm-email').value;
+        con

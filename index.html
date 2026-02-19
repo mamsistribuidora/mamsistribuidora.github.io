@@ -33,9 +33,9 @@
         .modal-body { background: #111; border: 1px solid var(--gold); padding: 20px; border-radius: 10px; max-width: 400px; margin: 50px auto; text-align: center; }
         footer { background: #000; border-top: 1px solid #1a1a1a; padding: 30px 20px; text-align: center; }
 
-        /* Estilo para input de arquivo igual à sua imagem */
-        .file-input-container { background: #000; border: 1px solid #222; border-radius: 6px; padding: 10px; display: flex; align-items: center; margin-bottom: 15px; }
-        .file-btn { background: #eee; color: #000; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; margin-right: 10px; }
+        /* Estilo para inputs de ficheiro */
+        .file-box { background: #000; border: 1px solid #222; padding: 10px; border-radius: 6px; display: flex; align-items: center; margin-bottom: 15px; }
+        .file-label { background: #eee; color: #000; padding: 5px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -51,7 +51,7 @@
     <div id="reg-box" class="card" style="max-width:400px; margin: 30px auto; display:none;">
         <label>Nome</label><input type="text">
         <label>Email</label><input type="email" id="reg-email">
-        <label>País</label><select class="lista-paises"></select>
+        <label>País</label><select class="paises-lista"></select>
         <label>Senha</label><input type="password" id="r-p1">
         <label>Confirmar Senha</label><input type="password" id="r-p2">
         <button class="btn-gold" onclick="entrar()">Registrar</button>
@@ -63,7 +63,6 @@
     <header>
         <img id="perfil-mini" class="foto-perfil-preview" style="width:40px; height:40px; margin:0;" src="">
         <h3 style="color:var(--gold); font-size: 0.85rem;">MAM Distribuidora</h3>
-        <p style="font-size:0.4rem; color:#666;">CEO Matias Arsénio Manuel | Play Sean Arsénio</p>
     </header>
 
     <nav class="nav-grid">
@@ -74,7 +73,7 @@
         <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="ver('stats', this)">Stats</div>
         <div class="nav-item" onclick="ver('perfil', this)">Perfil</div>
-        <div id="btn-admin-nav" class="nav-item" style="display:none; color:cyan;" onclick="ver('admin', this)">Admin</div>
+        <div id="nav-admin" class="nav-item" style="display:none; color:cyan;" onclick="ver('admin', this)">Admin</div>
         <div class="nav-item" style="color:red" onclick="sair()">Sair</div>
     </nav>
 
@@ -88,51 +87,50 @@
         <h4>Último Lançamento</h4>
         <div class="card" style="text-align:center;">
             <div class="disco" id="disco-main"></div>
-            <p id="track-main" style="font-size:0.7rem; margin-top:10px;">Nenhum lançamento ativo</p>
+            <p id="track-main" style="font-size:0.7rem; margin-top:10px;">Sem atividade</p>
         </div>
 
         <h4>Feed de Novidades</h4>
         <div id="feed-container">
-            <div class="card"><p style="font-size:0.6rem; color:#888;">O feed de novidades aparecerá aqui.</p></div>
+            <div class="card"><p style="font-size:0.6rem; color:#888;">Bem-vindo à MAM! Lance a sua primeira música hoje.</p></div>
         </div>
 
-        <h4>Alterar Plano de Perfil</h4>
+        <h4>Níveis de Perfil</h4>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">FREE (1 Artista)</p><button class="btn-gold" style="background:#222; color:#555;">ATIVO</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">BÁSICO (30.000 Kz)</p><button class="btn-gold" onclick="abrirPag('Básico', '30.000')">ALTERAR</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">MÉDIO (50.000 Kz)</p><button class="btn-gold" onclick="abrirPag('Médio', '50.000')">ALTERAR</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem; color:var(--gold);">PROMAX (100.000 Kz)</p><button class="btn-gold" onclick="abrirPag('ProMax', '100.000')">ALTERAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">FREE (1 Artista)</p><button id="btn-free" class="btn-gold" style="background:#222; color:#555;">ATIVO</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">BÁSICO (30k - 10 Art.)</p><button id="btn-basico" class="btn-gold" onclick="abrirPag('Básico (10 Artistas)', '30.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">MÉDIO (50k - 30 Art.)</p><button id="btn-medio" class="btn-gold" onclick="abrirPag('Médio (30 Artistas)', '50.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem; color:var(--gold);">PROMAX (100k - Ilim.)</p><button id="btn-promax" class="btn-gold" onclick="abrirPag('ProMax (Ilimitado)', '100.000')">COMPRAR</button></div>
         </div>
     </div>
 
     <div id="lancar" class="seccao">
         <div class="card">
             <h4>Lançamento Profissional</h4>
-            <input type="text" id="m-titulo" placeholder="Título da Música">
-            <input type="text" id="m-artista" placeholder="Artista Principal">
-            <input type="text" placeholder="Colaboração">
-            <input type="text" placeholder="Produtor">
-            <select id="lista-estilos"></select>
+            <label>Título</label><input type="text" id="m-titulo">
+            <label>Artista Principal</label><input type="text" id="m-artista">
+            <label>Colaboração</label><input type="text">
+            <label>Produtor</label><input type="text">
+            <label>Estilo Musical</label><select id="lista-estilos"></select>
+            <label>Data de Lançamento</label><input type="date">
             
-            <label>Data de Lançamento</label>
-            <input type="date">
-
             <label>Capa do Disco</label>
-            <div class="file-input-container">
-                <span class="file-btn" onclick="document.getElementById('f-capa').click()">Escolher ficheiro</span>
-                <span id="txt-capa" style="font-size:0.6rem; color:#888;">Nenhum ficheiro selecionado</span>
+            <div class="file-box">
+                <span class="file-label" onclick="document.getElementById('f-capa').click()">Escolher ficheiro</span>
+                <span id="txt-capa" style="font-size:0.5rem; color:#666;">Nenhum ficheiro...</span>
                 <input type="file" id="f-capa" hidden onchange="document.getElementById('txt-capa').innerText=this.files[0].name">
             </div>
 
             <label>Ficheiro Áudio</label>
-            <div class="file-input-container">
-                <span class="file-btn" onclick="document.getElementById('f-audio').click()">Escolher ficheiro</span>
-                <span id="txt-audio" style="font-size:0.6rem; color:#888;">Nenhum ficheiro selecionado</span>
+            <div class="file-box">
+                <span class="file-label" onclick="document.getElementById('f-audio').click()">Escolher ficheiro</span>
+                <span id="txt-audio" style="font-size:0.5rem; color:#666;">Nenhum ficheiro...</span>
                 <input type="file" id="f-audio" hidden onchange="document.getElementById('txt-audio').innerText=this.files[0].name">
             </div>
 
+            <label>Distribuição</label>
             <select>
-                <option>Lançar em todas plataformas mundiais</option>
+                <option>Lançar em todas plataformas digitais mundiais</option>
             </select>
             
             <button class="btn-gold" onclick="fazerLancamento()">ENVIAR PARA DISTRIBUIÇÃO</button>
@@ -141,28 +139,25 @@
 
     <div id="admin" class="seccao">
         <div class="card">
-            <h3 style="color:cyan">Painel de Aprovação (Matias)</h3>
-            <p style="font-size:0.6rem; margin-bottom:10px;">Aprovar pagamentos e novos artistas</p>
-            <div id="lista-pedidos">
-                <p style="font-size:0.6rem; color:#666;">Nenhum pedido pendente.</p>
-            </div>
+            <h3 style="color:cyan;">Painel de Aprovação (Matias)</h3>
+            <p style="font-size:0.6rem; margin-bottom:15px;">Ativar níveis de perfil de usuários</p>
+            <div id="lista-usuarios-admin"></div>
         </div>
     </div>
 
+    <div id="artistas" class="seccao">
+        <div class="card"><h4>Registrar Artista</h4><input type="text" id="art-nome" placeholder="Nome do Artista"><button class="btn-gold" onclick="addArtista()">Salvar</button></div>
+        <div id="cont-artistas"></div>
+    </div>
+
     <div id="carteira" class="seccao">
-        <div class="card" style="text-align:center;">
-            <p>Saldo Ganhos</p>
-            <h1 style="color:var(--gold);">0.00 Kz</h1>
-        </div>
+        <div class="card" style="text-align:center;"><p>Saldo Ganhos</p><h1 style="color:var(--gold);">0.00 Kz</h1></div>
         <div class="card">
             <h4>Levantamento</h4>
-            <label>Escolha o seu Banco</label>
+            <label>Banco / Método</label>
             <select id="banco-saque">
-                <option>BFA (Angola)</option>
-                <option>BAI (Angola)</option>
-                <option>BIC (Angola)</option>
-                <option>Visa/Wise</option>
-                <option>PayPal</option>
+                <option>BFA (Angola)</option><option>BAI (Angola)</option><option>BIC (Angola)</option>
+                <option>Visa/Wise</option><option>PayPal</option><option>Pix</option>
             </select>
             <input type="number" id="v-saque" placeholder="Valor (Mínimo 15.000 Kz)">
             <button class="btn-gold" onclick="pedirSaque()">Solicitar</button>
@@ -177,15 +172,11 @@
             </center>
             <label>Nome</label><input type="text" id="p-nome">
             <label>Biografia</label><textarea id="p-bio"></textarea>
-            <label>País</label><select class="lista-paises"></select>
+            <label>País</label><select class="paises-lista"></select>
             <button class="btn-gold" onclick="salvarPerfil()">Guardar Tudo</button>
         </div>
     </div>
 
-    <div id="artistas" class="seccao">
-        <div class="card"><h4>Registrar Artista</h4><input type="text" id="art-nome" placeholder="Nome do Artista"><button class="btn-gold" onclick="addArtista()">Salvar</button></div>
-        <div id="cont-artistas"></div>
-    </div>
     <div id="musicas" class="seccao"><h4>Catálogo</h4><div id="cont-musicas"></div></div>
     <div id="stats" class="seccao"><h4>Estatísticas</h4><div class="card"><h1>0</h1><p>Streams</p></div></div>
 
@@ -211,24 +202,26 @@
 </div>
 
 <script>
-    let planoTemp = ""; 
-
-    // Carregar TODOS os países e estilos do mundo
-    async function carregarListasMundiais() {
-        const paises = ["Afeganistão", "África do Sul", "Albânia", "Alemanha", "Andorra", "Angola", "Antígua e Barbuda", "Arábia Saudita", "Argélia", "Argentina", "Armênia", "Austrália", "Áustria", "Azerbaijão", "Bahamas", "Bahrein", "Bangladesh", "Barbados", "Bélgica", "Belize", "Benim", "Bielorrússia", "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brasil", "Brunei", "Bulgária", "Burkina Faso", "Burundi", "Butão", "Cabo Verde", "Camarões", "Camboja", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibuti", "Dominica", "Egito", "El Salvador", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovênia", "Espanha", "Estados Unidos", "Estônia", "Eswatini", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia", "Granada", "Grécia", "Guatemala", "Guiana", "Guiné", "Guiné Equatorial", "Guiné-Bissau", "Haiti", "Honduras", "Hungria", "Iêmen", "Ilhas Marshall", "Ilhas Salomão", "Índia", "Indonésia", "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão", "Jordânia", "Kiribati", "Kuwait", "Laos", "Lesoto", "Letônia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo", "Macedônia do Norte", "Madagascar", "Malásia", "Malaui", "Maldivas", "Mali", "Malta", "Marrocos", "Maurícia", "Mauritânia", "México", "Micronésia", "Moçambique", "Moldávia", "Mônaco", "Mongólia", "Montenegro", "Namíbia", "Nauru", "Nepal", "Nicarágua", "Níger", "Nigéria", "Noruega", "Nova Zelândia", "Omã", "Países Baixos", "Palau", "Panamá", "Papua-Nova Guiné", "Paquistão", "Paraguai", "Peru", "Polônia", "Portugal", "Quênia", "Quirguistão", "Reino Unido", "República Centro-Africana", "República Checa", "República do Congo", "República Democrática do Congo", "República Dominicana", "Romênia", "Ruanda", "Rússia", "Samoa", "San Marino", "Santa Lúcia", "São Cristóvão e Neves", "São Tomé e Príncipe", "São Vicente e Granadinas", "Senegal", "Serra Leoa", "Sérvia", "Seychelles", "Singapura", "Síria", "Somália", "Sri Lanka", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Tailândia", "Taiwan", "Tajiquistão", "Tanzânia", "Timor-Leste", "Togo", "Tonga", "Trindade e Tobago", "Tunísia", "Turquemenistão", "Turquia", "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Uzbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietnã", "Zâmbia", "Zimbábue"];
-        const estilos = ["Afro House", "Kizomba", "Semba", "Rap", "Kuduro", "Gospel", "Amapiano", "Pop", "R&B", "Trap", "Drill", "Soul", "Jazz", "Reggae", "Dancehall", "Funk", "Sertanejo", "Rock", "Eletrônica", "Zouk", "Tarraxinha", "Coladeira", "Morna"];
-        
-        document.querySelectorAll('.lista-paises').forEach(s => {
-            paises.forEach(p => s.innerHTML += `<option>${p}</option>`);
-        });
-        estilos.forEach(e => document.getElementById('lista-estilos').innerHTML += `<option>${e}</option>`);
-    }
+    // Listas mundiais completas
+    const paisesMundo = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "EUA", "França", "África do Sul", "Nigéria", "Gana", "Reino Unido", "Alemanha", "Canadá", "China", "Japão"];
+    const estilosMundo = ["Kizomba", "Semba", "Rap", "Afro House", "Kuduro", "Gospel", "Amapiano", "Pop", "R&B", "Trap", "Drill", "Soul", "Zouk", "Tarraxinha"];
 
     window.onload = () => {
-        carregarListasMundiais();
+        popular();
         if(localStorage.getItem("mam_login")) logar(localStorage.getItem("mam_login"));
         carregarDados();
+        verificarNivel();
     };
+
+    function popular() {
+        document.querySelectorAll('.paises-lista').forEach(s => {
+            s.innerHTML = "";
+            paisesMundo.forEach(p => s.innerHTML += `<option>${p}</option>`);
+        });
+        const est = document.getElementById('lista-estilos');
+        est.innerHTML = "";
+        estilosMundo.forEach(e => est.innerHTML += `<option>${e}</option>`);
+    }
 
     function toggleAuth() {
         document.getElementById('login-box').style.display = document.getElementById('login-box').style.display === 'none' ? 'block' : 'none';
@@ -245,8 +238,10 @@
     function logar(email) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
+        // Se for o Matias, mostra o botão Admin
         if(email === "mamfilhos29@gmail.com") {
-            document.getElementById('btn-admin-nav').style.display = 'block';
+            document.getElementById('nav-admin').style.display = 'block';
+            gerarListaAdmin();
         }
     }
 
@@ -279,21 +274,20 @@
     function fazerLancamento() {
         const t = document.getElementById('m-titulo').value;
         const a = document.getElementById('m-artista').value;
-        if(!t || !a) return alert("Título e Artista necessários");
+        if(!t || !a) return alert("Preencha o Título e Artista");
         
         let m = JSON.parse(localStorage.getItem("mam_m") || "[]");
         m.push({titulo: t, artista: a});
         localStorage.setItem("mam_m", JSON.stringify(m));
         
-        // Ativar animação e texto no Último Lançamento
+        // Atualizar Último Lançamento
         document.getElementById('track-main').innerText = `${t} - ${a}`;
         document.getElementById('disco-main').classList.add('rodando');
         
-        // Feed
         let f = document.getElementById('feed-container');
-        f.innerHTML = `<div class="card"><p style="font-size:0.6rem;">Novo lançamento: <strong>${t}</strong> de ${a} acabado de sair!</p></div>` + f.innerHTML;
+        f.innerHTML = `<div class="card"><p style="font-size:0.6rem;">Novo lançamento: <strong>${t}</strong> de ${a} em processamento mundial.</p></div>` + f.innerHTML;
         
-        alert("Enviado para distribuição mundial!");
+        alert("Enviado para distribuição em todas as plataformas!");
         ver('home', document.querySelectorAll('.nav-item')[0]);
         carregarDados();
     }
@@ -304,40 +298,89 @@
         
         const mus = document.getElementById('cont-musicas'); mus.innerHTML = "";
         const mData = JSON.parse(localStorage.getItem("mam_m") || "[]");
-        mData.forEach(x => mus.innerHTML += `<div class="card">${x.titulo || x} - Distribuído</div>`);
+        mData.forEach(x => {
+            let nome = (typeof x === 'object') ? `${x.titulo} - ${x.artista}` : x;
+            mus.innerHTML += `<div class="card">${nome} - Distribuído</div>`;
+        });
         
         if(mData.length > 0) {
-            const last = mData[mData.length-1];
-            document.getElementById('track-main').innerText = last.titulo ? `${last.titulo} - ${last.artista}` : last;
+            let last = mData[mData.length-1];
+            document.getElementById('track-main').innerText = (typeof last === 'object') ? `${last.titulo} - ${last.artista}` : last;
             document.getElementById('disco-main').classList.add('rodando');
         }
 
         if(localStorage.getItem("mam_foto")) {
-            const f = localStorage.getItem("mam_foto");
-            document.getElementById('perfil-foto-view').src = f;
-            document.getElementById('perfil-mini').src = f;
+            document.getElementById('perfil-foto-view').src = localStorage.getItem("mam_foto");
+            document.getElementById('perfil-mini').src = localStorage.getItem("mam_foto");
         }
         document.getElementById('p-nome').value = localStorage.getItem("mam_nome") || "";
         document.getElementById('p-bio').value = localStorage.getItem("mam_bio") || "";
     }
 
+    // LÓGICA DE ADMIN E NÍVEIS
     function abrirPag(n, v) {
-        planoTemp = n;
         document.getElementById('pag-info').innerText = `Plano: ${n} \nValor: ${v} Kz`;
         document.getElementById('modal-pagamento').style.display = 'block';
+        localStorage.setItem("mam_pedido_nivel", n);
     }
+
     function fecharPag() { document.getElementById('modal-pagamento').style.display = 'none'; }
-    
+
     function confirmar() {
-        const msg = encodeURIComponent(`Olá Matias! Efetuei o pagamento do nível ${planoTemp}. Ative o meu perfil.`);
+        const nivel = localStorage.getItem("mam_pedido_nivel");
+        const msg = encodeURIComponent(`Matias, efetuei o pagamento do nível ${nivel}. Por favor, ative o meu perfil.`);
         window.location.href = `https://wa.me/244937881307?text=${msg}`;
+    }
+
+    function gerarListaAdmin() {
+        const cont = document.getElementById('lista-usuarios-admin');
+        cont.innerHTML = `
+            <div class="card">
+                <p style="font-size:0.7rem;">Simular Aprovação para teste:</p>
+                <button class="btn-gold" style="margin-bottom:5px;" onclick="aprovarNivel('Básico')">Ativar BÁSICO</button>
+                <button class="btn-gold" style="margin-bottom:5px;" onclick="aprovarNivel('Médio')">Ativar MÉDIO</button>
+                <button class="btn-gold" onclick="aprovarNivel('ProMax')">Ativar PROMAX</button>
+            </div>
+        `;
+    }
+
+    function aprovarNivel(nivel) {
+        localStorage.setItem("mam_nivel_atual", nivel);
+        alert(`Nível ${nivel} ativado com sucesso!`);
+        verificarNivel();
+    }
+
+    function verificarNivel() {
+        const nivel = localStorage.getItem("mam_nivel_atual") || "FREE";
+        const btns = { "FREE": "btn-free", "Básico": "btn-basico", "Médio": "btn-medio", "ProMax": "btn-promax" };
+        
+        Object.values(btns).forEach(id => {
+            const b = document.getElementById(id);
+            if(b) { b.innerText = "COMPRAR"; b.style.background = "var(--btn)"; b.style.color = "black"; }
+        });
+
+        const ativo = document.getElementById(btns[nivel]);
+        if(ativo) {
+            ativo.innerText = "ATIVO";
+            ativo.style.background = "#222";
+            ativo.style.color = "#555";
+        }
     }
 
     function pedirSaque() {
         const v = document.getElementById('v-saque').value;
-        const b = document.getElementById('banco-saque').value;
         if(v < 15000) return alert("Mínimo 15.000 Kz");
-        alert(`Pedido de saque de ${v} Kz para ${b} enviado!`);
+        alert(`Pedido de saque enviado para análise!`);
+    }
+
+    function addArtista() {
+        const n = document.getElementById('art-nome').value;
+        if(!n) return;
+        let a = JSON.parse(localStorage.getItem("mam_a") || "[]");
+        a.push(n);
+        localStorage.setItem("mam_a", JSON.stringify(a));
+        document.getElementById('art-nome').value = "";
+        carregarDados();
     }
 </script>
 </body>

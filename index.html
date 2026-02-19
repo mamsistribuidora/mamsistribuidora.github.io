@@ -21,13 +21,15 @@
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
         .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; }
         
-        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; margin-bottom: 15px; outline: none; }
-        label { font-size: 0.6rem; color: var(--gold); display: block; margin-bottom: 5px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; margin-bottom: 15px; outline: none; font-size: 0.75rem; }
+        label { font-size: 0.65rem; color: #eee; display: block; margin-bottom: 5px; font-weight: bold; }
 
         .foto-perfil-preview { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; background: #222; }
         .disco { width: 120px; height: 120px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 3px solid #1a1a1a; position: relative; margin: auto; }
-        .rodando { animation: rodar 6s linear infinite; }
-        @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Estilo específico para inputs de ficheiro como na imagem */
+        .file-input-wrapper { background: #000; border: 1px solid #222; border-radius: 6px; padding: 10px; margin-bottom: 15px; display: flex; align-items: center; }
+        .file-btn { background: #eee; color: #000; padding: 5px 10px; border-radius: 3px; font-size: 0.7rem; cursor: pointer; margin-right: 10px; border: none; font-weight: bold; }
 
         #modal-pagamento { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; padding: 20px; }
         .modal-body { background: #111; border: 1px solid var(--gold); padding: 20px; border-radius: 10px; max-width: 400px; margin: 50px auto; text-align: center; }
@@ -36,29 +38,10 @@
 </head>
 <body>
 
-<div id="auth-screen" style="padding: 50px 20px;">
-    <center><h2 style="color:var(--gold);">MAM Distribuidora</h2></center>
-    <div id="login-box" class="card" style="max-width:400px; margin: 30px auto;">
-        <label>Email</label><input type="email" id="log-email">
-        <label>Senha</label><input type="password">
-        <button class="btn-gold" onclick="entrar()">Entrar</button>
-        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer;">Criar conta</p>
-    </div>
-    <div id="reg-box" class="card" style="max-width:400px; margin: 30px auto; display:none;">
-        <label>Nome</label><input type="text">
-        <label>Email</label><input type="email" id="reg-email">
-        <label>País</label><select id="reg-paises"></select>
-        <label>Senha</label><input type="password" id="r-p1">
-        <label>Confirmar Senha</label><input type="password" id="r-p2">
-        <button class="btn-gold" onclick="entrar()">Registrar</button>
-        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer;">Já tenho conta</p>
-    </div>
-</div>
-
-<div id="main-app" style="display:none;">
+<div id="main-app">
     <header>
-        <img id="perfil-mini" class="foto-perfil-preview" style="width:40px; height:40px; margin:0;" src="">
         <h3 style="color:var(--gold); font-size: 0.85rem;">MAM Distribuidora</h3>
+        <p style="font-size:0.45rem; color:#666;">CEO Matias Arsénio Manuel | Play Sean Arsénio</p>
     </header>
 
     <nav class="nav-grid">
@@ -72,142 +55,94 @@
         <div class="nav-item" style="color:red" onclick="sair()">Sair</div>
     </nav>
 
-    <div id="home" class="seccao active-seccao">
-        <div class="card" style="border-left: 3px solid var(--gold);">
-            <h4>Apoia o Projeto</h4>
-            <p style="font-size:0.65rem;">BFA IBAN: 0006 0000 86316866301 52</p>
-            <p style="font-size:0.6rem;">Matias Arsénio Manuel</p>
-        </div>
+    <div id="lancar" class="seccao active-seccao">
+        <div class="card">
+            <h4 style="margin-bottom: 15px; font-size: 0.9rem;">Lançamento Profissional</h4>
+            
+            <input type="text" id="m-titulo" placeholder="Título da Música">
+            <input type="text" id="m-artista" placeholder="Artista Principal">
+            <input type="text" placeholder="Colaboração">
+            <input type="text" placeholder="Produtor">
+            
+            <select id="lista-estilos"></select>
+            
+            <label>Data de Lançamento</label>
+            <input type="date">
+            
+            <label>Capa do Disco</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="capa-input" style="display:none" accept="image/*" onchange="updateFileLabel('capa-label', this)">
+                <button class="file-btn" onclick="document.getElementById('capa-input').click()">Escolher ficheiro</button>
+                <span id="capa-label" style="font-size:0.7rem; color:#888;">Nenhum ficheiro selecionado</span>
+            </div>
 
-        <h4>Último Lançamento</h4>
-        <div class="card" style="text-align:center;">
-            <div class="disco" id="disco-main"></div>
-            <p id="track-main" style="font-size:0.7rem; margin-top:10px;">Sem atividade</p>
-        </div>
+            <label>Ficheiro Áudio</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="audio-input" style="display:none" accept="audio/*" onchange="updateFileLabel('audio-label', this)">
+                <button class="file-btn" onclick="document.getElementById('audio-input').click()">Escolher ficheiro</button>
+                <span id="audio-label" style="font-size:0.7rem; color:#888;">Nenhum ficheiro selecionado</span>
+            </div>
 
-        <h4>Feed de Novidades</h4>
-        <div id="feed-container">
-            <div class="card"><p style="font-size:0.6rem; color:#888;">Bem-vindo à MAM! Lance a sua primeira música hoje.</p></div>
-        </div>
+            <select>
+                <option>Lançar em todas plataformas mundiais</option>
+            </select>
 
+            <button class="btn-gold" onclick="fazerLancamento()">ENVIAR PARA DISTRIBUIÇÃO</button>
+        </div>
+    </div>
+
+    <div id="home" class="seccao">
         <h4>Níveis de Perfil</h4>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
             <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">FREE (1 Artista)</p><button class="btn-gold" style="background:#222; color:#555;">ATIVO</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">BÁSICO (30k - 10 Art.)</p><button class="btn-gold" onclick="abrirPag('Básico (10 Artistas)', '30.000')">COMPRAR</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">MÉDIO (50k - 30 Art.)</p><button class="btn-gold" onclick="abrirPag('Médio (30 Artistas)', '50.000')">COMPRAR</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem; color:var(--gold);">PROMAX (100k - Ilim.)</p><button class="btn-gold" onclick="abrirPag('ProMax (Ilimitado)', '100.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">BÁSICO (30k - 10 Art.)</p><button class="btn-gold" onclick="abrirPag('BÁSICO', '30.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">MÉDIO (50k - 30 Art.)</p><button class="btn-gold" onclick="abrirPag('MÉDIO', '50.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem; color:var(--gold);">PROMAX (100k - Ilim.)</p><button class="btn-gold" onclick="abrirPag('PROMAX', '100.000')">COMPRAR</button></div>
         </div>
     </div>
-
-    <div id="lancar" class="seccao">
-        <div class="card">
-            <h4>Novo Lançamento</h4>
-            <label>Título</label><input type="text" id="m-titulo">
-            <label>Artista</label><input type="text" id="m-artista">
-            <label>Estilo</label><select id="lista-estilos"></select>
-            <label>Capa</label><input type="file" accept="image/*">
-            <label>Áudio</label><input type="file" accept="audio/*">
-            <button class="btn-gold" onclick="fazerLancamento()">Lançar Agora</button>
-        </div>
-    </div>
-
-    <div id="artistas" class="seccao">
-        <div class="card">
-            <h4>Registrar Artista</h4>
-            <input type="text" id="art-nome" placeholder="Nome do Artista">
-            <button class="btn-gold" onclick="addArtista()">Salvar</button>
-        </div>
-        <div id="cont-artistas"></div>
-    </div>
-
+    
     <div id="carteira" class="seccao">
-        <div class="card" style="text-align:center;">
-            <p>Saldo Ganhos</p>
-            <h1 style="color:var(--gold);">0.00 Kz</h1>
-        </div>
         <div class="card">
             <h4>Levantamento</h4>
-            <label>Banco / Método</label>
+            <label>Banco</label>
             <select id="banco-saque">
-                <option>BFA (Angola)</option><option>BAI (Angola)</option><option>BIC (Angola)</option>
-                <option>Visa/Wise</option><option>PayPal</option><option>Pix</option>
+                <option>BFA</option>
+                <option>BAI</option>
+                <option>BIC</option>
+                <option>Visa/Wise</option>
+                <option>PayPal</option>
             </select>
             <input type="number" id="v-saque" placeholder="Valor (Mínimo 15.000 Kz)">
-            <button class="btn-gold" onclick="pedirSaque()">Solicitar</button>
+            <button class="btn-gold" onclick="pedirSaque()">Solicitar Levantamento</button>
         </div>
     </div>
 
-    <div id="perfil" class="seccao">
-        <div class="card">
-            <center>
-                <img id="perfil-foto-view" class="foto-perfil-preview" src="">
-                <label class="btn-gold" style="display:block; width:150px; cursor:pointer;">Alterar Foto <input type="file" id="foto-input" style="display:none" onchange="previewFoto(this)"></label>
-            </center>
-            <label>Nome</label><input type="text" id="p-nome">
-            <label>Biografia</label><textarea id="p-bio"></textarea>
-            <label>País</label><select id="p-paises"></select>
-            <button class="btn-gold" onclick="salvarPerfil()">Guardar Tudo</button>
-        </div>
-    </div>
-
-    <div id="musicas" class="seccao"><h4>Catálogo</h4><div id="cont-musicas"></div></div>
-    <div id="stats" class="seccao"><h4>Estatísticas</h4><div class="card"><h1>0</h1><p>Streams</p></div></div>
-
-    <footer>
-        <a href="https://wa.me/244937881307" style="color:var(--gold); margin-right:15px; text-decoration:none;">WhatsApp</a>
-        <a href="https://www.facebook.com/MAMdistribui" style="color:var(--gold); text-decoration:none;">Facebook</a>
-        <p style="font-size:0.5rem; color:#444; margin-top:20px;">&copy; 2026 MAM Distribuidora</p>
-    </footer>
 </div>
 
 <div id="modal-pagamento">
     <div class="modal-body">
-        <h3 style="color:var(--gold);">Dados Bancários</h3>
+        <h3 style="color:var(--gold);">Pagamento de Plano</h3>
         <p id="pag-info" style="font-size:0.8rem; margin:15px 0;"></p>
-        <div class="card" style="text-align:left; font-size:0.7rem;">
+        <div class="card" style="text-align:left; font-size:0.75rem;">
             <p><strong>Banco:</strong> BFA (Angola)</p>
             <p><strong>IBAN:</strong> 0006 0000 86316866301 52</p>
             <p><strong>Titular:</strong> Matias Arsénio Manuel</p>
         </div>
-        <button class="btn-gold" onclick="confirmar()">Enviar Comprovativo</button>
+        <button class="btn-gold" onclick="confirmarCompra()">Enviar Comprovativo Detalhado</button>
         <p onclick="fecharPag()" style="color:red; margin-top:15px; cursor:pointer;">Cancelar</p>
     </div>
 </div>
 
 <script>
-    const paisesMundo = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "EUA", "França"];
-    const estilosMundo = ["Kizomba", "Semba", "Rap", "Afro House", "Kuduro", "Gospel", "Amapiano", "Pop", "R&B"];
+    let planoSelecionado = "";
+    let valorSelecionado = "";
+
+    const estilosMundo = ["Afro House", "Kizomba", "Semba", "Rap", "Kuduro", "Gospel", "Amapiano", "Pop", "R&B"];
 
     window.onload = () => {
-        popular();
-        if(localStorage.getItem("mam_login")) logar(localStorage.getItem("mam_login"));
-        carregarDados();
+        const estSelect = document.getElementById('lista-estilos');
+        estilosMundo.forEach(e => estSelect.innerHTML += `<option>${e}</option>`);
     };
-
-    function popular() {
-        const ps = [document.getElementById('reg-paises'), document.getElementById('p-paises')];
-        paisesMundo.forEach(p => ps.forEach(s => s.innerHTML += `<option>${p}</option>`));
-        estilosMundo.forEach(e => document.getElementById('lista-estilos').innerHTML += `<option>${e}</option>`);
-    }
-
-    function toggleAuth() {
-        document.getElementById('login-box').style.display = document.getElementById('login-box').style.display === 'none' ? 'block' : 'none';
-        document.getElementById('reg-box').style.display = document.getElementById('reg-box').style.display === 'none' ? 'block' : 'none';
-    }
-
-    function entrar() {
-        const email = document.getElementById('log-email').value || document.getElementById('reg-email').value;
-        if(!email) return alert("Insira o email");
-        localStorage.setItem("mam_login", email);
-        logar(email);
-    }
-
-    function logar(email) {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-    }
-
-    function sair() { localStorage.removeItem("mam_login"); location.reload(); }
 
     function ver(id, btn) {
         document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
@@ -216,82 +151,36 @@
         btn.classList.add('active');
     }
 
-    // FOTO DE PERFIL
-    function previewFoto(input) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const base64 = e.target.result;
-            document.getElementById('perfil-foto-view').src = base64;
-            document.getElementById('perfil-mini').src = base64;
-            localStorage.setItem("mam_foto", base64);
-        };
-        reader.readAsDataURL(input.files[0]);
+    function updateFileLabel(labelId, input) {
+        const fileName = input.files[0] ? input.files[0].name : "Nenhum ficheiro selecionado";
+        document.getElementById(labelId).innerText = fileName;
+        document.getElementById(labelId).style.color = "#fff";
     }
 
-    function salvarPerfil() {
-        localStorage.setItem("mam_nome", document.getElementById('p-nome').value);
-        localStorage.setItem("mam_bio", document.getElementById('p-bio').value);
-        alert("Perfil atualizado!");
+    function abrirPag(nome, valor) {
+        planoSelecionado = nome;
+        valorSelecionado = valor;
+        document.getElementById('pag-info').innerHTML = `Plano: <strong>${nome}</strong><br>Preço: <strong>${valor} Kz</strong>`;
+        document.getElementById('modal-pagamento').style.display = 'block';
+    }
+
+    function fecharPag() { document.getElementById('modal-pagamento').style.display = 'none'; }
+
+    function confirmarCompra() {
+        // Agora a mensagem diz exatamente o nível e o valor para tu saberes do que se trata
+        const mensagem = encodeURIComponent(`Olá Matias! Efetuei o pagamento do plano de distribuição nível: ${planoSelecionado} (${valorSelecionado} Kz). Aguardo ativação.`);
+        window.location.href = `https://wa.me/244937881307?text=${mensagem}`;
     }
 
     function fazerLancamento() {
-        const t = document.getElementById('m-titulo').value;
-        if(!t) return alert("Título necessário");
-        let m = JSON.parse(localStorage.getItem("mam_m") || "[]");
-        m.push(t);
-        localStorage.setItem("mam_m", JSON.stringify(m));
-        document.getElementById('track-main').innerText = t;
-        document.getElementById('disco-main').classList.add('rodando');
-        
-        // Feed
-        let f = document.getElementById('feed-container');
-        f.innerHTML = `<div class="card"><p style="font-size:0.6rem;">Novo lançamento: <strong>${t}</strong> acabado de sair!</p></div>` + f.innerHTML;
-        
-        alert("Música enviada para distribuição!");
-        ver('home', document.querySelectorAll('.nav-item')[0]);
-        carregarDados();
-    }
-
-    function addArtista() {
-        const n = document.getElementById('art-nome').value;
-        let a = JSON.parse(localStorage.getItem("mam_a") || "[]");
-        a.push(n);
-        localStorage.setItem("mam_a", JSON.stringify(a));
-        document.getElementById('art-nome').value = "";
-        carregarDados();
-    }
-
-    function carregarDados() {
-        const art = document.getElementById('cont-artistas');
-        art.innerHTML = "";
-        JSON.parse(localStorage.getItem("mam_a") || "[]").forEach(x => art.innerHTML += `<div class="card">${x}</div>`);
-        
-        const mus = document.getElementById('cont-musicas');
-        mus.innerHTML = "";
-        JSON.parse(localStorage.getItem("mam_m") || "[]").forEach(x => mus.innerHTML += `<div class="card">${x} - Distribuído</div>`);
-        
-        if(localStorage.getItem("mam_foto")) {
-            document.getElementById('perfil-foto-view').src = localStorage.getItem("mam_foto");
-            document.getElementById('perfil-mini').src = localStorage.getItem("mam_foto");
-        }
-        document.getElementById('p-nome').value = localStorage.getItem("mam_nome") || "";
-        document.getElementById('p-bio').value = localStorage.getItem("mam_bio") || "";
+        alert("Lançamento enviado com sucesso para a MAM Distribuidora!");
     }
 
     function pedirSaque() {
         const v = document.getElementById('v-saque').value;
         const b = document.getElementById('banco-saque').value;
-        if(localStorage.getItem("mam_login") !== "mamfilhos29@gmail.com" && v < 15000) return alert("Mínimo 15.000 Kz");
-        alert(`Pedido de saque de ${v} Kz para o banco ${b} enviado!`);
-    }
-
-    function abrirPag(n, v) {
-        document.getElementById('pag-info').innerText = `Plano: ${n} \nValor: ${v} Kz`;
-        document.getElementById('modal-pagamento').style.display = 'block';
-    }
-    function fecharPag() { document.getElementById('modal-pagamento').style.display = 'none'; }
-    function confirmar() {
-        window.location.href = "https://wa.me/244937881307?text=Efetuei o pagamento do plano de distribuição.";
+        if(v < 15000) return alert("O saque mínimo é de 15.000 Kz");
+        alert(`Pedido de ${v} Kz para o banco ${b} enviado!`);
     }
 </script>
 </body>

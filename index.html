@@ -198,4 +198,54 @@
     // --- FUNÇÃO QUE TU PEDISTE: ATIVAR PELO ADMIN ---
     function adminAtivar() {
         const targetEmail = document.getElementById('adm-email').value;
-        con
+        const novoNivel = document.getElementById('adm-nivel').value;
+
+        if(!targetEmail) return alert("Insira o email do cliente!");
+
+        // Guarda o novo nível associado ao email do cliente
+        localStorage.setItem("plano_" + targetEmail, novoNivel);
+        alert("O utilizador " + targetEmail + " foi promovido para " + novoNivel + "!");
+        document.getElementById('adm-email').value = "";
+    }
+
+    function upgrade(plano) {
+        alert("Pague via IBAN e envie o comprovativo para o Admin para ativação.");
+        window.location.href = "https://wa.me/244937881307?text=Quero o plano " + plano;
+    }
+
+    function ver(id, btn) {
+        document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
+        document.getElementById(id).classList.add('active-seccao');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function salvarMusica() {
+        const t = document.getElementById('m-tit').value;
+        const a = document.getElementById('m-art').value;
+        if(!t || !a) return alert("Preencha os campos!");
+        
+        document.getElementById('now-playing').innerText = t + " - " + a;
+        document.getElementById('disco-home').classList.add('rodando');
+        alert("Lançamento enviado!");
+        ver('home', document.querySelectorAll('.nav-item')[0]);
+    }
+
+    function pedirSaque() {
+        const val = document.getElementById('sq-val').value;
+        const email = localStorage.getItem("userEmail");
+        if(email !== adminEmail && val < 15000) return alert("Mínimo 15.000 Kz para saque!");
+        alert("Pedido enviado!");
+    }
+
+    function toggleAuth() {
+        const l = document.getElementById('login-box');
+        const r = document.getElementById('register-box');
+        l.style.display = l.style.display === 'none' ? 'block' : 'none';
+        r.style.display = r.style.display === 'none' ? 'block' : 'none';
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

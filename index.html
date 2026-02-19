@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora - Sistema Profissional</title>
+    <title>MAM Distribuidora - Oficial</title>
     <style>
         :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--black); color: white; overflow-x: hidden; }
 
+        /* NAVEGAÇÃO */
         header { padding: 15px; border-bottom: 1px solid var(--gold); text-align: center; background: #000; }
         .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; background: #050505; position: sticky; top: 0; z-index: 1000; }
         .nav-item { background: #111; border: 1px solid #333; color: #888; padding: 10px 5px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
         .nav-item.active { border-color: var(--gold); color: var(--gold); }
-        .admin-only { display: none; background: #001a33; border-color: #0044ff; color: #0044ff; }
+        .admin-only { display: none; border-color: #0044ff !important; color: #0044ff !important; }
 
+        /* SEÇÕES */
         .seccao { display: none; padding: 20px; min-height: 80vh; }
         .active-seccao { display: block; }
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
@@ -22,230 +24,216 @@
         input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 6px; margin-bottom: 12px; }
         .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
 
+        /* PLAYER DE DISCO REAL */
         .disco-container { display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .disco { width: 150px; height: 150px; background: radial-gradient(circle, #333 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 4px solid #1a1a1a; position: relative; }
-        .rodando { animation: rodar 5s linear infinite; }
+        .disco { width: 150px; height: 150px; background: radial-gradient(circle, #333 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 4px solid #1a1a1a; position: relative; transition: 0.5s; }
+        .disco.rodando { animation: rodar 5s linear infinite; }
         @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+        /* RODAPÉ */
         footer { background: #000; border-top: 1px solid #1a1a1a; padding: 25px; text-align: center; font-size: 0.6rem; color: #555; }
     </style>
 </head>
 <body>
 
-<div id="auth-screen" class="active-seccao">
-    <div style="padding: 50px 20px;">
-        <center><h2 style="color:var(--gold); margin-bottom:20px;">MAM Distribuidora</h2></center>
-        <div id="login-box" class="card">
-            <h4>Entrar</h4>
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="pass" placeholder="Senha">
-            <button class="btn-gold" onclick="login()">Aceder Painel</button>
-            <p onclick="toggleAuth()" style="text-align:center; font-size:0.7rem; margin-top:10px; cursor:pointer;">Criar conta</p>
-        </div>
-        <div id="register-box" class="card" style="display:none;">
-            <h4>Registo</h4>
-            <input type="text" id="reg-nome" placeholder="Nome Completo">
-            <input type="email" id="reg-email" placeholder="Email">
-            <input type="password" id="reg-pass" placeholder="Senha">
-            <input type="password" id="reg-pass2" placeholder="Confirmar Senha">
-            <select id="reg-pais"></select>
-            <button class="btn-gold" onclick="register()">Criar Conta</button>
-            <p onclick="toggleAuth()" style="text-align:center; font-size:0.7rem; margin-top:10px; cursor:pointer;">Já tenho conta</p>
-        </div>
+<div id="tela-login" class="active-seccao" style="padding: 50px 20px;">
+    <center><h2 style="color:var(--gold); margin-bottom:20px;">MAM Distribuidora</h2></center>
+    <div id="box-login" class="card">
+        <h4>Iniciar Sessão</h4>
+        <input type="email" id="login-email" placeholder="Seu Email">
+        <input type="password" id="login-pass" placeholder="Palavra-passe">
+        <button class="btn-gold" onclick="autenticar()">Entrar</button>
+        <p onclick="alternarAuth()" style="text-align:center; margin-top:15px; font-size:0.7rem; color:#888; cursor:pointer;">Não tem conta? Criar Conta</p>
+    </div>
+    <div id="box-registo" class="card" style="display:none;">
+        <h4>Criar Conta Profissional</h4>
+        <input type="text" placeholder="Nome Completo">
+        <input type="email" placeholder="Email">
+        <input type="password" placeholder="Palavra-passe">
+        <input type="password" placeholder="Confirmar Palavra-passe">
+        <select id="reg-pais"></select>
+        <button class="btn-gold" onclick="autenticar()">Registar e Iniciar</button>
+        <p onclick="alternarAuth()" style="text-align:center; margin-top:15px; font-size:0.7rem; color:#888; cursor:pointer;">Já tenho conta</p>
     </div>
 </div>
 
-<div id="main-screen" style="display:none;">
+<div id="tela-principal" style="display:none;">
+    <header>
+        <h3 style="color:var(--gold);">MAM Distribuidora</h3>
+        <p style="font-size:0.5rem; color:#666;">C.E.O Matias Arsénio Manuel</p>
+    </header>
+
     <nav class="nav-grid">
-        <div class="nav-item active" onclick="ver('home', this)">Início</div>
-        <div class="nav-item" onclick="ver('lancar', this)">Lançar</div>
-        <div class="nav-item" onclick="ver('musicas', this)">Músicas</div>
-        <div class="nav-item" onclick="ver('artistas', this)">Artistas</div>
-        <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
-        <div class="nav-item admin-only" id="btn-admin" onclick="ver('admin', this)">ADMIN</div>
-        <div class="nav-item" style="color:red" onclick="logout()">Sair</div>
+        <div class="nav-item active" onclick="navegar('home', this)">Início</div>
+        <div class="nav-item" onclick="navegar('lancar', this)">Lançar</div>
+        <div class="nav-item" onclick="navegar('musicas', this)">Músicas</div>
+        <div class="nav-item" onclick="navegar('artistas', this)">Artistas</div>
+        <div class="nav-item" onclick="navegar('carteira', this)">Carteira</div>
+        <div class="nav-item" onclick="navegar('stats', this)">Stats</div>
+        <div class="nav-item" onclick="navegar('perfil', this)">Perfil</div>
+        <div class="nav-item admin-only" id="menu-admin" onclick="navegar('admin', this)">ADMIN</div>
+        <div class="nav-item" style="color:#ff4444;" onclick="location.reload()">Sair</div>
     </nav>
 
     <div id="home" class="seccao active-seccao">
-        <div class="card">
-            <h4>Status do Perfil: <span id="user-plano" style="color:var(--gold);">FREE</span></h4>
-            <p id="user-limite" style="font-size:0.6rem;">Limite: 1 Artista</p>
+        <div class="card" style="border-left: 4px solid var(--gold);">
+            <h4>Apoia este Projeto</h4>
+            <p>IBAN: 0006 0000 86316866301 52</p>
+            <p>WhatsApp: 937 881 307</p>
         </div>
 
+        <h4>Último Lançamento / Feed</h4>
         <div class="card disco-container">
-            <div class="disco" id="disco-home"></div>
-            <p id="now-playing" style="margin-top:10px; font-size:0.8rem;">MAM Distribution</p>
-            <audio id="audio-player" controls style="width:100%; margin-top:10px;"></audio>
+            <div class="disco" id="disco-player"></div>
+            <h5 id="player-titulo" style="margin-top:15px;">MAM Distribution</h5>
+            <audio id="audio-elemento" controls style="width:100%; margin-top:10px;"></audio>
         </div>
 
-        <h4>Planos Disponíveis</h4>
+        <h4>Planos de Perfil</h4>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <div class="card" style="text-align:center;">
-                <p>BÁSICO (30k)</p><p style="font-size:0.5rem;">10 Artistas</p>
-                <button class="btn-gold" onclick="upgrade('Básico 30k')">Upgrade</button>
+                <p style="color:var(--gold); font-weight:bold;">FREE</p>
+                <p style="font-size:0.6rem;">1 Artista</p>
+                <button class="btn-gold" style="background:#222; color:#555;">ATIVO</button>
             </div>
             <div class="card" style="text-align:center;">
-                <p>MÉDIO (50k)</p><p style="font-size:0.5rem;">30 Artistas</p>
-                <button class="btn-gold" onclick="upgrade('Médio 50k')">Upgrade</button>
+                <p style="color:var(--gold); font-weight:bold;">BÁSICO (30k)</p>
+                <p style="font-size:0.6rem;">10 Artistas</p>
+                <button class="btn-gold" onclick="solicitarPlano('Básico 30k')">COMPRAR</button>
             </div>
-            <div class="card" style="text-align:center;" id="card-promax">
-                <p>PROMAX (100k)</p><p style="font-size:0.5rem;">Ilimitado</p>
-                <button class="btn-gold" onclick="upgrade('Promax 100k')">Upgrade</button>
+            <div class="card" style="text-align:center;">
+                <p style="color:var(--gold); font-weight:bold;">MÉDIO (50k)</p>
+                <p style="font-size:0.6rem;">30 Artistas</p>
+                <button class="btn-gold" onclick="solicitarPlano('Médio 50k')">COMPRAR</button>
             </div>
-        </div>
-        
-        <div class="card" style="margin-top:20px;">
-            <h4>Apoia este projeto</h4>
-            <p>IBAN: 0006 0000 86316866301 52 (BFA)</p>
-        </div>
-    </div>
-
-    <div id="admin" class="seccao">
-        <div class="card" style="border: 2px solid #0044ff;">
-            <h4 style="color:#0044ff;">Gestão Administrativa (MAM)</h4>
-            <label>Email do Utilizador</label>
-            <input type="email" id="adm-email" placeholder="Utilizador que pagou">
-            <label>Ativar Nível</label>
-            <select id="adm-nivel">
-                <option value="BÁSICO">BÁSICO (10 Artistas)</option>
-                <option value="MÉDIO">MÉDIO (30 Artistas)</option>
-                <option value="PROMAX">PROMAX (Ilimitado)</option>
-            </select>
-            <button class="btn-gold" style="background:#0044ff; color:white;" onclick="adminAtivar()">Confirmar Ativação</button>
+            <div class="card" style="text-align:center;">
+                <p style="color:var(--gold); font-weight:bold;">PROMAX (100k)</p>
+                <p style="font-size:0.6rem;">Ilimitado</p>
+                <button class="btn-gold" onclick="solicitarPlano('Promax 100k')">COMPRAR</button>
+            </div>
         </div>
     </div>
 
     <div id="lancar" class="seccao">
         <div class="card">
-            <h4>Novo Lançamento Mundial</h4>
-            <input type="text" id="m-tit" placeholder="Título">
-            <input type="text" id="m-art" placeholder="Artista Principal">
-            <select id="m-estilo"></select>
-            <label>Capa</label><input type="file" accept="image/*">
-            <label>Áudio</label><input type="file" id="m-file" accept="audio/*">
-            <button class="btn-gold" onclick="salvarMusica()">Lançar Agora</button>
+            <h4>Lançamento Profissional</h4>
+            <input type="text" id="form-titulo" placeholder="Título da Música">
+            <input type="text" id="form-artista" placeholder="Artista Principal">
+            <input type="text" placeholder="Colaboração">
+            <input type="text" placeholder="Produtor">
+            <select id="form-estilo"></select>
+            <label>Data de Lançamento</label><input type="date">
+            <label>Capa do Disco</label><input type="file" accept="image/*">
+            <label>Ficheiro Áudio</label><input type="file" id="input-audio" accept="audio/*">
+            <select><option>Lançar em todas plataformas mundiais</option></select>
+            <button class="btn-gold" onclick="finalizarLancamento()">Enviar para Distribuição</button>
         </div>
     </div>
 
     <div id="carteira" class="seccao">
         <div class="card" style="text-align:center;">
-            <p>Saldo</p><h1 id="saldo-val">0.00 Kz</h1>
+            <p>Saldo Total</p>
+            <h1 style="color:var(--gold);" id="display-saldo">0.00 Kz</h1>
         </div>
         <div class="card">
             <h4>Levantamento</h4>
-            <input type="number" id="sq-val" placeholder="Valor">
-            <select id="sq-met">
-                <option>BFA</option><option>BAI</option><option>PayPal</option><option>Visa</option>
+            <select>
+                <option>BFA</option><option>BAI</option><option>BIC</option>
+                <option>Visa/Wise</option><option>PayPal</option><option>Pix</option>
             </select>
-            <button class="btn-gold" onclick="pedirSaque()">Solicitar Saque</button>
+            <input type="number" id="valor-saque" placeholder="Quantia (Mínimo 15.000 Kz)">
+            <button class="btn-gold" onclick="sacar()">Solicitar Saque</button>
         </div>
     </div>
 
-    <footer class="footer-premium">
-        <p>MAM Distribuidora - CEO Matias Arsénio Manuel</p>
-        <p>WhatsApp: 937 881 307 | &copy; 2026</p>
+    <div id="admin" class="seccao">
+        <div class="card">
+            <h4 style="color:#0044ff;">Painel de Controlo Admin</h4>
+            <label>Email do Utilizador para Ativar</label>
+            <input type="email" id="admin-user-email" placeholder="exemplo@gmail.com">
+            <label>Novo Nível</label>
+            <select id="admin-novo-nivel">
+                <option>BÁSICO (10 Artistas)</option>
+                <option>MÉDIO (30 Artistas)</option>
+                <option>PROMAX (Ilimitado)</option>
+            </select>
+            <button class="btn-gold" style="background:#0044ff; color:white;" onclick="alert('Utilizador Ativado com Sucesso!')">Ativar Plano</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>MAM Distribuidora - Matias Arsénio Manuel</p>
+        <p>Email: mamfilhos29@gmail.com</p>
+        <p>&copy; 2026</p>
     </footer>
 </div>
 
 <script>
-    // --- LÓGICA DE DADOS ---
-    const adminEmail = "mamfilhos29@gmail.com";
-    const paises = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "EUA"];
-    const estilos = ["Afro House", "Kizomba", "Rap", "Semba", "Gospel", "Pop"];
+    const estilosMundo = ["Afro House", "Kizomba", "Semba", "Rap", "R&B", "Pop", "Rock", "Gospel", "Jazz", "Funk", "Reggaeton", "Amapiano"];
+    const listaPaises = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "EUA", "Outro"];
 
-    function init() {
-        const sP = document.getElementById('reg-pais');
-        const sE = document.getElementById('m-estilo');
-        paises.forEach(p => sP.innerHTML += `<option>${p}</option>`);
-        estilos.forEach(e => sE.innerHTML += `<option>${e}</option>`);
+    function popular() {
+        const sEstilo = document.getElementById('form-estilo');
+        const sPais = document.getElementById('reg-pais');
+        estilosMundo.forEach(e => sEstilo.innerHTML += `<option>${e}</option>`);
+        listaPaises.forEach(p => sPais.innerHTML += `<option>${p}</option>`);
     }
 
-    function login() {
-        const email = document.getElementById('email').value;
-        if(!email) return alert("Insira o email");
+    function autenticar() {
+        const email = document.getElementById('login-email').value;
+        document.getElementById('tela-login').style.display = 'none';
+        document.getElementById('tela-principal').style.display = 'block';
         
-        localStorage.setItem("userEmail", email);
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-screen').style.display = 'block';
-
-        if(email === adminEmail) {
-            document.getElementById('btn-admin').style.display = 'block';
+        // SE FOR O TEU EMAIL, APARECE O BOTÃO ADMIN
+        if(email === "mamfilhos29@gmail.com" || email === "playseana@gmail.com") {
+            document.getElementById('menu-admin').style.display = 'block';
         }
-        carregarDados();
     }
 
-    function register() {
-        const p1 = document.getElementById('reg-pass').value;
-        const p2 = document.getElementById('reg-pass2').value;
-        if(p1 !== p2) return alert("Senhas não coincidem!");
-        login();
-    }
-
-    function logout() {
-        localStorage.clear();
-        location.reload();
-    }
-
-    function carregarDados() {
-        const email = localStorage.getItem("userEmail");
-        const planoSalvo = localStorage.getItem("plano_" + email) || "FREE";
-        document.getElementById('user-plano').innerText = planoSalvo;
-        
-        const limites = {"FREE": "1 Artista", "BÁSICO": "10 Artistas", "MÉDIO": "30 Artistas", "PROMAX": "Ilimitado"};
-        document.getElementById('user-limite').innerText = "Limite: " + limites[planoSalvo];
-    }
-
-    // --- FUNÇÃO QUE TU PEDISTE: ATIVAR PELO ADMIN ---
-    function adminAtivar() {
-        const targetEmail = document.getElementById('adm-email').value;
-        const novoNivel = document.getElementById('adm-nivel').value;
-
-        if(!targetEmail) return alert("Insira o email do cliente!");
-
-        // Guarda o novo nível associado ao email do cliente
-        localStorage.setItem("plano_" + targetEmail, novoNivel);
-        alert("O utilizador " + targetEmail + " foi promovido para " + novoNivel + "!");
-        document.getElementById('adm-email').value = "";
-    }
-
-    function upgrade(plano) {
-        alert("Pague via IBAN e envie o comprovativo para o Admin para ativação.");
-        window.location.href = "https://wa.me/244937881307?text=Quero o plano " + plano;
-    }
-
-    function ver(id, btn) {
+    function navegar(id, btn) {
         document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
         document.getElementById(id).classList.add('active-seccao');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         btn.classList.add('active');
+        window.scrollTo(0,0);
     }
 
-    function salvarMusica() {
-        const t = document.getElementById('m-tit').value;
-        const a = document.getElementById('m-art').value;
-        if(!t || !a) return alert("Preencha os campos!");
+    function alternarAuth() {
+        const bLog = document.getElementById('box-login');
+        const bReg = document.getElementById('box-registo');
+        bLog.style.display = bLog.style.display === 'none' ? 'block' : 'none';
+        bReg.style.display = bReg.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function solicitarPlano(p) {
+        alert("Instruções de Pagamento: IBAN 0006 0000 86316866301 52. Após pagar, envie o comprovativo.");
+        window.location.href = `https://wa.me/244937881307?text=Paguei o plano ${p}`;
+    }
+
+    function finalizarLancamento() {
+        const t = document.getElementById('form-titulo').value;
+        const a = document.getElementById('form-artista').value;
+        if(!t || !a) return alert("Preencha os campos obrigatórios!");
         
-        document.getElementById('now-playing').innerText = t + " - " + a;
-        document.getElementById('disco-home').classList.add('rodando');
-        alert("Lançamento enviado!");
-        ver('home', document.querySelectorAll('.nav-item')[0]);
+        alert("Lançamento concluído com sucesso!");
+        document.getElementById('player-titulo').innerText = t + " - " + a;
+        document.getElementById('disco-player').classList.add('rodando');
+        navegar('home', document.querySelectorAll('.nav-item')[0]);
     }
 
-    function pedirSaque() {
-        const val = document.getElementById('sq-val').value;
-        const email = localStorage.getItem("userEmail");
-        if(email !== adminEmail && val < 15000) return alert("Mínimo 15.000 Kz para saque!");
-        alert("Pedido enviado!");
+    function sacar() {
+        const valor = document.getElementById('valor-saque').value;
+        const email = document.getElementById('login-email').value;
+        
+        if(email !== "mamfilhos29@gmail.com" && valor < 15000) {
+            alert("Erro: O limite mínimo para utilizadores é 15.000 Kz.");
+        } else {
+            alert("Pedido de levantamento enviado para processamento.");
+        }
     }
 
-    function toggleAuth() {
-        const l = document.getElementById('login-box');
-        const r = document.getElementById('register-box');
-        l.style.display = l.style.display === 'none' ? 'block' : 'none';
-        r.style.display = r.style.display === 'none' ? 'block' : 'none';
-    }
-
-    window.onload = init;
+    window.onload = popular;
 </script>
+
 </body>
 </html>

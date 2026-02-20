@@ -45,7 +45,7 @@
         <label>Email</label><input type="email" id="log-email">
         <label>Senha</label><input type="password" id="log-pass">
         <button class="btn-gold" onclick="entrar()">Entrar</button>
-        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer; color: #888;">Não tem conta? Criar conta</p>
+        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer;">Criar conta</p>
     </div>
     <div id="reg-box" class="card" style="max-width:400px; margin: 30px auto; display:none;">
         <label>Nome</label><input type="text" id="reg-nome">
@@ -53,14 +53,14 @@
         <label>País</label><select id="reg-paises"></select>
         <label>Senha</label><input type="password" id="r-p1">
         <label>Confirmar Senha</label><input type="password" id="r-p2">
-        <button class="btn-gold" onclick="registrar()">Finalizar Registro</button>
-        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer; color: #888;">Já tenho conta</p>
+        <button class="btn-gold" onclick="registrar()">Criar conta</button>
+        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer;">Já tenho conta</p>
     </div>
 </div>
 
 <div id="main-app" style="display:none;">
     <header>
-        <img id="perfil-mini" class="foto-perfil-preview" style="width:40px; height:40px; margin:0 auto;" src="https://via.placeholder.com/40">
+        <img id="perfil-mini" class="foto-perfil-preview" style="width:40px; height:40px; margin:0 auto;" src="">
         <h3 style="color:var(--gold); font-size: 0.85rem;">MAM Distribuidora</h3>
     </header>
 
@@ -82,38 +82,55 @@
             <p style="font-size:0.65rem;">BFA IBAN: 0006 0000 86316866301 52</p>
             <p style="font-size:0.6rem;">Matias Arsénio Manuel</p>
         </div>
+
         <h4>Último Lançamento</h4>
         <div class="card" style="text-align:center;">
             <div class="disco" id="disco-main"></div>
-            <p id="track-main" style="font-size:0.7rem; margin-top:10px;">Aguardando Lançamento</p>
+            <p id="track-main" style="font-size:0.7rem; margin-top:10px;">Sem atividade</p>
         </div>
-        <h4>Planos de Distribuição</h4>
+
+        <h4>Feed de Novidades</h4>
+        <div id="feed-container"></div>
+
+        <h4>Níveis de Perfil</h4>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
             <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">FREE (1 Artista)</p><button class="btn-gold" style="background:#222; color:#555;">ATIVO</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">BÁSICO (10 Art.)</p><button class="btn-gold" onclick="abrirPag('Básico', '30.000')">30.000 Kz</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">MÉDIO (30 Art.)</p><button class="btn-gold" onclick="abrirPag('Médio', '50.000')">50.000 Kz</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.5rem; color:var(--gold);">PROMAX (Ilimitado)</p><button class="btn-gold" onclick="abrirPag('ProMax', '100.000')">100.000 Kz</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">BÁSICO (30k - 10 Art.)</p><button class="btn-gold" onclick="abrirPag('Básico (10 Artistas)', '30.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">MÉDIO (50k - 30 Art.)</p><button class="btn-gold" onclick="abrirPag('Médio (30 Artistas)', '50.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem; color:var(--gold);">PROMAX (100k - Ilim.)</p><button class="btn-gold" onclick="abrirPag('ProMax (Ilimitado)', '100.000')">COMPRAR</button></div>
         </div>
+    </div>
+
+    <div id="admirador" class="seccao">
+        <h4>Painel de Gestão (Matias)</h4>
+        <div class="card">
+            <label>E-mail do Utilizador</label><input type="email" id="adm-email-alvo">
+            <label>Mudar Nível</label>
+            <select id="adm-nivel-alvo">
+                <option>FREE (1 Artista)</option>
+                <option>Básico (10 Artistas)</option>
+                <option>Médio (30 Artistas)</option>
+                <option>ProMax (Ilimitado)</option>
+            </select>
+            <button class="btn-gold" onclick="admAlterarNivel()">Aprovar / Ativar Nível</button>
+        </div>
+        <div id="pedidos-saque-adm"></div>
     </div>
 
     <div id="lancar" class="seccao">
         <div class="card">
-            <h4>Novo Lançamento Digital</h4>
+            <h4>Novo Lançamento</h4>
             <label>Título da Música</label><input type="text" id="m-titulo">
             <label>Artista Principal</label><input type="text" id="m-artista">
-            <label>Colaboradores (Feat)</label><input type="text" id="m-feat" placeholder="Ex: Artista X, Artista Y">
+            <label>Colaboradores (Separados por vírgula)</label><input type="text" id="m-colab">
             <label>Estilo</label><select id="lista-estilos"></select>
-            <label>Plataformas</label>
-            <select id="m-plataformas">
-                <option>Todas as Plataformas Digitais (Mundial)</option>
-            </select>
+            <label>Plataformas</label><select><option>Todas as Plataformas Digitais (Mundial)</option></select>
             <label>Capa (JPG/PNG)</label><input type="file" accept="image/*">
-            <label>Áudio (MP3/WAV)</label><input type="file" accept="audio/*">
+            <label>Áudio (Formatos: MP3 ou WAV)</label><input type="file" accept="audio/mp3, audio/wav, audio/mpeg">
             <button class="btn-gold" onclick="fazerLancamento()">Lançar Agora</button>
         </div>
     </div>
 
-    <div id="musicas" class="seccao"><h4>Catálogo</h4><div id="cont-musicas"></div></div>
     <div id="artistas" class="seccao">
         <div class="card">
             <h4>Registrar Artista</h4>
@@ -128,30 +145,74 @@
             <p>Saldo Ganhos</p>
             <h1 id="saldo-txt" style="color:var(--gold);">0.00 Kz</h1>
         </div>
+        <div class="card">
+            <h4>Levantamento</h4>
+            <label>Banco / Método</label>
+            <select id="banco-saque">
+                <option>BFA (Angola)</option><option>BAI (Angola)</option><option>BIC (Angola)</option><option>SOL (Angola)</option>
+                <option>Unitel Money</option><option>Afrimoney</option><option>Wise</option><option>PayPal</option><option>Pix</option>
+            </select>
+            <label>IBAN / Conta / Nº Telefone</label><input type="text" id="saque-conta">
+            <input type="number" id="v-saque" placeholder="Valor (Mínimo 15.000 Kz)">
+            <button class="btn-gold" onclick="pedirSaque()">Solicitar</button>
+        </div>
     </div>
 
-    <div id="admirador" class="seccao">
-        <h4>Painel de Gestão (Matias)</h4>
-        <div id="adm-logs" style="font-size:0.6rem; color:#888;"></div>
+    <div id="perfil" class="seccao">
+        <div class="card">
+            <center>
+                <img id="perfil-foto-view" class="foto-perfil-preview" src="">
+                <label class="btn-gold" style="display:block; width:150px; cursor:pointer;">Alterar Foto <input type="file" id="foto-input" style="display:none" onchange="previewFoto(this)"></label>
+            </center>
+            <label>Nome Completo</label><input type="text" id="p-nome">
+            <label>Biografia</label><textarea id="p-bio"></textarea>
+            <label>País</label><select id="p-paises"></select>
+            <button class="btn-gold" onclick="salvarPerfil()">Guardar Alterações</button>
+        </div>
     </div>
+
+    <div id="musicas" class="seccao"><h4>Catálogo</h4><div id="cont-musicas"></div></div>
+    <div id="stats" class="seccao"><h4>Estatísticas</h4><div class="card"><h1>0</h1><p>Streams</p></div></div>
 
     <footer>
-        <a href="https://wa.me/244937881307" style="color:var(--gold); font-weight:bold; text-decoration:none;">WhatsApp</a>
+        <a href="https://wa.me/244937881307" style="color:var(--gold); margin-right:15px; text-decoration:none; font-weight:bold;">WhatsApp</a>
+        <a href="https://www.facebook.com/MAMdistribui" target="_blank" style="color:var(--gold); text-decoration:none; font-weight:bold;">Facebook</a>
         <p style="font-size:0.5rem; color:#444; margin-top:20px;">&copy; 2026 MAM Distribuidora | Matias Arsénio Manuel</p>
     </footer>
 </div>
 
+<div id="modal-pagamento">
+    <div class="modal-body">
+        <h3 style="color:var(--gold);">Efetuar Pagamento</h3>
+        <p id="pag-info" style="font-size:0.8rem; margin:15px 0;"></p>
+        <div class="card" style="text-align:left; font-size:0.7rem;">
+            <p><strong>Banco:</strong> BFA (Angola)</p>
+            <p><strong>IBAN:</strong> 0006 0000 86316866301 52</p>
+            <p><strong>Titular:</strong> Matias Arsénio Manuel</p>
+        </div>
+        <button class="btn-gold" onclick="confirmarPagamento()">Enviar Comprovativo</button>
+        <p onclick="fecharPag()" style="color:red; margin-top:15px; cursor:pointer;">Cancelar</p>
+    </div>
+</div>
+
 <script>
-    const estilosMundo = ["Kizomba", "Semba", "Rap", "Hip Hop", "Afro House", "Kuduro", "Gospel", "Amapiano", "Pop", "Trap"];
-    const paisesMundo = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde"];
+    // LISTAS COMPLETAS
+    const paisesMundo = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "São Tomé e Príncipe", "Afeganistão", "África do Sul", "Albânia", "Alemanha", "Andorra", "Antígua e Barbuda", "Arábia Saudita", "Argélia", "Argentina", "Armênia", "Austrália", "Áustria", "Azerbaijão", "Bahamas", "Bangladesh", "Barbados", "Bahrein", "Bélgica", "Belize", "Benim", "Bielorrússia", "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brunei", "Bulgária", "Burquina Faso", "Burundi", "Butão", "Camboja", "Camarões", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo", "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibouti", "Dominica", "Egito", "El Salvador", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovênia", "Espanha", "Estados Unidos", "Estônia", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia", "Granada", "Grécia", "Guatemala", "Guiana", "Guiné", "Guiné Equatorial", "Haiti", "Honduras", "Hungria", "Iêmen", "Ilhas Marshall", "Ilhas Salomão", "Índia", "Indonésia", "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão", "Jordânia", "Kiribati", "Kuwait", "Laos", "Lesoto", "Letônia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo", "Macedônia do Norte", "Madagascar", "Malásia", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Maurícia", "Mauritânia", "México", "Micronésia", "Moldávia", "Mônaco", "Mongólia", "Montenegro", "Namíbia", "Nauru", "Nepal", "Nicarágua", "Níger", "Nigéria", "Noruega", "Nova Zelândia", "Omã", "Países Baixos", "Palau", "Panamá", "Papua-Nova Guiné", "Paquistão", "Paraguai", "Peru", "Polônia", "Quênia", "Quirguistão", "Reino Unido", "República Centro-Africana", "República Checa", "República Democrática do Congo", "República Dominicana", "Romênia", "Ruanda", "Rússia", "Samoa", "Santa Lúcia", "São Cristóvão e Neves", "São Marinho", "São Vicente e Granadinas", "Senegal", "Serra Leoa", "Sérvia", "Seychelles", "Singapura", "Síria", "Somália", "Sri Lanka", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Tailândia", "Taiwan", "Tajiquistão", "Tanzânia", "Timor-Leste", "Togo", "Tonga", "Trindade e Tobago", "Tunísia", "Turquemenistão", "Turquia", "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Uzbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietnã", "Zâmbia", "Zimbábue"];
+    const estilosMundo = ["Kizomba", "Semba", "Rap", "Hip Hop", "Afro House", "Kuduro", "Gospel", "Amapiano", "Pop", "R&B", "Trap", "Reggae", "Dancehall", "Jazz", "Soul", "Blues", "Samba", "Funk", "Sertanejo", "Rock", "Electronic", "Techno", "House", "Acoustic", "Zouk", "Marrabenta", "Pandza", "Coladeira"];
+
     let userLogado = null;
 
     window.onload = () => {
-        const ps = [document.getElementById('reg-paises')];
-        paisesMundo.forEach(p => ps.forEach(s => s.innerHTML += `<option value="${p}">${p}</option>`));
-        estilosMundo.forEach(e => document.getElementById('lista-estilos').innerHTML += `<option>${e}</option>`);
-        if(localStorage.getItem("mam_sessao")) logar(localStorage.getItem("mam_sessao"));
+        popularListas();
+        verificarSessao();
     };
+
+    function popularListas() {
+        const ps = [document.getElementById('reg-paises'), document.getElementById('p-paises')];
+        paisesMundo.sort().forEach(p => ps.forEach(s => s.innerHTML += `<option value="${p}">${p}</option>`));
+        const es = document.getElementById('lista-estilos');
+        estilosMundo.sort().forEach(e => es.innerHTML += `<option value="${e}">${e}</option>`);
+    }
 
     function toggleAuth() {
         document.getElementById('login-box').style.display = document.getElementById('login-box').style.display === 'none' ? 'block' : 'none';
@@ -159,77 +220,189 @@
     }
 
     function registrar() {
-        const e = document.getElementById('reg-email').value;
-        const p = document.getElementById('r-p1').value;
-        if(!e || p !== document.getElementById('r-p2').value) return alert("Erro nos dados!");
-        const u = { nome: document.getElementById('reg-nome').value, email: e, senha: p, musicas: [], artistas: [], saldo: 0 };
-        localStorage.setItem(`mam_user_${e}`, JSON.stringify(u));
-        logar(e);
+        const nome = document.getElementById('reg-nome').value;
+        const email = document.getElementById('reg-email').value;
+        const p1 = document.getElementById('r-p1').value;
+        const p2 = document.getElementById('r-p2').value;
+        const pais = document.getElementById('reg-paises').value;
+
+        if(!email || p1 !== p2) return alert("Erro: Verifique as senhas ou preencha o e-mail!");
+        
+        const novoUser = { nome, email, senha: p1, pais, bio: "", foto: "", nivel: "FREE (1 Artista)", artistas: [], musicas: [], saldo: 0 };
+        localStorage.setItem(`mam_user_${email}`, JSON.stringify(novoUser));
+        alert("Conta criada com sucesso!");
+        logar(email);
     }
 
     function entrar() {
-        const e = document.getElementById('log-email').value;
-        const s = document.getElementById('log-pass').value;
-        if(e === "mamfilhos29@gmail.com") { logar(e); return; } // Acesso Matias
-        const u = JSON.parse(localStorage.getItem(`mam_user_${e}`));
-        if(u && u.senha === s) logar(e); else alert("Dados inválidos!");
+        const email = document.getElementById('log-email').value;
+        const senha = document.getElementById('log-pass').value;
+
+        // Acesso Especial Matias
+        if(email === "mamfilhos29@gmail.com") {
+             logar(email);
+             return;
+        }
+
+        const db = localStorage.getItem(`mam_user_${email}`);
+        if(!db) return alert("Utilizador não encontrado!");
+        const user = JSON.parse(db);
+        if(user.senha !== senha) return alert("Senha incorreta!");
+
+        logar(email);
     }
 
-    function logar(e) {
-        userLogado = e;
-        localStorage.setItem("mam_sessao", e);
+    function logar(email) {
+        localStorage.setItem("mam_sessao", email);
+        userLogado = email;
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
-        if(e === "mamfilhos29@gmail.com") document.getElementById('adm-nav').style.display = 'block';
+        
+        if(email === "mamfilhos29@gmail.com") {
+            document.getElementById('adm-nav').style.display = 'block';
+        }
         carregarDados();
     }
 
+    function verificarSessao() {
+        const s = localStorage.getItem("mam_sessao");
+        if(s) logar(s);
+    }
+
     function carregarDados() {
-        let db = JSON.parse(localStorage.getItem(`mam_user_${userLogado}`)) || {musicas: [], artistas: [], saldo: 0};
+        let db;
+        if(userLogado === "mamfilhos29@gmail.com") {
+            db = { nome: "Matias Manuel", bio: "Admirador Oficial", foto: "", nivel: "PROMAX", artistas: [], musicas: [], saldo: 0 };
+        } else {
+            db = JSON.parse(localStorage.getItem(`mam_user_${userLogado}`));
+        }
+
+        document.getElementById('p-nome').value = db.nome || "";
+        document.getElementById('p-bio').value = db.bio || "";
+        document.getElementById('perfil-foto-view').src = db.foto || "";
+        document.getElementById('perfil-mini').src = db.foto || "";
         document.getElementById('saldo-txt').innerText = `${db.saldo || 0}.00 Kz`;
-        const cont = document.getElementById('cont-musicas');
-        cont.innerHTML = "";
-        db.musicas.forEach(m => {
-            cont.innerHTML += `<div class="card"><span class="status-tag">${m.status}</span><strong>${m.titulo}</strong><br><small>${m.artista} ft. ${m.feat}</small></div>`;
+
+        // Artistas
+        const contArtistas = document.getElementById('cont-artistas');
+        contArtistas.innerHTML = "";
+        db.artistas.forEach((a, idx) => {
+            contArtistas.innerHTML += `<div class="card">${a} <button class="btn-delete" onclick="removerItem('artistas', ${idx})">Remover</button></div>`;
         });
+
+        // Musicas
+        const contMusicas = document.getElementById('cont-musicas');
+        contMusicas.innerHTML = "";
+        db.musicas.forEach((m, idx) => {
+            contMusicas.innerHTML += `<div class="card">
+                <span class="status-tag">${m.status}</span>
+                <strong>${m.obra}</strong><br><small>${m.artista} ${m.feat ? 'ft. '+m.feat : ''}</small>
+                <br><button class="btn-delete" onclick="removerItem('musicas', ${idx})">Eliminar</button>
+            </div>`;
+        });
+
         if(db.musicas.length > 0) {
-            document.getElementById('track-main').innerText = db.musicas[db.musicas.length-1].titulo;
+            const ultima = db.musicas[db.musicas.length - 1];
+            document.getElementById('track-main').innerText = ultima.obra;
             document.getElementById('disco-main').classList.add('rodando');
         }
     }
 
-    function fazerLancamento() {
-        const t = document.getElementById('m-titulo').value;
-        const a = document.getElementById('m-artista').value;
-        const f = document.getElementById('m-feat').value;
-        if(!t || !a) return alert("Preencha o título e o artista!");
-        
+    function salvarPerfil() {
         let db = JSON.parse(localStorage.getItem(`mam_user_${userLogado}`));
-        db.musicas.push({ titulo: t, artista: a, feat: f, status: "Em Revisão" });
+        db.nome = document.getElementById('p-nome').value;
+        db.bio = document.getElementById('p-bio').value;
+        db.pais = document.getElementById('p-paises').value;
         localStorage.setItem(`mam_user_${userLogado}`, JSON.stringify(db));
-        
-        // Log para o Matias (Admin)
-        let logs = JSON.parse(localStorage.getItem("mam_logs") || "[]");
-        logs.push(`${userLogado} lançou: ${t} ft. ${f}`);
-        localStorage.setItem("mam_logs", JSON.stringify(logs));
-
-        alert("Música enviada para todas as plataformas!");
-        carregarDados();
-        ver('home', document.querySelectorAll('.nav-item')[0]);
+        alert("Dados salvos!");
     }
 
+    function previewFoto(input) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            let db = JSON.parse(localStorage.getItem(`mam_user_${userLogado}`));
+            db.foto = e.target.result;
+            localStorage.setItem(`mam_user_${userLogado}`, JSON.stringify(db));
+            carregarDados();
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function addArtista() {
+        const nome = document.getElementById('art-nome').value;
+        if(!nome) return;
+        let db = JSON.parse(localStorage.getItem(`mam_user_${userLogado}`));
+        db.artistas.push(nome);
+        localStorage.setItem(`mam_user_${userLogado}`, JSON.stringify(db));
+        document.getElementById('art-nome').value = "";
+        carregarDados();
+    }
+
+    function fazerLancamento() {
+        const obra = document.getElementById('m-titulo').value;
+        const artista = document.getElementById('m-artista').value;
+        const feat = document.getElementById('m-colab').value;
+        if(!obra || !artista) return alert("Título e Artista são obrigatórios!");
+
+        let db = JSON.parse(localStorage.getItem(`mam_user_${userLogado}`));
+        db.musicas.push({ obra, artista, feat, status: "Em Revisão", data: new Date().toLocaleDateString() });
+        localStorage.setItem(`mam_user_${userLogado}`, JSON.stringify(db));
+        
+        let f = document.getElementById('feed-container');
+        f.innerHTML = `<div class="card"><p style="font-size:0.6rem;">Lançamento enviado: <strong>${obra}</strong></p></div>` + f.innerHTML;
+        
+        alert("Música enviada com sucesso!");
+        ver('home', document.querySelectorAll('.nav-item')[0]);
+        carregarDados();
+    }
+
+    function removerItem(tipo, idx) {
+        if(!confirm("Deseja mesmo eliminar?")) return;
+        let db = JSON.parse(localStorage.getItem(`mam_user_${userLogado}`));
+        db[tipo].splice(idx, 1);
+        localStorage.setItem(`mam_user_${userLogado}`, JSON.stringify(db));
+        carregarDados();
+    }
+
+    function admAlterarNivel() {
+        const email = document.getElementById('adm-email-alvo').value;
+        const nivel = document.getElementById('adm-nivel-alvo').value;
+        const alvo = localStorage.getItem(`mam_user_${email}`);
+        if(!alvo) return alert("Utilizador não encontrado!");
+        
+        let userAlvo = JSON.parse(alvo);
+        userAlvo.nivel = nivel;
+        localStorage.setItem(`mam_user_${email}`, JSON.stringify(userAlvo));
+        alert(`O perfil ${email} agora é ${nivel}!`);
+    }
+
+    function abrirPag(n, v) {
+        document.getElementById('pag-info').innerText = `Plano: ${n} \nValor: ${v} Kz`;
+        document.getElementById('modal-pagamento').setAttribute('data-plano', n);
+        document.getElementById('modal-pagamento').style.display = 'block';
+    }
+    function fecharPag() { document.getElementById('modal-pagamento').style.display = 'none'; }
+    
+    function confirmarPagamento() {
+        const plano = document.getElementById('modal-pagamento').getAttribute('data-plano');
+        const msg = encodeURIComponent(`Olá Matias, efetuei o pagamento do plano ${plano}.\nE-mail da conta: ${userLogado}`);
+        window.location.href = `https://wa.me/244937881307?text=${msg}`;
+    }
+
+    function pedirSaque() {
+        const valor = document.getElementById('v-saque').value;
+        if(valor < 15000) return alert("Mínimo 15.000 Kz");
+        alert("Pedido de saque enviado! Aguarde aprovação do Admirador.");
+    }
+
+    function sair() { localStorage.removeItem("mam_sessao"); location.reload(); }
+    
     function ver(id, btn) {
         document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
         document.getElementById(id).classList.add('active-seccao');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         btn.classList.add('active');
-        if(id === 'admirador') {
-            const logs = JSON.parse(localStorage.getItem("mam_logs") || "[]");
-            document.getElementById('adm-logs').innerHTML = logs.reverse().map(l => `<p>• ${l}</p>`).join("");
-        }
     }
-
-    function sair() { localStorage.removeItem("mam_sessao"); location.reload(); }
 </script>
 </body>
 </html>

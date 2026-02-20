@@ -3,65 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAM Distribuidora | Painel Oficial</title>
+    <title>MAM Distribuidora | Oficial</title>
     <style>
-        :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; --nav-bg: #050505; }
+        :root { --gold: #d4af37; --black: #000; --card: #0d0d0d; --btn: #dbb347; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--black); color: white; overflow-x: hidden; }
 
-        header { padding: 15px; border-bottom: 1px solid var(--gold); text-align: center; background: #000; }
-        .nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 10px; background: var(--nav-bg); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
-        .nav-item { background: #111; border: 1px solid #333; color: #888; padding: 12px 2px; border-radius: 4px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+        header { padding: 15px; border-bottom: 1px solid var(--gold); background: #000; text-align: center; }
+        .nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 10px; background: #050505; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
+        .nav-item { background: #111; border: 1px solid #333; color: #888; padding: 10px 2px; border-radius: 4px; font-size: 0.52rem; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
         .nav-item.active { border-color: var(--gold); color: var(--gold); }
-        .nav-admin { border-color: #0044ff; color: #0044ff; display: none; }
 
-        .seccao { display: none; padding: 15px; padding-bottom: 100px; }
-        .active-seccao { display: block; }
+        .seccao { display: none; padding: 15px; min-height: 80vh; padding-bottom: 100px; }
+        .active-seccao { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card { background: var(--card); border: 1px solid #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
-        .btn-gold { width: 100%; padding: 14px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
+        .btn-gold { width: 100%; padding: 12px; background: var(--btn); color: black; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.65rem; text-transform: uppercase; }
         
-        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; margin-bottom: 15px; outline: none; font-size: 0.8rem; }
-        label { font-size: 0.65rem; color: var(--gold); display: block; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: white; border-radius: 6px; margin-bottom: 15px; outline: none; }
+        label { font-size: 0.6rem; color: var(--gold); display: block; margin-bottom: 5px; text-transform: uppercase; }
 
-        .foto-perfil-preview { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin: 10px auto; display: block; background: #222; }
-        .disco { width: 150px; height: 150px; background: radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); border-radius: 50%; border: 4px solid #1a1a1a; margin: 20px auto; position: relative; }
+        .foto-perfil-preview { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 10px; background: #222; margin: auto; display: block; }
+        .disco { width: 150px; height: 150px; background: url('https://cdn-icons-png.flaticon.com/512/26/26435.png'), radial-gradient(circle, #222 10%, #111 11%, #111 30%, #000 31%); background-size: cover; border-radius: 50%; border: 5px solid #1a1a1a; margin: 20px auto; position: relative; }
         .rodando { animation: rodar 5s linear infinite; }
         @keyframes rodar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        #modal-pagamento { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; padding: 20px; }
-        footer { border-top: 1px solid #1a1a1a; padding: 30px; text-align: center; font-size: 0.7rem; }
+        #modal-pagamento { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; padding: 20px; }
+        .modal-body { background: #111; border: 1px solid var(--gold); padding: 20px; border-radius: 10px; max-width: 400px; margin: 50px auto; text-align: center; }
+        footer { background: #000; border-top: 1px solid #1a1a1a; padding: 30px 20px; text-align: center; margin-top: 20px; }
+        .status-badge { font-size: 0.5rem; padding: 2px 5px; border-radius: 3px; background: var(--gold); color: black; margin-left: 5px; }
     </style>
 </head>
 <body>
 
-<div id="auth-screen" style="padding: 40px 20px;">
-    <center><h2 style="color:var(--gold); margin-bottom:30px;">MAM Distribuidora</h2></center>
-    <div id="login-box" class="card">
-        <h3 style="text-align:center; margin-bottom:15px;">Iniciar Sessão</h3>
-        <label>Email</label><input type="email" id="log-email" placeholder="seu@email.com">
-        <label>Senha</label><input type="password" id="log-pass">
-        <button class="btn-gold" onclick="entrar()">Entrar</button>
-        <p onclick="toggleAuth()" style="text-align:center; margin-top:20px; font-size:0.7rem; color:var(--gold);">Criar conta</p>
+<div id="auth-screen" style="padding: 50px 20px;">
+    <center><h2 style="color:var(--gold);">MAM Distribuidora</h2></center>
+    <div id="login-box" class="card" style="max-width:400px; margin: 30px auto;">
+        <h3 style="text-align:center; margin-bottom:15px; font-size:0.8rem;">Iniciar Sessão</h3>
+        <label>Email</label><input type="email" id="log-email" placeholder="mamfilhos29@gmail.com">
+        <label>Senha</label><input type="password" id="log-pass" placeholder="........">
+        <button class="btn-gold" onclick="entrar()">ENTRAR</button>
+        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer;">Criar conta</p>
     </div>
-
-    <div id="reg-box" class="card" style="display:none;">
-        <h3 style="text-align:center; margin-bottom:15px;">Criar Conta</h3>
+    <div id="reg-box" class="card" style="max-width:400px; margin: 30px auto; display:none;">
+        <h3 style="text-align:center; margin-bottom:15px; font-size:0.8rem;">Criar Conta</h3>
         <label>Nome Completo</label><input type="text" id="reg-nome">
         <label>Email</label><input type="email" id="reg-email">
         <label>País</label><select id="reg-paises"></select>
         <label>Senha</label><input type="password" id="reg-p1">
         <label>Confirmar Senha</label><input type="password" id="reg-p2">
-        <button class="btn-gold" onclick="registrar()">Registrar</button>
-        <p onclick="toggleAuth()" style="text-align:center; margin-top:20px; font-size:0.7rem; color:var(--gold);">Já tenho conta</p>
+        <button class="btn-gold" onclick="registrar()">CRIAR CONTA</button>
+        <p onclick="toggleAuth()" style="font-size:0.7rem; text-align:center; margin-top:15px; cursor:pointer;">Já tenho conta</p>
     </div>
 </div>
 
 <div id="main-app" style="display:none;">
     <header>
-        <div id="perfil-header-container"></div>
-        <h3 style="color:var(--gold); font-size: 0.9rem;">MAM Distribuidora</h3>
-        <p style="font-size:0.5rem; color:#888;">C.E.O Matias Arsénio Manuel</p>
+        <div id="admin-badge" style="display:none; color:cyan; font-size:0.5rem; font-weight:bold;">MODO ADMINISTRADOR</div>
+        <img id="perfil-mini" class="foto-perfil-preview" style="width:40px; height:40px; margin: 5px auto;" src="https://via.placeholder.com/40">
+        <h3 style="color:var(--gold); font-size: 0.75rem;">MAM Distribuidora</h3>
+        <p style="font-size:0.4rem; color:#888;">C.E.O Matias Arsénio Manuel</p>
     </header>
 
     <nav class="nav-grid">
@@ -72,134 +74,140 @@
         <div class="nav-item" onclick="ver('carteira', this)">Carteira</div>
         <div class="nav-item" onclick="ver('stats', this)">Stats</div>
         <div class="nav-item" onclick="ver('perfil', this)">Perfil</div>
-        <div id="btn-admin-nav" class="nav-item nav-admin" onclick="ver('admin', this)">Admin</div>
-        <div class="nav-item" style="color:#ff4444" onclick="sair()">Sair</div>
+        <div id="btn-admin-nav" class="nav-item" style="display:none; border-color:cyan; color:cyan;" onclick="ver('admin', this)">ADMIN</div>
+        <div class="nav-item" style="color:red" onclick="sair()">SAIR</div>
     </nav>
 
     <div id="home" class="seccao active-seccao">
-        <div class="card" style="border-left: 4px solid var(--gold);">
-            <h4 style="color:var(--gold)">Apoia este projeto</h4>
-            <p style="font-size:0.7rem;">IBAN: 0006 0000 86316866301 52 (BFA)</p>
-            <p style="font-size:0.7rem;">WhatsApp: 937 881 307</p>
+        <div class="card" style="border-left: 3px solid var(--gold);">
+            <h4>Apoia este projeto</h4>
+            <p style="font-size:0.65rem;">IBAN: 0006 0000 86316866301 52 (BFA)</p>
+            <p style="font-size:0.6rem;">WhatsApp: 937 881 307</p>
         </div>
 
         <div class="card" style="text-align:center;">
             <div class="disco" id="disco-main"></div>
-            <h4 id="track-main">Nenhum lançamento</h4>
-            <p id="artist-main" style="font-size:0.7rem; color:#888;"></p>
+            <h3 id="track-main-title">MAM Distribution</h3>
+            <p style="font-size:0.6rem; color:#888; margin-top:5px;">Aguardando novo áudio...</p>
+            <audio controls style="width:100%; margin-top:15px; filter: invert(1); height:30px;"></audio>
         </div>
 
-        <h4 style="margin: 15px 0;">Planos de Distribuição</h4>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem;">FREE</p><button class="btn-gold" style="background:#222; color:#555;">ATIVO</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem;">BÁSICO</p><button class="btn-gold" onclick="abrirPag('Básico', '30.000')">30k Kz</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem;">MÉDIO</p><button class="btn-gold" onclick="abrirPag('Médio', '50.000')">50k Kz</button></div>
-            <div class="card" style="text-align:center;"><p style="font-size:0.6rem; color:var(--gold);">PROMAX</p><button class="btn-gold" onclick="abrirPag('ProMax', '100.000')">100k Kz</button></div>
+        <h4>Planos de Distribuição</h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">FREE</p><button class="btn-gold" id="status-free" style="background:#222; color:#555;">ATIVO</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">BÁSICO (30K KZ)</p><button class="btn-gold" onclick="abrirPag('Básico', '30.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem;">MÉDIO (50K KZ)</p><button class="btn-gold" onclick="abrirPag('Médio', '50.000')">COMPRAR</button></div>
+            <div class="card" style="text-align:center;"><p style="font-size:0.5rem; color:var(--gold);">PROMAX (100K KZ)</p><button class="btn-gold" onclick="abrirPag('ProMax', '100.000')">COMPRAR</button></div>
         </div>
     </div>
 
     <div id="lancar" class="seccao">
         <div class="card">
-            <h3 style="margin-bottom:15px;">Lançamento Profissional</h3>
+            <h4>Lançamento Profissional</h4>
             <label>Título da Música</label><input type="text" id="m-titulo">
             <label>Artista Principal</label><input type="text" id="m-artista">
-            <label>Colaboração</label><input type="text" id="m-colab">
-            <label>Produtor</label><input type="text" id="m-produtor">
+            <label>Colaboração</label><input type="text" placeholder="Ex: Artista X (Opcional)">
+            <label>Produtor</label><input type="text" placeholder="Nome do Produtor">
             <label>Gênero Musical</label><select id="lista-estilos"></select>
             <label>Data de Lançamento</label><input type="date">
-            <label>Capa do Disco</label><input type="file" accept="image/*" id="m-capa">
+            <label>Capa do Disco</label><input type="file" accept="image/*">
             <label>Ficheiro Áudio</label><input type="file" accept="audio/*">
-            <label>Plataformas</label>
+            <label>Destino</label>
             <select>
                 <option>Lançar em todas plataformas mundiais</option>
                 <option>Apenas Lojas Selecionadas</option>
             </select>
-            <button class="btn-gold" onclick="fazerLancamento()">Enviar para Distribuição</button>
+            <button class="btn-gold" onclick="fazerLancamento()">ENVIAR PARA DISTRIBUIÇÃO</button>
         </div>
     </div>
 
     <div id="admin" class="seccao">
-        <div class="card">
-            <h3 style="color:#0044ff;">Painel de Aprovação (Matias)</h3>
-            <p style="font-size:0.7rem; margin-bottom:15px;">Ativar níveis de perfil de usuários</p>
-            <label>Email do Usuário</label>
-            <input type="email" id="admin-user-email" placeholder="usuário@email.com">
-            <div style="display:grid; gap:10px;">
-                <button class="btn-gold" onclick="ativarNivel('BÁSICO')">ATIVAR BÁSICO</button>
-                <button class="btn-gold" onclick="ativarNivel('MÉDIO')">ATIVAR MÉDIO</button>
-                <button class="btn-gold" onclick="ativarNivel('PROMAX')">ATIVAR PROMAX</button>
+        <div class="card" style="border-color:cyan;">
+            <h4 style="color:cyan;">Painel de Aprovação (Matias)</h4>
+            <p style="font-size:0.6rem; margin-bottom:10px;">Ativar níveis de perfil de usuários</p>
+            <label>Email do Usuário para Ativar</label>
+            <input type="email" id="adm-user-email" placeholder="usuario@gmail.com">
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
+                <button class="btn-gold" onclick="setNivel('Básico')" style="font-size:0.45rem;">ATIVAR BÁSICO</button>
+                <button class="btn-gold" onclick="setNivel('Médio')" style="font-size:0.45rem;">ATIVAR MÉDIO</button>
+                <button class="btn-gold" onclick="setNivel('ProMax')" style="font-size:0.45rem;">ATIVAR PROMAX</button>
             </div>
         </div>
-        <div id="admin-pedidos" class="card">
+        <div class="card">
             <h4>Pedidos de Saque</h4>
-            <div id="lista-saques" style="font-size:0.7rem; margin-top:10px;">Nenhum pedido pendente.</div>
+            <div id="adm-pedidos-saque" style="font-size:0.6rem; color:#888;">Nenhum pedido pendente.</div>
         </div>
     </div>
 
     <div id="perfil" class="seccao">
-        <div class="card">
-            <img id="perfil-foto-view" class="foto-perfil-preview" src="">
-            <center><label class="btn-gold" style="width:180px; margin-bottom:20px;">Alterar Foto <input type="file" id="foto-input" style="display:none" onchange="previewFoto(this)"></label></center>
+        <div class="card" style="text-align:center;">
+            <img id="perfil-foto-view" class="foto-perfil-preview" src="https://via.placeholder.com/80">
+            <button class="btn-gold" style="width:120px; margin-bottom:15px;" onclick="document.getElementById('foto-input').click()">Alterar Foto</button>
+            <input type="file" id="foto-input" style="display:none" onchange="previewFoto(this)">
+            
             <label>Nome</label><input type="text" id="p-nome">
-            <label>Biografia</label><textarea id="p-bio" rows="4"></textarea>
+            <label>Biografia</label><textarea id="p-bio" placeholder="Sua frase criativa..."></textarea>
             <label>País</label><select id="p-paises"></select>
-            <button class="btn-gold" onclick="salvarPerfil()">Guardar Tudo</button>
+            <button class="btn-gold" onclick="salvarPerfil()">GUARDAR TUDO</button>
         </div>
     </div>
 
     <div id="artistas" class="seccao">
-        <div class="card"><h3>Registrar Artista</h3><input type="text" id="art-nome"><button class="btn-gold" onclick="addArtista()">Salvar</button></div>
+        <div class="card"><h4>Registrar Artista</h4><input type="text" id="art-nome"><button class="btn-gold" onclick="addArtista()">Salvar</button></div>
         <div id="cont-artistas"></div>
     </div>
-
+    <div id="musicas" class="seccao"><h4>Catálogo</h4><div id="cont-musicas"></div></div>
     <div id="carteira" class="seccao">
-        <div class="card" style="text-align:center;">
-            <p>Saldo Total</p>
-            <h1 id="saldo-txt" style="color:var(--gold);">0.00 Kz</h1>
-        </div>
+        <div class="card" style="text-align:center;"><p>Saldo</p><h1 style="color:var(--gold);">0.00 Kz</h1></div>
         <div class="card">
-            <h4>Solicitar Levantamento</h4>
-            <select id="banco-saque"><option>BFA</option><option>BAI</option><option>PayPal</option></select>
-            <input type="number" id="v-saque" placeholder="Valor Mínimo 15.000 Kz">
-            <button class="btn-gold" onclick="pedirSaque()">Enviar Pedido</button>
+            <label>Banco</label><select id="b-saque"><option>BFA</option><option>BAI</option><option>PayPal</option></select>
+            <label>Valor</label><input type="number" id="v-saque" placeholder="Mínimo 15.000">
+            <button class="btn-gold" onclick="pedirSaque()">SOLICITAR SAQUE</button>
         </div>
     </div>
-
-    <div id="musicas" class="seccao"><h3>Catálogo</h3><div id="cont-musicas"></div></div>
-    <div id="stats" class="seccao"><h3>Estatísticas</h3><div class="card"><h1>0</h1><p>Streams Totais</p></div></div>
+    <div id="stats" class="seccao"><h4>Estatísticas</h4><div class="card"><h1>0</h1><p>Streams Totais</p></div></div>
 
     <footer>
-        <p>MAM Distribuidora &copy; 2026</p>
-        <p>A curadoria que as grandes plataformas não oferecem.</p>
+        <div style="margin-bottom:15px;">
+            <a href="https://wa.me/244937881307" style="color:var(--gold); margin:0 10px; text-decoration:none; font-size:0.7rem;">WhatsApp</a>
+            <a href="#" style="color:var(--gold); margin:0 10px; text-decoration:none; font-size:0.7rem;">Facebook</a>
+            <a href="#" style="color:var(--gold); margin:0 10px; text-decoration:none; font-size:0.7rem;">Instagram</a>
+        </div>
+        <p style="font-size:0.5rem; color:#444;">&copy; 2026 MAM Distribuidora | Todos os direitos reservados</p>
     </footer>
 </div>
 
 <div id="modal-pagamento">
-    <div class="card" style="max-width:400px; margin: 100px auto; text-align:center;">
-        <h3 style="color:var(--gold)">Pagamento</h3>
-        <p id="pag-info" style="margin:15px 0; font-size:0.8rem;"></p>
-        <p style="font-size:0.7rem;">IBAN BFA: 0006 0000 86316866301 52</p>
-        <button class="btn-gold" onclick="confirmarPag()">Efetuei o Pagamento</button>
-        <p onclick="document.getElementById('modal-pagamento').style.display='none'" style="color:red; margin-top:15px; cursor:pointer;">Cancelar</p>
+    <div class="modal-body">
+        <h3 style="color:var(--gold);">Pagamento</h3>
+        <p id="pag-info" style="font-size:0.7rem; margin:15px 0;"></p>
+        <p style="font-size:0.6rem; color:#888;">IBAN BFA: 0006 0000 86316866301 52</p>
+        <button class="btn-gold" onclick="confirmar()">EFETUEI O PAGAMENTO</button>
+        <p onclick="fecharPag()" style="color:red; margin-top:15px; cursor:pointer; font-size:0.7rem;">Cancelar</p>
     </div>
 </div>
 
 <script>
-    const estilos = ["Afro House", "Kizomba", "Semba", "Kuduro", "Rap", "Gospel", "Amapiano", "R&B", "Pop", "Zouk", "Trap", "Soul", "Jazz", "World Music"];
-    const paises = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "África do Sul", "EUA", "França", "Reino Unido", "Nigéria"];
+    // LISTAS COMPLETAS
+    const paisesMundo = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "EUA", "França", "Nigéria", "África do Sul", "Reino Unido", "Espanha", "Afeganistão", "Albânia", "Alemanha", "Andorra", "Argélia", "Argentina", "Austrália", "Áustria", "Bélgica", "Benim", "Bielorrússia", "Bolívia", "Botswana", "Bulgária", "Burquina Faso", "Burundi", "Camarões", "Canadá", "Chade", "Chile", "China", "Chipre", "Colômbia", "Congo", "Coreia do Sul", "Costa do Marfim", "Croácia", "Cuba", "Dinamarca", "Egito", "Emirados Árabes Unidos", "Equador", "Eslováquia", "Eslovénia", "Estónia", "Etiópia", "Filipinas", "Finlândia", "Gabão", "Gâmbia", "Gana", "Geórgia", "Grécia", "Guiné", "Guiné Equatorial", "Hungria", "Índia", "Indonésia", "Irão", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão", "Jordânia", "Kuwait", "Laos", "Lesoto", "Letónia", "Líbano", "Libéria", "Líbia", "Lituânia", "Luxemburgo", "Madagáscar", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Maurícia", "Mauritânia", "México", "Mianmar", "Moldávia", "Mónaco", "Mongólia", "Montenegro", "Namíbia", "Nepal", "Nicarágua", "Níger", "Noruega", "Nova Zelândia", "Omã", "Países Baixos", "Panamá", "Paquistão", "Paraguai", "Peru", "Polónia", "Quénia", "Quirguistão", "República Checa", "República Dominicana", "Roménia", "Ruanda", "Rússia", "Senegal", "Serra Leoa", "Sérvia", "Seychelles", "Singapura", "Síria", "Somália", "Sri Lanka", "Sudão", "Suécia", "Suíça", "Suriname", "Tailândia", "Taiwan", "Tanzânia", "Timor-Leste", "Togo", "Tunísia", "Turquemenistão", "Turquia", "Ucrânia", "Uganda", "Uruguai", "Usbequistão", "Vaticano", "Venezuela", "Vietname", "Zâmbia", "Zimbabué"];
+    const estilosMundo = ["Afro House", "Kizomba", "Semba", "Kuduro", "Rap", "Hip Hop", "Amapiano", "Gospel", "Pop", "R&B", "Rock", "Jazz", "Soul", "Trap", "Drill", "Zouk", "Tarraxinha", "Coladeira", "Funaná", "Mornas", "Marrabenta", "Pandza", "Reggaeton", "Dancehall", "Afrobeats", "Highlife", "Bongo Flava", "Soukous", "Coupe Decale", "Makossa", "Fujipop", "Enka", "C-Pop", "J-Pop", "K-Pop", "Sertanejo", "Forró", "Samba", "Pagode", "Axé", "MPB", "Bossa Nova", "Funk Carioca", "Phonk", "Electronic", "Techno", "House", "Trance", "Dubstep", "Ambient", "Classical", "Country", "Folk", "Reggae", "Ska", "Blues", "Metal", "Punk", "Grime", "Lo-fi"];
+
+    let userAtual = null;
 
     window.onload = () => {
-        const p1 = document.getElementById('reg-paises');
-        const p2 = document.getElementById('p-paises');
-        const est = document.getElementById('lista-estilos');
-        
-        paises.sort().forEach(p => { p1.innerHTML += `<option>${p}</option>`; p2.innerHTML += `<option>${p}</option>`; });
-        estilos.sort().forEach(e => { est.innerHTML += `<option>${e}</option>`; });
-
-        if(localStorage.getItem("mam_sessao")) {
-            logar(localStorage.getItem("mam_sessao"));
+        popularListas();
+        const salvo = localStorage.getItem("mam_session");
+        if(salvo) {
+            userAtual = JSON.parse(salvo);
+            logar();
         }
     };
+
+    function popularListas() {
+        const ps = [document.getElementById('reg-paises'), document.getElementById('p-paises')];
+        paisesMundo.sort().forEach(p => ps.forEach(s => s.innerHTML += `<option value="${p}">${p}</option>`));
+        estilosMundo.sort().forEach(e => document.getElementById('lista-estilos').innerHTML += `<option value="${e}">${e}</option>`);
+    }
 
     function toggleAuth() {
         document.getElementById('login-box').style.display = document.getElementById('login-box').style.display === 'none' ? 'block' : 'none';
@@ -207,39 +215,44 @@
     }
 
     function registrar() {
+        const n = document.getElementById('reg-nome').value;
         const e = document.getElementById('reg-email').value;
         const p1 = document.getElementById('reg-p1').value;
         const p2 = document.getElementById('reg-p2').value;
+
+        if(!e || !p1) return alert("Preencha os campos!");
         if(p1 !== p2) return alert("As senhas não coincidem!");
-        if(!e) return alert("Preencha os dados!");
-        
-        localStorage.setItem("mam_user_" + e, JSON.stringify({
-            nome: document.getElementById('reg-nome').value,
-            pais: document.getElementById('reg-paises').value,
-            nivel: 'FREE'
-        }));
-        logar(e);
+
+        userAtual = { nome: n, email: e, nivel: 'FREE', bio: '', pais: 'Angola', foto: '' };
+        localStorage.setItem(`user_${e}`, JSON.stringify(userAtual));
+        localStorage.setItem("mam_session", JSON.stringify(userAtual));
+        logar();
     }
 
     function entrar() {
         const e = document.getElementById('log-email').value;
-        if(!e) return alert("Email necessário");
-        logar(e);
+        if(e === "mamfilhos29@gmail.com") {
+            userAtual = { nome: "Matias Manuel", email: e, nivel: 'ADMIN', bio: 'CEO MAM', pais: 'Angola' };
+        } else {
+            const salvo = localStorage.getItem(`user_${e}`);
+            if(!salvo) return alert("Usuário não encontrado!");
+            userAtual = JSON.parse(salvo);
+        }
+        localStorage.setItem("mam_session", JSON.stringify(userAtual));
+        logar();
     }
 
-    function logar(email) {
-        localStorage.setItem("mam_sessao", email);
+    function logar() {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
-        
-        // Se for o Matias (CEO)
-        if(email === 'mamfilhos29@gmail.com') {
+        if(userAtual.email === "mamfilhos29@gmail.com" || userAtual.nivel === 'ADMIN') {
             document.getElementById('btn-admin-nav').style.display = 'block';
+            document.getElementById('admin-badge').style.display = 'block';
         }
         carregarDados();
     }
 
-    function sair() { localStorage.removeItem("mam_sessao"); location.reload(); }
+    function sair() { localStorage.removeItem("mam_session"); location.reload(); }
 
     function ver(id, btn) {
         document.querySelectorAll('.seccao').forEach(s => s.classList.remove('active-seccao'));
@@ -251,88 +264,80 @@
     function previewFoto(input) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            const img = e.target.result;
-            document.getElementById('perfil-foto-view').src = img;
-            localStorage.setItem("mam_foto_" + localStorage.getItem("mam_sessao"), img);
+            const base64 = e.target.result;
+            userAtual.foto = base64;
+            document.getElementById('perfil-foto-view').src = base64;
+            document.getElementById('perfil-mini').src = base64;
+            atualizarStorage();
         };
         reader.readAsDataURL(input.files[0]);
     }
 
     function salvarPerfil() {
-        const e = localStorage.getItem("mam_sessao");
-        localStorage.setItem("mam_nome_" + e, document.getElementById('p-nome').value);
-        localStorage.setItem("mam_bio_" + e, document.getElementById('p-bio').value);
-        alert("Dados guardados com sucesso!");
-        carregarDados();
+        userAtual.nome = document.getElementById('p-nome').value;
+        userAtual.bio = document.getElementById('p-bio').value;
+        userAtual.pais = document.getElementById('p-paises').value;
+        atualizarStorage();
+        alert("Perfil guardado com sucesso!");
+    }
+
+    function atualizarStorage() {
+        localStorage.setItem(`user_${userAtual.email}`, JSON.stringify(userAtual));
+        localStorage.setItem("mam_session", JSON.stringify(userAtual));
     }
 
     function fazerLancamento() {
         const t = document.getElementById('m-titulo').value;
-        const a = document.getElementById('m-artista').value;
-        if(!t || !a) return alert("Preencha título e artista");
-
-        let m = JSON.parse(localStorage.getItem("mam_musicas") || "[]");
-        m.push({titulo: t, artista: a, user: localStorage.getItem("mam_sessao")});
-        localStorage.setItem("mam_musicas", JSON.stringify(m));
-
-        document.getElementById('track-main').innerText = t;
-        document.getElementById('artist-main').innerText = a;
+        if(!t) return alert("Título necessário");
+        
+        document.getElementById('track-main-title').innerText = t;
         document.getElementById('disco-main').classList.add('rodando');
-        alert("Música enviada para aprovação!");
+        
+        let m = JSON.parse(localStorage.getItem(`musicas_${userAtual.email}`) || "[]");
+        m.push(t);
+        localStorage.setItem(`musicas_${userAtual.email}`, JSON.stringify(m));
+        
+        alert("Música enviada com sucesso!");
         ver('home', document.querySelectorAll('.nav-item')[0]);
         carregarDados();
     }
 
     function carregarDados() {
-        const e = localStorage.getItem("mam_sessao");
-        // Perfil
-        document.getElementById('p-nome').value = localStorage.getItem("mam_nome_" + e) || "";
-        document.getElementById('p-bio').value = localStorage.getItem("mam_bio_" + e) || "";
-        const foto = localStorage.getItem("mam_foto_" + e);
-        if(foto) document.getElementById('perfil-foto-view').src = foto;
-
-        // Listas
-        const art = document.getElementById('cont-artistas');
-        art.innerHTML = "";
-        JSON.parse(localStorage.getItem("mam_a_" + e) || "[]").forEach(x => art.innerHTML += `<div class="card">${x}</div>`);
+        document.getElementById('p-nome').value = userAtual.nome || "";
+        document.getElementById('p-bio').value = userAtual.bio || "";
+        document.getElementById('p-paises').value = userAtual.pais || "Angola";
+        if(userAtual.foto) {
+            document.getElementById('perfil-foto-view').src = userAtual.foto;
+            document.getElementById('perfil-mini').src = userAtual.foto;
+        }
 
         const mus = document.getElementById('cont-musicas');
         mus.innerHTML = "";
-        JSON.parse(localStorage.getItem("mam_musicas") || "[]").filter(m => m.user === e).forEach(x => {
-            mus.innerHTML += `<div class="card"><strong>${x.titulo}</strong><br><small>${x.artista} - Distribuído</small></div>`;
+        JSON.parse(localStorage.getItem(`musicas_${userAtual.email}`) || "[]").forEach(x => {
+            mus.innerHTML += `<div class="card">${x} <span class="status-badge">DISTRIBUÍDO</span></div>`;
         });
     }
 
-    function addArtista() {
-        const e = localStorage.getItem("mam_sessao");
-        const n = document.getElementById('art-nome').value;
-        let a = JSON.parse(localStorage.getItem("mam_a_" + e) || "[]");
-        a.push(n);
-        localStorage.setItem("mam_a_" + e, JSON.stringify(a));
-        document.getElementById('art-nome').value = "";
-        carregarDados();
-    }
-
-    function ativarNivel(nivel) {
-        const userEmail = document.getElementById('admin-user-email').value;
-        if(!userEmail) return alert("Digite o email do usuário!");
-        localStorage.setItem("nivel_" + userEmail, nivel);
-        alert("Usuário " + userEmail + " agora é " + nivel);
-    }
-
-    function pedirSaque() {
-        const v = document.getElementById('v-saque').value;
-        if(v < 15000) return alert("Mínimo 15.000 Kz");
-        alert("Pedido de saque enviado para análise.");
+    // FUNÇÕES ADMIN REAIS
+    function setNivel(nivel) {
+        const emailAlvo = document.getElementById('adm-user-email').value;
+        let u = localStorage.getItem(`user_${emailAlvo}`);
+        if(!u) return alert("Usuário não encontrado!");
+        
+        u = JSON.parse(u);
+        u.nivel = nivel;
+        localStorage.setItem(`user_${emailAlvo}`, JSON.stringify(u));
+        alert(`Perfil ${emailAlvo} agora é ${nivel}!`);
     }
 
     function abrirPag(n, v) {
-        document.getElementById('pag-info').innerText = `Plano: ${n} | Valor: ${v} Kz`;
+        document.getElementById('pag-info').innerText = `Plano: ${n} \nValor: ${v} Kz`;
         document.getElementById('modal-pagamento').style.display = 'block';
     }
-
-    function confirmarPag() {
-        window.location.href = "https://wa.me/244937881307?text=Efetuei o pagamento do plano de distribuição.";
+    function fecharPag() { document.getElementById('modal-pagamento').style.display = 'none'; }
+    function confirmar() {
+        const msg = encodeURIComponent(`Efetuei o pagamento do plano de distribuição para o e-mail: ${userAtual.email}`);
+        window.location.href = `https://wa.me/244937881307?text=${msg}`;
     }
 </script>
 </body>

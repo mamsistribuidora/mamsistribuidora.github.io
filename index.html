@@ -28,6 +28,7 @@
         .btn:active { transform: scale(0.98); }
         .btn-sec { background: #222; color: var(--gold); }
         .btn-danger { background: #cc3333; color: #fff; }
+        .btn-small { padding: 8px; font-size: 0.7rem; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center; overflow-y: auto; }
@@ -35,18 +36,21 @@
         .modal-content { background: var(--card); border: 2px solid var(--gold); padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; margin: 20px auto; }
         .modal-content h2 { color: var(--gold); margin-bottom: 20px; }
         .close-modal { float: right; font-size: 1.5rem; cursor: pointer; color: var(--gold); }
-        .loading { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; }
-        .loading.active { display: flex; }
-        .spinner { width: 50px; height: 50px; border: 4px solid rgba(212,175,55,0.2); border-top: 4px solid var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .artist-card { background: #111; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--gold); cursor: pointer; transition: 0.3s; }
-        .artist-card:hover { background: rgba(212,175,55,0.1); }
+        .disco { width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #444, #000); border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 20px auto; position: relative; box-shadow: 0 0 30px rgba(212,175,55,0.3); animation: spin-disco 3s linear infinite; }
+        .disco.paused { animation-play-state: paused; }
+        @keyframes spin-disco { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .disco-center { width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 1.2rem; }
+        .player-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+        .player-controls button { width: 50px; height: 50px; border-radius: 50%; background: var(--gold); border: none; color: #000; font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
+        .player-controls button:hover { transform: scale(1.1); }
         .artist-item { display: flex; gap: 15px; align-items: center; padding: 10px; background: #111; border-radius: 6px; margin-bottom: 10px; }
         .artist-item img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); }
         .artist-item-info { flex: 1; }
         .artist-item-info p { font-size: 0.8rem; margin-bottom: 3px; }
         .artist-item-info span { font-size: 0.7rem; color: var(--gray); }
-        .photo-preview { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 15px; }
+        .music-card { background: #111; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid var(--gold); }
+        .music-card p { font-size: 0.8rem; margin-bottom: 5px; }
+        .music-card span { font-size: 0.7rem; color: var(--gray); }
         .chat-box { background: rgba(0,0,0,0.7); border: 1px solid #333; padding: 15px; border-radius: 8px; height: 400px; overflow-y: auto; margin-bottom: 15px; }
         .chat-msg { margin-bottom: 10px; padding: 10px; border-radius: 6px; font-size: 0.8rem; }
         .chat-msg.user { background: rgba(212,175,55,0.2); text-align: right; }
@@ -56,23 +60,27 @@
         .stat-box p { font-size: 0.75rem; color: var(--gray); }
         .user-item { background: #111; padding: 15px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid var(--gold); }
         .user-item p { font-size: 0.75rem; margin-bottom: 5px; }
+        .dropdown-menu { display: none; position: absolute; background: var(--card); border: 1px solid var(--gold); border-radius: 6px; min-width: 200px; z-index: 1001; }
+        .dropdown-menu.active { display: block; }
+        .dropdown-menu button { width: 100%; padding: 10px; background: none; border: none; color: var(--text); text-align: left; cursor: pointer; font-size: 0.75rem; border-bottom: 1px solid #222; }
+        .dropdown-menu button:hover { background: rgba(212,175,55,0.1); }
+        .dropdown-menu button:last-child { border-bottom: none; }
+        .photo-preview { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 15px; }
         footer { background: rgba(0,0,0,0.98); border-top: 2px solid var(--gold); padding: 40px 20px; text-align: center; color: var(--gray); font-size: 0.75rem; margin-top: 50px; }
         .footer-section { margin-bottom: 20px; }
         .footer-section h4 { color: var(--gold); margin-bottom: 10px; font-size: 0.85rem; }
         .footer-section p { line-height: 1.8; margin-bottom: 5px; }
-        .method-btn { background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.3s; text-align: center; }
-        .method-btn:hover { border-color: var(--gold); background: rgba(212,175,55,0.1); }
-        .method-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.2); }
-        .method-btn i { color: var(--gold); font-size: 1.5rem; margin-bottom: 8px; display: block; }
-        .method-btn p { font-size: 0.8rem; font-weight: bold; }
+        .colaborador-tag { display: inline-block; background: rgba(212,175,55,0.2); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-right: 5px; margin-bottom: 5px; }
+        .dropdown-toggle { cursor: pointer; padding: 12px; background: #111; border: 1px solid #333; border-radius: 6px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .dropdown-toggle:hover { border-color: var(--gold); }
+        .dropdown-content { display: none; background: #000; border: 1px solid #333; border-radius: 6px; margin-bottom: 12px; }
+        .dropdown-content.active { display: block; }
+        .dropdown-item { padding: 10px; border-bottom: 1px solid #222; cursor: pointer; font-size: 0.8rem; }
+        .dropdown-item:hover { background: rgba(212,175,55,0.1); }
+        .dropdown-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
-
-<div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p style="color: var(--gold); margin-top: 15px; font-size: 0.9rem;">MAM DISTRIBUIDORA</p>
-</div>
 
 <!-- AUTH SCREEN -->
 <div id="auth-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
@@ -144,6 +152,20 @@
             </div>
 
             <div class="card">
+                <h3>Destaques</h3>
+                <div id="destaques-container">
+                    <p style="text-align: center; color: var(--gray); padding: 30px;">Nenhuma música em destaque ainda.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Feed Global - Últimos Lançamentos</h3>
+                <div id="feed-global">
+                    <p style="text-align: center; color: var(--gray); padding: 30px;">Nenhuma música lançada ainda.</p>
+                </div>
+            </div>
+
+            <div class="card">
                 <h3>Planos de Upgrade</h3>
                 <div class="grid">
                     <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 6px;">
@@ -187,8 +209,8 @@
             <div class="card">
                 <h3>Lançar Nova Música</h3>
                 
-                <label>Selecione o Artista</label>
-                <select id="select-artista" onchange="atualizar_dados_artista()">
+                <label>Selecione o Artista Principal</label>
+                <select id="select-artista">
                     <option value="">Escolha um artista</option>
                 </select>
 
@@ -204,10 +226,14 @@
                 <label>Gênero Secundário (Opcional)</label>
                 <select id="track-genero2"></select>
 
+                <label>Colaboradores (Selecione múltiplos artistas)</label>
+                <div id="colaboradores-container" style="background: #111; padding: 10px; border-radius: 6px; margin-bottom: 12px; max-height: 200px; overflow-y: auto;"></div>
+                <p style="font-size: 0.7rem; color: var(--gray); margin-bottom: 12px;">Colaboradores selecionados: <span id="colaboradores-count">0</span></p>
+
                 <label>Compositores</label>
                 <input type="text" id="track-compositores" placeholder="Nomes separados por vírgula">
 
-                <label>Produtores</label>
+                <label>Produtores/Produtora</label>
                 <input type="text" id="track-produtores" placeholder="Nomes separados por vírgula">
 
                 <label>Capa do Lançamento</label>
@@ -262,8 +288,21 @@
                 <h3>Solicitar Levantamento</h3>
                 <p style="font-size: 0.8rem; color: var(--gray); margin-bottom: 15px;">Mínimo: 5.000 Kz</p>
                 
-                <label>Selecione o Método de Levantamento</label>
-                <div id="metodos-saque-container"></div>
+                <div class="dropdown-toggle" onclick="toggle_dropdown('metodos-dropdown')">
+                    <span id="metodo-selecionado">Selecione o Método de Levantamento</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+
+                <div id="metodos-dropdown" class="dropdown-content">
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('bfa', 'BFA')">BFA</div>
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('bai', 'BAI')">BAI</div>
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('bic', 'BIC')">BIC</div>
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('express', 'Multicaixa Express')">Multicaixa Express</div>
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('visa', 'Cartão Visa')">Cartão Visa</div>
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('paypal', 'PayPal')">PayPal</div>
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('pix', 'Pix')">Pix</div>
+                    <div class="dropdown-item" onclick="selecionar_metodo_saque('payoneer', 'Payoneer')">Payoneer</div>
+                </div>
 
                 <div id="formulario-saque" style="display: none; margin-top: 20px;"></div>
             </div>
@@ -337,7 +376,7 @@
 
             <div class="card">
                 <h3>Gerenciar Utilizadores</h3>
-                <input type="text" id="admin-search" placeholder="Pesquisar..." onkeyup="pesquisar_usuarios()">
+                <input type="text" id="admin-search" placeholder="Pesquisar por email..." onkeyup="pesquisar_usuarios()">
                 <div id="admin-usuarios-list" style="margin-top: 15px;"></div>
             </div>
         </div>
@@ -403,6 +442,29 @@
     </div>
 </div>
 
+<!-- MODAL PLAYER MÚSICA -->
+<div id="modal-player" class="modal">
+    <div class="modal-content" style="text-align: center;">
+        <span class="close-modal" onclick="fechar_modal('modal-player')">&times;</span>
+        <h2 id="player-titulo">Título da Música</h2>
+        <p id="player-artista" style="font-size: 0.8rem; color: var(--gray); margin-bottom: 20px;">Artista</p>
+        
+        <div class="disco" id="disco-player">
+            <div class="disco-center">
+                <i class="fas fa-music"></i>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <button onclick="tocar_pausar_musica()"><i class="fas fa-play"></i></button>
+            <button onclick="parar_musica()"><i class="fas fa-stop"></i></button>
+        </div>
+
+        <audio id="audio-player" style="width: 100%; margin-top: 20px;"></audio>
+        <p id="player-tempo" style="font-size: 0.75rem; color: var(--gray); margin-top: 10px;">00:00 / 00:00</p>
+    </div>
+</div>
+
 <footer>
     <div class="footer-section">
         <h4>MAM DISTRIBUIDORA DIGITAL</h4>
@@ -410,7 +472,7 @@
     </div>
     <div class="footer-section">
         <h4>Sobre Nós</h4>
-        <p>Fundador: Matias Arsénio Manuel | Distribuímos para Spotify, Apple Music, YouTube Music, Amazon Music, Tidal e 100+ plataformas.</p>
+        <p>Fundador: Matias Arsénio Manuel | Distribuímos para Spotify, Apple Music, YouTube Music, Amazon Music, Tidal, Deezer, SoundCloud e 100+ plataformas.</p>
     </div>
     <div class="footer-section">
         <h4>Contacto</h4>
@@ -421,7 +483,7 @@
 </footer>
 
 <script>
-const PAISES = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "São Tomé e Príncipe", "África do Sul", "Alemanha", "Argentina", "Austrália", "Áustria", "Bélgica", "Bielorrússia", "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brunei", "Bulgária", "Burkina Faso", "Burúndi", "Butão", "Camboja", "Camarões", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo", "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibuti", "Dominica", "Egito", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovénia", "Espanha", "Estados Unidos", "Estónia", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia", "Gibraltar", "Grécia", "Grenada", "Groenlândia", "Guadalupe", "Guam", "Guatemala", "Guernsey", "Guiana", "Guiana Francesa", "Guiné", "Guiné Equatorial", "Haiti", "Holanda", "Honduras", "Hong Kong", "Hungria", "Iémen", "Ilha Bouvet", "Ilha Christmas", "Ilha de Man", "Ilhas Åland", "Ilhas Cayman", "Ilhas Cocos", "Ilhas Cook", "Ilhas Faroé", "Ilhas Heard e McDonald", "Ilhas Mariana do Norte", "Ilhas Marshall", "Ilhas Pitcairn", "Ilhas Salomão", "Ilhas Turcos e Caicos", "Ilhas Virgens Britânicas", "Ilhas Virgens dos EUA", "Índia", "Indonésia", "Inglaterra", "Inglaterra", "Irã", "Iraque", "Irlanda", "Irlanda do Norte", "Islândia", "Israel", "Itália", "Jamaica", "Japão", "Jersey", "Jordânia", "Kiribati", "Kosovo", "Kuwait", "Laos", "Lesoto", "Letónia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo", "Macau", "Macedónia", "Madagáscar", "Malásia", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Martinica", "Maurícia", "Mauritânia", "Mayotte", "Mé", "Médio Oriente", "México", "Micronésia", "Moçambique", "Moldávia", "Mónaco", "Mongólia", "Montenegro", "Montserrat", "Namíbia", "Nauru", "Nepal", "Nicarágua", "Níger", "Nigéria", "Niue", "Noruega", "Nova Caledónia", "Nova Zelândia", "Omã", "Palau", "Palestina", "Panamá", "Papua-Nova Guiné", "Paquistão", "Paraguai", "País de Gales", "Países Baixos", "Perú", "Polinésia Francesa", "Polónia", "Porto Rico", "Portugal", "Quénia", "Quirguistão", "Reino Unido", "República Centro-Africana", "República Checa", "República da Irlanda", "República Democrática do Congo", "República do Congo", "República Dominicana", "República Sudafricana", "Reunião", "Roménia", "Ruanda", "Rússia", "Sahara Ocidental", "Saint Kitts e Nevis", "Saint Martin", "Saint Vincent e Granadinas", "Samoa", "Samoa Americana", "San Marino", "Santa Helena", "Santa Lúcia", "Santo Bartolomeu", "Santo Estêvão e Príncipe", "São Bartolomeu", "São Cristóvão e Neves", "São Marinho", "São Tomé e Príncipe", "São Vicente e Granadinas", "Seicheles", "Senegal", "Serra Leoa", "Sérvia", "Singapura", "Síria", "Somália", "Sri Lanca", "Suazilândia", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Svalbard e Jan Mayen", "Tailândia", "Taiwan", "Tajiquistão", "Tanzânia", "Tchéquia", "Terras Austrais Francesas", "Territórios Palestinianos", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trindade e Tobago", "Tunísia", "Turcomenistão", "Turquia", "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Usbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietname", "Wallis e Futuna", "Zâmbia", "Zimbabué"];
+const PAISES = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "São Tomé e Príncipe", "África do Sul", "Alemanha", "Argentina", "Austrália", "Áustria", "Bélgica", "Bielorrússia", "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brunei", "Bulgária", "Burkina Faso", "Burúndi", "Butão", "Camboja", "Camarões", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo", "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibuti", "Dominica", "Egito", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovénia", "Espanha", "Estados Unidos", "Estónia", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia", "Gibraltar", "Grécia", "Grenada", "Groenlândia", "Guadalupe", "Guam", "Guatemala", "Guernsey", "Guiana", "Guiana Francesa", "Guiné", "Guiné Equatorial", "Haiti", "Holanda", "Honduras", "Hong Kong", "Hungria", "Iémen", "Ilha Bouvet", "Ilha Christmas", "Ilha de Man", "Ilhas Åland", "Ilhas Cayman", "Ilhas Cocos", "Ilhas Cook", "Ilhas Faroé", "Ilhas Heard e McDonald", "Ilhas Mariana do Norte", "Ilhas Marshall", "Ilhas Pitcairn", "Ilhas Salomão", "Ilhas Turcos e Caicos", "Ilhas Virgens Britânicas", "Ilhas Virgens dos EUA", "Índia", "Indonésia", "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão", "Jersey", "Jordânia", "Kiribati", "Kosovo", "Kuwait", "Laos", "Lesoto", "Letónia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo", "Macau", "Macedónia", "Madagáscar", "Malásia", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Martinica", "Maurícia", "Mauritânia", "Mayotte", "México", "Micronésia", "Moldávia", "Mónaco", "Mongólia", "Montenegro", "Montserrat", "Namíbia", "Nauru", "Nepal", "Nicarágua", "Níger", "Nigéria", "Niue", "Noruega", "Nova Caledónia", "Nova Zelândia", "Omã", "Palau", "Palestina", "Panamá", "Papua-Nova Guiné", "Paquistão", "Paraguai", "País de Gales", "Países Baixos", "Perú", "Polinésia Francesa", "Polónia", "Porto Rico", "Portugal", "Quénia", "Quirguistão", "Reino Unido", "República Centro-Africana", "República Checa", "República Democrática do Congo", "República do Congo", "República Dominicana", "República Sudafricana", "Reunião", "Roménia", "Ruanda", "Rússia", "Sahara Ocidental", "Saint Kitts e Nevis", "Saint Martin", "Saint Vincent e Granadinas", "Samoa", "Samoa Americana", "San Marino", "Santa Helena", "Santa Lúcia", "Santo Bartolomeu", "Santo Estêvão e Príncipe", "São Bartolomeu", "São Cristóvão e Neves", "São Marinho", "São Tomé e Príncipe", "São Vicente e Granadinas", "Seicheles", "Senegal", "Serra Leoa", "Sérvia", "Singapura", "Síria", "Somália", "Sri Lanca", "Suazilândia", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Svalbard e Jan Mayen", "Tailândia", "Taiwan", "Tajiquistão", "Tanzânia", "Tchéquia", "Terras Austrais Francesas", "Territórios Palestinianos", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trindade e Tobago", "Tunísia", "Turcomenistão", "Turquia", "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Usbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietname", "Wallis e Futuna", "Zâmbia", "Zimbabué"];
 
 const ESTILOS = ["Afro House", "Amapiano", "Angolan Pop", "Bossa Nova", "Chillwave", "Dancehall", "Deep House", "Drum and Bass", "Dubstep", "Eletrônico", "Funk", "Gospel", "Grime", "Groove", "Gumbe", "Hip Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Jazz", "Jit", "Kizomba", "Kizomba Urbana", "Kuduro", "Kuduro Moderno", "Kuizomba", "Kwaito", "Latin Trap", "Lofi Hip Hop", "Lounge", "Makossa", "Morna", "Música Clássica", "Música Eletrônica", "Música Tradicional", "Néo-Soul", "Palop", "Pantsula", "Passada", "Passada Moderna", "Passada Urbana", "Perreo", "Phonk", "Pop", "Pop Angolano", "Pop Latino", "Post-Punk", "Progressivo", "Psicadélico", "Punk", "R&B", "Reggae", "Reggaeton", "Regueton", "Remix", "Retro", "Rock", "Rock Alternativo", "Rock Angolano", "Rock Latino", "Rock Progressivo", "Rocksteady", "Rumba", "Rumba Congolesa", "Samba", "Samba Enredo", "Samba-Reggae", "Sampler", "Semba", "Semba Urbana", "Sertanejo", "Sertanejo Universitário", "Ska", "Slam", "Soca", "Soft Rock", "Soul", "Soukouss", "Soundscape", "Spoken Word", "Steppas", "Stoner Rock", "Street Funk", "Street Rap", "Suingue", "Swing", "Synthwave", "Tarraxinha", "Tech House", "Tech Trance", "Techno", "Techno Minimal", "Trance", "Trap", "Trap Latino", "Trap Português", "Tribal", "Tribal House", "Tribal Trap", "Trip Hop", "Tropicália", "Turbo Folk", "Turbo Pop", "Turbo Trap", "Turbo Urbano", "Twist", "Two-Step", "Uk Garage", "Urbano", "Urbano Angolano", "Urbano Latino", "Urbano Português", "Urbano Urbano", "Vaporwave", "Vaudeville", "Vinil", "Viral", "Viral Angolano", "Viral Latino", "Viral Português", "Viral Urbano", "Vogueing", "Waveform", "Wellness", "Western Swing", "World Music", "Worldbeat", "Worldfusion", "Worldmusic", "Worldpop", "Worldrap", "Worldtrap", "Worldurbano", "Xote", "Xote Moderno", "Xote Urbano", "Yodeling", "Young Thug", "Young Trap", "Youngblood", "Zouglou", "Zouglou Moderno", "Zouglou Urbano", "Zouk", "Zouk Angolano", "Zouk Latino", "Zouk Moderno", "Zouk Português", "Zouk Urbano"];
 
@@ -429,7 +491,9 @@ const ADMIN_EMAIL = "mamfilhos29@gmail.com";
 const ADMIN_PASS = "Angell28";
 
 let usuario_logado = null;
+let colaboradores_selecionados = [];
 let metodo_saque_selecionado = null;
+let audio_atual = null;
 
 window.onload = () => {
     inicializar_dados();
@@ -450,7 +514,8 @@ function inicializar_dados() {
             artistas: [],
             musicas: [],
             isAdmin: true,
-            foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg"
+            foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+            ganhos: []
         };
         localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
     }
@@ -470,38 +535,365 @@ function preencher_selects() {
             sel.innerHTML += `<option value="${e}">${e}</option>`;
         });
     });
-
-    renderizar_metodos_saque();
 }
 
-function renderizar_metodos_saque() {
-    const container = document.getElementById('metodos-saque-container');
-    const metodos = [
-        { id: 'bfa', nome: 'BFA', icon: 'fa-university' },
-        { id: 'bai', nome: 'BAI', icon: 'fa-university' },
-        { id: 'bic', nome: 'BIC', icon: 'fa-university' },
-        { id: 'express', nome: 'Multicaixa Express', icon: 'fa-mobile' },
-        { id: 'visa', nome: 'Cartão Visa', icon: 'fa-credit-card' },
-        { id: 'paypal', nome: 'PayPal', icon: 'fab fa-paypal' },
-        { id: 'pix', nome: 'Pix', icon: 'fa-qrcode' },
-        { id: 'payoneer', nome: 'Payoneer', icon: 'fa-wallet' }
-    ];
+function fazer_login() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+    
+    if(!email || !pass) return alert('Preencha todos os campos');
+    
+    const user = JSON.parse(localStorage.getItem(`mam_${email}`));
+    if(user && user.senha === pass) {
+        localStorage.setItem('mam_sessao', email);
+        usuario_logado = user;
+        
+        // Ganho de login: 3000 Kz para o utilizador
+        usuario_logado.saldo = (usuario_logado.saldo || 0) + 3000;
+        usuario_logado.ganhos = usuario_logado.ganhos || [];
+        usuario_logado.ganhos.push({ tipo: 'Login', valor: 3000, data: new Date().toLocaleDateString() });
+        localStorage.setItem(`mam_${email}`, JSON.stringify(usuario_logado));
+        
+        // Ganho para admin: 3000 Kz
+        const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
+        admin.saldo = (admin.saldo || 0) + 3000;
+        admin.ganhos = admin.ganhos || [];
+        admin.ganhos.push({ tipo: 'Login de Utilizador', valor: 3000, data: new Date().toLocaleDateString(), usuario: usuario_logado.nome });
+        localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
+        
+        mostrar_app();
+    } else {
+        alert('Email ou senha incorretos');
+    }
+}
 
+function fazer_registo() {
+    const nome = document.getElementById('reg-nome').value;
+    const email = document.getElementById('reg-email').value;
+    const tipo = document.getElementById('reg-tipo').value;
+    const pais = document.getElementById('reg-pais').value;
+    const pass1 = document.getElementById('reg-pass1').value;
+    const pass2 = document.getElementById('reg-pass2').value;
+    
+    if(!nome || !email || !tipo || !pais || !pass1) return alert('Preencha todos os campos');
+    if(pass1 !== pass2) return alert('Senhas não coincidem');
+    if(localStorage.getItem(`mam_${email}`)) return alert('Email já registado');
+    
+    const novo_user = {
+        nome, email, tipo, pais, senha: pass1,
+        saldo: 1000, // Bônus de boas-vindas
+        plano: "FREE",
+        artistas: [],
+        musicas: [],
+        isAdmin: false,
+        foto: "https://via.placeholder.com/150",
+        ganhos: [{ tipo: 'Bônus de Boas-vindas', valor: 1000, data: new Date().toLocaleDateString() }]
+    };
+    
+    localStorage.setItem(`mam_${email}`, JSON.stringify(novo_user));
+    
+    // Ganho para admin: 5000 Kz por novo registo
+    const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
+    admin.saldo = (admin.saldo || 0) + 5000;
+    admin.ganhos = admin.ganhos || [];
+    admin.ganhos.push({ tipo: 'Novo Registo', valor: 5000, data: new Date().toLocaleDateString(), usuario: nome });
+    localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
+    
+    alert('Conta criada com sucesso! Ganhou 1.000 Kz de boas-vindas.');
+    toggle_auth();
+}
+
+function toggle_auth() {
+    document.getElementById('login-form').style.display = document.getElementById('login-form').style.display === 'none' ? 'block' : 'none';
+    document.getElementById('register-form').style.display = document.getElementById('register-form').style.display === 'none' ? 'block' : 'none';
+}
+
+function verificar_sessao() {
+    const email = localStorage.getItem('mam_sessao');
+    if(email) {
+        usuario_logado = JSON.parse(localStorage.getItem(`mam_${email}`));
+        if(usuario_logado) mostrar_app();
+    }
+}
+
+function mostrar_app() {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    
+    document.getElementById('user-nome').innerHTML = usuario_logado.nome;
+    document.getElementById('user-tipo').innerHTML = usuario_logado.tipo;
+    document.getElementById('user-plano').innerHTML = usuario_logado.plano;
+    document.getElementById('user-saldo').innerHTML = (usuario_logado.saldo || 0).toLocaleString('pt-PT') + ',00 Kz';
+    document.getElementById('saldo-display').innerHTML = (usuario_logado.saldo || 0).toLocaleString('pt-PT') + ',00 Kz';
+    document.getElementById('perfil-nome').innerHTML = usuario_logado.nome;
+    document.getElementById('perfil-email').innerHTML = usuario_logado.email;
+    document.getElementById('foto-perfil').src = usuario_logado.foto || 'https://via.placeholder.com/150';
+    
+    document.getElementById('edit-nome').value = usuario_logado.nome;
+    document.getElementById('edit-tipo').value = usuario_logado.tipo;
+    document.getElementById('edit-pais').value = usuario_logado.pais;
+    document.getElementById('edit-telefone').value = usuario_logado.telefone || '';
+
+    if(usuario_logado.isAdmin) {
+        document.getElementById('btn-admin').style.display = 'block';
+        carregar_admin_panel();
+    }
+
+    carregar_artistas();
+    carregar_musicas();
+    carregar_ganhos();
+    carregar_destaques();
+    carregar_feed_global();
+}
+
+function abrir_novo_artista() {
+    document.getElementById('modal-novo-artista').classList.add('active');
+}
+
+function salvar_novo_artista() {
+    const nome = document.getElementById('artista-nome').value;
+    const tipo = document.getElementById('artista-tipo').value;
+    const estilo = document.getElementById('artista-estilo').value;
+    
+    if(!nome || !tipo || !estilo) return alert('Preencha os campos obrigatórios');
+
+    const artista = {
+        id: Date.now(),
+        nome, tipo, estilo,
+        foto: "https://via.placeholder.com/150",
+        redes: {
+            youtube: document.getElementById('artista-youtube').value,
+            facebook: document.getElementById('artista-facebook').value,
+            spotify: document.getElementById('artista-spotify').value,
+            tiktok: document.getElementById('artista-tiktok').value,
+            applemusic: document.getElementById('artista-applemusic').value
+        }
+    };
+
+    usuario_logado.artistas.push(artista);
+    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
+    
+    alert('Artista criado com sucesso!');
+    fechar_modal('modal-novo-artista');
+    document.getElementById('artista-nome').value = '';
+    document.getElementById('artista-tipo').value = '';
+    document.getElementById('artista-estilo').value = '';
+    carregar_artistas();
+}
+
+function carregar_artistas() {
+    const container = document.getElementById('lista-artistas');
+    const select = document.getElementById('select-artista');
+    const colaboradores = document.getElementById('colaboradores-container');
+    
     container.innerHTML = '';
-    metodos.forEach(m => {
-        container.innerHTML += `
-            <div class="method-btn" onclick="selecionar_metodo_saque('${m.id}', '${m.nome}')">
-                <i class="fas ${m.icon}"></i>
-                <p>${m.nome}</p>
-            </div>
-        `;
+    select.innerHTML = '<option value="">Escolha um artista</option>';
+    colaboradores.innerHTML = '';
+
+    if(usuario_logado.artistas && usuario_logado.artistas.length > 0) {
+        usuario_logado.artistas.forEach(a => {
+            container.innerHTML += `
+                <div class="artist-item">
+                    <img src="${a.foto}">
+                    <div class="artist-item-info">
+                        <p><b>${a.nome}</b></p>
+                        <span>${a.tipo} • ${a.estilo}</span>
+                    </div>
+                </div>
+            `;
+            select.innerHTML += `<option value="${a.id}">${a.nome}</option>`;
+            colaboradores.innerHTML += `
+                <label style="display: flex; align-items: center; gap: 10px; padding: 8px; cursor: pointer; margin-bottom: 5px;">
+                    <input type="checkbox" value="${a.id}" onchange="atualizar_colaboradores()">
+                    <span style="font-size: 0.8rem;">${a.nome}</span>
+                </label>
+            `;
+        });
+    }
+}
+
+function atualizar_colaboradores() {
+    colaboradores_selecionados = [];
+    document.querySelectorAll('#colaboradores-container input[type="checkbox"]:checked').forEach(cb => {
+        colaboradores_selecionados.push(cb.value);
     });
+    document.getElementById('colaboradores-count').innerHTML = colaboradores_selecionados.length;
+}
+
+function enviar_lancamento() {
+    const artista_id = document.getElementById('select-artista').value;
+    const titulo = document.getElementById('track-titulo').value;
+    const versao = document.getElementById('track-versao').value;
+    const genero = document.getElementById('track-genero').value;
+    
+    if(!artista_id || !titulo || !genero) return alert('Preencha os campos obrigatórios');
+
+    const musica = {
+        id: Date.now(),
+        artista_id,
+        titulo, versao, genero,
+        colaboradores: colaboradores_selecionados,
+        compositores: document.getElementById('track-compositores').value,
+        produtores: document.getElementById('track-produtores').value,
+        data: new Date().toLocaleDateString(),
+        status: 'Em Revisão',
+        downloads: 0,
+        reproducoes: 0
+    };
+
+    usuario_logado.musicas.push(musica);
+    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
+    
+    alert('Música enviada para distribuição!');
+    document.getElementById('track-titulo').value = '';
+    document.getElementById('track-versao').value = '';
+    document.getElementById('track-genero').value = '';
+    document.getElementById('track-compositores').value = '';
+    document.getElementById('track-produtores').value = '';
+    colaboradores_selecionados = [];
+    document.getElementById('colaboradores-count').innerHTML = '0';
+    document.querySelectorAll('#colaboradores-container input[type="checkbox"]').forEach(cb => cb.checked = false);
+    
+    carregar_musicas();
+    carregar_destaques();
+    carregar_feed_global();
+}
+
+function carregar_musicas() {
+    const container = document.getElementById('lista-musicas');
+    if(usuario_logado.musicas && usuario_logado.musicas.length > 0) {
+        container.innerHTML = '';
+        usuario_logado.musicas.forEach(m => {
+            const artista = usuario_logado.artistas.find(a => a.id == m.artista_id);
+            let colaboradores_html = '';
+            if(m.colaboradores && m.colaboradores.length > 0) {
+                m.colaboradores.forEach(col_id => {
+                    const col = usuario_logado.artistas.find(a => a.id == col_id);
+                    if(col) colaboradores_html += `<span class="colaborador-tag">${col.nome}</span>`;
+                });
+            }
+            container.innerHTML += `
+                <div class="music-card">
+                    <p><b>${m.titulo}</b></p>
+                    <p style="font-size: 0.75rem; color: var(--gray);">${artista ? artista.nome : 'Artista'} • ${m.genero} • ${m.data}</p>
+                    ${colaboradores_html ? `<p style="font-size: 0.7rem; margin-top: 8px;">${colaboradores_html}</p>` : ''}
+                    <span style="display: inline-block; padding: 4px 8px; background: #1a4d1a; color: #4eff4e; border-radius: 4px; font-size: 0.7rem; margin-top: 10px;">${m.status}</span>
+                    <button class="btn btn-sec btn-small" style="margin-top: 10px;" onclick="abrir_player('${m.titulo}', '${artista ? artista.nome : 'Artista'}')">Tocar</button>
+                </div>
+            `;
+        });
+    }
+}
+
+function carregar_destaques() {
+    const container = document.getElementById('destaques-container');
+    let todas_musicas = [];
+    
+    for(let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if(key.startsWith('mam_') && !key.includes('sessao')) {
+            let u = JSON.parse(localStorage.getItem(key));
+            if(u.musicas) {
+                u.musicas.forEach(m => {
+                    todas_musicas.push({...m, usuario: u.nome, artista_nome: u.artistas.find(a => a.id == m.artista_id)?.nome || u.nome});
+                });
+            }
+        }
+    }
+    
+    todas_musicas.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
+    const top5 = todas_musicas.slice(0, 5);
+    
+    if(top5.length > 0) {
+        container.innerHTML = '';
+        top5.forEach(m => {
+            container.innerHTML += `
+                <div class="music-card">
+                    <p><b>${m.titulo}</b></p>
+                    <p style="font-size: 0.75rem; color: var(--gray);">${m.artista_nome} • ${m.genero}</p>
+                    <p style="font-size: 0.7rem; color: var(--gold);">⭐ ${m.downloads || 0} downloads</p>
+                    <button class="btn btn-sec btn-small" style="margin-top: 10px;" onclick="abrir_player('${m.titulo}', '${m.artista_nome}')">Tocar</button>
+                </div>
+            `;
+        });
+    }
+}
+
+function carregar_feed_global() {
+    const container = document.getElementById('feed-global');
+    let todas_musicas = [];
+    
+    for(let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if(key.startsWith('mam_') && !key.includes('sessao')) {
+            let u = JSON.parse(localStorage.getItem(key));
+            if(u.musicas) {
+                u.musicas.forEach(m => {
+                    todas_musicas.push({...m, usuario: u.nome, artista_nome: u.artistas.find(a => a.id == m.artista_id)?.nome || u.nome});
+                });
+            }
+        }
+    }
+    
+    todas_musicas.sort((a, b) => new Date(b.data) - new Date(a.data));
+    
+    if(todas_musicas.length > 0) {
+        container.innerHTML = '';
+        todas_musicas.forEach(m => {
+            container.innerHTML += `
+                <div class="music-card">
+                    <p><b>${m.titulo}</b></p>
+                    <p style="font-size: 0.75rem; color: var(--gray);">${m.artista_nome} • ${m.genero} • ${m.data}</p>
+                    <button class="btn btn-sec btn-small" style="margin-top: 10px;" onclick="abrir_player('${m.titulo}', '${m.artista_nome}')">Tocar</button>
+                </div>
+            `;
+        });
+    }
+}
+
+function carregar_ganhos() {
+    const container = document.getElementById('historico-ganhos');
+    if(usuario_logado.ganhos && usuario_logado.ganhos.length > 0) {
+        container.innerHTML = '';
+        usuario_logado.ganhos.forEach(g => {
+            container.innerHTML += `
+                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.75rem;">
+                    <div>
+                        <p style="color: #fff;">${g.tipo}</p>
+                        <span style="color: var(--gray);">${g.data}</span>
+                    </div>
+                    <p style="color: var(--gold); font-weight: bold;">+${g.valor.toLocaleString('pt-PT')} Kz</p>
+                </div>
+            `;
+        });
+    }
+}
+
+function abrir_player(titulo, artista) {
+    document.getElementById('player-titulo').innerHTML = titulo;
+    document.getElementById('player-artista').innerHTML = artista;
+    document.getElementById('modal-player').classList.add('active');
+    document.getElementById('disco-player').classList.remove('paused');
+}
+
+function tocar_pausar_musica() {
+    const disco = document.getElementById('disco-player');
+    disco.classList.toggle('paused');
+}
+
+function parar_musica() {
+    const disco = document.getElementById('disco-player');
+    disco.classList.add('paused');
+}
+
+function toggle_dropdown(id) {
+    document.getElementById(id).classList.toggle('active');
 }
 
 function selecionar_metodo_saque(id, nome) {
     metodo_saque_selecionado = { id, nome };
-    document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.closest('.method-btn').classList.add('active');
+    document.getElementById('metodo-selecionado').innerHTML = nome;
+    document.getElementById('metodos-dropdown').classList.remove('active');
     
     const form_container = document.getElementById('formulario-saque');
     form_container.innerHTML = '';
@@ -581,202 +973,15 @@ function processar_saque(metodo) {
     if(!valor || valor < 5000) return alert('Valor mínimo: 5.000 Kz');
     if(valor > usuario_logado.saldo) return alert('Saldo insuficiente');
 
-    const saque = {
-        usuario: usuario_logado.nome,
-        email: usuario_logado.email,
-        metodo,
-        valor,
-        data: new Date().toLocaleDateString(),
-        status: 'Pendente'
-    };
-
-    let saques = JSON.parse(localStorage.getItem('mam_saques')) || [];
-    saques.push(saque);
-    localStorage.setItem('mam_saques', JSON.stringify(saques));
-
+    usuario_logado.saldo -= valor;
+    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
+    
     alert('Levantamento solicitado com sucesso! Será processado em até 24 horas.');
     document.getElementById('saque-valor').value = '';
     document.getElementById('formulario-saque').innerHTML = '';
     document.getElementById('formulario-saque').style.display = 'none';
-}
-
-function fazer_login() {
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-pass').value;
-    
-    if(!email || !pass) return alert('Preencha todos os campos');
-    
-    const user = JSON.parse(localStorage.getItem(`mam_${email}`));
-    if(user && user.senha === pass) {
-        localStorage.setItem('mam_sessao', email);
-        usuario_logado = user;
-        mostrar_app();
-    } else {
-        alert('Email ou senha incorretos');
-    }
-}
-
-function fazer_registo() {
-    const nome = document.getElementById('reg-nome').value;
-    const email = document.getElementById('reg-email').value;
-    const tipo = document.getElementById('reg-tipo').value;
-    const pais = document.getElementById('reg-pais').value;
-    const pass1 = document.getElementById('reg-pass1').value;
-    const pass2 = document.getElementById('reg-pass2').value;
-    
-    if(!nome || !email || !tipo || !pais || !pass1) return alert('Preencha todos os campos');
-    if(pass1 !== pass2) return alert('Senhas não coincidem');
-    if(localStorage.getItem(`mam_${email}`)) return alert('Email já registado');
-    
-    const novo_user = {
-        nome, email, tipo, pais, senha: pass1,
-        saldo: 0,
-        plano: "FREE",
-        artistas: [],
-        musicas: [],
-        isAdmin: false,
-        foto: "https://via.placeholder.com/150"
-    };
-    
-    localStorage.setItem(`mam_${email}`, JSON.stringify(novo_user));
-    alert('Conta criada com sucesso!');
-    toggle_auth();
-}
-
-function toggle_auth() {
-    document.getElementById('login-form').style.display = document.getElementById('login-form').style.display === 'none' ? 'block' : 'none';
-    document.getElementById('register-form').style.display = document.getElementById('register-form').style.display === 'none' ? 'block' : 'none';
-}
-
-function verificar_sessao() {
-    const email = localStorage.getItem('mam_sessao');
-    if(email) {
-        usuario_logado = JSON.parse(localStorage.getItem(`mam_${email}`));
-        if(usuario_logado) mostrar_app();
-    }
-}
-
-function mostrar_app() {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    
-    document.getElementById('user-nome').innerHTML = usuario_logado.nome;
-    document.getElementById('user-tipo').innerHTML = usuario_logado.tipo;
-    document.getElementById('user-plano').innerHTML = usuario_logado.plano;
-    document.getElementById('user-saldo').innerHTML = (usuario_logado.saldo || 0).toLocaleString('pt-PT') + ',00 Kz';
-    document.getElementById('saldo-display').innerHTML = (usuario_logado.saldo || 0).toLocaleString('pt-PT') + ',00 Kz';
-    document.getElementById('perfil-nome').innerHTML = usuario_logado.nome;
-    document.getElementById('perfil-email').innerHTML = usuario_logado.email;
-    document.getElementById('foto-perfil').src = usuario_logado.foto || 'https://via.placeholder.com/150';
-    
-    document.getElementById('edit-nome').value = usuario_logado.nome;
-    document.getElementById('edit-tipo').value = usuario_logado.tipo;
-    document.getElementById('edit-pais').value = usuario_logado.pais;
-    document.getElementById('edit-telefone').value = usuario_logado.telefone || '';
-
-    if(usuario_logado.isAdmin) {
-        document.getElementById('btn-admin').style.display = 'block';
-        carregar_admin_panel();
-    }
-
-    carregar_artistas();
-    carregar_musicas();
-}
-
-function abrir_novo_artista() {
-    document.getElementById('modal-novo-artista').classList.add('active');
-}
-
-function salvar_novo_artista() {
-    const nome = document.getElementById('artista-nome').value;
-    const tipo = document.getElementById('artista-tipo').value;
-    const estilo = document.getElementById('artista-estilo').value;
-    
-    if(!nome || !tipo || !estilo) return alert('Preencha os campos obrigatórios');
-
-    const artista = {
-        id: Date.now(),
-        nome, tipo, estilo,
-        foto: "https://via.placeholder.com/150",
-        redes: {
-            youtube: document.getElementById('artista-youtube').value,
-            facebook: document.getElementById('artista-facebook').value,
-            spotify: document.getElementById('artista-spotify').value,
-            tiktok: document.getElementById('artista-tiktok').value,
-            applemusic: document.getElementById('artista-applemusic').value
-        }
-    };
-
-    usuario_logado.artistas.push(artista);
-    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
-    
-    alert('Artista criado com sucesso!');
-    fechar_modal('modal-novo-artista');
-    carregar_artistas();
-}
-
-function carregar_artistas() {
-    const container = document.getElementById('lista-artistas');
-    const select = document.getElementById('select-artista');
-    
-    container.innerHTML = '';
-    select.innerHTML = '<option value="">Escolha um artista</option>';
-
-    if(usuario_logado.artistas && usuario_logado.artistas.length > 0) {
-        usuario_logado.artistas.forEach(a => {
-            container.innerHTML += `
-                <div class="artist-item">
-                    <img src="${a.foto}">
-                    <div class="artist-item-info">
-                        <p><b>${a.nome}</b></p>
-                        <span>${a.tipo} • ${a.estilo}</span>
-                    </div>
-                </div>
-            `;
-            select.innerHTML += `<option value="${a.id}">${a.nome}</option>`;
-        });
-    }
-}
-
-function enviar_lancamento() {
-    const artista_id = document.getElementById('select-artista').value;
-    const titulo = document.getElementById('track-titulo').value;
-    const versao = document.getElementById('track-versao').value;
-    const genero = document.getElementById('track-genero').value;
-    
-    if(!artista_id || !titulo || !genero) return alert('Preencha os campos obrigatórios');
-
-    const musica = {
-        id: Date.now(),
-        artista_id,
-        titulo, versao, genero,
-        data: new Date().toLocaleDateString(),
-        status: 'Em Revisão'
-    };
-
-    usuario_logado.musicas.push(musica);
-    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
-    
-    alert('Música enviada para distribuição!');
-    document.getElementById('track-titulo').value = '';
-    carregar_musicas();
-}
-
-function carregar_musicas() {
-    const container = document.getElementById('lista-musicas');
-    if(usuario_logado.musicas && usuario_logado.musicas.length > 0) {
-        container.innerHTML = '';
-        usuario_logado.musicas.forEach(m => {
-            const artista = usuario_logado.artistas.find(a => a.id == m.artista_id);
-            container.innerHTML += `
-                <div class="card">
-                    <p><b>${m.titulo}</b></p>
-                    <p style="font-size: 0.75rem; color: var(--gray);">${artista ? artista.nome : 'Artista'} • ${m.genero} • ${m.data}</p>
-                    <span style="display: inline-block; padding: 4px 8px; background: #1a4d1a; color: #4eff4e; border-radius: 4px; font-size: 0.7rem; margin-top: 10px;">${m.status}</span>
-                </div>
-            `;
-        });
-    }
+    document.getElementById('metodo-selecionado').innerHTML = 'Selecione o Método de Levantamento';
+    mostrar_app();
 }
 
 function salvar_perfil() {
@@ -823,7 +1028,7 @@ function carregar_admin_panel() {
     
     for(let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
-        if(key.startsWith('mam_')) {
+        if(key.startsWith('mam_') && !key.includes('sessao')) {
             total_usuarios++;
             let u = JSON.parse(localStorage.getItem(key));
             total_artistas += (u.artistas ? u.artistas.length : 0);
@@ -838,6 +1043,59 @@ function carregar_admin_panel() {
     document.getElementById('stat-ganhos').innerHTML = total_ganhos.toLocaleString('pt-PT') + ',00 Kz';
 }
 
+function pesquisar_usuarios() {
+    const search = document.getElementById('admin-search').value.toLowerCase();
+    const container = document.getElementById('admin-usuarios-list');
+    container.innerHTML = '';
+    
+    for(let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if(key.startsWith('mam_') && !key.includes('sessao')) {
+            let u = JSON.parse(localStorage.getItem(key));
+            if(!u.isAdmin && (u.email.toLowerCase().includes(search) || u.nome.toLowerCase().includes(search))) {
+                container.innerHTML += `
+                    <div class="user-item">
+                        <p><b>${u.nome}</b> (${u.email})</p>
+                        <p>Plano: ${u.plano} | Saldo: ${(u.saldo || 0).toLocaleString('pt-PT')},00 Kz</p>
+                        <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px;">
+                            <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'FREE')">Free</button>
+                            <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'BÁSICO')">Básico</button>
+                            <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'MÉDIO')">Médio</button>
+                            <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'PRO')">Pro</button>
+                            <button class="btn btn-small btn-danger" style="flex: 1;" onclick="suspender_usuario('${u.email}')">Suspender</button>
+                            <button class="btn btn-small btn-danger" style="flex: 1;" onclick="eliminar_usuario('${u.email}')">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    }
+}
+
+function mudar_plano_admin(email, plano) {
+    let u = JSON.parse(localStorage.getItem(`mam_${email}`));
+    u.plano = plano;
+    localStorage.setItem(`mam_${email}`, JSON.stringify(u));
+    alert('Plano alterado para ' + plano + '!');
+    pesquisar_usuarios();
+}
+
+function suspender_usuario(email) {
+    let u = JSON.parse(localStorage.getItem(`mam_${email}`));
+    u.suspenso = true;
+    localStorage.setItem(`mam_${email}`, JSON.stringify(u));
+    alert('Utilizador suspenso!');
+    pesquisar_usuarios();
+}
+
+function eliminar_usuario(email) {
+    if(confirm('Tem certeza que deseja eliminar este utilizador?')) {
+        localStorage.removeItem(`mam_${email}`);
+        alert('Utilizador eliminado!');
+        pesquisar_usuarios();
+    }
+}
+
 function enviar_mensagem_ia() {
     const msg = document.getElementById('chat-input').value.toLowerCase();
     if(!msg) return;
@@ -847,7 +1105,7 @@ function enviar_mensagem_ia() {
     
     let resposta = '';
     if(msg.includes('fundador')) resposta = 'O fundador da MAM Distribuidora é Matias Arsénio Manuel.';
-    else if(msg.includes('como está')) resposta = 'A MAM Distribuidora está funcionando perfeitamente! Todos os sistemas estão operacionais.';
+    else if(msg.includes('como está')) resposta = 'A MAM Distribuidora está funcionando perfeitamente! Todos os sistemas operacionais.';
     else if(msg.includes('erro')) resposta = 'Qual é o erro específico? Descreva para que eu possa ajudar.';
     else if(msg.includes('ajuda')) resposta = 'Estou aqui para ajudar! Pergunte sobre a MAM, seus artistas, lançamentos ou qualquer dúvida.';
     else resposta = 'Entendi sua solicitação. Como posso ajudá-lo?';
@@ -858,27 +1116,6 @@ function enviar_mensagem_ia() {
     }, 500);
     
     document.getElementById('chat-input').value = '';
-}
-
-function pesquisar_usuarios() {
-    const search = document.getElementById('admin-search').value.toLowerCase();
-    const container = document.getElementById('admin-usuarios-list');
-    container.innerHTML = '';
-    
-    for(let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        if(key.startsWith('mam_')) {
-            let u = JSON.parse(localStorage.getItem(key));
-            if(!u.isAdmin && (u.email.toLowerCase().includes(search) || u.nome.toLowerCase().includes(search))) {
-                container.innerHTML += `
-                    <div class="user-item">
-                        <p><b>${u.nome}</b> (${u.email})</p>
-                        <p>Plano: ${u.plano} | Artistas: ${(u.artistas ? u.artistas.length : 0)} | Músicas: ${(u.musicas ? u.musicas.length : 0)}</p>
-                    </div>
-                `;
-            }
-        }
-    }
 }
 
 function mudar_secao(secao, btn) {
@@ -901,10 +1138,6 @@ function fechar_modal(id) {
 function atualizar_nome_arquivo(input_id, texto_id) {
     const file = document.getElementById(input_id).files[0];
     if(file) document.getElementById(texto_id).innerHTML = file.name;
-}
-
-function atualizar_dados_artista() {
-    // Função para atualizar dados do artista selecionado
 }
 
 function fazer_logout() {

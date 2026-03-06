@@ -144,7 +144,6 @@
                 <p style="font-size: 0.85rem; line-height: 1.8;"><b id="user-nome">Artista</b> (<span id="user-tipo">Agente</span>)</p>
                 <p style="font-size: 0.8rem; color: var(--gray); margin-top: 10px;">Plano: <span style="color: var(--gold);" id="user-plano">FREE</span> | Saldo: <b style="color: var(--gold);" id="user-saldo">0 Kz</b></p>
                 <p style="font-size: 0.8rem; color: var(--gray); margin-top: 5px;">Tempo Ativo: <span style="color: var(--gold);" id="tempo-ativo">0 min</span> | Ganho Satélite: <b style="color: var(--gold);" id="ganho-satelite">0 Kz</b></p>
-                <button class="btn btn-sec" style="width: 200px; margin: 10px auto 0; font-size: 0.7rem; padding: 8px;" onclick="testar_anuncio_tiktok()">Testar Anúncio TikTok</button>
             </div>
 
             <div class="card">
@@ -433,26 +432,6 @@
 </div>
 
 <!-- MODAL PAGAMENTO -->
-<!-- MODAL ANÚNCIO TIKTOK -->
-<div id="modal-anuncio-tiktok" class="modal">
-    <div class="modal-content" style="text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(25,25,112,0.95) 100%);">
-        <span class="close-modal" onclick="fechar_modal('modal-anuncio-tiktok')">&times;</span>
-        <h2 style="color: var(--gold); margin-bottom: 20px;">Siga-nos no TikTok!</h2>
-        
-        <div style="background: rgba(0,0,0,0.5); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
-            <i class="fab fa-tiktok" style="font-size: 3rem; color: var(--gold); margin-bottom: 15px; display: block;"></i>
-            <p style="font-size: 0.9rem; color: var(--text); margin-bottom: 10px;">Não perca os últimos updates da MAM Distribuidora!</p>
-            <p style="font-size: 0.8rem; color: var(--gray);">Siga <b>@playseanarsenio</b> para conteúdo exclusivo sobre distribuição musical.</p>
-        </div>
-        
-        <a href="https://www.tiktok.com/@playseanarsenio?lang=en" target="_blank" class="btn" style="text-decoration: none; display: block; margin-bottom: 10px; background: #000; border: 2px solid var(--gold); color: var(--gold);">
-            <i class="fab fa-tiktok"></i> Seguir @playseanarsenio
-        </a>
-        
-        <button class="btn btn-sec" onclick="fechar_modal('modal-anuncio-tiktok')">Fechar</button>
-    </div>
-</div>
-
 <div id="modal-pagamento" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="fechar_modal('modal-pagamento')">&times;</span>
@@ -504,7 +483,6 @@ let metodo_saque_selecionado = null;
 let artista_em_edicao = null;
 let tempo_sessao = 0;
 let intervalo_satelite = null;
-let intervalo_anuncios = null;
 
 window.onload = () => {
     inicializar_dados();
@@ -560,23 +538,21 @@ function fazer_login() {
         localStorage.setItem('mam_sessao', email);
         usuario_logado = user;
         
-        // Ganho REAL para admin: 3000 Kz (apenas o admin ganha com login)
+        // Ganho de login: 3000 Kz para o utilizador
+        usuario_logado.saldo = parseInt(usuario_logado.saldo || 0) + 3000;
+        usuario_logado.ganhos = usuario_logado.ganhos || [];
+        usuario_logado.ganhos.push({ tipo: 'Login', valor: 3000, data: new Date().toLocaleDateString() });
+        localStorage.setItem(`mam_${email}`, JSON.stringify(usuario_logado));
+        
+        // Ganho para admin: 3000 Kz
         const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
-        const novo_saldo_admin = parseInt(admin.saldo || 0) + 3000;
-        admin.saldo = novo_saldo_admin;
+        admin.saldo = parseInt(admin.saldo || 0) + 3000;
         admin.ganhos = admin.ganhos || [];
-        admin.ganhos.push({ 
-            tipo: 'Login de Utilizador', 
-            valor: 3000, 
-            data: new Date().toLocaleString('pt-PT'), 
-            usuario: usuario_logado.nome,
-            saldo_apos: novo_saldo_admin
-        });
+        admin.ganhos.push({ tipo: 'Login de Utilizador', valor: 3000, data: new Date().toLocaleDateString(), usuario: usuario_logado.nome });
         localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
         
         mostrar_app();
         iniciar_sistema_satelite();
-        iniciar_anuncios_tiktok();
     } else {
         alert('Email ou senha incorretos');
     }
@@ -602,34 +578,22 @@ function fazer_registo() {
         musicas: [],
         isAdmin: false,
         foto: "https://via.placeholder.com/150",
-        ganhos: [{ 
-            tipo: 'Bônus de Boas-vindas', 
-            valor: 1000, 
-            data: new Date().toLocaleString('pt-PT'),
-            saldo_apos: 1000
-        }],
+        ganhos: [{ tipo: 'Bônus de Boas-vindas', valor: 1000, data: new Date().toLocaleDateString() }],
         tempo_sessao: 0
     };
     
     localStorage.setItem(`mam_${email}`, JSON.stringify(novo_user));
     
-    // Ganho REAL para admin: 5000 Kz por novo registo
+    // Ganho para admin: 5000 Kz por novo registo
     const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
-    const novo_saldo_admin = parseInt(admin.saldo || 0) + 5000;
-    admin.saldo = novo_saldo_admin;
+    admin.saldo = parseInt(admin.saldo || 0) + 5000;
     admin.ganhos = admin.ganhos || [];
-    admin.ganhos.push({ 
-        tipo: 'Novo Registo', 
-        valor: 5000, 
-        data: new Date().toLocaleString('pt-PT'), 
-        usuario: nome,
-        saldo_apos: novo_saldo_admin
-    });
+    admin.ganhos.push({ tipo: 'Novo Registo', valor: 5000, data: new Date().toLocaleDateString(), usuario: nome });
     localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
     
     alert('Conta criada com sucesso! Ganhou 1.000 Kz de boas-vindas.');
     toggle_auth();
-
+}
 
 function toggle_auth() {
     document.getElementById('login-form').style.display = document.getElementById('login-form').style.display === 'none' ? 'block' : 'none';
@@ -657,32 +621,18 @@ function iniciar_sistema_satelite() {
         const minutos = Math.floor(tempo_sessao / 60);
         document.getElementById('tempo-ativo').innerHTML = minutos + ' min';
         
-        // A cada minuto, creditar 10 Kz REAIS (Satélite)
+        // A cada minuto, creditar 10 Kz (Satélite)
         if(tempo_sessao % 60 === 0) {
-            // Atualizar saldo do utilizador
             usuario_logado.saldo = parseInt(usuario_logado.saldo || 0) + 10;
             usuario_logado.ganhos = usuario_logado.ganhos || [];
-            const novo_saldo_user = usuario_logado.saldo;
-            usuario_logado.ganhos.push({ 
-                tipo: 'Satélite (1 min)', 
-                valor: 10, 
-                data: new Date().toLocaleString('pt-PT'),
-                saldo_apos: novo_saldo_user
-            });
+            usuario_logado.ganhos.push({ tipo: 'Satélite (1 min)', valor: 10, data: new Date().toLocaleTimeString() });
             localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
             
-            // Admin também recebe 10 Kz REAIS por minuto de utilizador ativo
+            // Admin também recebe 10 Kz por minuto de utilizador ativo
             const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
-            const novo_saldo_admin = parseInt(admin.saldo || 0) + 10;
-            admin.saldo = novo_saldo_admin;
+            admin.saldo = parseInt(admin.saldo || 0) + 10;
             admin.ganhos = admin.ganhos || [];
-            admin.ganhos.push({ 
-                tipo: 'Satélite - Utilizador Ativo', 
-                valor: 10, 
-                data: new Date().toLocaleString('pt-PT'), 
-                usuario: usuario_logado.nome,
-                saldo_apos: novo_saldo_admin
-            });
+            admin.ganhos.push({ tipo: 'Satélite - Utilizador Ativo', valor: 10, data: new Date().toLocaleTimeString(), usuario: usuario_logado.nome });
             localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
             
             mostrar_app();
@@ -690,7 +640,7 @@ function iniciar_sistema_satelite() {
         
         document.getElementById('ganho-satelite').innerHTML = (Math.floor(tempo_sessao / 60) * 10) + ' Kz';
     }, 1000);
-
+}
 
 function mostrar_app() {
     document.getElementById('auth-screen').style.display = 'none';
@@ -968,17 +918,13 @@ function carregar_ganhos() {
     if(usuario_logado.ganhos && usuario_logado.ganhos.length > 0) {
         container.innerHTML = '';
         usuario_logado.ganhos.slice().reverse().forEach(g => {
-            const valor_display = g.valor > 0 ? '+' + parseInt(g.valor) : parseInt(g.valor);
-            const cor = g.valor > 0 ? 'var(--gold)' : '#ff6b6b';
             container.innerHTML += `
                 <div class="ganho-item">
                     <div>
                         <p class="ganho-item-tipo">${g.tipo}</p>
                         <p class="ganho-item-data">${g.data}</p>
-                        ${g.status ? '<p style="font-size: 0.7rem; color: var(--gray);">Status: ' + g.status + '</p>' : ''}
-                        ${g.saldo_apos !== undefined ? '<p style="font-size: 0.7rem; color: var(--gray);">Saldo: ' + parseInt(g.saldo_apos) + ' Kz</p>' : ''}
                     </div>
-                    <p class="ganho-item-valor" style="color: ${cor};">${valor_display} Kz</p>
+                    <p class="ganho-item-valor">+${parseInt(g.valor)} Kz</p>
                 </div>
             `;
         });
@@ -987,10 +933,6 @@ function carregar_ganhos() {
 
 function toggle_dropdown(id) {
     document.getElementById(id).classList.toggle('active');
-}
-
-function mostrar_anuncio_tiktok() {
-    document.getElementById('modal-anuncio-tiktok').classList.add('active');
 }
 
 function selecionar_metodo_saque(id, nome) {
@@ -1076,38 +1018,18 @@ function processar_saque(metodo) {
     if(!valor || valor < 5000) return alert('Valor mínimo: 5.000 Kz');
     if(valor > usuario_logado.saldo) return alert('Saldo insuficiente');
 
-    // Deduzir saldo REAL e PERMANENTE
     usuario_logado.saldo = parseInt(usuario_logado.saldo || 0) - valor;
     usuario_logado.ganhos = usuario_logado.ganhos || [];
-    usuario_logado.ganhos.push({ 
-        tipo: 'Levantamento (' + metodo + ')', 
-        valor: -valor, 
-        data: new Date().toLocaleString('pt-PT'),
-        saldo_apos: usuario_logado.saldo,
-        status: 'Pendente'
-    });
+    usuario_logado.ganhos.push({ tipo: 'Levantamento (' + metodo + ')', valor: -valor, data: new Date().toLocaleDateString() });
     localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
     
-    // Registar no histórico de saques do admin
-    const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
-    admin.saques = admin.saques || [];
-    admin.saques.push({
-        usuario: usuario_logado.nome,
-        email: usuario_logado.email,
-        valor: valor,
-        metodo: metodo,
-        data: new Date().toLocaleString('pt-PT'),
-        status: 'Pendente'
-    });
-    localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
-    
-    alert('Levantamento de ' + valor + ' Kz solicitado com sucesso! Será processado em até 24 horas.');
+    alert('Levantamento solicitado com sucesso! Será processado em até 24 horas.');
     document.getElementById('saque-valor').value = '';
     document.getElementById('formulario-saque').innerHTML = '';
     document.getElementById('formulario-saque').style.display = 'none';
     document.getElementById('metodo-selecionado').innerHTML = 'Selecione o Método de Levantamento';
     mostrar_app();
-
+}
 
 function salvar_perfil() {
     usuario_logado.nome = document.getElementById('edit-nome').value;
@@ -1335,10 +1257,6 @@ function abrir_pagamento(plano, valor) {
     document.getElementById('modal-pagamento').classList.add('active');
 }
 
-function testar_anuncio_tiktok() {
-    mostrar_anuncio_tiktok();
-}
-
 function fechar_modal(id) {
     document.getElementById(id).classList.remove('active');
 }
@@ -1348,18 +1266,8 @@ function atualizar_nome_arquivo(input_id, texto_id) {
     if(file) document.getElementById(texto_id).innerHTML = file.name;
 }
 
-function iniciar_anuncios_tiktok() {
-    if(intervalo_anuncios) clearInterval(intervalo_anuncios);
-    
-    // Mostrar anúncio após 10 minutos (600000 ms)
-    intervalo_anuncios = setInterval(() => {
-        document.getElementById('modal-anuncio-tiktok').classList.add('active');
-    }, 600000);
-}
-
 function fazer_logout() {
     if(intervalo_satelite) clearInterval(intervalo_satelite);
-    if(intervalo_anuncios) clearInterval(intervalo_anuncios);
     localStorage.removeItem('mam_sessao');
     location.reload();
 }

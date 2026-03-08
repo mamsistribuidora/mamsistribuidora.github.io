@@ -1,3 +1,5 @@
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="pt-pt">
 <head>
@@ -42,7 +44,8 @@
         .artist-item-info p { font-size: 0.8rem; margin-bottom: 3px; }
         .artist-item-info span { font-size: 0.7rem; color: var(--gray); }
         .artist-actions { display: flex; gap: 5px; }
-        .music-card { background: #111; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid var(--gold); }
+        .music-card { background: #111; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid var(--gold); display: flex; align-items: center; gap: 15px; }
+        .music-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
         .music-card p { font-size: 0.8rem; margin-bottom: 5px; }
         .music-card span { font-size: 0.7rem; color: var(--gray); }
         .chat-box { background: rgba(0,0,0,0.7); border: 1px solid #333; padding: 15px; border-radius: 8px; height: 400px; overflow-y: auto; margin-bottom: 15px; }
@@ -143,7 +146,6 @@
                 <h3>Bem-vindo</h3>
                 <p style="font-size: 0.85rem; line-height: 1.8;"><b id="user-nome">Artista</b> (<span id="user-tipo">Agente</span>)</p>
                 <p style="font-size: 0.8rem; color: var(--gray); margin-top: 10px;">Plano: <span style="color: var(--gold);" id="user-plano">FREE</span> | Saldo: <b style="color: var(--gold);" id="user-saldo">0 Kz</b></p>
-                <p style="font-size: 0.8rem; color: var(--gray); margin-top: 5px;">Tempo Ativo: <span style="color: var(--gold);" id="tempo-ativo">0 min</span> | Ganho Satélite: <b style="color: var(--gold);" id="ganho-satelite">0 Kz</b></p>
             </div>
 
             <div class="card">
@@ -226,6 +228,13 @@
 
                 <label>Produtores/Produtora</label>
                 <input type="text" id="track-produtores" placeholder="Nomes separados por vírgula">
+
+                <label>Capa do Lançamento (1:1)</label>
+                <input type="file" id="track-cover" accept="image/*" onchange="preview_cover(event)" style="margin-bottom: 5px;">
+                <img id="cover-preview" src="https://via.placeholder.com/150" style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 15px; border: 1px solid #333;">
+
+                <label>Ficheiro de Áudio (.wav, .mp3)</label>
+                <input type="file" id="track-audio" accept="audio/wav, audio/mpeg" style="margin-bottom: 15px;">
 
                 <label>Data de Lançamento</label>
                 <input type="date" id="track-data">
@@ -352,153 +361,115 @@
             </div>
 
             <div class="card">
-                <h3>Utilizadores Registados</h3>
-                <input type="text" id="admin-search" placeholder="Pesquisar por email..." onkeyup="pesquisar_usuarios()">
-                <div id="admin-usuarios-list" style="margin-top: 15px;"></div>
+                <h3>Gerir Utilizadores</h3>
+                <input type="text" id="admin-search" placeholder="Pesquisar por email ou nome..." onkeyup="pesquisar_usuarios()">
+                <div id="admin-usuarios-list"></div>
             </div>
 
             <div class="card">
-                <h3>Todos os Artistas da Plataforma</h3>
-                <div id="admin-artistas-list" style="margin-top: 15px;"></div>
+                <h3>Todos os Artistas</h3>
+                <div id="admin-artistas-list"></div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- MODAL NOVO ARTISTA -->
-<div id="modal-novo-artista" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="fechar_modal('modal-novo-artista')">&times;</span>
-        <h2>Adicionar Novo Artista</h2>
-        
-        <label>Foto do Perfil</label>
-        <div style="border: 2px dashed #444; padding: 20px; text-align: center; border-radius: 6px; cursor: pointer;" onclick="document.getElementById('artista-foto').click()">
-            <i class="fas fa-camera" style="color: var(--gold); font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-            <p id="txt-artista-foto" style="font-size: 0.8rem;">Clique para carregar foto</p>
-            <input type="file" id="artista-foto" hidden accept="image/*" onchange="atualizar_nome_arquivo('artista-foto', 'txt-artista-foto')">
+    <!-- MODALS -->
+    <div id="modal-novo-artista" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fechar_modal('modal-novo-artista')">&times;</span>
+            <h2>Novo Artista</h2>
+            <input type="text" id="artista-nome" placeholder="Nome do Artista">
+            <select id="artista-tipo">
+                <option value="">Tipo de Artista</option>
+                <option value="Cantor">Cantor</option>
+                <option value="Rapper">Rapper</option>
+                <option value="DJ">DJ</option>
+                <option value="Banda">Banda</option>
+            </select>
+            <select id="artista-estilo">
+                <option value="">Estilo Musical</option>
+            </select>
+            <input type="text" id="artista-youtube" placeholder="Link YouTube (Opcional)">
+            <input type="text" id="artista-facebook" placeholder="Link Facebook (Opcional)">
+            <input type="text" id="artista-spotify" placeholder="Link Spotify (Opcional)">
+            <input type="text" id="artista-tiktok" placeholder="Link TikTok (Opcional)">
+            <input type="text" id="artista-applemusic" placeholder="Link Apple Music (Opcional)">
+            <button class="btn" onclick="salvar_novo_artista()">Salvar Artista</button>
         </div>
-
-        <label>Nome do Artista</label>
-        <input type="text" id="artista-nome" placeholder="Nome artístico">
-
-        <label>Tipo de Artista</label>
-        <select id="artista-tipo">
-            <option value="">Selecione</option>
-            <option value="Solo">Solo</option>
-            <option value="Grupo">Grupo</option>
-        </select>
-
-        <label>Estilo Musical Principal</label>
-        <select id="artista-estilo"></select>
-
-        <label>Redes Sociais</label>
-        <input type="url" id="artista-youtube" placeholder="YouTube">
-        <input type="url" id="artista-facebook" placeholder="Facebook">
-        <input type="url" id="artista-spotify" placeholder="Spotify">
-        <input type="url" id="artista-tiktok" placeholder="TikTok">
-        <input type="url" id="artista-applemusic" placeholder="Apple Music">
-
-        <button class="btn" onclick="salvar_novo_artista()">Criar Artista</button>
     </div>
-</div>
 
-<!-- MODAL EDITAR ARTISTA -->
-<div id="modal-editar-artista" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="fechar_modal('modal-editar-artista')">&times;</span>
-        <h2>Editar Artista</h2>
-        
-        <label>Nome do Artista</label>
-        <input type="text" id="edit-artista-nome" placeholder="Nome artístico">
-
-        <label>Tipo de Artista</label>
-        <select id="edit-artista-tipo">
-            <option value="Solo">Solo</option>
-            <option value="Grupo">Grupo</option>
-        </select>
-
-        <label>Estilo Musical Principal</label>
-        <select id="edit-artista-estilo"></select>
-
-        <label>Redes Sociais</label>
-        <input type="url" id="edit-artista-youtube" placeholder="YouTube">
-        <input type="url" id="edit-artista-facebook" placeholder="Facebook">
-        <input type="url" id="edit-artista-spotify" placeholder="Spotify">
-        <input type="url" id="edit-artista-tiktok" placeholder="TikTok">
-        <input type="url" id="edit-artista-applemusic" placeholder="Apple Music">
-
-        <button class="btn" onclick="salvar_edicao_artista()">Guardar Alterações</button>
-    </div>
-</div>
-
-<!-- MODAL PAGAMENTO -->
-<div id="modal-pagamento" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="fechar_modal('modal-pagamento')">&times;</span>
-        <h2>Processamento de Pagamento</h2>
-        <p style="font-size: 0.85rem; margin-bottom: 15px;">Plano: <b id="modal-plano"></b> | Valor: <b style="color: var(--gold);" id="modal-valor"></b></p>
-        
-        <h4 style="color: var(--gold); margin-top: 20px; margin-bottom: 10px;">Dados Bancários</h4>
-        <div style="background: #000; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-bottom: 15px; font-size: 0.75rem;">
-            <p><b>Titular:</b> MATIAS ARSÉNIO MANUEL</p>
-            <p><b>BFA IBAN:</b> 0006 0000 8631 6866 3015 2</p>
-            <p style="margin-top: 10px;"><b>Visa:</b> 4937242025023852</p>
+    <div id="modal-edit-artista" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fechar_modal('modal-edit-artista')">&times;</span>
+            <h2>Editar Artista</h2>
+            <img id="edit-artista-foto-preview" class="photo-preview" src="https://via.placeholder.com/150" style="margin: 0 auto 15px;">
+            <button class="btn btn-sec" style="width: 180px; margin: 0 auto 15px; font-size: 0.75rem; padding: 8px;" onclick="document.getElementById('edit-artista-foto-input').click()">Mudar Foto do Artista</button>
+            <input type="file" id="edit-artista-foto-input" hidden accept="image/*" onchange="preview_edit_artist_photo(event)">
+            <input type="text" id="edit-artista-nome" placeholder="Nome do Artista">
+            <select id="edit-artista-tipo">
+                <option value="">Tipo de Artista</option>
+                <option value="Cantor">Cantor</option>
+                <option value="Rapper">Rapper</option>
+                <option value="DJ">DJ</option>
+                <option value="Banda">Banda</option>
+            </select>
+            <select id="edit-artista-estilo">
+                <option value="">Estilo Musical</option>
+            </select>
+            <input type="text" id="edit-artista-youtube" placeholder="Link YouTube (Opcional)">
+            <input type="text" id="edit-artista-facebook" placeholder="Link Facebook (Opcional)">
+            <input type="text" id="edit-artista-spotify" placeholder="Link Spotify (Opcional)">
+            <input type="text" id="edit-artista-tiktok" placeholder="Link TikTok (Opcional)">
+            <input type="text" id="edit-artista-applemusic" placeholder="Link Apple Music (Opcional)">
+            <button class="btn" onclick="salvar_edicao_artista()">Salvar Alterações</button>
         </div>
+    </div>
 
-        <a href="https://wa.me/244937881307?text=Olá%20MAM%20Distribuidora%20-%20Envio%20comprovativo%20de%20pagamento" target="_blank" class="btn" style="text-decoration: none; display: block; margin-bottom: 10px;">
-            <i class="fab fa-whatsapp"></i> Enviar Comprovativo via WhatsApp
-        </a>
-        
-        <button class="btn btn-sec" onclick="fechar_modal('modal-pagamento')">Cancelar</button>
+    <div id="modal-pagamento" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fechar_modal('modal-pagamento')">&times;</span>
+            <h2>Confirmar Pagamento</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 20px;">Plano: <b id="modal-plano" style="color: var(--gold);"></b></p>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">Valor: <b id="modal-valor" style="color: var(--gold);"></b></p>
+            <p style="font-size: 0.8rem; color: var(--gray); margin-bottom: 20px;">O pagamento será descontado do seu saldo. Se não tiver saldo, use o Multicaixa Express ou outra via.</p>
+            <button class="btn" onclick="confirmar_pagamento()">Confirmar e Pagar</button>
+        </div>
     </div>
 </div>
 
 <footer>
     <div class="footer-section">
-        <h4>MAM DISTRIBUIDORA DIGITAL</h4>
-        <p>Distribuição Musical Profissional para Todas as Plataformas</p>
+        <h4>MAM Distribuidora</h4>
+        <p>A sua música, em todo o mundo. Distribuição profissional para mais de 100 plataformas digitais.</p>
     </div>
-    <div class="footer-section">
-        <h4>Sobre Nós</h4>
-        <p>Fundador: Matias Arsénio Manuel | Distribuímos para Spotify, Apple Music, YouTube Music, Amazon Music, Tidal, Deezer, SoundCloud e 100+ plataformas.</p>
-    </div>
-    <div class="footer-section">
-        <h4>Contacto</h4>
-        <p>Email: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307</p>
-    </div>
-    <hr style="border: none; border-top: 1px solid #333; margin: 20px 0;">
-    <p>&copy; 2026 MAM Distribuidora. Desenvolvido por Matias Arsénio Manuel</p>
+    <p>&copy; 2024-2026 MAM Distribuidora. Todos os direitos reservados.</p>
 </footer>
 
 <script>
-const PAISES = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "São Tomé e Príncipe", "África do Sul", "Alemanha", "Argentina", "Austrália", "Áustria", "Bélgica", "Bielorrússia", "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brunei", "Bulgária", "Burkina Faso", "Burúndi", "Butão", "Camboja", "Camarões", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo", "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibuti", "Dominica", "Egito", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovénia", "Espanha", "Estados Unidos", "Estónia", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia", "Gibraltar", "Grécia", "Grenada", "Groenlândia", "Guadalupe", "Guam", "Guatemala", "Guernsey", "Guiana", "Guiana Francesa", "Guiné", "Guiné Equatorial", "Haiti", "Holanda", "Honduras", "Hong Kong", "Hungria", "Iémen", "Ilha Bouvet", "Ilha Christmas", "Ilha de Man", "Ilhas Åland", "Ilhas Cayman", "Ilhas Cocos", "Ilhas Cook", "Ilhas Faroé", "Ilhas Heard e McDonald", "Ilhas Mariana do Norte", "Ilhas Marshall", "Ilhas Pitcairn", "Ilhas Salomão", "Ilhas Turcos e Caicos", "Ilhas Virgens Britânicas", "Ilhas Virgens dos EUA", "Índia", "Indonésia", "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão", "Jersey", "Jordânia", "Kiribati", "Kosovo", "Kuwait", "Laos", "Lesoto", "Letónia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo", "Macau", "Macedónia", "Madagáscar", "Malásia", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Martinica", "Maurícia", "Mauritânia", "Mayotte", "México", "Micronésia", "Moldávia", "Mónaco", "Mongólia", "Montenegro", "Montserrat", "Namíbia", "Nauru", "Nepal", "Nicarágua", "Níger", "Nigéria", "Niue", "Noruega", "Nova Caledónia", "Nova Zelândia", "Omã", "Palau", "Palestina", "Panamá", "Papua-Nova Guiné", "Paquistão", "Paraguai", "País de Gales", "Países Baixos", "Perú", "Polinésia Francesa", "Polónia", "Porto Rico", "Portugal", "Quénia", "Quirguistão", "Reino Unido", "República Centro-Africana", "República Checa", "República Democrática do Congo", "República do Congo", "República Dominicana", "República Sudafricana", "Reunião", "Roménia", "Ruanda", "Rússia", "Sahara Ocidental", "Saint Kitts e Nevis", "Saint Martin", "Saint Vincent e Granadinas", "Samoa", "Samoa Americana", "San Marino", "Santa Helena", "Santa Lúcia", "Santo Bartolomeu", "Santo Estêvão e Príncipe", "São Bartolomeu", "São Cristóvão e Neves", "São Marinho", "São Tomé e Príncipe", "São Vicente e Granadinas", "Seicheles", "Senegal", "Serra Leoa", "Sérvia", "Singapura", "Síria", "Somália", "Sri Lanca", "Suazilândia", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Svalbard e Jan Mayen", "Tailândia", "Taiwan", "Tajiquistão", "Tanzânia", "Tchéquia", "Terras Austrais Francesas", "Territórios Palestinianos", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trindade e Tobago", "Tunísia", "Turcomenistão", "Turquia", "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Usbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietname", "Wallis e Futuna", "Zâmbia", "Zimbabué"];
-
-const ESTILOS = ["Afro House", "Amapiano", "Angolan Pop", "Bossa Nova", "Chillwave", "Dancehall", "Deep House", "Drum and Bass", "Dubstep", "Eletrônico", "Funk", "Gospel", "Grime", "Groove", "Gumbe", "Hip Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Jazz", "Jit", "Kizomba", "Kizomba Urbana", "Kuduro", "Kuduro Moderno", "Kuizomba", "Kwaito", "Latin Trap", "Lofi Hip Hop", "Lounge", "Makossa", "Morna", "Música Clássica", "Música Eletrônica", "Música Tradicional", "Néo-Soul", "Palop", "Pantsula", "Passada", "Passada Moderna", "Passada Urbana", "Perreo", "Phonk", "Pop", "Pop Angolano", "Pop Latino", "Post-Punk", "Progressivo", "Psicadélico", "Punk", "R&B", "Reggae", "Reggaeton", "Regueton", "Remix", "Retro", "Rock", "Rock Alternativo", "Rock Angolano", "Rock Latino", "Rock Progressivo", "Rocksteady", "Rumba", "Rumba Congolesa", "Samba", "Samba Enredo", "Samba-Reggae", "Sampler", "Semba", "Semba Urbana", "Sertanejo", "Sertanejo Universitário", "Ska", "Slam", "Soca", "Soft Rock", "Soul", "Soukouss", "Soundscape", "Spoken Word", "Steppas", "Stoner Rock", "Street Funk", "Street Rap", "Suingue", "Swing", "Synthwave", "Tarraxinha", "Tech House", "Tech Trance", "Techno", "Techno Minimal", "Trance", "Trap", "Trap Latino", "Trap Português", "Tribal", "Tribal House", "Tribal Trap", "Trip Hop", "Tropicália", "Turbo Folk", "Turbo Pop", "Turbo Trap", "Turbo Urbano", "Twist", "Two-Step", "Uk Garage", "Urbano", "Urbano Angolano", "Urbano Latino", "Urbano Português", "Urbano Urbano", "Vaporwave", "Vaudeville", "Vinil", "Viral", "Viral Angolano", "Viral Latino", "Viral Português", "Viral Urbano", "Vogueing", "Waveform", "Wellness", "Western Swing", "World Music", "Worldbeat", "Worldfusion", "Worldmusic", "Worldpop", "Worldrap", "Worldtrap", "Worldurbano", "Xote", "Xote Moderno", "Xote Urbano", "Yodeling", "Young Thug", "Young Trap", "Youngblood", "Zouglou", "Zouglou Moderno", "Zouglou Urbano", "Zouk", "Zouk Angolano", "Zouk Latino", "Zouk Moderno", "Zouk Português", "Zouk Urbano"];
-
-const ADMIN_EMAIL = "mamfilhos29@gmail.com";
-const ADMIN_PASS = "Angell28";
+const ADMIN_EMAIL = "matiasarsenio@gmail.com";
+const PAISES = ["Angola", "Moçambique", "Portugal", "Brasil", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau"];
+const ESTILOS = ["Kizomba", "Zouk", "Semba", "Kuduro", "Afro House", "Ghetto Zouk", "Tarraxinha", "Hip-Hop/Rap", "R&B", "Pop", "Gospel"];
 
 let usuario_logado = null;
-let metodo_saque_selecionado = null;
 let artista_em_edicao = null;
 let tempo_sessao = 0;
-let intervalo_satelite = null;
+let intervalo_satelite;
 
-window.onload = () => {
-    inicializar_dados();
+document.addEventListener('DOMContentLoaded', () => {
+    criar_admin_se_nao_existir();
     preencher_selects();
     verificar_sessao();
-};
+});
 
-function inicializar_dados() {
-    if(!localStorage.getItem(`mam_${ADMIN_EMAIL}`)) {
+function criar_admin_se_nao_existir() {
+    if (!localStorage.getItem(`mam_${ADMIN_EMAIL}`)) {
         const admin = {
             nome: "Matias Arsénio Manuel",
             email: ADMIN_EMAIL,
-            senha: ADMIN_PASS,
-            tipo: "Administrador",
+            tipo: "Admin",
             pais: "Angola",
-            saldo: 0,
+            senha: "admin123",
+            saldo: 100000,
             plano: "PRO",
             artistas: [],
             musicas: [],
@@ -535,6 +506,7 @@ function fazer_login() {
     
     const user = JSON.parse(localStorage.getItem(`mam_${email}`));
     if(user && user.senha === pass) {
+        if (user.suspenso) return alert('Esta conta está suspensa. Contacte o suporte.');
         localStorage.setItem('mam_sessao', email);
         usuario_logado = user;
         
@@ -579,7 +551,8 @@ function fazer_registo() {
         isAdmin: false,
         foto: "https://via.placeholder.com/150",
         ganhos: [{ tipo: 'Bônus de Boas-vindas', valor: 1000, data: new Date().toLocaleDateString() }],
-        tempo_sessao: 0
+        tempo_sessao: 0,
+        suspenso: false
     };
     
     localStorage.setItem(`mam_${email}`, JSON.stringify(novo_user));
@@ -605,6 +578,11 @@ function verificar_sessao() {
     if(email) {
         usuario_logado = JSON.parse(localStorage.getItem(`mam_${email}`));
         if(usuario_logado) {
+            if (usuario_logado.suspenso) {
+                fazer_logout();
+                alert('Esta conta está suspensa.');
+                return;
+            }
             mostrar_app();
             iniciar_sistema_satelite();
         }
@@ -617,28 +595,22 @@ function iniciar_sistema_satelite() {
     intervalo_satelite = setInterval(() => {
         tempo_sessao++;
         
-        // Atualizar tempo ativo
-        const minutos = Math.floor(tempo_sessao / 60);
-        document.getElementById('tempo-ativo').innerHTML = minutos + ' min';
-        
         // A cada minuto, creditar 10 Kz (Satélite)
         if(tempo_sessao % 60 === 0) {
             usuario_logado.saldo = parseInt(usuario_logado.saldo || 0) + 10;
-            usuario_logado.ganhos = usuario_logado.ganhos || [];
             usuario_logado.ganhos.push({ tipo: 'Satélite (1 min)', valor: 10, data: new Date().toLocaleTimeString() });
             localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
             
             // Admin também recebe 10 Kz por minuto de utilizador ativo
             const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
             admin.saldo = parseInt(admin.saldo || 0) + 10;
-            admin.ganhos = admin.ganhos || [];
             admin.ganhos.push({ tipo: 'Satélite - Utilizador Ativo', valor: 10, data: new Date().toLocaleTimeString(), usuario: usuario_logado.nome });
             localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
             
-            mostrar_app();
+            // Apenas atualiza o saldo na UI, evita recarregar tudo
+            document.getElementById('user-saldo').innerHTML = parseInt(usuario_logado.saldo) + ' Kz';
+            document.getElementById('saldo-display').innerHTML = parseInt(usuario_logado.saldo) + ' Kz';
         }
-        
-        document.getElementById('ganho-satelite').innerHTML = (Math.floor(tempo_sessao / 60) * 10) + ' Kz';
     }, 1000);
 }
 
@@ -754,12 +726,11 @@ function abrir_edicao_artista(artista_id) {
     document.getElementById('edit-artista-spotify').value = artista.redes.spotify || '';
     document.getElementById('edit-artista-tiktok').value = artista.redes.tiktok || '';
     document.getElementById('edit-artista-applemusic').value = artista.redes.applemusic || '';
-    document.getElementById('modal-editar-artista').classList.add('active');
+    document.getElementById('edit-artista-foto-preview').src = artista.foto || 'https://via.placeholder.com/150';
+    document.getElementById('modal-edit-artista').classList.add('active');
 }
 
 function salvar_edicao_artista() {
-    if(!artista_em_edicao) return;
-    
     const artista = usuario_logado.artistas.find(a => a.id === artista_em_edicao);
     if(!artista) return;
     
@@ -771,11 +742,24 @@ function salvar_edicao_artista() {
     artista.redes.spotify = document.getElementById('edit-artista-spotify').value;
     artista.redes.tiktok = document.getElementById('edit-artista-tiktok').value;
     artista.redes.applemusic = document.getElementById('edit-artista-applemusic').value;
-    
-    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
-    alert('Artista atualizado com sucesso!');
-    fechar_modal('modal-editar-artista');
-    carregar_artistas();
+
+    const foto_file = document.getElementById('edit-artista-foto-input').files[0];
+    if (foto_file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            artista.foto = e.target.result;
+            localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
+            alert('Artista atualizado com sucesso!');
+            fechar_modal('modal-edit-artista');
+            carregar_artistas();
+        };
+        reader.readAsDataURL(foto_file);
+    } else {
+        localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
+        alert('Artista atualizado com sucesso!');
+        fechar_modal('modal-edit-artista');
+        carregar_artistas();
+    }
 }
 
 function eliminar_artista(artista_id) {
@@ -787,209 +771,174 @@ function eliminar_artista(artista_id) {
     carregar_artistas();
 }
 
+function preview_cover(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('cover-preview');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function preview_edit_artist_photo(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('edit-artista-foto-preview');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
 function enviar_lancamento() {
     const artista_id = document.getElementById('select-artista').value;
     const titulo = document.getElementById('track-titulo').value;
-    const versao = document.getElementById('track-versao').value;
     const genero = document.getElementById('track-genero').value;
-    const colaboracao = document.getElementById('track-colaboracao').value;
+    const cover_file = document.getElementById('track-cover').files[0];
+    const audio_file = document.getElementById('track-audio').files[0];
     
-    if(!artista_id || !titulo || !genero) return alert('Preencha os campos obrigatórios');
+    if(!artista_id || !titulo || !genero || !cover_file || !audio_file) return alert('Preencha todos os campos obrigatórios e carregue os ficheiros.');
 
-    const musica = {
+    const nova_musica = {
         id: Date.now(),
-        artista_id,
-        titulo, versao, genero,
-        colaboracao: colaboracao,
+        artista_id: parseInt(artista_id),
+        titulo: titulo,
+        versao: document.getElementById('track-versao').value,
+        genero: genero,
+        genero2: document.getElementById('track-genero2').value,
+        colaboracao: document.getElementById('track-colaboracao').value,
         produtores: document.getElementById('track-produtores').value,
-        data: new Date().toLocaleDateString(),
-        status: 'Em Revisão',
-        downloads: 0,
-        reproducoes: 0
+        data_lancamento: document.getElementById('track-data').value,
+        descricao: document.getElementById('track-descricao').value,
+        status: 'Pendente',
+        ganhos: 0
     };
 
-    usuario_logado.musicas = usuario_logado.musicas || [];
-    usuario_logado.musicas.push(musica);
-    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
-    
-    alert('Música enviada para distribuição!');
-    document.getElementById('track-titulo').value = '';
-    document.getElementById('track-versao').value = '';
-    document.getElementById('track-genero').value = '';
-    document.getElementById('track-colaboracao').value = '';
-    document.getElementById('track-produtores').value = '';
-    
-    carregar_musicas();
-    carregar_destaques();
-    carregar_feed_global();
+    const cover_reader = new FileReader();
+    cover_reader.onload = (e) => {
+        nova_musica.cover = e.target.result;
+        nova_musica.audio_name = audio_file.name; // Apenas o nome, não o conteúdo
+
+        usuario_logado.musicas.push(nova_musica);
+        localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
+
+        // Simula um ganho para o admin por cada música lançada
+        const admin = JSON.parse(localStorage.getItem(`mam_${ADMIN_EMAIL}`));
+        admin.saldo = parseInt(admin.saldo || 0) + 1000;
+        admin.ganhos.push({ tipo: 'Lançamento de Música', valor: 1000, data: new Date().toLocaleDateString(), musica: nova_musica.titulo });
+        localStorage.setItem(`mam_${ADMIN_EMAIL}`, JSON.stringify(admin));
+
+        alert('Música enviada para distribuição com sucesso!');
+        document.getElementById('lancar').querySelector('form').reset(); // Assumindo que está num form
+        document.getElementById('cover-preview').src = 'https://via.placeholder.com/150';
+        carregar_musicas();
+    };
+    cover_reader.readAsDataURL(cover_file);
 }
 
 function carregar_musicas() {
     const container = document.getElementById('lista-musicas');
-    if(usuario_logado.musicas && usuario_logado.musicas.length > 0) {
-        container.innerHTML = '';
+    container.innerHTML = '';
+
+    if (usuario_logado.musicas && usuario_logado.musicas.length > 0) {
         usuario_logado.musicas.forEach(m => {
-            const artista = usuario_logado.artistas.find(a => a.id == m.artista_id);
-            let colaboradores_html = '';
-            if(m.colaboracao) {
-                const colaboracoes = m.colaboracao.split(',').map(c => c.trim());
-                colaboracoes.forEach(col => {
-                    colaboradores_html += `<span style="display: inline-block; background: rgba(212,175,55,0.2); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-right: 5px; margin-bottom: 5px;">${col}</span>`;
-                });
-            }
+            const artista = usuario_logado.artistas.find(a => a.id === m.artista_id);
             container.innerHTML += `
                 <div class="music-card">
-                    <p><b>${m.titulo}</b></p>
-                    <p style="font-size: 0.75rem; color: var(--gray);">${artista ? artista.nome : 'Artista'} • ${m.genero} • ${m.data}</p>
-                    ${colaboradores_html ? `<p style="font-size: 0.7rem; margin-top: 8px;">${colaboradores_html}</p>` : ''}
-                    <span style="display: inline-block; padding: 4px 8px; background: #1a4d1a; color: #4eff4e; border-radius: 4px; font-size: 0.7rem; margin-top: 10px;">${m.status}</span>
+                    <img src="${m.cover}" alt="Capa de ${m.titulo}">
+                    <div>
+                        <p><b>${m.titulo}</b></p>
+                        <p>${artista ? artista.nome : 'Artista Desconhecido'}</p>
+                        <span>${m.genero} • Lançado em: ${m.data_lancamento || 'N/A'}</span>
+                        <p style="margin-top: 5px;">Status: <span class="${m.status === 'Aprovado' ? 'ativo-status' : 'inativo-status'}">${m.status}</span></p>
+                    </div>
                 </div>
             `;
         });
-    }
-}
-
-function carregar_destaques() {
-    const container = document.getElementById('destaques-container');
-    let todas_musicas = [];
-    
-    for(let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        if(key.startsWith('mam_') && !key.includes('sessao')) {
-            let u = JSON.parse(localStorage.getItem(key));
-            if(u.musicas) {
-                u.musicas.forEach(m => {
-                    todas_musicas.push({...m, usuario: u.nome, artista_nome: u.artistas.find(a => a.id == m.artista_id)?.nome || u.nome});
-                });
-            }
-        }
-    }
-    
-    todas_musicas.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
-    const top5 = todas_musicas.slice(0, 5);
-    
-    if(top5.length > 0) {
-        container.innerHTML = '';
-        top5.forEach(m => {
-            container.innerHTML += `
-                <div class="music-card">
-                    <p><b>${m.titulo}</b></p>
-                    <p style="font-size: 0.75rem; color: var(--gray);">${m.artista_nome} • ${m.genero}</p>
-                    <p style="font-size: 0.7rem; color: var(--gold);">⭐ ${m.downloads || 0} downloads</p>
-                </div>
-            `;
-        });
-    }
-}
-
-function carregar_feed_global() {
-    const container = document.getElementById('feed-global');
-    let todas_musicas = [];
-    
-    for(let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        if(key.startsWith('mam_') && !key.includes('sessao')) {
-            let u = JSON.parse(localStorage.getItem(key));
-            if(u.musicas) {
-                u.musicas.forEach(m => {
-                    todas_musicas.push({...m, usuario: u.nome, artista_nome: u.artistas.find(a => a.id == m.artista_id)?.nome || u.nome});
-                });
-            }
-        }
-    }
-    
-    todas_musicas.sort((a, b) => new Date(b.data) - new Date(a.data));
-    
-    if(todas_musicas.length > 0) {
-        container.innerHTML = '';
-        todas_musicas.forEach(m => {
-            container.innerHTML += `
-                <div class="music-card">
-                    <p><b>${m.titulo}</b></p>
-                    <p style="font-size: 0.75rem; color: var(--gray);">${m.artista_nome} • ${m.genero} • ${m.data}</p>
-                </div>
-            `;
-        });
+    } else {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">Nenhuma música lançada.</p>';
     }
 }
 
 function carregar_ganhos() {
     const container = document.getElementById('historico-ganhos');
-    if(usuario_logado.ganhos && usuario_logado.ganhos.length > 0) {
-        container.innerHTML = '';
-        usuario_logado.ganhos.slice().reverse().forEach(g => {
+    container.innerHTML = '';
+
+    if (usuario_logado.ganhos && usuario_logado.ganhos.length > 0) {
+        // Ordena os ganhos por data (mais recentes primeiro)
+        const ganhos_ordenados = usuario_logado.ganhos.slice().reverse();
+        ganhos_ordenados.forEach(g => {
             container.innerHTML += `
                 <div class="ganho-item">
                     <div>
-                        <p class="ganho-item-tipo">${g.tipo}</p>
-                        <p class="ganho-item-data">${g.data}</p>
+                        <span class="ganho-item-tipo">${g.tipo}</span>
+                        <span class="ganho-item-data">${g.data}</span>
                     </div>
-                    <p class="ganho-item-valor">+${parseInt(g.valor)} Kz</p>
+                    <span class="ganho-item-valor" style="color: ${g.valor > 0 ? 'var(--gold)' : '#ff4e4e'}">${g.valor > 0 ? '+' : ''}${g.valor} Kz</span>
                 </div>
             `;
         });
+    } else {
+        container.innerHTML = '<p style="font-size: 0.75rem; color: var(--gray);">Nenhum ganho registado.</p>';
     }
+}
+
+function carregar_destaques() {
+    // Lógica para destaques (ainda a implementar)
+}
+
+function carregar_feed_global() {
+    // Lógica para feed global (ainda a implementar)
 }
 
 function toggle_dropdown(id) {
     document.getElementById(id).classList.toggle('active');
 }
 
-function selecionar_metodo_saque(id, nome) {
-    metodo_saque_selecionado = { id, nome };
+function selecionar_metodo_saque(metodo, nome) {
     document.getElementById('metodo-selecionado').innerHTML = nome;
-    document.getElementById('metodos-dropdown').classList.remove('active');
+    toggle_dropdown('metodos-dropdown');
     
     const form_container = document.getElementById('formulario-saque');
-    form_container.innerHTML = '';
     form_container.style.display = 'block';
-
     let formulario = '';
-    switch(id) {
+
+    switch(metodo) {
         case 'bfa':
         case 'bai':
         case 'bic':
             formulario = `
-                <label>Número de Conta</label>
-                <input type="text" id="saque-conta" placeholder="Ex: 123456789">
-                <label>IBAN (Opcional)</label>
-                <input type="text" id="saque-iban" placeholder="Ex: AO06 0006 0000 8631 6866 3015 2">
-                <label>Titular da Conta</label>
+                <label>IBAN</label>
+                <input type="text" id="saque-iban" placeholder="AO06...">
+                <label>Nome do Titular</label>
                 <input type="text" id="saque-titular" placeholder="Nome completo">
                 <button class="btn" onclick="processar_saque('${nome}')">Solicitar Levantamento</button>
             `;
             break;
         case 'express':
             formulario = `
-                <label>Número de Telefone Multicaixa</label>
-                <input type="tel" id="saque-telefone" placeholder="+244 9xx xxx xxx">
-                <label>Titular</label>
-                <input type="text" id="saque-titular" placeholder="Nome completo">
+                <label>Número de Telefone</label>
+                <input type="tel" id="saque-telefone" placeholder="9xx xxx xxx">
                 <button class="btn" onclick="processar_saque('${nome}')">Solicitar Levantamento</button>
             `;
             break;
         case 'visa':
             formulario = `
-                <label>Número do Cartão Visa</label>
-                <input type="text" id="saque-visa" placeholder="1234 5678 9012 3456" maxlength="19">
+                <label>Número do Cartão</label>
+                <input type="text" id="saque-cartao" placeholder="xxxx xxxx xxxx xxxx">
                 <label>Nome no Cartão</label>
-                <input type="text" id="saque-titular" placeholder="Nome completo">
+                <input type="text" id="saque-nome-cartao" placeholder="Nome completo">
+                 <div class="grid">
+                    <input type="text" id="saque-validade" placeholder="MM/AA">
+                    <input type="text" id="saque-cvv" placeholder="CVV">
+                </div>
                 <button class="btn" onclick="processar_saque('${nome}')">Solicitar Levantamento</button>
             `;
             break;
         case 'paypal':
-            formulario = `
-                <label>Email PayPal</label>
-                <input type="email" id="saque-paypal" placeholder="seu@email.com">
-                <label>Titular</label>
-                <input type="text" id="saque-titular" placeholder="Nome completo">
-                <button class="btn" onclick="processar_saque('${nome}')">Solicitar Levantamento</button>
-            `;
-            break;
         case 'pix':
             formulario = `
-                <label>Chave Pix</label>
-                <input type="text" id="saque-pix" placeholder="Email, CPF, Telefone ou Chave aleatória">
+                <label>Email ou Chave ${nome}</label>
+                <input type="text" id="saque-chave" placeholder="sua.chave@email.com">
                 <label>Titular</label>
                 <input type="text" id="saque-titular" placeholder="Nome completo">
                 <button class="btn" onclick="processar_saque('${nome}')">Solicitar Levantamento</button>
@@ -998,8 +947,8 @@ function selecionar_metodo_saque(id, nome) {
         case 'payoneer':
             formulario = `
                 <label>Email Payoneer</label>
-                <input type="email" id="saque-payoneer" placeholder="seu@email.com">
-                <label>Titular</label>
+                <input type="email" id="saque-email-payoneer" placeholder="seu.email@payoneer.com">
+                <label>Titular</oabel>
                 <input type="text" id="saque-titular" placeholder="Nome completo">
                 <button class="btn" onclick="processar_saque('${nome}')">Solicitar Levantamento</button>
             `;
@@ -1019,8 +968,7 @@ function processar_saque(metodo) {
     if(valor > usuario_logado.saldo) return alert('Saldo insuficiente');
 
     usuario_logado.saldo = parseInt(usuario_logado.saldo || 0) - valor;
-    usuario_logado.ganhos = usuario_logado.ganhos || [];
-    usuario_logado.ganhos.push({ tipo: 'Levantamento (' + metodo + ')', valor: -valor, data: new Date().toLocaleDateString() });
+    usuario_logado.ganhos.push({ tipo: `Levantamento (${metodo})`, valor: -valor, data: new Date().toLocaleDateString() });
     localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
     
     alert('Levantamento solicitado com sucesso! Será processado em até 24 horas.');
@@ -1105,14 +1053,14 @@ function pesquisar_usuarios() {
             if(!u.isAdmin && (u.email.toLowerCase().includes(search) || u.nome.toLowerCase().includes(search) || search === '')) {
                 container.innerHTML += `
                     <div class="user-item">
-                        <p><b>${u.nome}</b> (${u.email})</p>
+                        <p><b>${u.nome}</b> (${u.email}) ${u.suspenso ? '<span class="inativo-status">SUSPENSO</span>' : ''}</p>
                         <p>Plano: ${u.plano} | Saldo: ${parseInt(u.saldo || 0)} Kz | Artistas: ${u.artistas ? u.artistas.length : 0}</p>
                         <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px;">
                             <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'FREE')">Free</button>
                             <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'BÁSICO')">Básico</button>
                             <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'MÉDIO')">Médio</button>
                             <button class="btn btn-small" style="flex: 1;" onclick="mudar_plano_admin('${u.email}', 'PRO')">Pro</button>
-                            <button class="btn btn-small btn-danger" style="flex: 1;" onclick="suspender_usuario('${u.email}')">Suspender</button>
+                            <button class="btn btn-small btn-danger" style="flex: 1;" onclick="suspender_usuario('${u.email}', ${!u.suspenso})">${u.suspenso ? 'Reativar' : 'Suspender'}</button>
                             <button class="btn btn-small btn-danger" style="flex: 1;" onclick="eliminar_usuario('${u.email}')">Eliminar</button>
                         </div>
                     </div>
@@ -1165,16 +1113,16 @@ function mudar_plano_admin(email, plano) {
     carregar_admin_panel();
 }
 
-function suspender_usuario(email) {
+function suspender_usuario(email, estado) {
     let u = JSON.parse(localStorage.getItem(`mam_${email}`));
-    u.suspenso = true;
+    u.suspenso = estado;
     localStorage.setItem(`mam_${email}`, JSON.stringify(u));
-    alert('Utilizador suspenso!');
+    alert(`Utilizador ${estado ? 'suspenso' : 'reativado'}!`);
     pesquisar_usuarios();
 }
 
 function eliminar_usuario(email) {
-    if(confirm('Tem certeza que deseja eliminar este utilizador?')) {
+    if(confirm('Tem certeza que deseja eliminar este utilizador? A ação é irreversível.')) {
         localStorage.removeItem(`mam_${email}`);
         alert('Utilizador eliminado!');
         pesquisar_usuarios();
@@ -1261,9 +1209,22 @@ function fechar_modal(id) {
     document.getElementById(id).classList.remove('active');
 }
 
-function atualizar_nome_arquivo(input_id, texto_id) {
-    const file = document.getElementById(input_id).files[0];
-    if(file) document.getElementById(texto_id).innerHTML = file.name;
+function confirmar_pagamento() {
+    const plano = document.getElementById('modal-plano').innerText;
+    const valor = parseInt(document.getElementById('modal-valor').innerText.replace(' Kz', ''));
+
+    if (usuario_logado.saldo < valor) {
+        return alert('Saldo insuficiente. Por favor, adicione fundos ou use outro método de pagamento.');
+    }
+
+    usuario_logado.saldo -= valor;
+    usuario_logado.plano = plano;
+    usuario_logado.ganhos.push({ tipo: `Upgrade Plano ${plano}`, valor: -valor, data: new Date().toLocaleDateString() });
+    localStorage.setItem(`mam_${usuario_logado.email}`, JSON.stringify(usuario_logado));
+
+    alert(`Parabéns! Seu plano foi atualizado para ${plano}.`);
+    fechar_modal('modal-pagamento');
+    mostrar_app();
 }
 
 function fazer_logout() {

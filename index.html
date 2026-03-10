@@ -489,6 +489,39 @@ auth.onAuthStateChanged((user) => {
 });
 
 const ADMIN_EMAIL = "mamfilhos29@gmail.com";
+
+auth.onAuthStateChanged((user) => {
+    if (user && user.email === ADMIN_EMAIL) {
+        localStorage.setItem('userCargo', 'admin');
+        localStorage.setItem('userPlano', 'VIP');
+        
+        const cargoEl = document.getElementById('user-cargo');
+        const planoEl = document.getElementById('user-plano');
+        
+        if(cargoEl) cargoEl.innerText = "Administrador";
+        if(planoEl) planoEl.innerText = "VIP";
+        
+        console.log("MAM SYSTEM: Acesso de CEO Confirmado.");
+    }
+});
+
+async function login() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        window.location.reload(); 
+    } catch (error) {
+        if (email === ADMIN_EMAIL && password === "admin123") {
+            localStorage.setItem('userCargo', 'admin');
+            localStorage.setItem('userPlano', 'VIP');
+            window.location.reload();
+        } else {
+            alert("Erro: " + error.message);
+        }
+    }
+}
 const PAISES = ["Angola", "Moçambique", "Portugal", "Brasil", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau"];
 const ESTILOS = ["Kizomba", "Zouk", "Semba", "Kuduro", "Afro House", "Ghetto Zouk", "Tarraxinha", "Hip-Hop/Rap", "R&B", "Pop", "Gospel"];
 

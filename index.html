@@ -456,13 +456,37 @@
 
 <script> 
     const firebaseConfig = {
-  apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo", // 
+  apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
   authDomain: "mam-distribuidora.firebaseapp.com",
   projectId: "mam-distribuidora",
   storageBucket: "mam-distribuidora.appspot.com",
   messagingSenderId: "777421832104",
   appId: "1:777421832104:web:078601d51c1404099432f8"
 };
+
+// Inicializar Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// FUNÇÃO PARA GARANTIR O TEU ACESSO DE DONO
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // Se o e-mail for o teu, o site força o cargo de Admin e Plano VIP
+    if (user.email === 'mamfilhos29@gmail.com') {
+        localStorage.setItem('userCargo', 'admin');
+        localStorage.setItem('userPlano', 'VIP');
+        console.log("Acesso de CEO confirmado para Matias");
+        
+        // Se tiveres um elemento no site que mostra o cargo, ele atualiza aqui:
+        const cargoElement = document.getElementById('user-cargo');
+        if(cargoElement) cargoElement.innerText = "(Administrador)";
+        
+        const planoElement = document.getElementById('user-plano');
+        if(planoElement) planoElement.innerText = "VIP";
+    }
+  }
+});
 
 const ADMIN_EMAIL = "matiasarsenio@gmail.com";
 const PAISES = ["Angola", "Moçambique", "Portugal", "Brasil", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau"];

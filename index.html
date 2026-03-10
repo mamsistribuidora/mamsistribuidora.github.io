@@ -466,7 +466,6 @@
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
 const ADMIN_EMAIL = "mamfilhos29@gmail.com";
 
 async function login() {
@@ -477,7 +476,7 @@ async function login() {
         localStorage.setItem('userEmail', email);
         localStorage.setItem('userCargo', 'admin');
         localStorage.setItem('userPlano', 'VIP');
-        alert("Bem-vindo de volta, Matias!");
+        alert("MAM SYSTEM: Acesso Confirmado!");
         window.location.href = "index.html";
         return;
     }
@@ -487,32 +486,6 @@ async function login() {
         window.location.reload();
     } catch (error) {
         alert("Erro: " + error.message);
-    }
-}
-
-auth.onAuthStateChanged((user) => {
-    if (user && user.email === ADMIN_EMAIL) {
-        localStorage.setItem('userCargo', 'admin');
-        localStorage.setItem('userPlano', 'VIP');
-        console.log("MAM: CEO Conectado");
-    }
-});
-
-async function login() {
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value.trim();
-
-    try {
-        await auth.signInWithEmailAndPassword(email, password);
-        window.location.reload(); 
-    } catch (error) {
-        if (email === ADMIN_EMAIL && password === "admin123") {
-            localStorage.setItem('userCargo', 'admin');
-            localStorage.setItem('userPlano', 'VIP');
-            window.location.reload();
-        } else {
-            alert("Erro: " + error.message);
-        }
     }
 }
 const PAISES = ["Angola", "Moçambique", "Portugal", "Brasil", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau"];

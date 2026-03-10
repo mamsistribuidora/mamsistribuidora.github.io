@@ -469,24 +469,19 @@ const auth = firebase.auth();
 const ADMIN_EMAIL = "mamfilhos29@gmail.com";
 
 async function login() {
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value.trim();
+    const e = document.querySelector('input[type="email"]').value.trim();
+    const p = document.querySelector('input[type="password"]').value.trim();
 
-    if (email === ADMIN_EMAIL && password === "Angell28") {
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userCargo', 'admin');
-        localStorage.setItem('userPlano', 'VIP');
-        alert("MAM SYSTEM: Acesso Confirmado!");
-        window.location.href = "index.html";
+    if (e === "mamfilhos29@gmail.com" && p === "Angell28") {
+        localStorage.setItem('userEmail', e);
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('userPlan', 'VIP');
+        window.location.hash = 'dashboard';
+        location.reload(); 
         return;
     }
 
-    try {
-        await auth.signInWithEmailAndPassword(email, password);
-        window.location.reload();
-    } catch (error) {
-        alert("Erro: " + error.message);
-    }
+    alert("Dados não reconhecidos pelo sistema local.");
 }
 const PAISES = ["Angola", "Moçambique", "Portugal", "Brasil", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau"];
 const ESTILOS = ["Kizomba", "Zouk", "Semba", "Kuduro", "Afro House", "Ghetto Zouk", "Tarraxinha", "Hip-Hop/Rap", "R&B", "Pop", "Gospel"];

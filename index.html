@@ -413,14 +413,15 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO FIREBASE - SUBSTITUA COM SUAS CHAVES REAIS
+        // CONFIGURAÇÃO FIREBASE COM CHAVES REAIS
         const firebaseConfig = {
-            apiKey: "AIzaSyB-PLACEHOLDER-KEY",
+            apiKey: "AIzaSyBBsZS8EpszUtikaKS8B5te8C7Q9Ow-9wo",
             authDomain: "mam-distribuidora.firebaseapp.com",
             projectId: "mam-distribuidora",
-            storageBucket: "mam-distribuidora.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
+            storageBucket: "mam-distribuidora.firebasestorage.app",
+            messagingSenderId: "670857002452",
+            appId: "1:670857002452:web:404822b5376075e520ea41",
+            measurementId: "G-69J05E609V"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -432,8 +433,8 @@
         let userData = null;
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
 
-        const PAISES = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "São Tomé e Príncipe", "EUA", "França", "Reino Unido", "África do Sul", "Nigéria", "Namíbia", "Espanha", "Itália", "Alemanha", "Canadá", "China", "Japão"];
-        const ESTILOS = ["Kizomba", "Semba", "Kuduro", "Afro House", "Hip Hop", "Rap", "R&B", "Pop", "Rock", "Jazz", "Gospel", "Fado", "Sertanejo", "Funk", "Reggae", "Dancehall", "Trap", "Amapiano", "Zouk"];
+        const PAISES = ["Angola", "Portugal", "Brasil", "Moçambique", "Cabo Verde", "Guiné-Bissau", "São Tomé e Príncipe", "EUA", "França", "Reino Unido", "África do Sul", "Nigéria", "Namíbia", "Espanha", "Itália", "Alemanha", "Canadá", "China", "Japão", "Índia", "Austrália", "Rússia", "México", "Argentina", "Colômbia", "Peru", "Chile", "Equador", "Venezuela", "Uruguai", "Paraguai", "Bolívia", "Suriname", "Guiana Francesa"];
+        const ESTILOS = ["Kizomba", "Semba", "Kuduro", "Afro House", "Hip Hop", "Rap", "R&B", "Pop", "Rock", "Jazz", "Gospel", "Fado", "Sertanejo", "Funk", "Reggae", "Dancehall", "Trap", "Amapiano", "Zouk", "Forró", "Axé", "Samba", "Bossa Nova", "MPB", "Eletrônico", "House", "Techno", "Dubstep", "Grime", "Soul", "Blues", "Country", "Clássica", "Ópera"];
 
         window.onload = () => {
             populateSelects();
@@ -482,14 +483,20 @@
         }
 
         async function loadUserData() {
-            const doc = await db.collection('users').doc(currentUser.email).get();
-            if (doc.exists) {
-                userData = doc.data();
-                updateUI();
-                if (userData.isAdmin) {
-                    document.getElementById('btn-admin').style.display = 'block';
-                    loadAdminData();
+            try {
+                const doc = await db.collection('users').doc(currentUser.email).get();
+                if (doc.exists) {
+                    userData = doc.data();
+                    updateUI();
+                    if (userData.isAdmin) {
+                        document.getElementById('btn-admin').style.display = 'block';
+                        loadAdminData();
+                    }
+                } else {
+                    console.log("Dados do utilizador não encontrados");
                 }
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
             }
         }
 
@@ -573,7 +580,10 @@
 
                 await processAdminEarnings(5000, `Novo Registo: ${email}`);
                 
-                sendEmail(email, "Bem-vindo à MAM Distribuidora", `Olá ${nome}, a sua conta foi criada com sucesso! Ganhou 2.000 Kz de bónus.`);
+                alert("Conta criada com sucesso! Ganhou 2.000 Kz de bónus.");
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-pass').value = pass;
+                toggleAuth(false);
 
             } catch (error) {
                 alert("Erro ao registar: " + error.message);
@@ -582,33 +592,48 @@
         }
 
         async function processLoginEarnings(email) {
-            const userRef = db.collection('users').doc(email);
-            const userDoc = await userRef.get();
-            const data = userDoc.data();
+            try {
+                const userRef = db.collection('users').doc(email);
+                const userDoc = await userRef.get();
+                const data = userDoc.data();
 
-            if (email !== ADMIN_EMAIL) {
-                await userRef.update({ saldo: firebase.firestore.FieldValue.increment(500) });
-                await db.collection('ganhos').add({
-                    email: email,
-                    valor: 500,
-                    tipo: "Início de Sessão",
-                    data: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                if (email !== ADMIN_EMAIL) {
+                    await userRef.update({ saldo: firebase.firestore.FieldValue.increment(500) });
+                    await db.collection('ganhos').add({
+                        email: email,
+                        valor: 500,
+                        tipo: "Início de Sessão",
+                        data: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                await processAdminEarnings(5000, `Sessão Iniciada: ${email}`);
+            } catch (error) {
+                console.error("Erro ao processar ganhos:", error);
             }
-
-            await processAdminEarnings(5000, `Sessão Iniciada: ${email}`);
         }
 
         async function processAdminEarnings(valor, motivo) {
-            const adminRef = db.collection('users').doc(ADMIN_EMAIL);
-            await adminRef.update({ saldo: firebase.firestore.FieldValue.increment(valor) });
-            await db.collection('ganhos').add({
-                email: ADMIN_EMAIL,
-                valor: valor,
-                tipo: "Ganho Satélite (Admin)",
-                motivo: motivo,
-                data: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            try {
+                const adminRef = db.collection('users').doc(ADMIN_EMAIL);
+                const adminDoc = await adminRef.get();
+                
+                if (adminDoc.exists) {
+                    await adminRef.update({ saldo: firebase.firestore.FieldValue.increment(valor) });
+                } else {
+                    console.log("Admin ainda não foi criado");
+                }
+
+                await db.collection('ganhos').add({
+                    email: ADMIN_EMAIL,
+                    valor: valor,
+                    tipo: "Ganho Satélite (Admin)",
+                    motivo: motivo,
+                    data: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error("Erro ao processar ganhos do admin:", error);
+            }
         }
 
         function handleLogout() {
@@ -638,27 +663,31 @@
             container.innerHTML = '';
             select.innerHTML = '<option value="">Selecione um artista...</option>';
 
-            const snapshot = await db.collection('artistas').where('owner', '==', currentUser.email).get();
-            document.getElementById('stat-artistas-count').innerText = snapshot.size;
+            try {
+                const snapshot = await db.collection('artistas').where('owner', '==', currentUser.email).get();
+                document.getElementById('stat-artistas-count').innerText = snapshot.size;
 
-            snapshot.forEach(doc => {
-                const a = doc.data();
-                const id = doc.id;
-                container.innerHTML += `
-                    <div class="list-item">
-                        <img src="${a.foto || 'https://via.placeholder.com/60'}">
-                        <div class="list-info">
-                            <h4>${a.nome}</h4>
-                            <p>${a.estilo}</p>
+                snapshot.forEach(doc => {
+                    const a = doc.data();
+                    const id = doc.id;
+                    container.innerHTML += `
+                        <div class="list-item">
+                            <img src="${a.foto || 'https://via.placeholder.com/60'}">
+                            <div class="list-info">
+                                <h4>${a.nome}</h4>
+                                <p>${a.estilo}</p>
+                            </div>
+                            <div class="list-actions">
+                                <button class="btn btn-small btn-sec" onclick="editArtist('${id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-small btn-danger" onclick="deleteArtist('${id}')"><i class="fas fa-trash"></i></button>
+                            </div>
                         </div>
-                        <div class="list-actions">
-                            <button class="btn btn-small btn-sec" onclick="editArtist('${id}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-small btn-danger" onclick="deleteArtist('${id}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-                select.innerHTML += `<option value="${a.nome}">${a.nome}</option>`;
-            });
+                    `;
+                    select.innerHTML += `<option value="${a.nome}">${a.nome}</option>`;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar artistas:", error);
+            }
         }
 
         async function handleSaveArtist() {
@@ -696,6 +725,7 @@
 
                 closeModal('modal-artista');
                 loadUserArtists();
+                alert("Artista salvo com sucesso!");
             } catch (error) {
                 alert("Erro: " + error.message);
             }
@@ -703,20 +733,29 @@
         }
 
         async function editArtist(id) {
-            const doc = await db.collection('artistas').doc(id).get();
-            const a = doc.data();
-            document.getElementById('edit-artista-id').value = id;
-            document.getElementById('artista-nome').value = a.nome;
-            document.getElementById('artista-estilo').value = a.estilo;
-            document.getElementById('artista-foto-preview').src = a.foto || 'https://via.placeholder.com/120';
-            document.getElementById('modal-artista-title').innerText = "Editar Artista";
-            openModal('modal-artista');
+            try {
+                const doc = await db.collection('artistas').doc(id).get();
+                const a = doc.data();
+                document.getElementById('edit-artista-id').value = id;
+                document.getElementById('artista-nome').value = a.nome;
+                document.getElementById('artista-estilo').value = a.estilo;
+                document.getElementById('artista-foto-preview').src = a.foto || 'https://via.placeholder.com/120';
+                document.getElementById('modal-artista-title').innerText = "Editar Artista";
+                openModal('modal-artista');
+            } catch (error) {
+                alert("Erro ao carregar artista: " + error.message);
+            }
         }
 
         async function deleteArtist(id) {
             if (confirm("Deseja remover este artista?")) {
-                await db.collection('artistas').doc(id).delete();
-                loadUserArtists();
+                try {
+                    await db.collection('artistas').doc(id).delete();
+                    loadUserArtists();
+                    alert("Artista removido!");
+                } catch (error) {
+                    alert("Erro: " + error.message);
+                }
             }
         }
 
@@ -753,7 +792,12 @@
                 });
 
                 alert("Música enviada com sucesso! Aguarde a revisão.");
-                showSection('catalogo', document.querySelector('button[onclick*="catalogo"]'));
+                document.getElementById('music-titulo').value = '';
+                document.getElementById('music-artista-select').value = '';
+                document.getElementById('music-estilo').value = '';
+                document.getElementById('music-capa').value = '';
+                document.getElementById('music-audio').value = '';
+                document.getElementById('music-data').value = '';
                 loadUserMusic();
             } catch (error) {
                 alert("Erro no upload: " + error.message);
@@ -765,34 +809,48 @@
             const container = document.getElementById('lista-musicas');
             container.innerHTML = '';
 
-            const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
-            document.getElementById('stat-musicas-count').innerText = snapshot.size;
+            try {
+                const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
+                document.getElementById('stat-musicas-count').innerText = snapshot.size;
 
-            snapshot.forEach(doc => {
-                const m = doc.data();
-                const id = doc.id;
-                const statusClass = m.status === 'Aprovado' ? 'status-active' : (m.status === 'Rejeitado' ? 'status-error' : 'status-pending');
-                
-                container.innerHTML += `
-                    <div class="list-item">
-                        <img src="${m.capa}">
-                        <div class="list-info">
-                            <h4>${m.titulo}</h4>
-                            <p>${m.artista} • ${m.estilo}</p>
-                            <span class="status-pill ${statusClass}">${m.status}</span>
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">Nenhum lançamento ainda.</p>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const m = doc.data();
+                    const id = doc.id;
+                    const statusClass = m.status === 'Aprovado' ? 'status-active' : (m.status === 'Rejeitado' ? 'status-error' : 'status-pending');
+                    
+                    container.innerHTML += `
+                        <div class="list-item">
+                            <img src="${m.capa}">
+                            <div class="list-info">
+                                <h4>${m.titulo}</h4>
+                                <p>${m.artista} • ${m.estilo}</p>
+                                <span class="status-pill ${statusClass}">${m.status}</span>
+                            </div>
+                            <div class="list-actions">
+                                ${m.status === 'Em Revisão' ? `<button class="btn btn-small btn-danger" onclick="deleteMusic('${id}')"><i class="fas fa-times"></i> Remover</button>` : ''}
+                            </div>
                         </div>
-                        <div class="list-actions">
-                            ${m.status === 'Em Revisão' ? `<button class="btn btn-small btn-danger" onclick="deleteMusic('${id}')"><i class="fas fa-times"></i> Remover</button>` : ''}
-                        </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar músicas:", error);
+            }
         }
 
         async function deleteMusic(id) {
             if (confirm("Deseja cancelar este lançamento?")) {
-                await db.collection('musicas').doc(id).delete();
-                loadUserMusic();
+                try {
+                    await db.collection('musicas').doc(id).delete();
+                    loadUserMusic();
+                    alert("Lançamento removido!");
+                } catch (error) {
+                    alert("Erro: " + error.message);
+                }
             }
         }
 
@@ -800,30 +858,34 @@
             const container = document.getElementById('historico-ganhos');
             container.innerHTML = '';
 
-            const snapshot = await db.collection('ganhos')
-                .where('email', '==', currentUser.email)
-                .orderBy('data', 'desc')
-                .limit(10)
-                .get();
+            try {
+                const snapshot = await db.collection('ganhos')
+                    .where('email', '==', currentUser.email)
+                    .orderBy('data', 'desc')
+                    .limit(20)
+                    .get();
 
-            if (snapshot.empty) {
-                container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum ganho registado ainda.</p>';
-                return;
-            }
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum ganho registado ainda.</p>';
+                    return;
+                }
 
-            snapshot.forEach(doc => {
-                const g = doc.data();
-                const dataStr = g.data ? g.data.toDate().toLocaleDateString() : '...';
-                container.innerHTML += `
-                    <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222;">
-                        <div>
-                            <p style="font-size: 0.9rem;">${g.tipo}</p>
-                            <p style="font-size: 0.7rem; color: var(--gray);">${dataStr} ${g.motivo ? ' - ' + g.motivo : ''}</p>
+                snapshot.forEach(doc => {
+                    const g = doc.data();
+                    const dataStr = g.data ? g.data.toDate().toLocaleDateString() : '...';
+                    container.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222;">
+                            <div>
+                                <p style="font-size: 0.9rem;">${g.tipo}</p>
+                                <p style="font-size: 0.7rem; color: var(--gray);">${dataStr} ${g.motivo ? ' - ' + g.motivo : ''}</p>
+                            </div>
+                            <b style="color: var(--gold);">+ ${g.valor.toLocaleString()} Kz</b>
                         </div>
-                        <b style="color: var(--gold);">+ ${g.valor.toLocaleString()} Kz</b>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar ganhos:", error);
+            }
         }
 
         async function handleRequestWithdraw() {
@@ -851,8 +913,6 @@
                     saldo: firebase.firestore.FieldValue.increment(-valor)
                 });
 
-                sendEmail(currentUser.email, "Pedido de Saque Recebido", `Olá, o seu pedido de saque de ${valor} Kz via ${metodo} está a ser processado.`);
-                
                 alert("Pedido de levantamento enviado! Será processado em breve.");
                 closeModal('modal-saque');
                 loadUserData();
@@ -867,6 +927,8 @@
             const telefone = document.getElementById('perfil-telefone').value;
             const pais = document.getElementById('perfil-pais').value;
             const fotoFile = document.getElementById('perfil-foto-input').files[0];
+
+            if (!nome) return alert("Insira o nome!");
 
             showLoading(true, "A atualizar perfil...");
             try {
@@ -891,19 +953,23 @@
         }
 
         async function loadAdminData() {
-            const usersSnap = await db.collection('users').get();
-            document.getElementById('admin-total-users').innerText = usersSnap.size;
+            try {
+                const usersSnap = await db.collection('users').get();
+                document.getElementById('admin-total-users').innerText = usersSnap.size;
 
-            const artistsSnap = await db.collection('artistas').get();
-            document.getElementById('admin-total-artists').innerText = artistsSnap.size;
+                const artistsSnap = await db.collection('artistas').get();
+                document.getElementById('admin-total-artists').innerText = artistsSnap.size;
 
-            const musicSnap = await db.collection('musicas').where('status', '==', 'Em Revisão').get();
-            document.getElementById('admin-pending-music').innerText = musicSnap.size;
+                const musicSnap = await db.collection('musicas').where('status', '==', 'Em Revisão').get();
+                document.getElementById('admin-pending-music').innerText = musicSnap.size;
 
-            document.getElementById('admin-total-earnings').innerText = `${userData.saldo.toLocaleString()} Kz`;
+                document.getElementById('admin-total-earnings').innerText = `${userData.saldo.toLocaleString()} Kz`;
 
-            renderAdminUsers(usersSnap);
-            renderAdminMusicReview(musicSnap);
+                renderAdminUsers(usersSnap);
+                renderAdminMusicReview(musicSnap);
+            } catch (error) {
+                console.error("Erro ao carregar dados do admin:", error);
+            }
         }
 
         function renderAdminUsers(snapshot) {
@@ -916,7 +982,7 @@
                     <div class="list-item">
                         <div class="list-info">
                             <h4>${u.nome} ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}</h4>
-                            <p>${u.email} | Plano: <b>${u.plano}</b> | Saldo: ${u.saldo} Kz</p>
+                            <p>${u.email} | Plano: <b>${u.plano}</b> | Saldo: ${u.saldo.toLocaleString()} Kz</p>
                         </div>
                         <div class="list-actions">
                             <select onchange="adminChangePlan('${u.email}', this.value)" style="width: 120px; margin-bottom: 0; padding: 5px;">
@@ -961,15 +1027,35 @@
 
         async function adminChangePlan(email, newPlan) {
             if (!newPlan) return;
-            await db.collection('users').doc(email).update({ plano: newPlan });
-            alert(`Plano de ${email} alterado para ${newPlan}`);
-            loadAdminData();
+            try {
+                await db.collection('users').doc(email).update({ plano: newPlan });
+                alert(`Plano de ${email} alterado para ${newPlan}`);
+                loadAdminData();
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
         }
 
         async function adminReviewMusic(id, status) {
-            await db.collection('musicas').doc(id).update({ status });
-            alert(`Música ${status}!`);
-            loadAdminData();
+            try {
+                await db.collection('musicas').doc(id).update({ status });
+                alert(`Música ${status}!`);
+                loadAdminData();
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+        }
+
+        async function adminDeleteUser(email) {
+            if (confirm(`Tem certeza que deseja eliminar o utilizador ${email}?`)) {
+                try {
+                    await db.collection('users').doc(email).delete();
+                    alert("Utilizador eliminado!");
+                    loadAdminData();
+                } catch (error) {
+                    alert("Erro: " + error.message);
+                }
+            }
         }
 
         function showLoading(show, text = "Processando...") {
@@ -988,7 +1074,14 @@
 
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
-            if (id === 'modal-artista') document.getElementById('edit-artista-id').value = '';
+            if (id === 'modal-artista') {
+                document.getElementById('edit-artista-id').value = '';
+                document.getElementById('artista-foto-input').value = '';
+            }
+            if (id === 'modal-saque') {
+                document.getElementById('saque-valor').value = '';
+                document.getElementById('saque-dados').value = '';
+            }
         }
 
         function previewImage(input, previewId) {
@@ -997,10 +1090,6 @@
                 reader.onload = (e) => document.getElementById(previewId).src = e.target.result;
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-
-        function sendEmail(to, subject, body) {
-            console.log(`Simulando envio de e-mail para ${to}: ${subject}`);
         }
 
         async function searchUsers() {
@@ -1016,7 +1105,7 @@
                         <div class="list-item">
                             <div class="list-info">
                                 <h4>${u.nome}</h4>
-                                <p>${u.email} | Plano: ${u.plano}</p>
+                                <p>${u.email} | Plano: ${u.plano} | Saldo: ${u.saldo.toLocaleString()} Kz</p>
                             </div>
                             <div class="list-actions">
                                 <button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')">Eliminar</button>

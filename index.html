@@ -743,16 +743,42 @@
 
         async function loadUserData() {
             try {
-                const doc = await db.collection('users').doc(currentUser.email).get();
-                if (doc.exists) {
-                    userData = doc.data();
-                    updateUI();
-                    if (userData.isAdmin) {
-                        document.getElementById('btn-admin').style.display = 'block';
-                        loadAdminData();
+                // Se for o email do admin, forçar os dados de administrador
+                if (currentUser.email === ADMIN_EMAIL) {
+                    userData = {
+                        nome: "Matias Arsénio Manuel",
+                        email: ADMIN_EMAIL,
+                        tipo: "Administrador",
+                        pais: "Angola",
+                        plano: "PRO MAX",
+                        saldo: 0,
+                        isAdmin: true,
+                        foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+                        telefone: ADMIN_WHATSAPP
+                    };
+                    
+                    // Garantir que o documento no Firebase também está atualizado
+                    try {
+                        await db.collection('users').doc(ADMIN_EMAIL).set(userData, { merge: true });
+                    } catch (e) {
+                        console.log("Atualizando perfil admin no Firebase...");
                     }
                 } else {
-                    console.log("Dados do utilizador não encontrados");
+                    const doc = await db.collection('users').doc(currentUser.email).get();
+                    if (doc.exists) {
+                        userData = doc.data();
+                    } else {
+                        console.log("Dados do utilizador não encontrados");
+                        return;
+                    }
+                }
+                
+                updateUI();
+                
+                // Mostrar painel admin se for administrador
+                if (userData.isAdmin || currentUser.email === ADMIN_EMAIL) {
+                    document.getElementById('btn-admin').style.display = 'block';
+                    loadAdminData();
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
@@ -760,19 +786,24 @@
         }
 
         function updateUI() {
-            document.getElementById('user-display-name').innerText = userData.nome;
-            document.getElementById('user-display-type').innerText = userData.tipo;
-            document.getElementById('user-display-country').innerText = userData.pais;
-            document.getElementById('user-display-plan').innerText = `PLANO ${userData.plano}`;
-            document.getElementById('stat-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
-            document.getElementById('wallet-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
-            document.getElementById('wallet-balance').innerText = `${userData.saldo.toLocaleString()} Kz`;
+            const displayName = userData.nome || '...';
+            const displayType = userData.tipo || '...';
+            const displayCountry = userData.pais || '...';
+            const displayPlan = userData.plano || 'FREE';
+            
+            document.getElementById('user-display-name').innerText = displayName;
+            document.getElementById('user-display-type').innerText = displayType;
+            document.getElementById('user-display-country').innerText = displayCountry;
+            document.getElementById('user-display-plan').innerText = `PLANO ${displayPlan}`;
+            document.getElementById('stat-saldo').innerText = `${(userData.saldo || 0).toLocaleString()} Kz`;
+            document.getElementById('wallet-saldo').innerText = `${(userData.saldo || 0).toLocaleString()} Kz`;
+            document.getElementById('wallet-balance').innerText = `${(userData.saldo || 0).toLocaleString()} Kz`;
             document.getElementById('home-user-photo').src = userData.foto || 'https://via.placeholder.com/80';
             
-            document.getElementById('perfil-nome').value = userData.nome;
-            document.getElementById('perfil-email').value = userData.email;
+            document.getElementById('perfil-nome').value = userData.nome || '';
+            document.getElementById('perfil-email').value = userData.email || '';
             document.getElementById('perfil-telefone').value = userData.telefone || '';
-            document.getElementById('perfil-pais').value = userData.pais;
+            document.getElementById('perfil-pais').value = userData.pais || '';
             document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
 
             loadUserArtists();
@@ -818,31 +849,39 @@
             try {
                 await auth.createUserWithEmailAndPassword(email, pass);
                 
+                // Se for o email do admin, criar com privilégios de administrador
+                const isAdminEmail = email === ADMIN_EMAIL;
                 const newUser = {
-                    nome,
+                    nome: isAdminEmail ? "Matias Arsénio Manuel" : nome,
                     email,
-                    tipo,
-                    pais,
-                    plano: "FREE",
-                    saldo: 2000,
-                    isAdmin: email === ADMIN_EMAIL,
-                    foto: "",
-                    telefone: "",
+                    tipo: isAdminEmail ? "Administrador" : tipo,
+                    pais: isAdminEmail ? "Angola" : pais,
+                    plano: isAdminEmail ? "PRO MAX" : "FREE",
+                    saldo: isAdminEmail ? 0 : 2000,
+                    isAdmin: isAdminEmail,
+                    foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+                    telefone: isAdminEmail ? ADMIN_WHATSAPP : "",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
                 await db.collection('users').doc(email).set(newUser);
                 
-                await db.collection('ganhos').add({
-                    email: email,
-                    valor: 2000,
-                    tipo: "Bónus de Boas-vindas",
-                    data: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                if (!isAdminEmail) {
+                    await db.collection('ganhos').add({
+                        email: email,
+                        valor: 2000,
+                        tipo: "Bónus de Boas-vindas",
+                        data: firebase.firestore.FieldValue.serverTimestamp()
+                    });
 
-                await processAdminEarnings(5000, `Novo Registo: ${email}`);
+                    await processAdminEarnings(5000, `Novo Registo: ${email}`);
+                }
                 
-                alert("Conta criada com sucesso! Ganhou 2.000 Kz de bónus.");
+                if (isAdminEmail) {
+                    alert("Conta Administrativa criada com sucesso! Bem-vindo ao Império da MAM Distribuidora.");
+                } else {
+                    alert("Conta criada com sucesso! Ganhou 2.000 Kz de bónus.");
+                }
                 document.getElementById('login-email').value = email;
                 document.getElementById('login-pass').value = pass;
                 toggleAuth(false);

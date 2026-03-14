@@ -231,7 +231,7 @@
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-star"></i> Destaques</h3>
+                    <h3><i class="fas fa-star"></i> Destaques - Top 5 Músicas Mais Ouvidas/Baixadas</h3>
                     <div id="destaques-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
                         <!-- Top 5 músicas mais ouvidas/baixadas -->
                     </div>
@@ -299,7 +299,7 @@
 
             <!-- CATÁLOGO (FEED) -->
             <div id="catalogo" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;">Feed de Lançamentos MAM</h2>
+                <h2 style="color: var(--gold); margin-bottom: 20px;">Feed de Lançamentos MAM - Todas as Músicas</h2>
                 <div id="lista-musicas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;">
                     <!-- Músicas em forma de disco -->
                 </div>
@@ -315,11 +315,11 @@
                         <p style="color: var(--gray); font-size: 0.9rem;">Gratuito</p>
                         <div class="plan-price">Grátis</div>
                         <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> 1 Artista</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 1 Artista</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Acesso Básico</li>
                         </ul>
-                        <button class="btn btn-sec" onclick="openModal('modal-compra-free')">Seu Plano Atual</button>
+                        <button class="btn btn-sec" onclick="alert('Você já está no Plano Free')">Seu Plano Atual</button>
                     </div>
 
                     <!-- Plano Básico -->
@@ -328,11 +328,11 @@
                         <p style="color: var(--gray); font-size: 0.9rem;">30.000 Kz/mês</p>
                         <div class="plan-price">30.000 Kz</div>
                         <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> 10 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 10 Artistas</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte Prioritário</li>
                         </ul>
-                        <button class="btn" onclick="openModal('modal-compra-basico')">Comprar Agora</button>
+                        <button class="btn" onclick="openPlanPayment('BÁSICO', 30000)">Comprar Agora</button>
                     </div>
 
                     <!-- Plano Médio -->
@@ -341,11 +341,11 @@
                         <p style="color: var(--gray); font-size: 0.9rem;">50.000 Kz/mês</p>
                         <div class="plan-price">50.000 Kz</div>
                         <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> 30 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 30 Artistas</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Análise Avançada</li>
                         </ul>
-                        <button class="btn" onclick="openModal('modal-compra-medio')">Comprar Agora</button>
+                        <button class="btn" onclick="openPlanPayment('MÉDIO', 50000)">Comprar Agora</button>
                     </div>
 
                     <!-- Plano Pro MAX -->
@@ -358,7 +358,7 @@
                             <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte 24/7 VIP</li>
                         </ul>
-                        <button class="btn" onclick="openModal('modal-compra-pro')">Comprar Agora</button>
+                        <button class="btn" onclick="openPlanPayment('PRO', 100000)">Comprar Agora</button>
                     </div>
                 </div>
             </div>
@@ -500,12 +500,13 @@
             <h3>Solicitar Levantamento</h3>
             <label>Valor (Kz) - Mínimo 5.000</label>
             <input type="number" id="saque-valor" min="5000" placeholder="5000">
-            <label>Método de Levantamento</label>
+            <label>Selecione o Método de Levantamento</label>
             <select id="saque-metodo">
                 <option value="">Selecione o método...</option>
                 <option value="BFA">Banco BFA (Angola)</option>
                 <option value="BAI">Banco BAI (Angola)</option>
                 <option value="BIC">Banco BIC (Angola)</option>
+                <option value="Multicaixa">Multicaixa Express (Angola)</option>
                 <option value="Visa">Visa</option>
                 <option value="PayPal">PayPal</option>
                 <option value="Pix">Pix (Brasil)</option>
@@ -517,34 +518,15 @@
         </div>
     </div>
 
-    <!-- MODALS COMPRA PLANOS -->
-    <div id="modal-compra-basico" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+    <!-- MODAL PAGAMENTO PLANO -->
+    <div id="modal-plan-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
         <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-compra-basico')">&times;</span>
-            <h3>Comprar Plano Básico - 30.000 Kz</h3>
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-plan-payment')">&times;</span>
+            <h3>Comprar Plano <span id="plan-name-display">...</span></h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Valor: <b id="plan-price-display">0</b> Kz</p>
             <p style="color: var(--gray); margin-bottom: 20px;">Escolha o método de pagamento:</p>
-            <button class="btn" onclick="openPaymentMethod('carteira-mam', 'BÁSICO', 30000)"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
-            <button class="btn btn-sec" style="margin-top: 10px;" onclick="openPaymentMethod('transferencia', 'BÁSICO', 30000)"><i class="fas fa-bank"></i> Transferência Bancária</button>
-        </div>
-    </div>
-
-    <div id="modal-compra-medio" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-compra-medio')">&times;</span>
-            <h3>Comprar Plano Médio - 50.000 Kz</h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Escolha o método de pagamento:</p>
-            <button class="btn" onclick="openPaymentMethod('carteira-mam', 'MÉDIO', 50000)"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
-            <button class="btn btn-sec" style="margin-top: 10px;" onclick="openPaymentMethod('transferencia', 'MÉDIO', 50000)"><i class="fas fa-bank"></i> Transferência Bancária</button>
-        </div>
-    </div>
-
-    <div id="modal-compra-pro" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-compra-pro')">&times;</span>
-            <h3>Comprar Plano Pro MAX - 100.000 Kz</h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Escolha o método de pagamento:</p>
-            <button class="btn" onclick="openPaymentMethod('carteira-mam', 'PRO', 100000)"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
-            <button class="btn btn-sec" style="margin-top: 10px;" onclick="openPaymentMethod('transferencia', 'PRO', 100000)"><i class="fas fa-bank"></i> Transferência Bancária</button>
+            <button class="btn" onclick="selectPaymentMethod('mam')"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
+            <button class="btn btn-sec" style="margin-top: 10px;" onclick="selectPaymentMethod('banco')"><i class="fas fa-bank"></i> Transferência Bancária</button>
         </div>
     </div>
 
@@ -556,7 +538,7 @@
             <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name">...</b></p>
             <p style="color: var(--gold); font-size: 1.5rem; margin-bottom: 20px;">Valor: <b id="pay-amount">0</b> Kz</p>
             <p style="color: var(--gray); margin-bottom: 20px;">O pagamento será processado automaticamente da sua carteira MAM para a carteira do administrador.</p>
-            <button class="btn" onclick="processPlanPayment()">Confirmar Pagamento</button>
+            <button class="btn" onclick="processPlanPaymentMAM()">Confirmar Pagamento</button>
         </div>
     </div>
 
@@ -607,6 +589,7 @@
 
         // Variáveis globais para pagamento
         let currentPlanPayment = { plan: '', amount: 0, method: '' };
+        let sessionTimeout = null;
 
         window.onload = () => {
             populateSelects();
@@ -687,10 +670,27 @@
                     currentUser = user;
                     await loadUserData();
                     showApp();
+                    startSessionTracking();
                 } else {
                     showAuth();
                 }
             });
+        }
+
+        function startSessionTracking() {
+            // Salvar a sessão no localStorage
+            localStorage.setItem('mam_user_email', currentUser.email);
+            localStorage.setItem('mam_session_active', 'true');
+            
+            // Manter a sessão ativa mesmo ao atualizar
+            window.addEventListener('beforeunload', () => {
+                localStorage.setItem('mam_session_active', 'true');
+            });
+
+            // Restaurar sessão ao carregar
+            if (localStorage.getItem('mam_session_active') === 'true') {
+                localStorage.setItem('mam_session_active', 'true');
+            }
         }
 
         async function loadUserData() {
@@ -849,6 +849,8 @@
         }
 
         function handleLogout() {
+            localStorage.removeItem('mam_session_active');
+            localStorage.removeItem('mam_user_email');
             auth.signOut();
         }
 
@@ -1228,24 +1230,30 @@
             showLoading(false);
         }
 
-        function openPaymentMethod(method, plan, amount) {
-            currentPlanPayment = { plan, amount, method };
+        function openPlanPayment(plan, amount) {
+            currentPlanPayment = { plan, amount, method: '' };
+            document.getElementById('plan-name-display').innerText = plan;
+            document.getElementById('plan-price-display').innerText = amount.toLocaleString();
+            openModal('modal-plan-payment');
+        }
+
+        function selectPaymentMethod(method) {
+            currentPlanPayment.method = method;
+            closeModal('modal-plan-payment');
             
-            if (method === 'carteira-mam') {
-                document.getElementById('pay-plan-name').innerText = `Plano ${plan}`;
-                document.getElementById('pay-amount').innerText = amount.toLocaleString();
-                closeModal(`modal-compra-${plan.toLowerCase()}`);
+            if (method === 'mam') {
+                document.getElementById('pay-plan-name').innerText = `Plano ${currentPlanPayment.plan}`;
+                document.getElementById('pay-amount').innerText = currentPlanPayment.amount.toLocaleString();
                 openModal('modal-pagamento-mam');
-            } else if (method === 'transferencia') {
-                document.getElementById('pay-plan-name-banco').innerText = `Plano ${plan}`;
-                document.getElementById('pay-amount-banco').innerText = amount.toLocaleString();
-                closeModal(`modal-compra-${plan.toLowerCase()}`);
+            } else if (method === 'banco') {
+                document.getElementById('pay-plan-name-banco').innerText = `Plano ${currentPlanPayment.plan}`;
+                document.getElementById('pay-amount-banco').innerText = currentPlanPayment.amount.toLocaleString();
                 openModal('modal-pagamento-banco');
             }
         }
 
-        async function processPlanPayment() {
-            const { plan, amount, method } = currentPlanPayment;
+        async function processPlanPaymentMAM() {
+            const { plan, amount } = currentPlanPayment;
             
             if (userData.saldo < amount) {
                 alert("Saldo insuficiente na carteira MAM!");

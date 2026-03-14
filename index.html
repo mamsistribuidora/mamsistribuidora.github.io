@@ -89,7 +89,7 @@
         .disco-item { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
         .disco-item:hover { border-color: var(--gold); background: #151515; }
         .disco-cover { width: 120px; height: 120px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(212,175,55,0.3); }
-        .disco-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; }
+        .disco-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
         .disco-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
         .audio-player { width: 100%; margin-top: 10px; }
 
@@ -191,7 +191,6 @@
             <button class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i> Início</button>
             <button class="nav-btn" onclick="showSection('artistas', this)"><i class="fas fa-users"></i> Artistas</button>
             <button class="nav-btn" onclick="showSection('lancar', this)"><i class="fas fa-cloud-upload-alt"></i> Lançar</button>
-            <button class="nav-btn" onclick="showSection('catalogo', this)"><i class="fas fa-compact-disc"></i> Catálogo</button>
             <button class="nav-btn" onclick="showSection('planos', this)"><i class="fas fa-tags"></i> Planos</button>
             <button class="nav-btn" onclick="showSection('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
             <button class="nav-btn" onclick="showSection('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
@@ -234,6 +233,13 @@
                     <h3><i class="fas fa-star"></i> Destaques - Top 5 Músicas Mais Ouvidas/Baixadas</h3>
                     <div id="destaques-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
                         <!-- Top 5 músicas mais ouvidas/baixadas -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-compact-disc"></i> Feed - Todas as Músicas Lançadas na MAM Distribuidora</h3>
+                    <div id="feed-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                        <!-- Feed completo de músicas -->
                     </div>
                 </div>
 
@@ -294,14 +300,6 @@
                         </div>
                     </div>
                     <button class="btn" onclick="handleUploadMusic()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-
-            <!-- CATÁLOGO (FEED) -->
-            <div id="catalogo" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;">Feed de Lançamentos MAM - Todas as Músicas</h2>
-                <div id="lista-musicas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;">
-                    <!-- Músicas em forma de disco -->
                 </div>
             </div>
 
@@ -372,9 +370,9 @@
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-history"></i> Histórico de Ganhos</h3>
+                    <h3><i class="fas fa-history"></i> Histórico de Ganhos (Reais)</h3>
                     <div id="historico-ganhos">
-                        <!-- Ganhos carregados aqui -->
+                        <!-- Ganhos reais carregados aqui -->
                     </div>
                 </div>
             </div>
@@ -589,7 +587,6 @@
 
         // Variáveis globais para pagamento
         let currentPlanPayment = { plan: '', amount: 0, method: '' };
-        let sessionTimeout = null;
 
         window.onload = () => {
             populateSelects();
@@ -601,7 +598,6 @@
             try {
                 const adminDoc = await db.collection('users').doc(ADMIN_EMAIL).get();
                 if (!adminDoc.exists) {
-                    // Criar perfil do admin automaticamente
                     await db.collection('users').doc(ADMIN_EMAIL).set({
                         nome: "Play Sean Arsénio",
                         email: ADMIN_EMAIL,
@@ -615,7 +611,6 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                    // Criar artista do admin
                     await db.collection('artistas').add({
                         nome: "Play Sean Arsénio",
                         estilo: "Afro House",
@@ -678,19 +673,9 @@
         }
 
         function startSessionTracking() {
-            // Salvar a sessão no localStorage
             localStorage.setItem('mam_user_email', currentUser.email);
             localStorage.setItem('mam_session_active', 'true');
-            
-            // Manter a sessão ativa mesmo ao atualizar
-            window.addEventListener('beforeunload', () => {
-                localStorage.setItem('mam_session_active', 'true');
-            });
-
-            // Restaurar sessão ao carregar
-            if (localStorage.getItem('mam_session_active') === 'true') {
-                localStorage.setItem('mam_session_active', 'true');
-            }
+            localStorage.setItem('mam_session_start', Date.now().toString());
         }
 
         async function loadUserData() {
@@ -703,8 +688,6 @@
                         document.getElementById('btn-admin').style.display = 'block';
                         loadAdminData();
                     }
-                } else {
-                    console.log("Dados do utilizador não encontrados");
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
@@ -730,6 +713,7 @@
             loadUserMusic();
             loadEarningsHistory();
             loadDestaques();
+            loadFeed();
         }
 
         function toggleAuth(isRegister) {
@@ -807,7 +791,6 @@
             try {
                 const userRef = db.collection('users').doc(email);
                 const userDoc = await userRef.get();
-                const data = userDoc.data();
 
                 if (email !== ADMIN_EMAIL) {
                     await userRef.update({ saldo: firebase.firestore.FieldValue.increment(500) });
@@ -832,8 +815,6 @@
                 
                 if (adminDoc.exists) {
                     await adminRef.update({ saldo: firebase.firestore.FieldValue.increment(valor) });
-                } else {
-                    console.log("Admin ainda não foi criado");
                 }
 
                 await db.collection('ganhos').add({
@@ -1038,6 +1019,7 @@
                 document.getElementById('music-audio').value = '';
                 document.getElementById('music-data').value = '';
                 loadUserMusic();
+                loadFeed();
             } catch (error) {
                 alert("Erro no upload: " + error.message);
             }
@@ -1045,36 +1027,9 @@
         }
 
         async function loadUserMusic() {
-            const container = document.getElementById('lista-musicas');
-            container.innerHTML = '';
-
             try {
                 const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
                 document.getElementById('stat-musicas-count').innerText = snapshot.size;
-
-                if (snapshot.empty) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px; grid-column: 1/-1;">Nenhum lançamento ainda.</p>';
-                    return;
-                }
-
-                snapshot.forEach(doc => {
-                    const m = doc.data();
-                    const id = doc.id;
-                    const statusClass = m.status === 'Aprovado' ? 'status-active' : (m.status === 'Rejeitado' ? 'status-error' : 'status-pending');
-                    
-                    container.innerHTML += `
-                        <div class="disco-item">
-                            <img src="${m.capa}" class="disco-cover" onclick="playMusic('${m.audio}')">
-                            <div class="disco-title">${m.titulo}</div>
-                            <div class="disco-artist">${m.artista}</div>
-                            <span class="status-pill ${statusClass}">${m.status}</span>
-                            <audio class="audio-player" controls>
-                                <source src="${m.audio}" type="audio/mpeg">
-                            </audio>
-                            ${m.status === 'Em Revisão' ? `<button class="btn btn-small btn-danger" style="margin-top: 10px;" onclick="deleteMusic('${id}')"><i class="fas fa-times"></i> Remover</button>` : ''}
-                        </div>
-                    `;
-                });
             } catch (error) {
                 console.error("Erro ao carregar músicas:", error);
             }
@@ -1115,6 +1070,40 @@
             }
         }
 
+        async function loadFeed() {
+            const container = document.getElementById('feed-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            try {
+                const snapshot = await db.collection('musicas')
+                    .where('status', '==', 'Aprovado')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px; grid-column: 1/-1;">Nenhuma música disponível ainda.</p>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const m = doc.data();
+                    container.innerHTML += `
+                        <div class="disco-item">
+                            <img src="${m.capa}" class="disco-cover" onclick="playMusic('${m.audio}')">
+                            <div class="disco-title">${m.titulo}</div>
+                            <div class="disco-artist">${m.artista}</div>
+                            <audio class="audio-player" controls>
+                                <source src="${m.audio}" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar feed:", error);
+            }
+        }
+
         function playMusic(audioUrl) {
             const audio = new Audio(audioUrl);
             audio.play();
@@ -1125,6 +1114,7 @@
                 try {
                     await db.collection('musicas').doc(id).delete();
                     loadUserMusic();
+                    loadFeed();
                     alert("Lançamento removido!");
                 } catch (error) {
                     alert("Erro: " + error.message);
@@ -1431,6 +1421,8 @@
                 await db.collection('musicas').doc(id).update({ status });
                 alert(`Música ${status}!`);
                 loadAdminData();
+                loadFeed();
+                loadDestaques();
             } catch (error) {
                 alert("Erro: " + error.message);
             }

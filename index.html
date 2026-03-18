@@ -149,27 +149,31 @@
                 <h3><i class="fas fa-user-plus"></i> Novo Registo</h3>
                 <input type="text" id="reg-nome" placeholder="Nome Completo">
                 <input type="email" id="reg-email" placeholder="E-mail">
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <select id="reg-tipo">
+                        <option value="Agente">Agente</option>
+                        <option value="Produtor">Produtor</option>
+                        <option value="Artista">Artista</option>
+                        <option value="Editora">Editora</option>
+                    </select>
+                    <select id="reg-pais">
+                        <option value="">País</option>
+                    </select>
+                </div>
                 <div class="password-container">
-                    <input type="password" id="reg-pass" placeholder="Palavra-passe">
+                    <input type="password" id="reg-pass" placeholder="Palavra-passe (mín. 6 caracteres)">
                     <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass')">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
-                <select id="reg-tipo">
-                    <option value="">Tipo de Utilizador</option>
-                    <option value="Artista">Artista</option>
-                    <option value="Produtor">Produtor</option>
-                    <option value="Distribuidor">Distribuidor</option>
-                </select>
-                <select id="reg-pais">
-                    <option value="">País</option>
-                </select>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="checkbox" id="reg-termos" style="width: auto; margin: 0;">
-                    <label style="margin: 0; font-size: 0.85rem; color: var(--gray);">Aceito os <span style="color: var(--gold); cursor: pointer;" onclick="openModal('modal-termos')">Termos de Uso</span> e <span style="color: var(--gold); cursor: pointer;" onclick="openModal('modal-privacidade')">Política de Privacidade</span></label>
+                <div class="password-container">
+                    <input type="password" id="reg-pass-confirm" placeholder="Confirmar Palavra-passe">
+                    <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass-confirm')">
+                        <i class="fas fa-eye"></i>
+                    </button>
                 </div>
-                <button class="btn" onclick="handleRegister()">Criar Conta <i class="fas fa-user-check"></i></button>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(false)">Entrar</span></p>
+                <button class="btn" onclick="handleRegister()">Criar Conta <i class="fas fa-user-plus"></i></button>
+                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(false)">Entrar Aqui</span></p>
             </div>
         </div>
     </div>
@@ -179,94 +183,72 @@
         <header>
             <div class="logo">
                 <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
-                <div>
-                    <div class="logo-text">MAM DISTRIBUIDORA</div>
-                    <small style="color: var(--gray); font-size: 0.7rem;">Bem-vindo, <span id="user-display-name">Utilizador</span></small>
-                </div>
+                <div class="logo-text">MAM Distribuidora</div>
             </div>
         </header>
 
-        <nav>
-            <button class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i> Home</button>
-            <button class="nav-btn" onclick="showSection('perfil', this)"><i class="fas fa-user"></i> Perfil</button>
-            <button class="nav-btn" onclick="showSection('artistas', this)"><i class="fas fa-microphone"></i> Artistas</button>
+        <nav id="nav-menu">
+            <button class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i> Início</button>
+            <button class="nav-btn" onclick="showSection('artistas', this)"><i class="fas fa-users"></i> Artistas</button>
             <button class="nav-btn" onclick="showSection('lancar', this)"><i class="fas fa-cloud-upload-alt"></i> Lançar</button>
-            <button class="nav-btn" onclick="showSection('musicas', this)"><i class="fas fa-music"></i> Minhas Músicas</button>
-            <button class="nav-btn" onclick="showSection('ganhos', this)"><i class="fas fa-coins"></i> Ganhos</button>
+            <button class="nav-btn" onclick="showSection('planos', this)"><i class="fas fa-tags"></i> Planos</button>
             <button class="nav-btn" onclick="showSection('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
-            <button class="nav-btn" onclick="showSection('planos', this)"><i class="fas fa-crown"></i> Planos</button>
-            <button class="nav-btn" onclick="showSection('suporte', this)"><i class="fas fa-headset"></i> Suporte</button>
-            <button class="nav-btn" id="btn-admin" style="display: none; border-color: #ff6b00; color: #ff6b00;" onclick="showSection('admin', this)"><i class="fas fa-shield-alt"></i> Admin</button>
-            <button class="nav-btn btn-danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            <button class="nav-btn" onclick="showSection('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
+            <button class="nav-btn" id="btn-admin" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSection('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO</button>
+            <button class="nav-btn" style="color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
         </nav>
 
         <div class="container">
-
             <!-- HOME -->
             <div id="home" class="section active">
                 <div class="card">
-                    <h3><i class="fas fa-chart-line"></i> Resumo da Conta</h3>
-                    <div class="stat-grid">
-                        <div class="stat-box">
-                            <h4 id="stat-saldo">0 Kz</h4>
-                            <p>Saldo Disponível</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4 id="stat-musicas-count">0</h4>
-                            <p>Músicas Lançadas</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4 id="stat-artistas-count">0</h4>
-                            <p>Artistas Registados</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4 id="stat-ganhos-total">0 Kz</h4>
-                            <p>Ganhos Totais</p>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <img id="home-user-photo" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold);">
+                        <div>
+                            <h2 style="font-size: 1.2rem;">Olá, <span id="user-display-name">...</span>!</h2>
+                            <p style="color: var(--gray); font-size: 0.85rem;"><span id="user-display-type">...</span> | <span id="user-display-country">...</span></p>
+                            <div style="margin-top: 8px;">
+                                <span class="status-pill status-active" id="user-display-plan">PLANO FREE</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fas fa-info-circle"></i> Informações da Conta</h3>
-                    <p><strong>Nome:</strong> <span id="user-display-name">-</span></p>
-                    <p><strong>Tipo:</strong> <span id="user-display-type">-</span></p>
-                    <p><strong>País:</strong> <span id="user-display-country">-</span></p>
-                    <p><strong>Plano:</strong> <span id="user-display-plan">-</span></p>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-star"></i> Destaques</h3>
-                    <div id="destaques-list" class="grid">
-                        <!-- Destaques carregados aqui -->
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <p>Saldo Atual</p>
+                        <h4 id="stat-saldo">0 Kz</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Artistas</p>
+                        <h4 id="stat-artistas-count">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Lançamentos</p>
+                        <h4 id="stat-musicas-count">0</h4>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-stream"></i> Feed</h3>
-                    <div id="feed-list" class="item-list">
-                        <!-- Feed carregado aqui -->
+                    <h3><i class="fas fa-star"></i> Destaques - Top 5 Músicas Mais Ouvidas/Baixadas</h3>
+                    <div id="destaques-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                        <!-- Top 5 músicas mais ouvidas/baixadas -->
                     </div>
                 </div>
-            </div>
 
-            <!-- PERFIL -->
-            <div id="perfil" class="section">
                 <div class="card">
-                    <h3><i class="fas fa-user-edit"></i> Editar Perfil</h3>
-                    <div class="profile-upload">
-                        <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img">
-                        <label for="perfil-foto-input" class="upload-overlay">
-                            <i class="fas fa-camera"></i>
-                        </label>
-                        <input type="file" id="perfil-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'perfil-foto-preview')">
+                    <h3><i class="fas fa-compact-disc"></i> Feed - Todas as Músicas Lançadas na MAM Distribuidora</h3>
+                    <div id="feed-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                        <!-- Feed completo de músicas -->
                     </div>
-                    <input type="text" id="perfil-nome" placeholder="Nome Completo">
-                    <input type="email" id="perfil-email" placeholder="E-mail" disabled>
-                    <input type="tel" id="perfil-telefone" placeholder="Telefone">
-                    <select id="perfil-pais">
-                        <option value="">País</option>
-                    </select>
-                    <button class="btn" onclick="handleUpdateProfile()">Guardar Alterações <i class="fas fa-save"></i></button>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-bullhorn"></i> Novidades</h3>
+                    <p style="font-size: 0.9rem; color: var(--gray); line-height: 1.6;">
+                        Bem-vindo à nova era da MAM Distribuidora. Agora com pagamentos automáticos via Satélite e gestão em tempo real. 
+                        Lançamos a sua música em mais de 150 plataformas digitais incluindo Spotify, Apple Music e Deezer.
+                    </p>
                 </div>
             </div>
 
@@ -343,9 +325,9 @@
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-file-export"></i> Enviar DDEX para Lojas</h3>
-                    <p style="color: var(--gray); margin-bottom: 15px;">Exporte o XML DDEX para distribuir suas músicas nas principais plataformas digitais.</p>
-                    <button class="btn btn-sec" onclick="generateDDEXExport()"><i class="fas fa-download"></i> Gerar e Descarregar XML DDEX</button>
+                    <h3><i class="fas fa-file-code"></i> Exportar DDEX</h3>
+                    <p style="color: var(--gray); margin-bottom: 15px;">Gere o ficheiro XML no padrão DDEX para enviar as suas músicas para as lojas digitais.</p>
+                    <button class="btn btn-sec" onclick="generateDDEXExport()"><i class="fas fa-download"></i> Gerar e Descarregar XML</button>
                 </div>
             </div>
 
@@ -372,112 +354,107 @@
                         <p style="color: var(--gray); font-size: 0.9rem;">30.000 Kz/mês</p>
                         <div class="plan-price">30.000 Kz</div>
                         <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 5 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 10 Artistas</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte por E-mail</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Acesso a Relatórios Básicos</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte Prioritário</li>
                         </ul>
-                        <button class="btn" onclick="openPlanPayment('BÁSICO', 30000)">Contratar Agora</button>
+                        <button class="btn" onclick="openPlanPayment('BÁSICO', 30000)">Comprar Agora</button>
                     </div>
 
                     <!-- Plano Médio -->
-                    <div class="plan-card featured">
+                    <div class="plan-card">
                         <div class="plan-name">Plano Médio</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">60.000 Kz/mês</p>
-                        <div class="plan-price">60.000 Kz</div>
+                        <p style="color: var(--gray); font-size: 0.9rem;">50.000 Kz/mês</p>
+                        <div class="plan-price">50.000 Kz</div>
                         <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 15 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 30 Artistas</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte Prioritário</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Relatórios Avançados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Acesso a Ferramentas de Marketing</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Análise Avançada</li>
                         </ul>
-                        <button class="btn" onclick="openPlanPayment('MÉDIO', 60000)">Contratar Agora</button>
+                        <button class="btn" onclick="openPlanPayment('MÉDIO', 50000)">Comprar Agora</button>
                     </div>
 
-                    <!-- Plano PRO -->
-                    <div class="plan-card">
-                        <div class="plan-name">Plano PRO</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">100.000 Kz/mês</p>
+                    <!-- Plano Pro MAX -->
+                    <div class="plan-card featured">
+                        <div class="plan-name">Plano Pro MAX</div>
+                        <p style="color: var(--gold); font-size: 0.9rem;">100.000 Kz/mês</p>
                         <div class="plan-price">100.000 Kz</div>
                         <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Artistas Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte 24/7</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Relatórios Personalizados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Consultoria Dedicada</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Integração com APIs</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Artistas Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte 24/7 VIP</li>
                         </ul>
-                        <button class="btn" onclick="openPlanPayment('PRO', 100000)">Contratar Agora</button>
+                        <button class="btn" onclick="openPlanPayment('PRO', 100000)">Comprar Agora</button>
                     </div>
-                </div>
-            </div>
-
-            <!-- MUSICAS -->
-            <div id="musicas" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;">Minhas Músicas</h2>
-                <div id="user-music-list" class="item-list">
-                    <!-- Músicas carregadas aqui -->
-                </div>
-            </div>
-
-            <!-- GANHOS -->
-            <div id="ganhos" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;">Histórico de Ganhos</h2>
-                <div id="earnings-list" class="item-list">
-                    <!-- Ganhos carregados aqui -->
                 </div>
             </div>
 
             <!-- CARTEIRA -->
             <div id="carteira" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-wallet"></i> Minha Carteira</h3>
-                    <div class="stat-box" style="margin-bottom: 20px;">
-                        <h4 style="font-size: 3rem;" id="wallet-saldo">0 Kz</h4>
-                        <p>Saldo Disponível</p>
-                    </div>
-                    <button class="btn" onclick="openModal('modal-saque')"><i class="fas fa-arrow-down"></i> Solicitar Levantamento</button>
+                <div class="stat-box" style="margin-bottom: 20px; padding: 40px;">
+                    <p>Saldo Disponível para Saque</p>
+                    <h4 style="font-size: 3rem;" id="wallet-saldo">0 Kz</h4>
+                    <button class="btn btn-small" style="margin: 20px auto 0;" onclick="openModal('modal-saque')">Solicitar Levantamento</button>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-history"></i> Histórico de Saques</h3>
-                    <div id="saques-list" class="item-list">
-                        <!-- Saques carregados aqui -->
+                    <h3><i class="fas fa-history"></i> Histórico de Ganhos (Reais)</h3>
+                    <div id="historico-ganhos">
+                        <!-- Ganhos reais carregados aqui -->
                     </div>
                 </div>
             </div>
 
-            <!-- SUPORTE -->
-            <div id="suporte" class="section">
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-                    <button class="btn btn-sec" onclick="openModal('modal-suporte')"><i class="fas fa-question-circle"></i> Centro de Suporte</button>
-                    <button class="btn btn-sec" onclick="openModal('modal-termos')"><i class="fas fa-file-alt"></i> Termos de Uso</button>
-                    <button class="btn btn-sec" onclick="openModal('modal-privacidade')"><i class="fas fa-shield-alt"></i> Política de Privacidade</button>
+            <!-- PERFIL -->
+            <div id="perfil" class="section">
+                <div class="card">
+                    <h3><i class="fas fa-user-edit"></i> Editar Perfil</h3>
+                    <div class="profile-upload">
+                        <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img">
+                        <label for="perfil-foto-input" class="upload-overlay">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="perfil-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'perfil-foto-preview')">
+                    </div>
+                    
+                    <div class="grid">
+                        <div>
+                            <label>Nome Completo</label>
+                            <input type="text" id="perfil-nome">
+                            <label>E-mail (Não alterável)</label>
+                            <input type="email" id="perfil-email" disabled>
+                        </div>
+                        <div>
+                            <label>Telefone / WhatsApp</label>
+                            <input type="text" id="perfil-telefone" placeholder="+244 ...">
+                            <label>País</label>
+                            <select id="perfil-pais"></select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="handleUpdateProfile()">Salvar Alterações em Tempo Real <i class="fas fa-save"></i></button>
                 </div>
             </div>
 
-            <!-- ADMIN -->
+            <!-- ADMIN PRO -->
             <div id="admin" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-chart-bar"></i> Dashboard Admin</h3>
-                    <div class="stat-grid">
-                        <div class="stat-box">
-                            <h4 id="admin-total-users">0</h4>
-                            <p>Total de Utilizadores</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4 id="admin-total-artists">0</h4>
-                            <p>Total de Artistas</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4 id="admin-total-music">0</h4>
-                            <p>Músicas em Revisão</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4 id="admin-total-earnings">0 Kz</h4>
-                            <p>Saldo Total</p>
-                        </div>
+                <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fas fa-shield-alt"></i> Painel Administrativo PRO MAX</h2>
+                
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <p>Total Utilizadores</p>
+                        <h4 id="admin-total-users">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Total Artistas</p>
+                        <h4 id="admin-total-artists">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Músicas em Revisão</p>
+                        <h4 id="admin-pending-music">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Ganhos MAM (Satélite)</p>
+                        <h4 id="admin-total-earnings">0 Kz</h4>
                     </div>
                 </div>
 
@@ -578,17 +555,35 @@
                 <p><strong>Telefone/WhatsApp:</strong> +244 937 881 307<br>Para suporte mais urgente ou para falar diretamente com a nossa equipa.</p>
                 
                 <h3 style="color: var(--gold); margin-top: 20px;">Horário de Atendimento</h3>
-                <p>Segunda a Sexta: 08:00 - 18:00 (Hora de Angola)<br>Sábado: 10:00 - 14:00<br>Domingo: Fechado</p>
+                <p>Segunda a Sexta-feira, das 9h00 às 18h00 (GMT+1)</p>
+                
+                <h3 style="color: var(--gold); margin-top: 20px;">Tópicos Comuns</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Problemas Técnicos: Upload de músicas, login, erros na plataforma</li>
+                    <li>Questões de Conta: Atualização de perfil, gestão de subscrições</li>
+                    <li>Distribuição Musical: Processo, prazos, requisitos de ficheiros</li>
+                    <li>Ganhos e Saques: Relatórios, processamento, informações bancárias</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- MODAL ARTISTA -->
-    <div id="modal-artista" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
-        <div class="card" style="max-width: 600px; width: 100%; position: relative;">
+        <footer>
+            <div class="footer-links">
+                    <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
+                    <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
+                    <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
+            </div>
+            <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
+            <p style="margin-top: 10px; color: var(--gold); font-weight: bold;">Fundador: Matias Arsénio Manuel</p>
+        </footer>
+    </div>
+
+    <!-- MODALS -->
+    <div id="modal-artista" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
             <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-artista')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Novo Artista</h2>
-            <input type="hidden" id="edit-artista-id">
+            <h3 id="modal-artista-title">Novo Artista</h3>
             <div class="profile-upload">
                 <img id="artista-foto-preview" src="https://via.placeholder.com/120" class="profile-img">
                 <label for="artista-foto-input" class="upload-overlay">
@@ -596,64 +591,90 @@
                 </label>
                 <input type="file" id="artista-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'artista-foto-preview')">
             </div>
-            <input type="text" id="artista-nome" placeholder="Nome do Artista">
-            <select id="artista-estilo">
-                <option value="">Selecione o estilo...</option>
-            </select>
+            <input type="hidden" id="edit-artista-id">
+            <label>Nome do Artista</label>
+            <input type="text" id="artista-nome" placeholder="Nome artístico">
+            <label>Estilo Principal</label>
+            <select id="artista-estilo"></select>
+            
+            <label>Links de Redes Sociais</label>
             <input type="url" id="artista-youtube" placeholder="Link YouTube">
             <input type="url" id="artista-facebook" placeholder="Link Facebook">
             <input type="url" id="artista-tiktok" placeholder="Link TikTok">
             <input type="url" id="artista-spotify" placeholder="Link Spotify">
             <input type="url" id="artista-apple" placeholder="Link Apple Music">
             <input type="url" id="artista-instagram" placeholder="Link Instagram">
-            <button class="btn" onclick="handleSaveArtist()">Guardar Artista <i class="fas fa-save"></i></button>
+            
+            <button class="btn" id="btn-save-artista" onclick="handleSaveArtist()">Salvar Artista</button>
         </div>
     </div>
 
     <!-- MODAL SAQUE -->
-    <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
+    <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
         <div class="card" style="max-width: 500px; width: 100%; position: relative;">
             <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-saque')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Solicitar Levantamento</h2>
-            <input type="number" id="saque-valor" placeholder="Valor a Levantar (Kz)" min="1000">
+            <h3>Solicitar Levantamento</h3>
+            <label>Valor (Kz) - Mínimo 5.000</label>
+            <input type="number" id="saque-valor" min="5000" placeholder="5000">
+            <label>Selecione o Método de Levantamento</label>
             <select id="saque-metodo">
-                <option value="">Selecione o método de pagamento</option>
-                <option value="Transferência Bancária">Transferência Bancária</option>
-                <option value="Carteira Digital">Carteira Digital</option>
-                <option value="Cheque">Cheque</option>
+                <option value="">Selecione o método...</option>
+                <option value="BFA">Banco BFA (Angola)</option>
+                <option value="BAI">Banco BAI (Angola)</option>
+                <option value="BIC">Banco BIC (Angola)</option>
+                <option value="Multicaixa">Multicaixa Express (Angola)</option>
+                <option value="Visa">Visa</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Pix">Pix (Brasil)</option>
+                <option value="Pennory">Pennory</option>
             </select>
-            <input type="text" id="saque-iban" placeholder="IBAN ou Número de Conta">
-            <button class="btn" onclick="handleWithdrawal()">Solicitar Levantamento <i class="fas fa-arrow-down"></i></button>
+            <label>Dados do Pagamento (IBAN / Número / Email)</label>
+            <input type="text" id="saque-dados" placeholder="Insira os dados aqui">
+            <button class="btn" onclick="handleRequestWithdraw()">Confirmar Saque</button>
         </div>
     </div>
 
-    <!-- MODAL PLANO PAGAMENTO -->
-    <div id="modal-plan-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
+    <!-- MODAL PAGAMENTO PLANO -->
+    <div id="modal-plan-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
         <div class="card" style="max-width: 500px; width: 100%; position: relative;">
             <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-plan-payment')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Pagamento do Plano</h2>
-            <p><strong>Plano:</strong> <span id="plan-name-display">-</span></p>
-            <p><strong>Valor:</strong> <span id="plan-amount-display">-</span></p>
-            <select id="payment-method" style="margin-bottom: 15px;">
-                <option value="">Selecione o método de pagamento</option>
-                <option value="Transferência Bancária">Transferência Bancária</option>
-                <option value="Carteira Digital">Carteira Digital</option>
-                <option value="Cartão de Crédito">Cartão de Crédito</option>
-            </select>
-            <button class="btn" onclick="processPayment()">Processar Pagamento <i class="fas fa-credit-card"></i></button>
+            <h3>Comprar Plano <span id="plan-name-display">...</span></h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Valor: <b id="plan-price-display">0</b> Kz</p>
+            <p style="color: var(--gray); margin-bottom: 20px;">Escolha o método de pagamento:</p>
+            <button class="btn" onclick="selectPaymentMethod('mam')"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
+            <button class="btn btn-sec" style="margin-top: 10px;" onclick="selectPaymentMethod('banco')"><i class="fas fa-bank"></i> Transferência Bancária</button>
         </div>
     </div>
 
-    <!-- MODAL PAGAMENTO TRANSFERÊNCIA -->
-    <div id="modal-transfer-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
-        <div class="card" style="max-width: 600px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-transfer-payment')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Dados para Transferência</h2>
-            <p><strong>Banco:</strong> BAI - Banco Angolano de Investimentos</p>
-            <p><strong>Titular:</strong> MAM Distribuidora</p>
-            <p><strong>IBAN:</strong> AO06.0010.0000.0000.0000.0001</p>
-            <p><strong>Referência:</strong> <span id="transfer-reference">-</span></p>
-            <p style="color: var(--gray); margin-top: 20px;">Após realizar a transferência, clique no botão abaixo para enviar o comprovativo:</p>
+    <!-- MODAL PAGAMENTO CARTEIRA MAM -->
+    <div id="modal-pagamento-mam" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-mam')">&times;</span>
+            <h3>Confirmar Pagamento</h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name">...</b></p>
+            <p style="color: var(--gold); font-size: 1.5rem; margin-bottom: 20px;">Valor: <b id="pay-amount">0</b> Kz</p>
+            <p style="color: var(--gray); margin-bottom: 20px;">O pagamento será processado automaticamente da sua carteira MAM para a carteira do administrador.</p>
+            <button class="btn" onclick="processPlanPaymentMAM()">Confirmar Pagamento</button>
+        </div>
+    </div>
+
+    <!-- MODAL TRANSFERÊNCIA BANCÁRIA -->
+    <div id="modal-pagamento-banco" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-banco')">&times;</span>
+            <h3>Informações Bancárias</h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name-banco">...</b> - Valor: <b id="pay-amount-banco">0</b> Kz</p>
+            
+            <div style="background: #111; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333;">
+                <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">Dados para Transferência:</p>
+                <p><b>Titular:</b> Matias Arsénio Manuel</p>
+                <p><b>Conta BFA:</b> 0006 0000 86316866301 52</p>
+                <p><b>IBAN:</b> 0006 0000 86316866301 52</p>
+                <p><b>VISA:</b> 4937242025023852</p>
+                <p><b>Multicaixa Express:</b> 937881307</p>
+            </div>
+
+            <label>Após realizar a transferência, clique no botão abaixo para enviar o comprovativo:</label>
             <button class="btn" onclick="sendProofWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo via WhatsApp</button>
         </div>
     </div>
@@ -740,60 +761,71 @@ if (firebase.appCheck) {
             }
         }
 
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const button = event.target.closest('button');
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function populateSelects() {
+            const paisSelects = [document.getElementById('reg-pais'), document.getElementById('perfil-pais')];
+            const estiloSelects = [document.getElementById('music-estilo'), document.getElementById('artista-estilo')];
+
+            PAISES.sort().forEach(p => {
+                paisSelects.forEach(s => s.innerHTML += `<option value="${p}">${p}</option>`);
+            });
+
+            ESTILOS.sort().forEach(e => {
+                estiloSelects.forEach(s => s.innerHTML += `<option value="${e}">${e}</option>`);
+            });
+        }
+
         function checkAuthState() {
-            auth.onAuthStateChanged(user => {
+            auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     currentUser = user;
-                    document.getElementById('auth-screen').style.display = 'none';
-                    document.getElementById('main-app').style.display = 'block';
-                    loadUserData();
-                    localStorage.setItem('mam_session_active', 'true');
-                    localStorage.setItem('mam_session_start', Date.now().toString());
+                    await loadUserData();
+                    showApp();
+                    startSessionTracking();
                 } else {
-                    currentUser = null;
-                    userData = null;
-                    document.getElementById('auth-screen').style.display = 'flex';
-                    document.getElementById('main-app').style.display = 'none';
-                    localStorage.removeItem('mam_session_active');
+                    showAuth();
                 }
             });
         }
 
+        function startSessionTracking() {
+            localStorage.setItem('mam_user_email', currentUser.email);
+            localStorage.setItem('mam_session_active', 'true');
+            localStorage.setItem('mam_session_start', Date.now().toString());
+        }
+
         async function loadUserData() {
             try {
-                // Desinscrever do listener anterior se existir
                 if (saldoUnsubscribe) {
                     saldoUnsubscribe();
                 }
 
-                // Carregar dados iniciais
-                const doc = await db.collection('users').doc(currentUser.email).get();
-                if (doc.exists) {
-                    userData = doc.data();
-                    updateUI();
-                    if (userData.isAdmin) {
-                        document.getElementById('btn-admin').style.display = 'block';
-                        loadAdminData();
-                    }
-                }
-
-                // Configurar listener em tempo real para o saldo
-                saldoUnsubscribe = db.collection('users').doc(currentUser.email).onSnapshot(docSnapshot => {
-                    if (docSnapshot.exists) {
-                        const updatedData = docSnapshot.data();
-                        // Atualizar apenas o saldo se mudou
-                        if (updatedData.saldo !== userData.saldo) {
-                            userData.saldo = updatedData.saldo;
-                            document.getElementById('stat-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
-                            document.getElementById('wallet-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
-                        }
-                        // Atualizar foto se mudou
-                        if (updatedData.foto !== userData.foto) {
-                            userData.foto = updatedData.foto;
-                            document.getElementById('home-user-photo').src = userData.foto || 'https://via.placeholder.com/80';
-                            document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
+                saldoUnsubscribe = db.collection('users').doc(currentUser.email).onSnapshot((doc) => {
+                    if (doc.exists) {
+                        userData = doc.data();
+                        updateUI();
+                        if (userData.isAdmin) {
+                            document.getElementById('btn-admin').style.display = 'block';
+                            loadAdminData();
                         }
                     }
+                }, (error) => {
+                    console.error("Erro ao ouvir as atualizações do utilizador:", error);
                 });
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
@@ -830,12 +862,15 @@ if (firebase.appCheck) {
         async function handleLogin() {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
+
             if (!email || !pass) return alert("Preencha todos os campos!");
+
             showLoading(true, "A entrar...");
             try {
                 await auth.signInWithEmailAndPassword(email, pass);
+                await processLoginEarnings(email);
             } catch (error) {
-                alert("Erro: " + error.message);
+                alert("Erro ao entrar: " + error.message);
             }
             showLoading(false);
         }
@@ -843,17 +878,18 @@ if (firebase.appCheck) {
         async function handleRegister() {
             const nome = document.getElementById('reg-nome').value;
             const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-pass').value;
             const tipo = document.getElementById('reg-tipo').value;
             const pais = document.getElementById('reg-pais').value;
-            const termos = document.getElementById('reg-termos').checked;
+            const pass = document.getElementById('reg-pass').value;
+            const passConfirm = document.getElementById('reg-pass-confirm').value;
 
-            if (!nome || !email || !pass || !tipo || !pais) return alert("Preencha todos os campos!");
-            if (!termos) return alert("Deve aceitar os Termos de Uso!");
+            if (!nome || !email || !pais || pass.length < 6) return alert("Preencha todos os campos corretamente!");
+            if (pass !== passConfirm) return alert("As palavras-passe não coincidem!");
 
             showLoading(true, "A criar conta...");
             try {
-                const userCred = await auth.createUserWithEmailAndPassword(email, pass);
+                await auth.createUserWithEmailAndPassword(email, pass);
+                
                 const newUser = {
                     nome,
                     email,
@@ -861,42 +897,207 @@ if (firebase.appCheck) {
                     pais,
                     plano: "FREE",
                     saldo: 2000,
-                    isAdmin: false,
+                    isAdmin: email === ADMIN_EMAIL,
                     foto: "",
                     telefone: "",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
+
                 await db.collection('users').doc(email).set(newUser);
+                
                 await db.collection('ganhos').add({
-                    owner: email,
-                    tipo: "Bónus de Boas-vindas",
+                    email: email,
                     valor: 2000,
+                    tipo: "Bónus de Boas-vindas",
                     data: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                alert("Conta criada com sucesso! Bem-vindo à MAM Distribuidora!");
-                toggleAuth(false);
+
+                await processAdminEarnings(5000, `Novo Registo: ${email}`);
+                
+                alert("Conta criada com sucesso! Ganhou 2.000 Kz de bónus.");
                 document.getElementById('login-email').value = email;
                 document.getElementById('login-pass').value = pass;
+                toggleAuth(false);
+
             } catch (error) {
-                alert("Erro: " + error.message);
+                alert("Erro ao registar: " + error.message);
             }
             showLoading(false);
         }
 
-        async function handleLogout() {
-            if (confirm("Tem a certeza que deseja sair?")) {
-                showLoading(true, "A sair...");
-                try {
-                    if (saldoUnsubscribe) {
-                        saldoUnsubscribe();
-                    }
-                    await auth.signOut();
-                    currentUser = null;
-                    userData = null;
-                } catch (error) {
-                    alert("Erro: " + error.message);
+        async function processLoginEarnings(email) {
+            try {
+                const userRef = db.collection('users').doc(email);
+                const userDoc = await userRef.get();
+
+                if (email !== ADMIN_EMAIL) {
+                    await userRef.update({ saldo: firebase.firestore.FieldValue.increment(500) });
+                    await db.collection('ganhos').add({
+                        email: email,
+                        valor: 500,
+                        tipo: "Início de Sessão",
+                        data: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                 }
+
+                await processAdminEarnings(5000, `Sessão Iniciada: ${email}`);
+            } catch (error) {
+                console.error("Erro ao processar ganhos:", error);
+            }
+        }
+
+        async function processAdminEarnings(valor, motivo) {
+            try {
+                const adminRef = db.collection('users').doc(ADMIN_EMAIL);
+                const adminDoc = await adminRef.get();
+                
+                if (adminDoc.exists) {
+                    await adminRef.update({ saldo: firebase.firestore.FieldValue.increment(valor) });
+                }
+
+                await db.collection('ganhos').add({
+                    email: ADMIN_EMAIL,
+                    valor: valor,
+                    tipo: "Ganho Satélite (Admin)",
+                    motivo: motivo,
+                    data: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error("Erro ao processar ganhos do admin:", error);
+            }
+        }
+
+        function handleLogout() {
+            if (saldoUnsubscribe) {
+                saldoUnsubscribe();
+            }
+            localStorage.removeItem('mam_session_active');
+            localStorage.removeItem('mam_user_email');
+            auth.signOut();
+        }
+
+        async function generateDDEXExport() {
+            showLoading(true, "A gerar XML DDEX...");
+            try {
+                const snapshot = await db.collection('musicas')
+                    .where('owner', '==', currentUser.email)
+                    .where('status', '==', 'Aprovado')
+                    .get();
+
+                if (snapshot.empty) {
+                    showLoading(false);
+                    return alert("Nenhuma música aprovada encontrada para exportar!");
+                }
+
+                let xmlContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+                xmlContent += `<ern:NewReleaseMessage MessageSchemaVersionId="ern/341" LanguageAndScriptCode="en_US" xmlns:ern="http://ddex.net/xml/ern/341" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ddex.net/xml/ern/341 http://ddex.net/xml/ern/341/release-notification.xsd">\n`;
+                xmlContent += `    <MessageHeader>\n`;
+                xmlContent += `        <MessageThreadId>DDEXExport_${Date.now()}</MessageThreadId>\n`;
+                xmlContent += `        <MessageId>MSG_${Date.now()}</MessageId>\n`;
+                xmlContent += `        <MessageSender><PartyId>${currentUser.email.replace(/[@.]/g, '_')}</PartyId></MessageSender>\n`;
+                xmlContent += `        <SentOnBehalfOf><PartyId>MAM_Distribuidora</PartyId></SentOnBehalfOf>\n`;
+                xmlContent += `        <MessageRecipient><PartyId>DigitalServiceProvider</PartyId></MessageRecipient>\n`;
+                xmlContent += `        <MessageCreatedDateTime>${new Date().toISOString()}</MessageCreatedDateTime>\n`;
+                xmlContent += `    </MessageHeader>\n`;
+                xmlContent += `    <UpdateIndicator>OriginalMessage</UpdateIndicator>\n`;
+                xmlContent += `    <ResourceList>\n`;
+
+                let releaseList = '';
+
+                snapshot.forEach(doc => {
+                    const music = doc.data();
+                    const isrc = music.isrc || `ISRC_MISSING_${doc.id}`;
+                    const upc = music.upc || `UPC_MISSING_${doc.id}`;
+
+                    xmlContent += `        <SoundRecording>\n`;
+                    xmlContent += `            <SoundRecordingType>MusicalWorkSoundRecording</SoundRecordingType>\n`;
+                    xmlContent += `            <SoundRecordingId><ISRC>${isrc}</ISRC></SoundRecordingId>\n`;
+                    xmlContent += `            <ResourceReference>A1</ResourceReference>\n`;
+                    xmlContent += `            <ReferenceTitle><TitleText>${music.titulo}</TitleText></ReferenceTitle>\n`;
+                    xmlContent += `            <Duration>PT00H03M30S</Duration>\n`;
+                    xmlContent += `        </SoundRecording>\n`;
+
+                    releaseList += `        <Release>\n`;
+                    releaseList += `            <ReleaseId><ICPN>${upc}</ICPN></ReleaseId>\n`;
+                    releaseList += `            <ReleaseReference>R1</ReleaseReference>\n`;
+                    releaseList += `            <ReleaseType>Single</ReleaseType>\n`;
+                    releaseList += `            <ReleaseResourceReferenceList>\n`;
+                    releaseList += `                <ReleaseResourceReference ReleaseResourceType="PrimaryResource">A1</ReleaseResourceReference>\n`;
+                    releaseList += `            </ReleaseResourceReferenceList>\n`;
+                    releaseList += `        </Release>\n`;
+                });
+
+                xmlContent += `    </ResourceList>\n`;
+                xmlContent += `    <ReleaseList>\n${releaseList}</ReleaseList>\n`;
+                xmlContent += `</ern:NewReleaseMessage>`;
+
+                const blob = new Blob([xmlContent], { type: 'application/xml;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `DDEX_Export_${Date.now()}.xml`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert("Ficheiro XML DDEX gerado com sucesso!");
+
+            } catch (error) {
+                console.error("Erro ao gerar DDEX:", error);
+                alert("Ocorreu um erro ao gerar o ficheiro DDEX: " + error.message);
+            } finally {
                 showLoading(false);
+            }
+        }
+
+        function showSection(id, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function showApp() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+
+        function showAuth() {
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+        }
+
+        async function loadUserArtists() {
+            const container = document.getElementById('lista-artistas');
+            const select = document.getElementById('music-artista-select');
+            container.innerHTML = '';
+            select.innerHTML = '<option value="">Selecione um artista...</option>';
+
+            try {
+                const snapshot = await db.collection('artistas').where('owner', '==', currentUser.email).get();
+                document.getElementById('stat-artistas-count').innerText = snapshot.size;
+
+                snapshot.forEach(doc => {
+                    const a = doc.data();
+                    const id = doc.id;
+                    container.innerHTML += `
+                        <div class="list-item">
+                            <img src="${a.foto || 'https://via.placeholder.com/60'}">
+                            <div class="list-info">
+                                <h4>${a.nome}</h4>
+                                <p>${a.estilo}</p>
+                            </div>
+                            <div class="list-actions">
+                                <button class="btn btn-small btn-sec" onclick="editArtist('${id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-small btn-danger" onclick="deleteArtist('${id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    select.innerHTML += `<option value="${a.nome}">${a.nome}</option>`;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar artistas:", error);
             }
         }
 
@@ -953,6 +1154,8 @@ if (firebase.appCheck) {
                     await db.collection('artistas').add(artistData);
                 }
 
+                document.getElementById('artista-foto-input').value = '';
+
                 closeModal('modal-artista');
                 loadUserArtists();
                 alert("Artista salvo com sucesso!");
@@ -965,63 +1168,33 @@ if (firebase.appCheck) {
         async function editArtist(id) {
             try {
                 const doc = await db.collection('artistas').doc(id).get();
-                if (doc.exists) {
-                    const a = doc.data();
-                    document.getElementById('edit-artista-id').value = id;
-                    document.getElementById('artista-nome').value = a.nome;
-                    document.getElementById('artista-estilo').value = a.estilo;
-                    document.getElementById('artista-youtube').value = a.youtube || '';
-                    document.getElementById('artista-facebook').value = a.facebook || '';
-                    document.getElementById('artista-tiktok').value = a.tiktok || '';
-                    document.getElementById('artista-spotify').value = a.spotify || '';
-                    document.getElementById('artista-apple').value = a.apple || '';
-                    document.getElementById('artista-instagram').value = a.instagram || '';
-                    document.getElementById('artista-foto-preview').src = a.foto || 'https://via.placeholder.com/120';
-                    openModal('modal-artista');
-                }
+                const a = doc.data();
+                document.getElementById('edit-artista-id').value = id;
+                document.getElementById('artista-nome').value = a.nome;
+                document.getElementById('artista-estilo').value = a.estilo;
+                document.getElementById('artista-foto-preview').src = a.foto || 'https://via.placeholder.com/120';
+                document.getElementById('artista-youtube').value = a.youtube || '';
+                document.getElementById('artista-facebook').value = a.facebook || '';
+                document.getElementById('artista-tiktok').value = a.tiktok || '';
+                document.getElementById('artista-spotify').value = a.spotify || '';
+                document.getElementById('artista-apple').value = a.apple || '';
+                document.getElementById('artista-instagram').value = a.instagram || '';
+                document.getElementById('modal-artista-title').innerText = "Editar Artista";
+                openModal('modal-artista');
             } catch (error) {
-                alert("Erro: " + error.message);
+                alert("Erro ao carregar artista: " + error.message);
             }
         }
 
         async function deleteArtist(id) {
-            if (confirm("Tem a certeza que deseja eliminar este artista?")) {
-                showLoading(true, "A eliminar...");
+            if (confirm("Deseja remover este artista?")) {
                 try {
                     await db.collection('artistas').doc(id).delete();
                     loadUserArtists();
-                    alert("Artista eliminado com sucesso!");
+                    alert("Artista removido!");
                 } catch (error) {
                     alert("Erro: " + error.message);
                 }
-                showLoading(false);
-            }
-        }
-
-        async function loadUserArtists() {
-            try {
-                const snapshot = await db.collection('artistas').where('owner', '==', currentUser.email).get();
-                document.getElementById('stat-artistas-count').innerText = snapshot.size;
-                let html = '';
-                snapshot.forEach(doc => {
-                    const a = doc.data();
-                    html += `
-                        <div class="list-item">
-                            <img src="${a.foto || 'https://via.placeholder.com/60'}">
-                            <div class="list-info">
-                                <h4>${a.nome}</h4>
-                                <p>${a.estilo}</p>
-                            </div>
-                            <div class="list-actions">
-                                <button class="btn btn-small" onclick="editArtist('${doc.id}')"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-small btn-danger" onclick="deleteArtist('${doc.id}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('lista-artistas').innerHTML = html || '<p style="color: var(--gray);">Nenhum artista registado.</p>';
-            } catch (error) {
-                console.error("Erro ao carregar artistas:", error);
             }
         }
 
@@ -1105,222 +1278,200 @@ if (firebase.appCheck) {
             showLoading(false);
         }
 
-        async function generateDDEXExport() {
-            showLoading(true, "A gerar XML DDEX...");
-            try {
-                const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
-                
-                if (snapshot.empty) {
-                    showLoading(false);
-                    return alert("Nenhuma música encontrada para exportar!");
-                }
-
-                let ddexXml = `<?xml version="1.0" encoding="UTF-8"?>
-<NewReleaseMessage xmlns="http://ddex.net/xml/2.1/ddex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ddex.net/xml/2.1/ddex http://ddex.net/xml/2.1/ddex-ern.xsd">
-    <MessageHeader>
-        <MessageThreadID>${Date.now()}</MessageThreadID>
-        <MessageID>${Date.now()}</MessageID>
-        <MessageSender>
-            <PartyID>${currentUser.email}</PartyID>
-        </MessageSender>
-        <SentDateTime>${new Date().toISOString()}</SentDateTime>
-    </MessageHeader>
-    <UpdateIndicator>00</UpdateIndicator>
-    <NewReleaseMessage>
-        <ReleaseList>
-`;
-
-                snapshot.forEach((doc, index) => {
-                    const music = doc.data();
-                    ddexXml += `
-            <Release>
-                <ReleaseID>${doc.id}</ReleaseID>
-                <ReleaseType>Album</ReleaseType>
-                <GlobalReleaseDate>${music.dataLanc}</GlobalReleaseDate>
-                <ReleaseTitle>
-                    <TitleText>${music.titulo}</TitleText>
-                </ReleaseTitle>
-                <ReleaseGenre>
-                    <GenreText>${music.genero}</GenreText>
-                </ReleaseGenre>
-                <ResourceGroup>
-                    <ResourceGroupType>SoundRecording</ResourceGroupType>
-                    <Resource>
-                        <ResourceType>SoundRecording</ResourceType>
-                        <ResourceID>${music.isrc}</ResourceID>
-                        <ResourceTitle>
-                            <TitleText>${music.titulo}</TitleText>
-                        </ResourceTitle>
-                        <Duration>${music.duration || "PT3M30S"}</Duration>
-                    </Resource>
-                </ResourceGroup>
-            </Release>
-`;
-                });
-
-                ddexXml += `
-        </ReleaseList>
-    </NewReleaseMessage>
-</NewReleaseMessage>`;
-
-                // Criar blob e descarregar
-                const blob = new Blob([ddexXml], { type: 'application/xml' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `DDEX_${currentUser.email}_${Date.now()}.xml`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                alert("XML DDEX gerado e descarregado com sucesso!");
-            } catch (error) {
-                alert("Erro ao gerar DDEX: " + error.message);
-            }
-            showLoading(false);
-        }
-
         async function loadUserMusic() {
             try {
                 const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
                 document.getElementById('stat-musicas-count').innerText = snapshot.size;
-                let html = '';
-                snapshot.forEach(doc => {
-                    const m = doc.data();
-                    html += `
-                        <div class="list-item">
-                            <img src="${m.capa}">
-                            <div class="list-info">
-                                <h4>${m.titulo}</h4>
-                                <p>${m.artista} • ${m.genero} • <span class="status-pill status-${m.status === 'Aprovado' ? 'active' : m.status === 'Em Revisão' ? 'pending' : 'error'}">${m.status}</span></p>
-                            </div>
-                            <div class="list-actions">
-                                <button class="btn btn-small btn-danger" onclick="deleteMusic('${doc.id}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('user-music-list').innerHTML = html || '<p style="color: var(--gray);">Nenhuma música lançada.</p>';
             } catch (error) {
                 console.error("Erro ao carregar músicas:", error);
             }
         }
 
-        async function deleteMusic(id) {
-            if (confirm("Tem a certeza que deseja eliminar esta música?")) {
-                showLoading(true, "A eliminar...");
-                try {
-                    await db.collection('musicas').doc(id).delete();
-                    loadUserMusic();
-                    alert("Música eliminada com sucesso!");
-                } catch (error) {
-                    alert("Erro: " + error.message);
-                }
-                showLoading(false);
-            }
-        }
-
-        async function loadEarningsHistory() {
-            try {
-                const snapshot = await db.collection('ganhos').where('owner', '==', currentUser.email).orderBy('data', 'desc').limit(10).get();
-                let totalGanhos = 0;
-                let html = '';
-                snapshot.forEach(doc => {
-                    const g = doc.data();
-                    totalGanhos += g.valor;
-                    const data = g.data ? new Date(g.data.toDate()).toLocaleDateString('pt-PT') : '-';
-                    html += `
-                        <div class="list-item">
-                            <div class="list-info">
-                                <h4>${g.tipo}</h4>
-                                <p>${data}</p>
-                            </div>
-                            <div style="text-align: right;">
-                                <h4 style="color: var(--success);">+${g.valor.toLocaleString()} Kz</h4>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('stat-ganhos-total').innerText = `${totalGanhos.toLocaleString()} Kz`;
-                document.getElementById('earnings-list').innerHTML = html || '<p style="color: var(--gray);">Nenhum ganho registado.</p>';
-            } catch (error) {
-                console.error("Erro ao carregar ganhos:", error);
-            }
-        }
-
         async function loadDestaques() {
+            const container = document.getElementById('destaques-container');
+            if (!container) return;
+            container.innerHTML = '';
+
             try {
-                const snapshot = await db.collection('musicas').where('status', '==', 'Aprovado').orderBy('downloads', 'desc').limit(4).get();
-                let html = '';
+                const snapshot = await db.collection('musicas')
+                    .where('status', '==', 'Aprovado')
+                    .orderBy('downloads', 'desc')
+                    .limit(5)
+                    .get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px; grid-column: 1/-1;">Nenhum destaque disponível ainda.</p>';
+                    return;
+                }
+
                 snapshot.forEach(doc => {
                     const m = doc.data();
-                    html += `
+                    container.innerHTML += `
                         <div class="disco-item">
-                            <img src="${m.capa}" class="disco-cover">
+                            <img src="${m.capa}" class="disco-cover" onclick="playMusic('${m.audio}')">
                             <div class="disco-title">${m.titulo}</div>
                             <div class="disco-artist">${m.artista}</div>
-                            <audio controls class="audio-player">
-                                <source src="${m.audio}" type="audio/wav">
+                            <audio class="audio-player" controls>
+                                <source src="${m.audio}" type="audio/mpeg">
                             </audio>
                         </div>
                     `;
                 });
-                document.getElementById('destaques-list').innerHTML = html || '<p style="color: var(--gray);">Nenhum destaque disponível.</p>';
             } catch (error) {
                 console.error("Erro ao carregar destaques:", error);
             }
         }
 
         async function loadFeed() {
+            const container = document.getElementById('feed-container');
+            if (!container) return;
+            container.innerHTML = '';
+
             try {
-                const snapshot = await db.collection('musicas').where('status', '==', 'Aprovado').orderBy('createdAt', 'desc').limit(5).get();
-                let html = '';
+                const snapshot = await db.collection('musicas')
+                    .where('status', '==', 'Aprovado')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px; grid-column: 1/-1;">Nenhuma música disponível ainda.</p>';
+                    return;
+                }
+
                 snapshot.forEach(doc => {
                     const m = doc.data();
-                    const data = m.createdAt ? new Date(m.createdAt.toDate()).toLocaleDateString('pt-PT') : '-';
-                    html += `
-                        <div class="list-item">
-                            <img src="${m.capa}">
-                            <div class="list-info">
-                                <h4>${m.titulo}</h4>
-                                <p>${m.artista} • ${data}</p>
-                            </div>
+                    container.innerHTML += `
+                        <div class="disco-item">
+                            <img src="${m.capa}" class="disco-cover" onclick="playMusic('${m.audio}')">
+                            <div class="disco-title">${m.titulo}</div>
+                            <div class="disco-artist">${m.artista}</div>
+                            <audio class="audio-player" controls>
+                                <source src="${m.audio}" type="audio/mpeg">
+                            </audio>
                         </div>
                     `;
                 });
-                document.getElementById('feed-list').innerHTML = html || '<p style="color: var(--gray);">Nenhuma música no feed.</p>';
             } catch (error) {
                 console.error("Erro ao carregar feed:", error);
             }
         }
 
-        async function handleWithdrawal() {
-            const valor = parseFloat(document.getElementById('saque-valor').value);
+        function playMusic(audioUrl) {
+            const audio = new Audio(audioUrl);
+            audio.play();
+        }
+
+        async function deleteMusic(id) {
+            if (confirm("Deseja cancelar este lançamento?")) {
+                try {
+                    await db.collection('musicas').doc(id).delete();
+                    loadUserMusic();
+                    loadFeed();
+                    alert("Lançamento removido!");
+                } catch (error) {
+                    alert("Erro: " + error.message);
+                }
+            }
+        }
+
+        async function loadEarningsHistory() {
+            const container = document.getElementById('historico-ganhos');
+            container.innerHTML = '';
+
+            try {
+                const snapshot = await db.collection('ganhos')
+                    .where('email', '==', currentUser.email)
+                    .orderBy('data', 'desc')
+                    .limit(20)
+                    .get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum ganho registado ainda.</p>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const g = doc.data();
+                    const dataStr = g.data ? g.data.toDate().toLocaleDateString() : '...';
+                    container.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222;">
+                            <div>
+                                <p style="font-size: 0.9rem;">${g.tipo}</p>
+                                <p style="font-size: 0.7rem; color: var(--gray);">${dataStr} ${g.motivo ? ' - ' + g.motivo : ''}</p>
+                            </div>
+                            <b style="color: var(--gold);">+ ${g.valor.toLocaleString()} Kz</b>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar ganhos:", error);
+            }
+        }
+
+        function validateBankingData(metodo, dados) {
+            if (metodo === 'BFA' || metodo === 'BAI' || metodo === 'BIC') {
+                if (!/^\d{10,20}$/.test(dados)) {
+                    alert('IBAN/Conta inválido! Deve conter apenas números.');
+                    return false;
+                }
+            } else if (metodo === 'Multicaixa') {
+                if (!/^\d{9}$/.test(dados)) {
+                    alert('Número de Multicaixa inválido! Deve ter 9 dígitos.');
+                    return false;
+                }
+            } else if (metodo === 'Visa') {
+                if (!/^\d{16}$/.test(dados)) {
+                    alert('Número de Visa inválido! Deve ter 16 dígitos.');
+                    return false;
+                }
+            } else if (metodo === 'PayPal') {
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados)) {
+                    alert('E-mail do PayPal inválido!');
+                    return false;
+                }
+            } else if (metodo === 'Pix') {
+                if (!/^[a-zA-Z0-9.\-_]{8,}$/.test(dados)) {
+                    alert('Chave Pix inválida!');
+                    return false;
+                }
+            } else if (metodo === 'Pennory') {
+                if (!/^[a-zA-Z0-9]{6,}$/.test(dados)) {
+                    alert('Código Pennory inválido!');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        async function handleRequestWithdraw() {
+            const valor = parseInt(document.getElementById('saque-valor').value);
             const metodo = document.getElementById('saque-metodo').value;
-            const iban = document.getElementById('saque-iban').value;
+            const dados = document.getElementById('saque-dados').value;
 
-            if (!valor || valor < 1000) return alert("Valor mínimo de levantamento é 1000 Kz!");
-            if (!metodo) return alert("Selecione o método de pagamento!");
-            if (!iban) return alert("Insira o IBAN ou número de conta!");
+            if (!valor || valor < 5000) return alert("Valor mínimo de 5.000 Kz");
             if (valor > userData.saldo) return alert("Saldo insuficiente!");
+            if (!metodo || !dados) return alert("Selecione o método e insira os dados!");
+            if (!validateBankingData(metodo, dados)) return;
+            if (!confirm(`Confirma o levantamento de ${valor.toLocaleString()} Kz para ${metodo}?`)) return;
 
-            showLoading(true, "A processar levantamento...");
+            showLoading(true, "A processar pedido...");
             try {
                 const saqueRef = await db.collection('saques').add({
-                    owner: currentUser.email,
+                    email: currentUser.email,
+                    nome: userData.nome,
                     valor,
                     metodo,
-                    iban,
+                    dados,
                     status: "Pendente",
                     data: firebase.firestore.FieldValue.serverTimestamp(),
-                    processedAt: null
+                    processado: false
                 });
 
                 await db.collection('users').doc(currentUser.email).update({
                     saldo: firebase.firestore.FieldValue.increment(-valor)
                 });
 
+                console.log(`NOVO SAQUE: ${valor} Kz | ${userData.nome} | ${metodo} | Contactar: mamfilhos29@gmail.com / +244 937 881 307`);
                 alert("Pedido de levantamento enviado! Será processado em breve.");
                 closeModal('modal-saque');
                 loadUserData();
@@ -1354,13 +1505,13 @@ if (firebase.appCheck) {
                     const storageRef = storage.ref(`perfis/${currentUser.email}_${Date.now()}`);
                     await storageRef.put(fotoFile);
                     fotoUrl = await storageRef.getDownloadURL();
-                    // Limpar o input após upload bem-sucedido
-                    document.getElementById('perfil-foto-input').value = '';
                 }
 
                 await db.collection('users').doc(currentUser.email).update({
                     nome, telefone, pais, foto: fotoUrl
                 });
+
+                document.getElementById('perfil-foto-input').value = '';
 
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();
@@ -1373,60 +1524,277 @@ if (firebase.appCheck) {
         function openPlanPayment(plan, amount) {
             currentPlanPayment = { plan, amount, method: '' };
             document.getElementById('plan-name-display').innerText = plan;
-            document.getElementById('plan-amount-display').innerText = `${amount.toLocaleString()} Kz`;
+            document.getElementById('plan-price-display').innerText = amount.toLocaleString();
             openModal('modal-plan-payment');
         }
 
-        function processPayment() {
-            const method = document.getElementById('payment-method').value;
-            if (!method) return alert("Selecione o método de pagamento!");
+        function selectPaymentMethod(method) {
+            currentPlanPayment.method = method;
+            closeModal('modal-plan-payment');
             
-            if (method === 'Transferência Bancária') {
-                document.getElementById('transfer-reference').innerText = `MAM-${Date.now()}`;
-                closeModal('modal-plan-payment');
-                openModal('modal-transfer-payment');
-            } else {
-                alert(`Pagamento via ${method} será processado em breve!`);
+            if (method === 'mam') {
+                document.getElementById('pay-plan-name').innerText = `Plano ${currentPlanPayment.plan}`;
+                document.getElementById('pay-amount').innerText = currentPlanPayment.amount.toLocaleString();
+                openModal('modal-pagamento-mam');
+            } else if (method === 'banco') {
+                document.getElementById('pay-plan-name-banco').innerText = `Plano ${currentPlanPayment.plan}`;
+                document.getElementById('pay-amount-banco').innerText = currentPlanPayment.amount.toLocaleString();
+                openModal('modal-pagamento-banco');
             }
         }
 
+        async function processPlanPaymentMAM() {
+            const { plan, amount } = currentPlanPayment;
+            
+            if (userData.saldo < amount) {
+                alert("Saldo insuficiente na carteira MAM!");
+                return;
+            }
+
+            showLoading(true, "A processar pagamento...");
+            try {
+                // Débito do utilizador
+                await db.collection('users').doc(currentUser.email).update({
+                    saldo: firebase.firestore.FieldValue.increment(-amount),
+                    plano: plan
+                });
+
+                // Crédito do admin
+                await db.collection('users').doc(ADMIN_EMAIL).update({
+                    saldo: firebase.firestore.FieldValue.increment(amount)
+                });
+
+                // Registar transação
+                await db.collection('ganhos').add({
+                    email: ADMIN_EMAIL,
+                    valor: amount,
+                    tipo: "Compra de Plano",
+                    motivo: `${currentUser.email} comprou Plano ${plan}`,
+                    data: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert(`Plano ${plan} comprado com sucesso!`);
+                closeModal('modal-pagamento-mam');
+                loadUserData();
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+            showLoading(false);
+        }
+
         function sendProofWhatsApp() {
-            const reference = document.getElementById('transfer-reference').innerText;
-            const message = `Olá! Realizei a transferência com referência: ${reference}. Plano: ${currentPlanPayment.plan}. Valor: ${currentPlanPayment.amount.toLocaleString()} Kz`;
-            const whatsappUrl = `https://wa.me/244${ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`;
+            const { plan, amount } = currentPlanPayment;
+            const message = `Olá! Realizei a transferência de ${amount.toLocaleString()} Kz para o Plano ${plan}. Segue em anexo o comprovativo.`;
+            const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
-            closeModal('modal-transfer-payment');
+            closeModal('modal-pagamento-banco');
         }
 
         async function loadAdminData() {
             try {
                 const usersSnap = await db.collection('users').get();
-                const artistsSnap = await db.collection('artistas').get();
-                const musicSnap = await db.collection('musicas').where('status', '==', 'Em Revisão').get();
-                
                 document.getElementById('admin-total-users').innerText = usersSnap.size;
+
+                const artistsSnap = await db.collection('artistas').get();
                 document.getElementById('admin-total-artists').innerText = artistsSnap.size;
-                document.getElementById('admin-total-music').innerText = musicSnap.size;
+
+                const musicSnap = await db.collection('musicas').where('status', '==', 'Em Revisão').get();
+                document.getElementById('admin-pending-music').innerText = musicSnap.size;
+
                 document.getElementById('admin-total-earnings').innerText = `${userData.saldo.toLocaleString()} Kz`;
-                
-                loadAdminUsers();
-                loadAdminMusicReview();
+
+                renderAdminUsers(usersSnap);
+                renderAdminMusicReview(musicSnap);
             } catch (error) {
-                console.error("Erro ao carregar dados admin:", error);
+                console.error("Erro ao carregar dados do admin:", error);
             }
         }
 
-        async function loadAdminUsers() {
+        function renderAdminUsers(snapshot) {
+            const container = document.getElementById('admin-users-list');
+            container.innerHTML = '';
+    
+            snapshot.forEach(doc => {
+                const u = doc.data();
+                if (u.email === ADMIN_EMAIL) return;
+                container.innerHTML += `
+                    <div class="list-item">
+                        <div class="list-info">
+                            <h4>${u.nome} ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}</h4>
+                            <p>${u.email} | Plano: <b>${u.plano}</b> | Saldo: ${u.saldo.toLocaleString()} Kz</p>
+                        </div>
+                        <div class="list-actions">
+                            <select onchange="adminChangePlan('${u.email}', this.value)" style="width: 120px; margin-bottom: 0; padding: 5px;">
+                                <option value="">Mudar Plano</option>
+                                <option value="FREE">FREE</option>
+                                <option value="BÁSICO">BÁSICO</option>
+                                <option value="MÉDIO">MÉDIO</option>
+                                <option value="PRO">PRO</option>
+                            </select>
+                            <button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')"><i class="fas fa-user-slash"></i></button>
+                            <button class="btn btn-small btn-sec" onclick="openAdminUserOptions('${u.email}')"><i class="fas fa-ellipsis-v"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openAdminUserOptions(email) {
+            const action = prompt(`Opções para ${email}:\n1 - Suspender\n2 - Enviar Mensagem\n3 - Cancelar`);
+            if (action === '1') {
+                adminSuspendUser(email);
+            } else if (action === '2') {
+                const msg = prompt("Mensagem para enviar:");
+                if (msg) adminSendMessage(email, msg);
+            }
+        }
+
+        async function adminSuspendUser(email) {
+            const duration = prompt("Duração da suspensão (em dias, ou 'ilimitado'):");
+            if (duration) {
+                try {
+                    await db.collection('users').doc(email).update({
+                        suspended: true,
+                        suspensionReason: `Suspensão por ${duration}`,
+                        suspendedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    alert(`Utilizador ${email} suspenso por ${duration}!`);
+                    loadAdminData();
+                } catch (error) {
+                    alert("Erro: " + error.message);
+                }
+            }
+        }
+
+        async function adminSendMessage(email, message) {
             try {
-                const snapshot = await db.collection('users').get();
-                let html = '';
-                snapshot.forEach(doc => {
-                    const u = doc.data();
-                    html += `
+                await db.collection('mensagens').add({
+                    para: email,
+                    de: ADMIN_EMAIL,
+                    conteudo: message,
+                    data: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("Mensagem enviada!");
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+        }
+
+        function renderAdminMusicReview(snapshot) {
+            const container = document.getElementById('admin-music-review');
+            container.innerHTML = '';
+            if (snapshot.empty) container.innerHTML = '<p style="text-align: center; color: var(--gray);">Nenhum lançamento pendente.</p>';
+            
+            snapshot.forEach(doc => {
+                const m = doc.data();
+                const id = doc.id;
+                container.innerHTML += `
+                    <div class="list-item">
+                        <img src="${m.capa}">
+                        <div class="list-info">
+                            <h4>${m.titulo}</h4>
+                            <p>Artista: ${m.artista} | Estilo: ${m.estilo}</p>
+                            <p>Utilizador: ${m.owner}</p>
+                            <a href="${m.audio}" target="_blank" style="color: var(--gold); font-size: 0.7rem;">Ouvir Áudio <i class="fas fa-play"></i></a>
+                        </div>
+                        <div class="list-actions">
+                            <button class="btn btn-small" style="background: var(--success);" onclick="adminReviewMusic('${id}', 'Aprovado')">Aprovar</button>
+                            <button class="btn btn-small btn-danger" onclick="adminReviewMusic('${id}', 'Rejeitado')">Rejeitar</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function adminChangePlan(email, newPlan) {
+            if (!newPlan) return;
+            try {
+                await db.collection('users').doc(email).update({ plano: newPlan });
+                alert(`Plano de ${email} alterado para ${newPlan}`);
+                loadAdminData();
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+        }
+
+        async function adminReviewMusic(id, status) {
+            try {
+                await db.collection('musicas').doc(id).update({ status });
+                alert(`Música ${status}!`);
+                loadAdminData();
+                loadFeed();
+                loadDestaques();
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+        }
+
+        async function adminDeleteUser(email) {
+            if (confirm(`Tem certeza que deseja eliminar o utilizador ${email}?`)) {
+                try {
+                    await db.collection('users').doc(email).delete();
+                    alert("Utilizador eliminado!");
+                    loadAdminData();
+                } catch (error) {
+                    alert("Erro: " + error.message);
+                }
+            }
+        }
+
+        function showLoading(show, text = "Processando...") {
+            document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
+            document.getElementById('loading-text').innerText = text;
+        }
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+            if (id === 'modal-artista' && !document.getElementById('edit-artista-id').value) {
+                document.getElementById('modal-artista-title').innerText = "Novo Artista";
+                document.getElementById('artista-nome').value = '';
+                document.getElementById('artista-foto-preview').src = 'https://via.placeholder.com/120';
+                document.getElementById('artista-youtube').value = '';
+                document.getElementById('artista-facebook').value = '';
+                document.getElementById('artista-tiktok').value = '';
+                document.getElementById('artista-spotify').value = '';
+                document.getElementById('artista-apple').value = '';
+                document.getElementById('artista-instagram').value = '';
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+            if (id === 'modal-artista') {
+                document.getElementById('edit-artista-id').value = '';
+                document.getElementById('artista-foto-input').value = '';
+            }
+            if (id === 'modal-saque') {
+                document.getElementById('saque-valor').value = '';
+                document.getElementById('saque-dados').value = '';
+            }
+        }
+
+        function previewImage(input, previewId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => document.getElementById(previewId).src = e.target.result;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function searchUsers() {
+            const term = document.getElementById('admin-user-search').value.toLowerCase();
+            const snapshot = await db.collection('users').get();
+            const container = document.getElementById('admin-users-list');
+            container.innerHTML = '';
+            
+            snapshot.forEach(doc => {
+                const u = doc.data();
+                if (u.nome.toLowerCase().includes(term) || u.email.toLowerCase().includes(term)) {
+                    container.innerHTML += `
                         <div class="list-item">
                             <div class="list-info">
-                                <h4>${u.nome} ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}</h4>
-                                <p>${u.email} | Plano: <b>${u.plano}</b> | Saldo: ${u.saldo.toLocaleString()} Kz</p>
+                                <h4>${u.nome}</h4>
+                                <p>${u.email} | Plano: ${u.plano} | Saldo: ${u.saldo.toLocaleString()} Kz</p>
                             </div>
                             <div class="list-actions">
                                 <select onchange="adminChangePlan('${u.email}', this.value)" style="width: 120px; margin-bottom: 0; padding: 5px;">
@@ -1441,197 +1809,10 @@ if (firebase.appCheck) {
                             </div>
                         </div>
                     `;
-                });
-                document.getElementById('admin-users-list').innerHTML = html;
-            } catch (error) {
-                console.error("Erro ao carregar utilizadores admin:", error);
-            }
-        }
-
-        async function loadAdminMusicReview() {
-            try {
-                const snapshot = await db.collection('musicas').where('status', '==', 'Em Revisão').get();
-                let html = '';
-                snapshot.forEach(doc => {
-                    const m = doc.data();
-                    html += `
-                        <div class="list-item">
-                            <img src="${m.capa}">
-                            <div class="list-info">
-                                <h4>${m.titulo}</h4>
-                                <p>${m.artista} • ${m.genero} • ISRC: ${m.isrc}</p>
-                            </div>
-                            <div class="list-actions">
-                                <button class="btn btn-small" style="background: var(--success);" onclick="adminApproveMusic('${doc.id}')"><i class="fas fa-check"></i></button>
-                                <button class="btn btn-small btn-danger" onclick="adminRejectMusic('${doc.id}')"><i class="fas fa-times"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('admin-music-review').innerHTML = html || '<p style="color: var(--gray);">Nenhuma música em revisão.</p>';
-            } catch (error) {
-                console.error("Erro ao carregar revisão de músicas:", error);
-            }
-        }
-
-        async function adminApproveMusic(id) {
-            showLoading(true, "A aprovar...");
-            try {
-                await db.collection('musicas').doc(id).update({ status: 'Aprovado' });
-                loadAdminMusicReview();
-                alert("Música aprovada!");
-            } catch (error) {
-                alert("Erro: " + error.message);
-            }
-            showLoading(false);
-        }
-
-        async function adminRejectMusic(id) {
-            showLoading(true, "A rejeitar...");
-            try {
-                await db.collection('musicas').doc(id).update({ status: 'Rejeitado' });
-                loadAdminMusicReview();
-                alert("Música rejeitada!");
-            } catch (error) {
-                alert("Erro: " + error.message);
-            }
-            showLoading(false);
-        }
-
-        async function adminChangePlan(email, newPlan) {
-            if (!newPlan) return;
-            showLoading(true, "A atualizar plano...");
-            try {
-                await db.collection('users').doc(email).update({ plano: newPlan });
-                loadAdminUsers();
-                alert("Plano atualizado!");
-            } catch (error) {
-                alert("Erro: " + error.message);
-            }
-            showLoading(false);
-        }
-
-        async function adminDeleteUser(email) {
-            if (confirm("Tem a certeza que deseja eliminar este utilizador?")) {
-                showLoading(true, "A eliminar...");
-                try {
-                    await db.collection('users').doc(email).delete();
-                    loadAdminUsers();
-                    alert("Utilizador eliminado!");
-                } catch (error) {
-                    alert("Erro: " + error.message);
                 }
-                showLoading(false);
-            }
-        }
-
-        async function openAdminUserOptions(email) {
-            alert(`Opções para ${email}:\n\n1. Editar Plano\n2. Ver Histórico\n3. Enviar Mensagem`);
-        }
-
-        async function searchUsers() {
-            const query = document.getElementById('admin-user-search').value.toLowerCase();
-            try {
-                const snapshot = await db.collection('users').get();
-                let html = '';
-                snapshot.forEach(doc => {
-                    const u = doc.data();
-                    if (u.email.includes(query) || u.nome.toLowerCase().includes(query)) {
-                        html += `
-                            <div class="list-item">
-                                <div class="list-info">
-                                    <h4>${u.nome} ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}</h4>
-                                    <p>${u.email} | Plano: <b>${u.plano}</b> | Saldo: ${u.saldo.toLocaleString()} Kz</p>
-                                </div>
-                                <div class="list-actions">
-                                    <select onchange="adminChangePlan('${u.email}', this.value)" style="width: 120px; margin-bottom: 0; padding: 5px;">
-                                        <option value="">Mudar Plano</option>
-                                        <option value="FREE">FREE</option>
-                                        <option value="BÁSICO">BÁSICO</option>
-                                        <option value="MÉDIO">MÉDIO</option>
-                                        <option value="PRO">PRO</option>
-                                    </select>
-                                    <button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')"><i class="fas fa-user-slash"></i></button>
-                                    <button class="btn btn-small btn-sec" onclick="openAdminUserOptions('${u.email}')"><i class="fas fa-ellipsis-v"></i></button>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-                document.getElementById('admin-users-list').innerHTML = html;
-            } catch (error) {
-                console.error("Erro na pesquisa:", error);
-            }
-        }
-
-        function populateSelects() {
-            const paisSelect = document.getElementById('reg-pais');
-            const perfPaisSelect = document.getElementById('perfil-pais');
-            const estiloSelect = document.getElementById('music-estilo');
-            const artistaEstiloSelect = document.getElementById('artista-estilo');
-            const musicArtistaSelect = document.getElementById('music-artista-select');
-
-            PAISES.forEach(pais => {
-                paisSelect.innerHTML += `<option value="${pais}">${pais}</option>`;
-                perfPaisSelect.innerHTML += `<option value="${pais}">${pais}</option>`;
-            });
-
-            ESTILOS.forEach(estilo => {
-                estiloSelect.innerHTML += `<option value="${estilo}">${estilo}</option>`;
-                artistaEstiloSelect.innerHTML += `<option value="${estilo}">${estilo}</option>`;
             });
         }
-
-        function showSection(sectionId, button) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            button.classList.add('active');
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            document.getElementById('edit-artista-id').value = '';
-            document.getElementById('artista-nome').value = '';
-            document.getElementById('artista-estilo').value = '';
-            document.getElementById('artista-youtube').value = '';
-            document.getElementById('artista-facebook').value = '';
-            document.getElementById('artista-tiktok').value = '';
-            document.getElementById('artista-spotify').value = '';
-            document.getElementById('artista-apple').value = '';
-            document.getElementById('artista-instagram').value = '';
-            document.getElementById('artista-foto-preview').src = 'https://via.placeholder.com/120';
-            document.getElementById('artista-foto-input').value = '';
-        }
-
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById(previewId).src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function togglePasswordVisibility(inputId) {
-            const input = document.getElementById(inputId);
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-
-        function showLoading(show, text = "Processando...") {
-            const overlay = document.getElementById('loading-overlay');
-            if (show) {
-                document.getElementById('loading-text').innerText = text;
-                overlay.style.display = 'flex';
-            } else {
-                overlay.style.display = 'none';
-            }
-        }
-    </script>
+    
+</script>
 </body>
 </html>

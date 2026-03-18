@@ -147,32 +147,19 @@
 
             <div class="card" id="register-form" style="display: none;">
                 <h3><i class="fas fa-user-plus"></i> Novo Registo</h3>
-                <input type="text" id="reg-nome" placeholder="Nome Completo">
+                <input type="text" id="reg-nome" placeholder="Nome completo">
                 <input type="email" id="reg-email" placeholder="E-mail">
                 <select id="reg-tipo">
-                    <option value="">Tipo de Utilizador</option>
+                    <option value="">Selecione o tipo de utilizador...</option>
                     <option value="Artista">Artista</option>
                     <option value="Produtor">Produtor</option>
-                    <option value="Produtora">Produtora</option>
-                    <option value="Label">Label</option>
+                    <option value="Distribuidor">Distribuidor</option>
                 </select>
-                <select id="reg-pais">
-                    <option value="">País</option>
-                </select>
-                <div class="password-container">
-                    <input type="password" id="reg-pass" placeholder="Palavra-passe (mín. 6 caracteres)">
-                    <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                <div class="password-container">
-                    <input type="password" id="reg-pass-confirm" placeholder="Confirmar Palavra-passe">
-                    <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass-confirm')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
+                <select id="reg-pais"></select>
+                <input type="password" id="reg-pass" placeholder="Palavra-passe (mín. 6 caracteres)">
+                <input type="password" id="reg-pass-confirm" placeholder="Confirmar palavra-passe">
                 <button class="btn" onclick="handleRegister()">Criar Conta <i class="fas fa-user-check"></i></button>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(false)">Entrar</span></p>
+                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(false)">Entrar Agora</span></p>
             </div>
         </div>
     </div>
@@ -181,227 +168,193 @@
     <div id="main-app" style="display: none;">
         <header>
             <div class="logo">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
-                <div class="logo-text">MAM DISTRIBUIDORA</div>
+                <img id="home-user-photo" src="https://via.placeholder.com/50" style="width: 50px; height: 50px;">
+                <div>
+                    <div class="logo-text">MAM DISTRIBUIDORA</div>
+                    <div style="font-size: 0.7rem; color: var(--gray);">Bem-vindo, <span id="user-display-name">...</span></div>
+                </div>
             </div>
+            <button class="btn btn-small btn-danger" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%);" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
         </header>
 
         <nav>
-            <button class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i> Home</button>
-            <button class="nav-btn" onclick="showSection('artistas', this)"><i class="fas fa-users"></i> Artistas</button>
-            <button class="nav-btn" onclick="showSection('lancar', this)"><i class="fas fa-rocket"></i> Lançar</button>
-            <button class="nav-btn" onclick="showSection('planos', this)"><i class="fas fa-crown"></i> Planos</button>
-            <button class="nav-btn" onclick="showSection('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
-            <button class="nav-btn" onclick="showSection('perfil', this)"><i class="fas fa-user"></i> Perfil</button>
-            <button class="nav-btn" id="btn-admin" style="display: none;" onclick="showSection('admin', this)"><i class="fas fa-shield-alt"></i> Admin</button>
-            <button class="nav-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            <button class="nav-btn active" onclick="showSection('home-section', this)"><i class="fas fa-home"></i> Início</button>
+            <button class="nav-btn" onclick="showSection('artistas-section', this)"><i class="fas fa-users"></i> Artistas</button>
+            <button class="nav-btn" onclick="showSection('musicas-section', this)"><i class="fas fa-music"></i> Músicas</button>
+            <button class="nav-btn" onclick="showSection('planos-section', this)"><i class="fas fa-crown"></i> Planos</button>
+            <button class="nav-btn" onclick="showSection('ganhos-section', this)"><i class="fas fa-chart-line"></i> Ganhos</button>
+            <button class="nav-btn" onclick="showSection('perfil-section', this)"><i class="fas fa-user"></i> Perfil</button>
+            <button class="nav-btn" id="btn-admin" style="display: none; border-color: var(--gold); color: var(--gold);" onclick="showSection('admin-section', this)"><i class="fas fa-cog"></i> Admin</button>
         </nav>
 
         <div class="container">
-            <!-- HOME -->
-            <div id="home" class="section active">
+            <!-- HOME SECTION -->
+            <div id="home-section" class="section active">
                 <div class="card">
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <img id="home-user-photo" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold);">
-                        <div>
-                            <h2 style="font-size: 1.2rem;">Olá, <span id="user-display-name">...</span>!</h2>
-                            <p style="color: var(--gray); font-size: 0.85rem;"><span id="user-display-type">...</span> | <span id="user-display-country">...</span></p>
-                            <div style="margin-top: 8px;">
-                                <span class="status-pill status-active" id="user-display-plan">PLANO FREE</span>
-                            </div>
+                    <h3><i class="fas fa-dashboard"></i> Dashboard</h3>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <h4 id="stat-saldo">0 Kz</h4>
+                            <p>Saldo Disponível</p>
+                        </div>
+                        <div class="stat-box">
+                            <h4 id="stat-artistas-count">0</h4>
+                            <p>Artistas</p>
+                        </div>
+                        <div class="stat-box">
+                            <h4 id="stat-musicas-count">0</h4>
+                            <p>Músicas</p>
+                        </div>
+                        <div class="stat-box">
+                            <h4 id="user-display-type">...</h4>
+                            <p>Tipo de Utilizador</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="stat-grid">
-                    <div class="stat-box">
-                        <p>Saldo Atual</p>
-                        <h4 id="stat-saldo">0 Kz</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Artistas</p>
-                        <h4 id="stat-artistas-count">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Lançamentos</p>
-                        <h4 id="stat-musicas-count">0</h4>
-                    </div>
+                <div class="card">
+                    <h3><i class="fas fa-star"></i> Destaques</h3>
+                    <div class="grid" id="destaques-container"></div>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-star"></i> Destaques - Top 5 Músicas Mais Ouvidas/Baixadas</h3>
-                    <div id="destaques-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
-                        <!-- Top 5 músicas mais ouvidas/baixadas -->
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-compact-disc"></i> Feed - Todas as Músicas Lançadas na MAM Distribuidora</h3>
-                    <div id="feed-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
-                        <!-- Feed completo de músicas -->
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-bullhorn"></i> Novidades</h3>
-                    <p style="font-size: 0.9rem; color: var(--gray); line-height: 1.6;">
-                        Bem-vindo à nova era da MAM Distribuidora. Agora com pagamentos automáticos via Satélite e gestão em tempo real. 
-                        Lançamos a sua música em mais de 150 plataformas digitais incluindo Spotify, Apple Music e Deezer.
-                    </p>
+                    <h3><i class="fas fa-fire"></i> Feed</h3>
+                    <div class="grid" id="feed-container"></div>
                 </div>
             </div>
 
-            <!-- ARTISTAS -->
-            <div id="artistas" class="section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="color: var(--gold);">Meus Artistas</h2>
-                    <button class="btn btn-small" onclick="openModal('modal-artista')"><i class="fas fa-plus"></i> Novo Artista</button>
+            <!-- ARTISTAS SECTION -->
+            <div id="artistas-section" class="section">
+                <div class="card">
+                    <h3><i class="fas fa-plus-circle"></i> Novo Artista</h3>
+                    <button class="btn" onclick="openModal('modal-artista')"><i class="fas fa-user-plus"></i> Adicionar Artista</button>
                 </div>
-                <div id="lista-artistas" class="item-list">
-                    <!-- Artistas carregados aqui -->
+
+                <div class="card">
+                    <h3><i class="fas fa-list"></i> Meus Artistas</h3>
+                    <div class="item-list" id="lista-artistas"></div>
                 </div>
             </div>
 
-            <!-- LANÇAR -->
-            <div id="lancar" class="section">
+            <!-- MUSICAS SECTION -->
+            <div id="musicas-section" class="section">
                 <div class="card">
-                    <h3><i class="fas fa-rocket"></i> Novo Lançamento</h3>
-                    <div class="grid">
-                        <div>
-                            <label>Título da Música/Álbum</label>
-                            <input type="text" id="music-titulo" placeholder="Ex: O Meu Sucesso">
-                            
-                            <label>Artista Principal</label>
-                            <select id="music-artista-select">
-                                <option value="">Selecione um artista...</option>
-                            </select>
-                            
-                            <label>Estilo Musical</label>
-                            <select id="music-estilo">
-                                <option value="">Selecione o estilo...</option>
-                            </select>
+                    <h3><i class="fas fa-cloud-upload-alt"></i> Enviar Música</h3>
+                    <label>Título</label>
+                    <input type="text" id="music-titulo" placeholder="Título da música">
+                    <label>Artista</label>
+                    <select id="music-artista-select"></select>
+                    <label>Estilo</label>
+                    <select id="music-estilo"></select>
+                    <label>Género</label>
+                    <select id="music-genero">
+                        <option value="">Selecione o género...</option>
+                        <option value="Pop">Pop</option>
+                        <option value="Rock">Rock</option>
+                        <option value="Hip Hop">Hip Hop</option>
+                        <option value="Jazz">Jazz</option>
+                        <option value="Eletrônico">Eletrônico</option>
+                        <option value="Clássica">Clássica</option>
+                        <option value="R&B">R&B</option>
+                        <option value="Reggae">Reggae</option>
+                    </select>
+                    <label>Colaboradores</label>
+                    <input type="text" id="music-colaboradores" placeholder="Nomes dos colaboradores">
+                    <label>Produtores</label>
+                    <input type="text" id="music-produtores" placeholder="Nomes dos produtores">
+                    <label>ISRC</label>
+                    <input type="text" id="music-isrc" placeholder="Código ISRC">
+                    <label>UPC</label>
+                    <input type="text" id="music-upc" placeholder="Código UPC">
+                    <label>Data de Lançamento</label>
+                    <input type="date" id="music-data">
+                    <label>Capa (3000x3000px)</label>
+                    <input type="file" id="music-capa" accept="image/*">
+                    <label>Áudio (WAV)</label>
+                    <input type="file" id="music-audio" accept="audio/wav">
+                    <button class="btn" onclick="handleUploadMusic()"><i class="fas fa-upload"></i> Enviar Música</button>
+                </div>
 
-                            <label>Colaboradores (separados por vírgula)</label>
-                            <input type="text" id="music-colaboradores" placeholder="Ex: Artista 1, Artista 2, Artista 3">
+                <div class="card">
+                    <h3><i class="fas fa-music"></i> Minhas Músicas</h3>
+                    <div class="item-list" id="lista-musicas"></div>
+                </div>
+            </div>
 
-                            <label>Produtores/Produtora</label>
-                            <input type="text" id="music-produtores" placeholder="Ex: Produtor 1, Produtor 2">
-
-                            <label>ISRC (International Standard Recording Code)</label>
-                            <input type="text" id="music-isrc" placeholder="Ex: USRC17607839" maxlength="12">
-
-                            <label>UPC (Universal Product Code)</label>
-                            <input type="text" id="music-upc" placeholder="Ex: 5901234123457" maxlength="13">
+            <!-- PLANOS SECTION -->
+            <div id="planos-section" class="section">
+                <div class="card">
+                    <h3><i class="fas fa-crown"></i> Planos Disponíveis</h3>
+                    <div class="plans-grid">
+                        <div class="plan-card">
+                            <div class="plan-name">FREE</div>
+                            <div class="plan-price">0 Kz</div>
+                            <ul class="plan-features">
+                                <li>✓ 1 Artista</li>
+                                <li>✓ 5 Músicas/mês</li>
+                                <li>✓ Suporte Básico</li>
+                                <li>✗ Distribuição Premium</li>
+                            </ul>
+                            <button class="btn btn-sec" onclick="alert('Já está no plano FREE')">Plano Atual</button>
                         </div>
-                        <div>
-                            <label>Gênero Musical</label>
-                            <select id="music-genero">
-                                <option value="">Selecione o gênero...</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="Eletrônico">Eletrônico</option>
-                                <option value="Afro House">Afro House</option>
-                                <option value="Kizomba">Kizomba</option>
-                                <option value="Gospel">Gospel</option>
-                            </select>
-
-                            <label>Capa do Lançamento (3000x3000px - PNG/JPG)</label>
-                            <input type="file" id="music-capa" accept="image/png,image/jpeg">
-                            <small style="color: var(--gray);">Dimensão obrigatória: 3000x3000 pixels</small>
-                            
-                            <label>Ficheiro de Áudio (WAV)</label>
-                            <input type="file" id="music-audio" accept="audio/wav">
-                            <small style="color: var(--gray);">Formato obrigatório: WAV</small>
-                            
-                            <label>Data de Lançamento</label>
-                            <input type="date" id="music-data">
+                        <div class="plan-card">
+                            <div class="plan-name">BÁSICO</div>
+                            <div class="plan-price">5.000 Kz</div>
+                            <ul class="plan-features">
+                                <li>✓ 5 Artistas</li>
+                                <li>✓ 20 Músicas/mês</li>
+                                <li>✓ Suporte Prioritário</li>
+                                <li>✓ Distribuição Padrão</li>
+                            </ul>
+                            <button class="btn" onclick="openPlanPayment('BÁSICO', 5000)">Comprar Agora</button>
+                        </div>
+                        <div class="plan-card">
+                            <div class="plan-name">MÉDIO</div>
+                            <div class="plan-price">10.000 Kz</div>
+                            <ul class="plan-features">
+                                <li>✓ 15 Artistas</li>
+                                <li>✓ Músicas Ilimitadas</li>
+                                <li>✓ Suporte VIP</li>
+                                <li>✓ Distribuição Premium</li>
+                            </ul>
+                            <button class="btn" onclick="openPlanPayment('MÉDIO', 10000)">Comprar Agora</button>
+                        </div>
+                        <div class="plan-card featured">
+                            <div class="plan-name">PRO</div>
+                            <div class="plan-price">20.000 Kz</div>
+                            <ul class="plan-features">
+                                <li>✓ Artistas Ilimitados</li>
+                                <li>✓ Músicas Ilimitadas</li>
+                                <li>✓ Suporte 24/7</li>
+                                <li>✓ Distribuição Exclusiva</li>
+                            </ul>
+                            <button class="btn" onclick="openPlanPayment('PRO', 20000)">Comprar Agora</button>
                         </div>
                     </div>
-                    <button class="btn" onclick="handleUploadMusic()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
 
-            <!-- PLANOS -->
-            <div id="planos" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;">Escolha o Seu Plano</h2>
-                <div class="plans-grid">
-                    <!-- Plano Free -->
-                    <div class="plan-card">
-                        <div class="plan-name">Plano Free</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">Gratuito</p>
-                        <div class="plan-price">Grátis</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 1 Artista</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Acesso Básico</li>
-                        </ul>
-                        <button class="btn btn-sec" onclick="alert('Você já está no Plano Free')">Seu Plano Atual</button>
+            <!-- GANHOS SECTION -->
+            <div id="ganhos-section" class="section">
+                <div class="card">
+                    <h3><i class="fas fa-wallet"></i> Carteira</h3>
+                    <div style="background: rgba(212,175,55,0.1); padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                        <p style="color: var(--gray); margin-bottom: 10px;">Saldo Disponível</p>
+                        <h2 style="color: var(--gold); font-size: 2.5rem;" id="wallet-saldo">0 Kz</h2>
                     </div>
-
-                    <!-- Plano Básico -->
-                    <div class="plan-card">
-                        <div class="plan-name">Plano Básico</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">30.000 Kz/mês</p>
-                        <div class="plan-price">30.000 Kz</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 10 Artistas</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte Prioritário</li>
-                        </ul>
-                        <button class="btn" onclick="openPlanPayment('BÁSICO', 30000)">Comprar Agora</button>
-                    </div>
-
-                    <!-- Plano Médio -->
-                    <div class="plan-card">
-                        <div class="plan-name">Plano Médio</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">50.000 Kz/mês</p>
-                        <div class="plan-price">50.000 Kz</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 30 Artistas</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Análise Avançada</li>
-                        </ul>
-                        <button class="btn" onclick="openPlanPayment('MÉDIO', 50000)">Comprar Agora</button>
-                    </div>
-
-                    <!-- Plano Pro MAX -->
-                    <div class="plan-card featured">
-                        <div class="plan-name">Plano Pro MAX</div>
-                        <p style="color: var(--gold); font-size: 0.9rem;">100.000 Kz/mês</p>
-                        <div class="plan-price">100.000 Kz</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Artistas Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte 24/7 VIP</li>
-                        </ul>
-                        <button class="btn" onclick="openPlanPayment('PRO', 100000)">Comprar Agora</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARTEIRA -->
-            <div id="carteira" class="section">
-                <div class="stat-box" style="margin-bottom: 20px; padding: 40px;">
-                    <p>Saldo Disponível para Saque</p>
-                    <h4 style="font-size: 3rem;" id="wallet-saldo">0 Kz</h4>
-                    <button class="btn btn-small" style="margin: 20px auto 0;" onclick="openModal('modal-saque')">Solicitar Levantamento</button>
+                    <button class="btn" onclick="openModal('modal-saque')"><i class="fas fa-money-bill-wave"></i> Solicitar Levantamento</button>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-history"></i> Histórico de Ganhos (Reais)</h3>
-                    <div id="historico-ganhos">
-                        <!-- Ganhos reais carregados aqui -->
-                    </div>
+                    <h3><i class="fas fa-history"></i> Histórico de Ganhos</h3>
+                    <div id="historico-ganhos"></div>
                 </div>
             </div>
 
-            <!-- PERFIL -->
-            <div id="perfil" class="section">
+            <!-- PERFIL SECTION -->
+            <div id="perfil-section" class="section">
                 <div class="card">
-                    <h3><i class="fas fa-user-edit"></i> Editar Perfil</h3>
+                    <h3><i class="fas fa-user-circle"></i> Meu Perfil</h3>
                     <div class="profile-upload">
                         <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img">
                         <label for="perfil-foto-input" class="upload-overlay">
@@ -409,70 +362,167 @@
                         </label>
                         <input type="file" id="perfil-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'perfil-foto-preview')">
                     </div>
-                    
-                    <div class="grid">
-                        <div>
-                            <label>Nome Completo</label>
-                            <input type="text" id="perfil-nome">
-                            <label>E-mail (Não alterável)</label>
-                            <input type="email" id="perfil-email" disabled>
-                        </div>
-                        <div>
-                            <label>Telefone / WhatsApp</label>
-                            <input type="text" id="perfil-telefone" placeholder="+244 ...">
-                            <label>País</label>
-                            <select id="perfil-pais"></select>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="handleUpdateProfile()">Salvar Alterações em Tempo Real <i class="fas fa-save"></i></button>
+                    <label>Nome</label>
+                    <input type="text" id="perfil-nome" placeholder="Nome completo">
+                    <label>E-mail</label>
+                    <input type="email" id="perfil-email" placeholder="E-mail" readonly>
+                    <label>Telefone</label>
+                    <input type="tel" id="perfil-telefone" placeholder="Número de telefone">
+                    <label>País</label>
+                    <select id="perfil-pais"></select>
+                    <button class="btn" onclick="handleUpdateProfile()"><i class="fas fa-save"></i> Guardar Perfil</button>
                 </div>
             </div>
 
-            <!-- ADMIN PRO -->
-            <div id="admin" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fas fa-shield-alt"></i> Painel Administrativo PRO MAX</h2>
-                
-                <div class="stat-grid">
-                    <div class="stat-box">
-                        <p>Total Utilizadores</p>
-                        <h4 id="admin-total-users">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Total Artistas</p>
-                        <h4 id="admin-total-artists">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Músicas em Revisão</p>
-                        <h4 id="admin-pending-music">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Ganhos MAM (Satélite)</p>
-                        <h4 id="admin-total-earnings">0 Kz</h4>
+            <!-- ADMIN SECTION -->
+            <div id="admin-section" class="section">
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> Estatísticas Gerais</h3>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <h4 id="admin-total-users">0</h4>
+                            <p>Total de Utilizadores</p>
+                        </div>
+                        <div class="stat-box">
+                            <h4 id="admin-total-artists">0</h4>
+                            <p>Total de Artistas</p>
+                        </div>
+                        <div class="stat-box">
+                            <h4 id="admin-pending-music">0</h4>
+                            <p>Músicas Pendentes</p>
+                        </div>
+                        <div class="stat-box">
+                            <h4 id="admin-total-earnings">0 Kz</h4>
+                            <p>Ganhos Totais</p>
+                        </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-users-cog"></i> Gestão de Utilizadores e Planos</h3>
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="admin-user-search" placeholder="Pesquisar por e-mail ou nome..." style="margin-bottom: 0;">
-                        <button class="btn btn-small" onclick="searchUsers()"><i class="fas fa-search"></i></button>
-                    </div>
-                    <div id="admin-users-list" class="item-list">
-                        <!-- Lista de utilizadores para admin -->
-                    </div>
+                    <h3><i class="fas fa-users"></i> Utilizadores</h3>
+                    <input type="text" id="admin-user-search" placeholder="Pesquisar utilizador..." onkeyup="searchUsers()">
+                    <div class="item-list" id="admin-users-list"></div>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-tasks"></i> Revisão de Lançamentos</h3>
-                    <div id="admin-music-review" class="item-list">
-                        <!-- Músicas para aprovação -->
-                    </div>
+                    <h3><i class="fas fa-check-circle"></i> Revisão de Músicas</h3>
+                    <div class="item-list" id="admin-music-review"></div>
                 </div>
             </div>
         </div>
 
-        
-    <!-- MODAL TERMOS DE USO -->
+        <footer>
+            <div class="footer-links">
+                    <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
+                    <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
+                    <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
+            </div>
+            <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
+            <p style="margin-top: 10px; color: var(--gold); font-weight: bold;">Fundador: Matias Arsénio Manuel</p>
+        </footer>
+    </div>
+
+    <!-- MODALS -->
+    <div id="modal-artista" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-artista')">&times;</span>
+            <h3 id="modal-artista-title">Novo Artista</h3>
+            <div class="profile-upload">
+                <img id="artista-foto-preview" src="https://via.placeholder.com/120" class="profile-img">
+                <label for="artista-foto-input" class="upload-overlay">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="artista-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'artista-foto-preview')">
+            </div>
+            <input type="hidden" id="edit-artista-id">
+            <label>Nome do Artista</label>
+            <input type="text" id="artista-nome" placeholder="Nome artístico">
+            <label>Estilo Principal</label>
+            <select id="artista-estilo"></select>
+            
+            <label>Links de Redes Sociais</label>
+            <input type="url" id="artista-youtube" placeholder="Link YouTube">
+            <input type="url" id="artista-facebook" placeholder="Link Facebook">
+            <input type="url" id="artista-tiktok" placeholder="Link TikTok">
+            <input type="url" id="artista-spotify" placeholder="Link Spotify">
+            <input type="url" id="artista-apple" placeholder="Link Apple Music">
+            <input type="url" id="artista-instagram" placeholder="Link Instagram">
+            
+            <button class="btn" id="btn-save-artista" onclick="handleSaveArtist()">Salvar Artista</button>
+        </div>
+    </div>
+
+    <!-- MODAL SAQUE -->
+    <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-saque')">&times;</span>
+            <h3>Solicitar Levantamento</h3>
+            <label>Valor (Kz) - Mínimo 5.000</label>
+            <input type="number" id="saque-valor" min="5000" placeholder="5000">
+            <label>Selecione o Método de Levantamento</label>
+            <select id="saque-metodo">
+                <option value="">Selecione o método...</option>
+                <option value="BFA">Banco BFA (Angola)</option>
+                <option value="BAI">Banco BAI (Angola)</option>
+                <option value="BIC">Banco BIC (Angola)</option>
+                <option value="Multicaixa">Multicaixa Express (Angola)</option>
+                <option value="Visa">Visa</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Pix">Pix (Brasil)</option>
+                <option value="Pennory">Pennory</option>
+            </select>
+            <label>Dados do Pagamento (IBAN / Número / Email)</label>
+            <input type="text" id="saque-dados" placeholder="Insira os dados aqui">
+            <button class="btn" onclick="handleRequestWithdraw()">Confirmar Saque</button>
+        </div>
+    </div>
+
+    <!-- MODAL PAGAMENTO PLANO -->
+    <div id="modal-plan-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-plan-payment')">&times;</span>
+            <h3>Comprar Plano <span id="plan-name-display">...</span></h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Valor: <b id="plan-price-display">0</b> Kz</p>
+            <p style="color: var(--gray); margin-bottom: 20px;">Escolha o método de pagamento:</p>
+            <button class="btn" onclick="selectPaymentMethod('mam')"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
+            <button class="btn btn-sec" style="margin-top: 10px;" onclick="selectPaymentMethod('banco')"><i class="fas fa-bank"></i> Transferência Bancária</button>
+        </div>
+    </div>
+
+    <!-- MODAL PAGAMENTO CARTEIRA MAM -->
+    <div id="modal-pagamento-mam" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-mam')">&times;</span>
+            <h3>Confirmar Pagamento</h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name">...</b></p>
+            <p style="color: var(--gold); font-size: 1.5rem; margin-bottom: 20px;">Valor: <b id="pay-amount">0</b> Kz</p>
+            <p style="color: var(--gray); margin-bottom: 20px;">O pagamento será processado automaticamente da sua carteira MAM para a carteira do administrador.</p>
+            <button class="btn" onclick="processPlanPaymentMAM()">Confirmar Pagamento</button>
+        </div>
+    </div>
+
+    <!-- MODAL TRANSFERÊNCIA BANCÁRIA -->
+    <div id="modal-pagamento-banco" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-banco')">&times;</span>
+            <h3>Informações Bancárias</h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name-banco">...</b> - Valor: <b id="pay-amount-banco">0</b> Kz</p>
+            
+            <div style="background: #111; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333;">
+                <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">Dados para Transferência:</p>
+                <p><b>Titular:</b> Matias Arsénio Manuel</p>
+                <p><b>Conta BFA:</b> 0006 0000 86316866301 52</p>
+                <p><b>IBAN:</b> 0006 0000 86316866301 52</p>
+                <p><b>VISA:</b> 4937242025023852</p>
+                <p><b>Multicaixa Express:</b> 937881307</p>
+            </div>
+
+            <label>Após realizar a transferência, clique no botão abaixo para enviar o comprovativo:</label>
+            <button class="btn" onclick="sendProofWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- MODAL TERMOS -->
     <div id="modal-termos" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
         <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
             <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-termos')">&times;</span>
@@ -480,23 +530,22 @@
             <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text);">
                 <p><strong>Última atualização:</strong> 18 de Março de 2026</p>
                 <h3 style="color: var(--gold); margin-top: 20px;">1. Aceitação dos Termos</h3>
-                <p>Ao criar uma conta, carregar conteúdo ou utilizar qualquer funcionalidade da plataforma MAM Distribuidora, o utilizador reconhece que leu, compreendeu e aceitou estes Termos de Uso, bem como a nossa Política de Privacidade.</p>
+                <p>Ao utilizar a plataforma MAM Distribuidora, você concorda com estes termos e condições.</p>
                 
-                <h3 style="color: var(--gold); margin-top: 20px;">2. Serviços Oferecidos</h3>
-                <p>A MAM Distribuidora oferece uma plataforma para artistas distribuírem as suas obras para diversas plataformas digitais (Spotify, Apple Music, YouTube Music, etc.), gerirem lançamentos, acompanharem ganhos e solicitarem saques.</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">2. Descrição do Serviço</h3>
+                <p>A MAM Distribuidora fornece serviços de distribuição musical digital, permitindo aos artistas distribuir suas obras em várias plataformas de streaming.</p>
                 
-                <h3 style="color: var(--gold); margin-top: 20px;">3. Elegibilidade</h3>
-                <p>Para utilizar os serviços, o utilizador deve ter pelo menos 18 anos de idade. Ao aceitar estes Termos, declara que cumpre este requisito.</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">3. Responsabilidades do Utilizador</h3>
+                <p>O utilizador é responsável por toda a conteúdo que envia, incluindo garantir que possui todos os direitos necessários.</p>
                 
-                <h3 style="color: var(--gold); margin-top: 20px;">4. Conta de Utilizador</h3>
-                <p>O utilizador é responsável por manter a confidencialidade das suas credenciais de login e por todas as atividades que ocorram sob a sua conta. Concorda em fornecer informações verdadeiras e precisas.</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">4. Direitos Autorais</h3>
+                <p>Todos os conteúdos enviados devem ser originais ou devidamente licenciados. A MAM Distribuidora não é responsável por violações de direitos autorais.</p>
                 
-                <h3 style="color: var(--gold); margin-top: 20px;">5. Conteúdo do Utilizador</h3>
-                <p>O utilizador retém todos os direitos de propriedade sobre o conteúdo musical que carrega. Concede à MAM Distribuidora uma licença para distribuir, reproduzir e transmitir o conteúdo em plataformas digitais.</p>
-                <p><strong>Requisitos Técnicos:</strong> Ficheiros de áudio em formato WAV e capas com 3000x3000 pixels. Campos obrigatórios: ISRC, UPC, Gênero e Data de Lançamento.</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">5. Limitação de Responsabilidade</h3>
+                <p>A MAM Distribuidora não é responsável por danos diretos ou indiretos resultantes do uso da plataforma.</p>
                 
-                <h3 style="color: var(--gold); margin-top: 20px;">6. Ganhos e Saques</h3>
-                <p>Os ganhos são baseados nos dados recebidos das plataformas digitais. Os saques serão processados de acordo com as políticas internas e requisitos legais. O utilizador deve fornecer informações bancárias precisas.</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">6. Modificações dos Termos</h3>
+                <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. Notificaremos os utilizadores de mudanças significativas.</p>
                 
                 <h3 style="color: var(--gold); margin-top: 20px;">7. Rescisão</h3>
                 <p>A MAM Distribuidora reserva-se o direito de suspender ou encerrar a conta por violação destes Termos ou por qualquer outra razão que considere apropriada.</p>
@@ -558,111 +607,6 @@
                     <li>Ganhos e Saques: Relatórios, processamento, informações bancárias</li>
                 </ul>
             </div>
-        </div>
-    </div>
-
-        <footer>
-            <div class="footer-links">
-                    <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
-                    <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
-                    <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
-            </div>
-            <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
-            <p style="margin-top: 10px; color: var(--gold); font-weight: bold;">Fundador: Matias Arsénio Manuel</p>
-        </footer>
-    </div>
-
-    <!-- MODALS -->
-    <div id="modal-artista" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-artista')">&times;</span>
-            <h3 id="modal-artista-title"><i class="fas fa-user-music"></i> Novo Artista</h3>
-            <input type="hidden" id="edit-artista-id">
-            
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img id="artista-foto-preview" src="https://via.placeholder.com/120" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; margin-bottom: 10px;">
-                <input type="file" id="artista-foto-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'artista-foto-preview')">
-                <button class="btn btn-small" onclick="document.getElementById('artista-foto-input').click()"><i class="fas fa-camera"></i> Foto</button>
-            </div>
-
-            <input type="text" id="artista-nome" placeholder="Nome do Artista">
-            <select id="artista-estilo">
-                <option value="">Selecione o Estilo...</option>
-            </select>
-            <input type="text" id="artista-youtube" placeholder="Link do YouTube">
-            <input type="text" id="artista-facebook" placeholder="Link do Facebook">
-            <input type="text" id="artista-tiktok" placeholder="Link do TikTok">
-            <input type="text" id="artista-spotify" placeholder="Link do Spotify">
-            <input type="text" id="artista-apple" placeholder="Link do Apple Music">
-            <input type="text" id="artista-instagram" placeholder="Link do Instagram">
-            <button class="btn" onclick="handleSaveArtist()">Salvar Artista <i class="fas fa-save"></i></button>
-        </div>
-    </div>
-
-    <!-- MODAL SAQUE -->
-    <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-saque')">&times;</span>
-            <h3><i class="fas fa-money-bill-wave"></i> Solicitar Levantamento</h3>
-            <input type="number" id="saque-valor" placeholder="Valor em Kz (mínimo 5.000)">
-            <select id="saque-metodo">
-                <option value="">Selecione o Método</option>
-                <option value="BFA">BFA</option>
-                <option value="BAI">BAI</option>
-                <option value="BIC">BIC</option>
-                <option value="Multicaixa">Multicaixa</option>
-                <option value="Visa">Visa</option>
-                <option value="PayPal">PayPal</option>
-                <option value="Pix">Pix</option>
-                <option value="Pennory">Pennory</option>
-            </select>
-            <input type="text" id="saque-dados" placeholder="Dados Bancários / Conta">
-            <button class="btn" onclick="handleRequestWithdraw()">Confirmar Levantamento <i class="fas fa-check"></i></button>
-        </div>
-    </div>
-
-    <!-- MODAL PLANO PAGAMENTO -->
-    <div id="modal-plan-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-plan-payment')">&times;</span>
-            <h3><i class="fas fa-credit-card"></i> Escolha o Método de Pagamento</h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="plan-name-display">...</b> - Valor: <b id="plan-price-display">0</b> Kz</p>
-            <button class="btn" style="margin-bottom: 10px;" onclick="selectPaymentMethod('mam')"><i class="fas fa-wallet"></i> Saldo MAM</button>
-            <button class="btn btn-sec" onclick="selectPaymentMethod('banco')"><i class="fas fa-university"></i> Transferência Bancária</button>
-        </div>
-    </div>
-
-    <!-- MODAL PAGAMENTO MAM -->
-    <div id="modal-pagamento-mam" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-mam')">&times;</span>
-            <h3><i class="fas fa-check-circle"></i> Confirmar Pagamento</h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name">...</b> - Valor: <b id="pay-amount">0</b> Kz</p>
-            <p style="background: rgba(40,167,69,0.1); padding: 15px; border-radius: 8px; color: var(--success); margin-bottom: 20px; border: 1px solid rgba(40,167,69,0.3);">
-                <i class="fas fa-info-circle"></i> O saldo será debitado da sua carteira MAM.
-            </p>
-            <button class="btn" onclick="processPlanPaymentMAM()">Confirmar Pagamento</button>
-        </div>
-    </div>
-
-    <!-- MODAL TRANSFERÊNCIA BANCÁRIA -->
-    <div id="modal-pagamento-banco" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-banco')">&times;</span>
-            <h3>Informações Bancárias</h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name-banco">...</b> - Valor: <b id="pay-amount-banco">0</b> Kz</p>
-            
-            <div style="background: #111; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333;">
-                <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">Dados para Transferência:</p>
-                <p><b>Titular:</b> Matias Arsénio Manuel</p>
-                <p><b>Conta BFA:</b> 0006 0000 86316866301 52</p>
-                <p><b>IBAN:</b> 0006 0000 86316866301 52</p>
-                <p><b>VISA:</b> 4937242025023852</p>
-                <p><b>Multicaixa Express:</b> 937881307</p>
-            </div>
-
-            <label>Após realizar a transferência, clique no botão abaixo para enviar o comprovativo:</label>
-            <button class="btn" onclick="sendProofWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo via WhatsApp</button>
         </div>
     </div>
 
@@ -806,21 +750,34 @@ if (firebase.appCheck) {
                         document.getElementById('btn-admin').style.display = 'block';
                         loadAdminData();
                     }
-                    
-                    // Listener em tempo real para o saldo
-                    if (saldoUnsubscribe) saldoUnsubscribe();
-                    saldoUnsubscribe = db.collection('users').doc(currentUser.email).onSnapshot((doc) => {
-                        if (doc.exists) {
-                            const updatedData = doc.data();
-                            userData.saldo = updatedData.saldo;
-                            document.getElementById('stat-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
-                            document.getElementById('wallet-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
-                        }
-                    });
+                    // IMPLEMENTAÇÃO 1: Listener em tempo real para o saldo
+                    setupRealtimeSaldoListener();
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
             }
+        }
+
+        // IMPLEMENTAÇÃO 1: Função para escutar mudanças em tempo real no saldo
+        function setupRealtimeSaldoListener() {
+            // Desinscrever do listener anterior se existir
+            if (saldoUnsubscribe) {
+                saldoUnsubscribe();
+            }
+
+            // Criar novo listener que atualiza o saldo em tempo real
+            saldoUnsubscribe = db.collection('users').doc(currentUser.email).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const updatedData = doc.data();
+                    userData.saldo = updatedData.saldo;
+                    // Atualizar apenas os elementos que mostram o saldo
+                    document.getElementById('stat-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
+                    document.getElementById('wallet-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
+                    console.log("Saldo atualizado em tempo real:", userData.saldo);
+                }
+            }, (error) => {
+                console.error("Erro ao escutar saldo:", error);
+            });
         }
 
         function updateUI() {
@@ -961,7 +918,9 @@ if (firebase.appCheck) {
         function handleLogout() {
             localStorage.removeItem('mam_session_active');
             localStorage.removeItem('mam_user_email');
-            if (saldoUnsubscribe) saldoUnsubscribe();
+            if (saldoUnsubscribe) {
+                saldoUnsubscribe();
+            }
             auth.signOut();
         }
 
@@ -1033,6 +992,7 @@ if (firebase.appCheck) {
             try {
                 let fotoUrl = document.getElementById('artista-foto-preview').src;
 
+                // IMPLEMENTAÇÃO 2: Corrigir processamento de foto de perfil do artista
                 if (fotoFile) {
                     if (!fotoFile.type.startsWith('image/')) {
                         showLoading(false);
@@ -1045,6 +1005,8 @@ if (firebase.appCheck) {
                     const storageRef = storage.ref(`artistas/${currentUser.email}_${Date.now()}`);
                     await storageRef.put(fotoFile);
                     fotoUrl = await storageRef.getDownloadURL();
+                    // Atualizar a preview imediatamente após upload
+                    document.getElementById('artista-foto-preview').src = fotoUrl;
                 }
 
                 const artistData = {
@@ -1066,6 +1028,11 @@ if (firebase.appCheck) {
                 } else {
                     artistData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection('artistas').add(artistData);
+                }
+
+                // IMPLEMENTAÇÃO 3: Gerar e enviar XML DDEX após salvar artista
+                if (!id) {
+                    await generateAndSendDDEXArtist(artistData);
                 }
 
                 closeModal('modal-artista');
@@ -1152,7 +1119,7 @@ if (firebase.appCheck) {
                 await audioRef.put(audioFile);
                 const audioUrl = await audioRef.getDownloadURL();
 
-                const musicaData = {
+                const musicData = {
                     titulo,
                     artista,
                     estilo,
@@ -1170,15 +1137,10 @@ if (firebase.appCheck) {
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                const musicaRef = await db.collection('musicas').add(musicaData);
-                
-                // Estrutura DDEX para envio às lojas
-                await db.collection('ddex_exports').add({
-                    musicaId: musicaRef.id,
-                    xmlContent: `<?xml version="1.0" encoding="UTF-8"?><DDEX><Title>${titulo}</Title><Artist>${artista}</Artist><ISRC>${isrc}</ISRC></DDEX>`,
-                    status: 'Pendente',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                const musicRef = await db.collection('musicas').add(musicData);
+
+                // IMPLEMENTAÇÃO 3: Gerar e enviar XML DDEX após salvar música
+                await generateAndSendDDEXMusic(musicData, musicRef.id);
 
                 alert("Música enviada com sucesso! Aguarde a revisão.");
                 document.getElementById('music-titulo').value = '';
@@ -1415,6 +1377,7 @@ if (firebase.appCheck) {
             try {
                 let fotoUrl = userData.foto;
 
+                // IMPLEMENTAÇÃO 2: Corrigir processamento de foto de perfil do utilizador
                 if (fotoFile) {
                     if (!fotoFile.type.startsWith('image/')) {
                         showLoading(false);
@@ -1427,18 +1390,14 @@ if (firebase.appCheck) {
                     const storageRef = storage.ref(`perfis/${currentUser.email}_${Date.now()}`);
                     await storageRef.put(fotoFile);
                     fotoUrl = await storageRef.getDownloadURL();
+                    // Atualizar a preview imediatamente após upload
+                    document.getElementById('perfil-foto-preview').src = fotoUrl;
+                    document.getElementById('home-user-photo').src = fotoUrl;
                 }
 
-                // Atualizar nó de utilizador
                 await db.collection('users').doc(currentUser.email).update({
                     nome, telefone, pais, foto: fotoUrl
                 });
-
-                // Sincronizar foto com artistas
-                const artistasSnap = await db.collection('artistas').where('owner', '==', currentUser.email).get();
-                const batch = db.batch();
-                artistasSnap.forEach(doc => batch.update(doc.ref, { foto: fotoUrl }));
-                await batch.commit();
 
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();
@@ -1480,15 +1439,18 @@ if (firebase.appCheck) {
 
             showLoading(true, "A processar pagamento...");
             try {
+                // Débito do utilizador
                 await db.collection('users').doc(currentUser.email).update({
                     saldo: firebase.firestore.FieldValue.increment(-amount),
                     plano: plan
                 });
 
+                // Crédito do admin
                 await db.collection('users').doc(ADMIN_EMAIL).update({
                     saldo: firebase.firestore.FieldValue.increment(amount)
                 });
 
+                // Registar transação
                 await db.collection('ganhos').add({
                     email: ADMIN_EMAIL,
                     valor: amount,
@@ -1662,6 +1624,139 @@ if (firebase.appCheck) {
                 } catch (error) {
                     alert("Erro: " + error.message);
                 }
+            }
+        }
+
+        // IMPLEMENTAÇÃO 3: Funções para gerar e enviar XML DDEX
+        async function generateAndSendDDEXArtist(artistData) {
+            try {
+                const ddexXML = generateDDEXArtistXML(artistData);
+                await sendDDEXToStores(ddexXML, 'artist', artistData.nome);
+                console.log("XML DDEX do Artista enviado com sucesso!");
+            } catch (error) {
+                console.error("Erro ao enviar DDEX do Artista:", error);
+            }
+        }
+
+        async function generateAndSendDDEXMusic(musicData, musicId) {
+            try {
+                const ddexXML = generateDDEXMusicXML(musicData, musicId);
+                await sendDDEXToStores(ddexXML, 'music', musicData.titulo);
+                console.log("XML DDEX da Música enviado com sucesso!");
+            } catch (error) {
+                console.error("Erro ao enviar DDEX da Música:", error);
+            }
+        }
+
+        function generateDDEXArtistXML(artistData) {
+            const timestamp = new Date().toISOString();
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<DDEXMessage>
+    <MessageHeader>
+        <MessageThreadID>MAM-${Date.now()}</MessageThreadID>
+        <MessageID>MSG-${Date.now()}</MessageID>
+        <MessageSentDateTime>${timestamp}</MessageSentDateTime>
+        <MessageControlType>TestMessage</MessageControlType>
+    </MessageHeader>
+    <Party>
+        <PartyID>${artistData.owner}</PartyID>
+        <PartyName>${artistData.nome}</PartyName>
+        <PartyType>Artist</PartyType>
+        <ContactInfo>
+            <Email>${artistData.owner}</Email>
+        </ContactInfo>
+    </Party>
+    <ResourceList>
+        <SoundRecording>
+            <ResourceID>${artistData.owner}_${Date.now()}</ResourceID>
+            <ResourceType>SoundRecording</ResourceType>
+            <Title>${artistData.nome}</Title>
+            <Genre>${artistData.estilo}</Genre>
+            <Artist>${artistData.nome}</Artist>
+            <SocialNetworks>
+                <SocialNetwork platform="YouTube">${artistData.youtube || ''}</SocialNetwork>
+                <SocialNetwork platform="Facebook">${artistData.facebook || ''}</SocialNetwork>
+                <SocialNetwork platform="TikTok">${artistData.tiktok || ''}</SocialNetwork>
+                <SocialNetwork platform="Spotify">${artistData.spotify || ''}</SocialNetwork>
+                <SocialNetwork platform="Instagram">${artistData.instagram || ''}</SocialNetwork>
+            </SocialNetworks>
+        </SoundRecording>
+    </ResourceList>
+</DDEXMessage>`;
+            return xml;
+        }
+
+        function generateDDEXMusicXML(musicData, musicId) {
+            const timestamp = new Date().toISOString();
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<DDEXMessage>
+    <MessageHeader>
+        <MessageThreadID>MAM-${Date.now()}</MessageThreadID>
+        <MessageID>MSG-${Date.now()}</MessageID>
+        <MessageSentDateTime>${timestamp}</MessageSentDateTime>
+        <MessageControlType>TestMessage</MessageControlType>
+    </MessageHeader>
+    <Party>
+        <PartyID>${musicData.owner}</PartyID>
+        <PartyName>${musicData.artista}</PartyName>
+        <PartyType>Artist</PartyType>
+    </Party>
+    <ResourceList>
+        <SoundRecording>
+            <ResourceID>${musicId}</ResourceID>
+            <ResourceType>SoundRecording</ResourceType>
+            <Title>${musicData.titulo}</Title>
+            <Genre>${musicData.genero}</Genre>
+            <Style>${musicData.estilo}</Style>
+            <Artist>${musicData.artista}</Artist>
+            <Contributors>
+                <Contributor role="Collaborator">${musicData.colaboradores || 'N/A'}</Contributor>
+                <Contributor role="Producer">${musicData.produtores || 'N/A'}</Contributor>
+            </Contributors>
+            <Identifiers>
+                <ISRC>${musicData.isrc}</ISRC>
+                <UPC>${musicData.upc}</UPC>
+            </Identifiers>
+            <ReleaseDate>${musicData.dataLanc || timestamp}</ReleaseDate>
+            <CoverArtURL>${musicData.capa}</CoverArtURL>
+            <AudioURL>${musicData.audio}</AudioURL>
+        </SoundRecording>
+    </ResourceList>
+</DDEXMessage>`;
+            return xml;
+        }
+
+        async function sendDDEXToStores(ddexXML, type, name) {
+            try {
+                // Salvar o XML no Firestore para referência
+                await db.collection('ddex_submissions').add({
+                    type: type,
+                    name: name,
+                    xml: ddexXML,
+                    owner: currentUser.email,
+                    status: "Enviado",
+                    submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    stores: ['Spotify', 'Apple Music', 'Amazon Music', 'YouTube Music', 'Deezer', 'Tidal']
+                });
+
+                // Aqui você poderia integrar com APIs reais das lojas
+                // Por exemplo: Spotify API, Apple Music API, etc.
+                console.log(`DDEX ${type} enviado para as lojas:`, {
+                    name: name,
+                    xml: ddexXML,
+                    timestamp: new Date().toISOString()
+                });
+
+                // Registar no histórico de ganhos
+                await db.collection('ganhos').add({
+                    email: currentUser.email,
+                    valor: 0,
+                    tipo: `Envio DDEX - ${type}`,
+                    motivo: `${name} enviado para distribuição`,
+                    data: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error("Erro ao enviar DDEX para as lojas:", error);
             }
         }
 

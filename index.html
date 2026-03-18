@@ -1546,70 +1546,62 @@ if (firebase.appCheck) {
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
 
 <script>
-    <script>
-    // 1. CONFIGURAÇÃO (Recuperada para o lugar certo)
-    const firebaseConfig = {
-        apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
-        authDomain: "mam-distribuidora-6043f.firebaseapp.com",
-        projectId: "mam-distribuidora-6043f",
-        storageBucket: "mam-distribuidora-6043f.firebasestorage.app",
-        messagingSenderId: "467923017917",
-        appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
-    };
+<script>
+        // 1. Configuração MAM
+        const firebaseConfig = {
+            apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
+            authDomain: "mam-distribuidora-6043f.firebaseapp.com",
+            projectId: "mam-distribuidora-6043f",
+            storageBucket: "mam-distribuidora-6043f.firebasestorage.app",
+            messagingSenderId: "467923017917",
+            appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
+        };
 
-    // 2. INICIALIZAÇÃO SEGURA
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    // 3. FUNÇÃO DE LANÇAMENTO REAL
-    async function realizarLancamentoMAM() {
-        const titulo = document.getElementById('music-titulo').value;
-        const artista = document.getElementById('music-artista-select').value;
-        const estilo = document.getElementById('music-estilo').value;
-        const audioFile = document.getElementById('music-audio').files[0];
-        const capaFile = document.getElementById('music-capa').files[0];
-
-        if (!titulo || !artista || !audioFile || !capaFile) {
-            alert("Matias, faltam dados! Preenche o título, artista e seleciona os ficheiros.");
-            return;
+        // 2. Inicialização Segura
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
+        const db = firebase.firestore();
+        const storage = firebase.storage();
 
-        document.getElementById('loading-overlay').style.display = 'flex';
+        // 3. Função Real de Lançamento
+        async function realizarLancamentoMAM() {
+            const titulo = document.getElementById('music-titulo').value;
+            const artista = document.getElementById('music-artista-select').value;
+            const estilo = document.getElementById('music-estilo').value;
+            const audioFile = document.getElementById('music-audio').files[0];
+            const capaFile = document.getElementById('music-capa').files[0];
 
-        try {
-            // Upload da Capa
-            const capaRef = storage.ref(`capas/${Date.now()}_${capaFile.name}`);
-            await capaRef.put(capaFile);
-            const capaUrl = await capaRef.getDownloadURL();
+            if (!titulo || !artista || !audioFile || !capaFile) {
+                alert("Matias, preenche todos os campos!");
+                return;
+            }
 
-            // Upload do Áudio
-            const audioRef = storage.ref(`musicas/${Date.now()}_${audioFile.name}`);
-            await audioRef.put(audioFile);
-            const audioUrl = await audioRef.getDownloadURL();
+            document.getElementById('loading-overlay').style.display = 'flex';
 
-            // Salvar no Firestore
-            await db.collection('lancamentos').add({
-                titulo,
-                artista,
-                estilo,
-                capaUrl,
-                audioUrl,
-                status: 'pendente',
-                data: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            try {
+                const capaRef = storage.ref(`capas/${Date.now()}_${capaFile.name}`);
+                await capaRef.put(capaFile);
+                const capaUrl = await capaRef.getDownloadURL();
 
-            alert("Sucesso! A tua música foi enviada para revisão.");
-            location.reload();
-        } catch (error) {
-            console.error(error);
-            alert("Erro ao enviar: " + error.message);
-        } finally {
-            document.getElementById('loading-overlay').style.display = 'none';
+                const audioRef = storage.ref(`musicas/${Date.now()}_${audioFile.name}`);
+                await audioRef.put(audioFile);
+                const audioUrl = await audioRef.getDownloadURL();
+
+                await db.collection('lancamentos').add({
+                    titulo, artista, estilo, capaUrl, audioUrl,
+                    status: 'pendente',
+                    data: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("Música enviada com sucesso!");
+                location.reload();
+            } catch (e) {
+                alert("Erro: " + e.message);
+            } finally {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
         }
-    }
-</script>
+    </script>
 </body>
 </html>

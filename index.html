@@ -1546,64 +1546,68 @@ if (firebase.appCheck) {
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
 
 <script>
-    // Configuração da MAM Distribuidora
+    <script>
+    // 1. CONFIGURAÇÃO (Recuperada para o lugar certo)
     const firebaseConfig = {
-      apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
-      authDomain: "mam-distribuidora-6043f.firebaseapp.com",
-      projectId: "mam-distribuidora-6043f",
-      storageBucket: "mam-distribuidora-6043f.firebasestorage.app",
-      messagingSenderId: "467923017917",
-      appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
+        apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
+        authDomain: "mam-distribuidora-6043f.firebaseapp.com",
+        projectId: "mam-distribuidora-6043f",
+        storageBucket: "mam-distribuidora-6043f.firebasestorage.app",
+        messagingSenderId: "467923017917",
+        appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    // 2. INICIALIZAÇÃO SEGURA
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.firestore();
     const storage = firebase.storage();
 
+    // 3. FUNÇÃO DE LANÇAMENTO REAL
     async function realizarLancamentoMAM() {
-        const btn = document.getElementById('btnEnviar');
-        const titulo = document.getElementById('titulo').value;
-        const artista = document.getElementById('artista').value;
-        const genero = document.getElementById('genero').value;
-        const audioFile = document.getElementById('audioFile').files[0];
-        const capaFile = document.getElementById('capaFile').files[0];
+        const titulo = document.getElementById('music-titulo').value;
+        const artista = document.getElementById('music-artista-select').value;
+        const estilo = document.getElementById('music-estilo').value;
+        const audioFile = document.getElementById('music-audio').files[0];
+        const capaFile = document.getElementById('music-capa').files[0];
 
-        if (!audioFile || !capaFile || !titulo || !artista) {
-            return alert("Matias, preenche todos os dados e seleciona os ficheiros!");
+        if (!titulo || !artista || !audioFile || !capaFile) {
+            alert("Matias, faltam dados! Preenche o título, artista e seleciona os ficheiros.");
+            return;
         }
 
+        document.getElementById('loading-overlay').style.display = 'flex';
+
         try {
-            btn.disabled = true;
-            btn.innerText = "A Enviar Música...";
-
-            // Upload Áudio
-            const audioRef = storage.ref(`lancamentos/audios/${Date.now()}_${audioFile.name}`);
-            await audioRef.put(audioFile);
-            const audioUrl = await audioRef.getDownloadURL();
-
-            // Upload Capa
-            const capaRef = storage.ref(`lancamentos/capas/${Date.now()}_${capaFile.name}`);
+            // Upload da Capa
+            const capaRef = storage.ref(`capas/${Date.now()}_${capaFile.name}`);
             await capaRef.put(capaFile);
             const capaUrl = await capaRef.getDownloadURL();
 
+            // Upload do Áudio
+            const audioRef = storage.ref(`musicas/${Date.now()}_${audioFile.name}`);
+            await audioRef.put(audioFile);
+            const audioUrl = await audioRef.getDownloadURL();
+
             // Salvar no Firestore
-            await db.collection("lancamentos").add({
-                titulo: titulo,
-                artista: artista,
-                genero: genero,
-                audioUrl: audioUrl,
-                capaUrl: capaUrl,
-                status: "Em Análise",
+            await db.collection('lancamentos').add({
+                titulo,
+                artista,
+                estilo,
+                capaUrl,
+                audioUrl,
+                status: 'pendente',
                 data: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert("Música enviada com sucesso para a MAM!");
-            window.location.reload();
-
+            alert("Sucesso! A tua música foi enviada para revisão.");
+            location.reload();
         } catch (error) {
-            alert("Erro: " + error.message);
-            btn.disabled = false;
-            btn.innerText = "Tentar Novamente";
+            console.error(error);
+            alert("Erro ao enviar: " + error.message);
+        } finally {
+            document.getElementById('loading-overlay').style.display = 'none';
         }
     }
 </script>

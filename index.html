@@ -323,12 +323,6 @@
                     </div>
                     <button class="btn" onclick="handleUploadMusic()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
                 </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-file-code"></i> Exportar DDEX</h3>
-                    <p style="color: var(--gray); margin-bottom: 15px;">Gere o ficheiro XML no padrão DDEX para enviar as suas músicas para as lojas digitais.</p>
-                    <button class="btn btn-sec" onclick="generateDDEXExport()"><i class="fas fa-download"></i> Gerar e Descarregar XML</button>
-                </div>
             </div>
 
             <!-- PLANOS -->
@@ -709,7 +703,6 @@ if (firebase.appCheck) {
 
         let currentUser = null;
         let userData = null;
-        let saldoUnsubscribe = null;
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
         const ADMIN_WHATSAPP = "937881307";
 
@@ -811,22 +804,15 @@ if (firebase.appCheck) {
 
         async function loadUserData() {
             try {
-                if (saldoUnsubscribe) {
-                    saldoUnsubscribe();
-                }
-
-                saldoUnsubscribe = db.collection('users').doc(currentUser.email).onSnapshot((doc) => {
-                    if (doc.exists) {
-                        userData = doc.data();
-                        updateUI();
-                        if (userData.isAdmin) {
-                            document.getElementById('btn-admin').style.display = 'block';
-                            loadAdminData();
-                        }
+                const doc = await db.collection('users').doc(currentUser.email).get();
+                if (doc.exists) {
+                    userData = doc.data();
+                    updateUI();
+                    if (userData.isAdmin) {
+                        document.getElementById('btn-admin').style.display = 'block';
+                        loadAdminData();
                     }
-                }, (error) => {
-                    console.error("Erro ao ouvir as atualizações do utilizador:", error);
-                });
+                }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
             }
@@ -968,87 +954,9 @@ if (firebase.appCheck) {
         }
 
         function handleLogout() {
-            if (saldoUnsubscribe) {
-                saldoUnsubscribe();
-            }
             localStorage.removeItem('mam_session_active');
             localStorage.removeItem('mam_user_email');
             auth.signOut();
-        }
-
-        async function generateDDEXExport() {
-            showLoading(true, "A gerar XML DDEX...");
-            try {
-                const snapshot = await db.collection('musicas')
-                    .where('owner', '==', currentUser.email)
-                    .where('status', '==', 'Aprovado')
-                    .get();
-
-                if (snapshot.empty) {
-                    showLoading(false);
-                    return alert("Nenhuma música aprovada encontrada para exportar!");
-                }
-
-                let xmlContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-                xmlContent += `<ern:NewReleaseMessage MessageSchemaVersionId="ern/341" LanguageAndScriptCode="en_US" xmlns:ern="http://ddex.net/xml/ern/341" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ddex.net/xml/ern/341 http://ddex.net/xml/ern/341/release-notification.xsd">\n`;
-                xmlContent += `    <MessageHeader>\n`;
-                xmlContent += `        <MessageThreadId>DDEXExport_${Date.now()}</MessageThreadId>\n`;
-                xmlContent += `        <MessageId>MSG_${Date.now()}</MessageId>\n`;
-                xmlContent += `        <MessageSender><PartyId>${currentUser.email.replace(/[@.]/g, '_')}</PartyId></MessageSender>\n`;
-                xmlContent += `        <SentOnBehalfOf><PartyId>MAM_Distribuidora</PartyId></SentOnBehalfOf>\n`;
-                xmlContent += `        <MessageRecipient><PartyId>DigitalServiceProvider</PartyId></MessageRecipient>\n`;
-                xmlContent += `        <MessageCreatedDateTime>${new Date().toISOString()}</MessageCreatedDateTime>\n`;
-                xmlContent += `    </MessageHeader>\n`;
-                xmlContent += `    <UpdateIndicator>OriginalMessage</UpdateIndicator>\n`;
-                xmlContent += `    <ResourceList>\n`;
-
-                let releaseList = '';
-
-                snapshot.forEach(doc => {
-                    const music = doc.data();
-                    const isrc = music.isrc || `ISRC_MISSING_${doc.id}`;
-                    const upc = music.upc || `UPC_MISSING_${doc.id}`;
-
-                    xmlContent += `        <SoundRecording>\n`;
-                    xmlContent += `            <SoundRecordingType>MusicalWorkSoundRecording</SoundRecordingType>\n`;
-                    xmlContent += `            <SoundRecordingId><ISRC>${isrc}</ISRC></SoundRecordingId>\n`;
-                    xmlContent += `            <ResourceReference>A1</ResourceReference>\n`;
-                    xmlContent += `            <ReferenceTitle><TitleText>${music.titulo}</TitleText></ReferenceTitle>\n`;
-                    xmlContent += `            <Duration>PT00H03M30S</Duration>\n`;
-                    xmlContent += `        </SoundRecording>\n`;
-
-                    releaseList += `        <Release>\n`;
-                    releaseList += `            <ReleaseId><ICPN>${upc}</ICPN></ReleaseId>\n`;
-                    releaseList += `            <ReleaseReference>R1</ReleaseReference>\n`;
-                    releaseList += `            <ReleaseType>Single</ReleaseType>\n`;
-                    releaseList += `            <ReleaseResourceReferenceList>\n`;
-                    releaseList += `                <ReleaseResourceReference ReleaseResourceType="PrimaryResource">A1</ReleaseResourceReference>\n`;
-                    releaseList += `            </ReleaseResourceReferenceList>\n`;
-                    releaseList += `        </Release>\n`;
-                });
-
-                xmlContent += `    </ResourceList>\n`;
-                xmlContent += `    <ReleaseList>\n${releaseList}</ReleaseList>\n`;
-                xmlContent += `</ern:NewReleaseMessage>`;
-
-                const blob = new Blob([xmlContent], { type: 'application/xml;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `DDEX_Export_${Date.now()}.xml`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                alert("Ficheiro XML DDEX gerado com sucesso!");
-
-            } catch (error) {
-                console.error("Erro ao gerar DDEX:", error);
-                alert("Ocorreu um erro ao gerar o ficheiro DDEX: " + error.message);
-            } finally {
-                showLoading(false);
-            }
         }
 
         function showSection(id, btn) {
@@ -1153,8 +1061,6 @@ if (firebase.appCheck) {
                     artistData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection('artistas').add(artistData);
                 }
-
-                document.getElementById('artista-foto-input').value = '';
 
                 closeModal('modal-artista');
                 loadUserArtists();
@@ -1510,8 +1416,6 @@ if (firebase.appCheck) {
                 await db.collection('users').doc(currentUser.email).update({
                     nome, telefone, pais, foto: fotoUrl
                 });
-
-                document.getElementById('perfil-foto-input').value = '';
 
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();

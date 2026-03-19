@@ -265,6 +265,13 @@
 
             <!-- LANÇAR -->
             <div id="lancar" class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="color: var(--gold);">Gerenciar Lançamentos</h2>
+                </div>
+                <div id="lista-lancamentos" class="item-list" style="margin-bottom: 30px;">
+                    <!-- Lançamentos carregados aqui com opções DDEX -->
+                </div>
+
                 <div class="card">
                     <h3><i class="fas fa-rocket"></i> Novo Lançamento</h3>
                     <div class="grid">
@@ -322,6 +329,9 @@
                         </div>
                     </div>
                     <button class="btn" onclick="handleUploadMusic()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
+                    <button class="btn btn-sec" onclick="alert('Após aprovação, você poderá exportar o DDEX XML para as lojas digitais.')" style="margin-left: 10px;">
+                        <i class="fas fa-file-export"></i> DDEX (após aprovação)
+                    </button>
                 </div>
             </div>
 
@@ -802,19 +812,23 @@ if (firebase.appCheck) {
             localStorage.setItem('mam_session_start', Date.now().toString());
         }
 
-        async function loadUserData() {
+        function loadUserData() {
             try {
-                const doc = await db.collection('users').doc(currentUser.email).get();
-                if (doc.exists) {
-                    userData = doc.data();
-                    updateUI();
-                    if (userData.isAdmin) {
-                        document.getElementById('btn-admin').style.display = 'block';
-                        loadAdminData();
+                // Usar onSnapshot para atualização em tempo real do saldo
+                db.collection('users').doc(currentUser.email).onSnapshot(doc => {
+                    if (doc.exists) {
+                        userData = doc.data();
+                        updateUI();
+                        if (userData.isAdmin) {
+                            document.getElementById('btn-admin').style.display = 'block';
+                            loadAdminData();
+                        }
                     }
-                }
+                }, error => {
+                    console.error("Erro ao carregar dados em tempo real:", error);
+                });
             } catch (error) {
-                console.error("Erro ao carregar dados:", error);
+                console.error("Erro ao configurar listener:", error);
             }
         }
 
@@ -835,6 +849,7 @@ if (firebase.appCheck) {
 
             loadUserArtists();
             loadUserMusic();
+            loadLancamentosComDDEX();
             loadEarningsHistory();
             loadDestaques();
             loadFeed();
@@ -1717,6 +1732,208 @@ if (firebase.appCheck) {
             });
         }
     
-</script>
+
+        // Função para gerar XML DDEX (padrão profissional para distribuição)
+        function generateDDEXXML(musicData, artistData) {
+            const timestamp = new Date().toISOString();
+            const messageId = `MAM-${Date.now()}`;
+            
+            // Validar dados obrigatórios
+            if (!musicData.isrc || !musicData.upc || !musicData.titulo) {
+                alert("Dados obrigatórios ausentes: ISRC, UPC ou Título");
+                return null;
+            }
+
+            // Estrutura DDEX básica (ERN 3.8 simplificado)
+            const ddexXML = `<?xml version="1.0" encoding="UTF-8"?>
+<DeliveryPackage>
+    <PackageHeader>
+        <MessageId>${messageId}</MessageId>
+        <TimeStamp>${timestamp}</TimeStamp>
+        <MessageSender>
+            <PartyId>MAM-DISTRIBUIDORA</PartyId>
+            <PartyName>MAM Distribuidora</PartyName>
+        </MessageSender>
+    </PackageHeader>
+    <DeliveryMessage>
+        <MessageHeader>
+            <MessageId>${messageId}</MessageId>
+            <TimeStamp>${timestamp}</TimeStamp>
+        </MessageHeader>
+        <WorkList>
+            <Work>
+                <WorkId>${musicData.isrc}</WorkId>
+                <WorkTitle>${escapeXML(musicData.titulo)}</WorkTitle>
+                <WorkGenre>${escapeXML(musicData.genero || 'Pop')}</WorkGenre>
+                <WorkLanguage>PT</WorkLanguage>
+                <WorkDuration>${musicData.duracao || '00:03:00'}</WorkDuration>
+                <WorkRecordingDetails>
+                    <ISRC>${musicData.isrc}</ISRC>
+                    <RecordingArtist>
+                        <ArtistName>${escapeXML(artistData.nome || 'Artista Desconhecido')}</ArtistName>
+                        <ArtistRole>MainArtist</ArtistRole>
+                    </RecordingArtist>
+                    <RecordingLabel>${escapeXML(artistData.label || 'MAM Distribuidora')}</RecordingLabel>
+                    <RecordingDate>${musicData.dataLanc || new Date().toISOString().split('T')[0]}</RecordingDate>
+                </WorkRecordingDetails>
+                <WorkReleaseDetails>
+                    <ReleaseId>${musicData.upc}</ReleaseId>
+                    <ReleaseTitle>${escapeXML(musicData.titulo)}</ReleaseTitle>
+                    <ReleaseDate>${musicData.dataLanc || new Date().toISOString().split('T')[0]}</ReleaseDate>
+                    <ReleaseType>Single</ReleaseType>
+                    <ReleaseGenre>${escapeXML(musicData.genero || 'Pop')}</ReleaseGenre>
+                    <ReleaseLabelName>${escapeXML(artistData.label || 'MAM Distribuidora')}</ReleaseLabelName>
+                </WorkReleaseDetails>
+                <WorkContributors>
+                    <Contributor>
+                        <ContributorName>${escapeXML(artistData.nome || 'Artista Desconhecido')}</ContributorName>
+                        <ContributorRole>Performer</ContributorRole>
+                    </Contributor>
+                    ${musicData.colaboradores ? musicData.colaboradores.split(',').map(col => `
+                    <Contributor>
+                        <ContributorName>${escapeXML(col.trim())}</ContributorName>
+                        <ContributorRole>FeaturedArtist</ContributorRole>
+                    </Contributor>`).join('') : ''}
+                    ${musicData.produtores ? musicData.produtores.split(',').map(prod => `
+                    <Contributor>
+                        <ContributorName>${escapeXML(prod.trim())}</ContributorName>
+                        <ContributorRole>Producer</ContributorRole>
+                    </Contributor>`).join('') : ''}
+                </WorkContributors>
+            </Work>
+        </WorkList>
+        <DistributionChannels>
+            <DistributionChannel>
+                <ChannelName>Spotify</ChannelName>
+                <ChannelStatus>Active</ChannelStatus>
+            </DistributionChannel>
+            <DistributionChannel>
+                <ChannelName>Apple Music</ChannelName>
+                <ChannelStatus>Active</ChannelStatus>
+            </DistributionChannel>
+            <DistributionChannel>
+                <ChannelName>YouTube Music</ChannelName>
+                <ChannelStatus>Active</ChannelStatus>
+            </DistributionChannel>
+            <DistributionChannel>
+                <ChannelName>Deezer</ChannelName>
+                <ChannelStatus>Active</ChannelStatus>
+            </DistributionChannel>
+        </DistributionChannels>
+    </DeliveryMessage>
+</DeliveryPackage>`;
+
+            return ddexXML;
+        }
+
+        // Função auxiliar para escapar caracteres XML
+        function escapeXML(str) {
+            if (!str) return '';
+            return str.replace(/[<>&'"]/g, function(c) {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case "'": return '&apos;';
+                    case '"': return '&quot;';
+                }
+            });
+        }
+
+        // Função para fazer download do XML DDEX
+        function downloadDDEXXML(musicId, musicData, artistData) {
+            const ddexXML = generateDDEXXML(musicData, artistData);
+            if (!ddexXML) return;
+
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(ddexXML));
+            element.setAttribute('download', `DDEX_${musicData.isrc}_${Date.now()}.xml`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            alert('Ficheiro DDEX XML exportado com sucesso!\nNome: DDEX_' + musicData.isrc + '_' + Date.now() + '.xml');
+        }
+
+        // Função para enviar DDEX para servidor (simulado)
+        async function sendDDEXToStore(musicId, musicData, artistData) {
+            const ddexXML = generateDDEXXML(musicData, artistData);
+            if (!ddexXML) return;
+
+            showLoading(true, "A enviar DDEX para as lojas...");
+            try {
+                // Simular envio - em produção, isto seria enviado para um servidor backend
+                console.log("DDEX enviado:", ddexXML);
+
+                // Registar no Firestore que o DDEX foi enviado
+                await db.collection('musicas').doc(musicId).update({
+                    ddexStatus: "Enviado",
+                    ddexSentAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    ddexMessageId: `MAM-${Date.now()}`
+                });
+
+                alert("DDEX enviado com sucesso para as lojas digitais!\nSua música será distribuída em breve.");
+                loadUserMusic();
+            } catch (error) {
+                alert("Erro ao enviar DDEX: " + error.message);
+            }
+            showLoading(false);
+        }
+
+        
+        async function loadLancamentosComDDEX() {
+            const container = document.getElementById('lista-lancamentos');
+            if (!container) return;
+            container.innerHTML = '';
+
+            try {
+                const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum lançamento ainda.</p>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const m = doc.data();
+                    const artistaRef = db.collection('artistas').doc(m.artista);
+                    
+                    artistaRef.get().then(artistaDoc => {
+                        const artistData = artistaDoc.exists ? artistaDoc.data() : { nome: m.artista };
+                        
+                        const statusColor = m.status === 'Aprovado' ? 'var(--success)' : 
+                                          m.status === 'Rejeitado' ? 'var(--danger)' : 'var(--warning)';
+                        
+                        const ddexButtons = m.status === 'Aprovado' ? `
+                            <button class="btn btn-small" onclick="downloadDDEXXML('${doc.id}', ${JSON.stringify(m).replace(/'/g, '\'')}, ${JSON.stringify(artistData).replace(/'/g, '\'')})">
+                                <i class="fas fa-download"></i> Baixar DDEX
+                            </button>
+                            <button class="btn btn-small btn-success" onclick="sendDDEXToStore('${doc.id}', ${JSON.stringify(m).replace(/'/g, '\'')}, ${JSON.stringify(artistData).replace(/'/g, '\'')})">
+                                <i class="fas fa-paper-plane"></i> Enviar para Lojas
+                            </button>
+                        ` : '<span style="color: var(--gray); font-size: 0.85rem;">Aguardando aprovação...</span>';
+
+                        container.innerHTML += `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #333; border-radius: 8px; margin-bottom: 10px; background: rgba(255,215,0,0.05);">
+                                <div>
+                                    <p style="font-weight: bold; margin: 0;">${m.titulo}</p>
+                                    <p style="color: var(--gray); margin: 5px 0 0 0; font-size: 0.9rem;">${m.artista} | ISRC: ${m.isrc} | UPC: ${m.upc}</p>
+                                    <p style="color: ${statusColor}; margin: 5px 0 0 0; font-size: 0.85rem; font-weight: bold;">Status: ${m.status}</p>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    ${ddexButtons}
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+            } catch (error) {
+                console.error("Erro ao carregar lançamentos:", error);
+                container.innerHTML = '<p style="color: var(--danger);">Erro ao carregar lançamentos.</p>';
+            }
+        }
+
+        </script>
 </body>
 </html>

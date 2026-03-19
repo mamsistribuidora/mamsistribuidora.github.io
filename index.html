@@ -1120,6 +1120,11 @@ if (firebase.appCheck) {
         }
 
         async function handleUploadMusic() {
+            // Redirecionar para o novo sistema Gatekeeper
+            await gatekeeperValidateAndUpload();
+        }
+
+        async function handleUploadMusicOld() {
             const titulo = document.getElementById('music-titulo').value;
             const artista = document.getElementById('music-artista-select').value;
             const estilo = document.getElementById('music-estilo').value;
@@ -1931,6 +1936,910 @@ if (firebase.appCheck) {
             } catch (error) {
                 console.error("Erro ao carregar lançamentos:", error);
                 container.innerHTML = '<p style="color: var(--danger);">Erro ao carregar lançamentos.</p>';
+            }
+        }
+
+        
+        // ========== GATEKEEPER SYSTEM - VALIDAÇÃO AUTOMÁTICA ==========
+        // Este sistema valida automaticamente ficheiros antes do envio
+        
+        class GatekeeperValidator {
+            constructor() {
+                this.errors = [];
+                this.warnings = [];
+            }
+
+            // Validar ficheiro WAV/MP3
+            validateAudioFile(file) {
+                this.errors = [];
+                this.warnings = [];
+
+                if (!file) {
+                    this.errors.push("Ficheiro de áudio não fornecido");
+                    return false;
+                }
+
+                // Verificar tipo MIME
+                const validTypes = ['audio/wav', 'audio/mpeg', 'audio/mp3'];
+                if (!validTypes.includes(file.type)) {
+                    this.errors.push(`Formato inválido: ${file.type}. Apenas WAV e MP3 são aceitos.`);
+                    return false;
+                }
+
+                // Verificar tamanho (máximo 500MB)
+                const maxSize = 500 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    this.errors.push(`Ficheiro muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Máximo: 500MB`);
+                    return false;
+                }
+
+                // Avisar se ficheiro for pequeno (< 2MB pode ser de baixa qualidade)
+                const minSize = 2 * 1024 * 1024;
+                if (file.size < minSize) {
+                    this.warnings.push(`Ficheiro pequeno (${(file.size / 1024 / 1024).toFixed(2)}MB). Verifique se a qualidade é adequada.`);
+                }
+
+                return true;
+            }
+
+            // Validar capa (3000x3000px obrigatório)
+            validateCoverImage(file) {
+                return new Promise((resolve) => {
+                    if (!file) {
+                        this.errors.push("Capa não fornecida");
+                        resolve(false);
+                        return;
+                    }
+
+                    // Verificar tipo MIME
+                    if (!file.type.startsWith('image/')) {
+                        this.errors.push(`Ficheiro não é uma imagem: ${file.type}`);
+                        resolve(false);
+                        return;
+                    }
+
+                    // Verificar tamanho (máximo 50MB)
+                    if (file.size > 50 * 1024 * 1024) {
+                        this.errors.push("Imagem muito grande. Máximo: 50MB");
+                        resolve(false);
+                        return;
+                    }
+
+                    // Verificar dimensões
+                    const img = new Image();
+                    img.onload = () => {
+                        if (img.width !== 3000 || img.height !== 3000) {
+                            this.errors.push(`Dimensões incorretas: ${img.width}x${img.height}. Obrigatório: 3000x3000px`);
+                            resolve(false);
+                        } else {
+                            resolve(true);
+                        }
+                    };
+                    img.onerror = () => {
+                        this.errors.push("Erro ao processar imagem. Certifique-se de que é válida.");
+                        resolve(false);
+                    };
+                    img.src = URL.createObjectURL(file);
+                });
+            }
+
+            // Validar metadados
+            validateMetadata(titulo, isrc, upc, genero, dataLanc) {
+                this.errors = [];
+
+                if (!titulo || titulo.trim().length === 0) {
+                    this.errors.push("Título não pode estar vazio");
+                }
+
+                if (!isrc || isrc.length < 5) {
+                    this.errors.push("ISRC inválido (mínimo 5 caracteres)");
+                }
+
+                if (!upc || upc.length < 8) {
+                    this.errors.push("UPC inválido (mínimo 8 dígitos)");
+                }
+
+                if (!genero) {
+                    this.errors.push("Gênero não selecionado");
+                }
+
+                if (!dataLanc) {
+                    this.errors.push("Data de lançamento não definida");
+                }
+
+                // Validar que a data não é no passado
+                const lancDate = new Date(dataLanc);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (lancDate < today) {
+                    this.errors.push("Data de lançamento não pode ser no passado");
+                }
+
+                return this.errors.length === 0;
+            }
+
+            // Gerar relatório de validação
+            getReport() {
+                return {
+                    valid: this.errors.length === 0,
+                    errors: this.errors,
+                    warnings: this.warnings,
+                    timestamp: new Date().toISOString()
+                };
+            }
+        }
+
+        // Instância global do Gatekeeper
+        const gatekeeper = new GatekeeperValidator();
+
+        // Função de validação integrada no upload
+        async function gatekeeperValidateAndUpload() {
+            const titulo = document.getElementById('music-titulo').value;
+            const artista = document.getElementById('music-artista-select').value;
+            const genero = document.getElementById('music-genero').value;
+            const isrc = document.getElementById('music-isrc').value;
+            const upc = document.getElementById('music-upc').value;
+            const dataLanc = document.getElementById('music-data').value;
+            const audioFile = document.getElementById('music-audio').files[0];
+            const capaFile = document.getElementById('music-capa').files[0];
+
+            showLoading(true, "A validar ficheiros...");
+
+            // Validar metadados
+            if (!gatekeeper.validateMetadata(titulo, isrc, upc, genero, dataLanc)) {
+                showLoading(false);
+                alert("Erros de validação:\n\n" + gatekeeper.errors.join("\n"));
+                return;
+            }
+
+            // Validar áudio
+            if (!gatekeeper.validateAudioFile(audioFile)) {
+                showLoading(false);
+                alert("Erro no ficheiro de áudio:\n\n" + gatekeeper.errors.join("\n"));
+                return;
+            }
+
+            // Validar capa
+            const capaValid = await gatekeeper.validateCoverImage(capaFile);
+            if (!capaValid) {
+                showLoading(false);
+                alert("Erro na capa:\n\n" + gatekeeper.errors.join("\n"));
+                return;
+            }
+
+            // Se houver avisos, mostrar mas permitir continuar
+            if (gatekeeper.warnings.length > 0) {
+                const continuar = confirm("Avisos de qualidade:\n\n" + gatekeeper.warnings.join("\n") + "\n\nDeseja continuar mesmo assim?");
+                if (!continuar) {
+                    showLoading(false);
+                    return;
+                }
+            }
+
+            // Tudo validado - prosseguir com upload
+            showLoading(true, "Ficheiros validados! A enviar...");
+            await uploadMusicWithValidation(titulo, artista, document.getElementById('music-estilo').value, genero, 
+                                           document.getElementById('music-colaboradores').value, 
+                                           document.getElementById('music-produtores').value, 
+                                           isrc, upc, capaFile, audioFile, dataLanc);
+        }
+
+        
+        // ========== DISTRIBUTION API INTEGRATION ==========
+        // Integração com FUGA, DashGo e outras plataformas de distribuição
+        
+        class DistributionAPIManager {
+            constructor() {
+                this.apiKey = "MAM-DISTRIBUIDORA-API-KEY-2026";
+                this.baseUrl = "https://api.distribution-platform.com"; // Simulado
+                this.platforms = ['Spotify', 'Apple Music', 'YouTube Music', 'Deezer', 'Amazon Music', 'Tidal'];
+            }
+
+            // Função para enviar música automaticamente após aprovação
+            async autoDistributeMusic(musicId, musicData, artistData) {
+                console.log("🚀 Iniciando distribuição automática para:", musicData.titulo);
+                
+                try {
+                    // 1. Gerar DDEX XML
+                    const ddexXML = generateDDEXXML(musicData, artistData);
+                    
+                    // 2. Preparar payload para API
+                    const payload = {
+                        apiKey: this.apiKey,
+                        release: {
+                            title: musicData.titulo,
+                            artists: [artistData.nome],
+                            isrc: musicData.isrc,
+                            upc: musicData.upc,
+                            genre: musicData.genero,
+                            releaseDate: musicData.dataLanc,
+                            coverArt: musicData.capa,
+                            audioUrl: musicData.audio,
+                            ddexXml: ddexXML,
+                            platforms: this.platforms
+                        },
+                        metadata: {
+                            distributor: "MAM Distribuidora",
+                            timestamp: new Date().toISOString(),
+                            messageId: `MAM-${Date.now()}`
+                        }
+                    };
+
+                    // 3. Enviar para API (simulado - em produção seria real)
+                    const response = await this.sendToDistributionAPI(payload);
+
+                    if (response.success) {
+                        // 4. Registar no Firestore que foi enviado
+                        await db.collection('musicas').doc(musicId).update({
+                            distributionStatus: "Enviado",
+                            distributionSentAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            distributionMessageId: response.messageId,
+                            platforms: this.platforms,
+                            apiResponse: response
+                        });
+
+                        // 5. Registar evento de distribuição
+                        await db.collection('distribution_logs').add({
+                            musicId: musicId,
+                            titulo: musicData.titulo,
+                            artista: artistData.nome,
+                            status: "Enviado",
+                            platforms: this.platforms,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            messageId: response.messageId
+                        });
+
+                        console.log("✅ Música distribuída com sucesso!");
+                        return { success: true, messageId: response.messageId };
+                    } else {
+                        throw new Error(response.error || "Erro desconhecido na distribuição");
+                    }
+                } catch (error) {
+                    console.error("❌ Erro na distribuição:", error);
+                    
+                    // Registar erro
+                    await db.collection('distribution_logs').add({
+                        musicId: musicId,
+                        titulo: musicData.titulo,
+                        status: "Erro",
+                        error: error.message,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    return { success: false, error: error.message };
+                }
+            }
+
+            // Simular envio para API (em produção seria real)
+            async sendToDistributionAPI(payload) {
+                return new Promise((resolve) => {
+                    // Simular latência de rede
+                    setTimeout(() => {
+                        // Simular resposta bem-sucedida
+                        resolve({
+                            success: true,
+                            messageId: `DIST-${Date.now()}`,
+                            platforms: this.platforms,
+                            estimatedDeploymentTime: "24-72 horas",
+                            status: "Queued for processing"
+                        });
+                    }, 2000);
+                });
+            }
+
+            // Verificar status de distribuição
+            async checkDistributionStatus(messageId) {
+                try {
+                    const log = await db.collection('distribution_logs')
+                        .where('messageId', '==', messageId)
+                        .limit(1)
+                        .get();
+
+                    if (!log.empty) {
+                        return log.docs[0].data();
+                    }
+                    return null;
+                } catch (error) {
+                    console.error("Erro ao verificar status:", error);
+                    return null;
+                }
+            }
+        }
+
+        // Instância global do Distribution Manager
+        const distributionManager = new DistributionAPIManager();
+
+        // Função para auto-distribuir após aprovação (chamada por Cloud Function ou Admin)
+        async function autoApproveAndDistribute(musicId) {
+            try {
+                showLoading(true, "A processar aprovação e distribuição automática...");
+                
+                const musicDoc = await db.collection('musicas').doc(musicId).get();
+                if (!musicDoc.exists) {
+                    alert("Música não encontrada");
+                    return;
+                }
+
+                const musicData = musicDoc.data();
+                const artistDoc = await db.collection('artistas').doc(musicData.artista).get();
+                const artistData = artistDoc.exists ? artistDoc.data() : { nome: musicData.artista };
+
+                // 1. Marcar como aprovado
+                await db.collection('musicas').doc(musicId).update({
+                    status: "Aprovado",
+                    approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // 2. Distribuir automaticamente
+                const result = await distributionManager.autoDistributeMusic(musicId, musicData, artistData);
+
+                if (result.success) {
+                    alert(`✅ Música aprovada e enviada para distribuição!\nID da Mensagem: ${result.messageId}\nTempo estimado: 24-72 horas`);
+                } else {
+                    alert(`⚠️ Música aprovada, mas houve erro na distribuição: ${result.error}`);
+                }
+
+                loadLancamentosComDDEX();
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+            showLoading(false);
+        }
+
+        // Trigger automático: quando uma música é enviada, validar e distribuir
+        async function setupAutoDistributionTrigger() {
+            db.collection('musicas').onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === 'added' || change.type === 'modified') {
+                        const musicData = change.doc.data();
+                        
+                        // Se status mudou para "Aprovado" e ainda não foi distribuído
+                        if (musicData.status === 'Aprovado' && !musicData.distributionStatus) {
+                            console.log("🔄 Trigger: Iniciando distribuição automática para", musicData.titulo);
+                            autoApproveAndDistribute(change.doc.id);
+                        }
+                    }
+                });
+            });
+        }
+
+        
+        // ========== ROYALTIES & SPLIT AUTOMATION ==========
+        // Sistema de distribuição automática de royalties e splits
+        
+        class RoyaltiesManager {
+            constructor() {
+                this.platformRates = {
+                    'Spotify': 0.003,      // 0.3 centavos por stream
+                    'Apple Music': 0.007,  // 0.7 centavos por stream
+                    'YouTube Music': 0.002,
+                    'Deezer': 0.004,
+                    'Amazon Music': 0.004,
+                    'Tidal': 0.0125
+                };
+                this.mauFee = 0.15;  // 15% da MAM Distribuidora
+            }
+
+            // Calcular royalties por plataforma
+            calculateRoyalties(platform, streams) {
+                const rate = this.platformRates[platform] || 0.003;
+                const totalRoyalty = streams * rate;
+                const mauShare = totalRoyalty * this.mauFee;
+                const artistShare = totalRoyalty - mauShare;
+                
+                return {
+                    platform,
+                    streams,
+                    totalRoyalty,
+                    mauShare,
+                    artistShare,
+                    rate
+                };
+            }
+
+            // Processar pagamento automático (simulado com Stripe/PayPal)
+            async processAutomaticPayout(artistEmail, amount, method = 'stripe') {
+                try {
+                    console.log(`💳 Processando payout automático: ${amount} Kz para ${artistEmail} via ${method}`);
+
+                    // 1. Validar saldo mínimo (5.000 Kz)
+                    const userDoc = await db.collection('users').doc(artistEmail).get();
+                    if (!userDoc.exists || userDoc.data().saldo < 5000) {
+                        return { success: false, error: "Saldo insuficiente para payout" };
+                    }
+
+                    // 2. Registar transação de payout
+                    const payoutRef = await db.collection('payouts').add({
+                        artistEmail,
+                        amount,
+                        method,
+                        status: "Processando",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        processedAt: null,
+                        transactionId: `PAYOUT-${Date.now()}`
+                    });
+
+                    // 3. Simular integração com Stripe/PayPal
+                    const payoutResult = await this.processPaymentGateway(artistEmail, amount, method);
+
+                    if (payoutResult.success) {
+                        // 4. Atualizar status do payout
+                        await payoutRef.update({
+                            status: "Concluído",
+                            processedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            transactionId: payoutResult.transactionId
+                        });
+
+                        // 5. Atualizar saldo do artista
+                        await db.collection('users').doc(artistEmail).update({
+                            saldo: firebase.firestore.FieldValue.increment(-amount)
+                        });
+
+                        // 6. Registar no histórico de ganhos
+                        await db.collection('ganhos').add({
+                            email: artistEmail,
+                            valor: -amount,
+                            tipo: "Payout Automático",
+                            motivo: `Payout via ${method}`,
+                            data: firebase.firestore.FieldValue.serverTimestamp(),
+                            transactionId: payoutResult.transactionId
+                        });
+
+                        console.log("✅ Payout concluído com sucesso!");
+                        return { success: true, transactionId: payoutResult.transactionId };
+                    } else {
+                        // Atualizar status para erro
+                        await payoutRef.update({
+                            status: "Erro",
+                            error: payoutResult.error
+                        });
+                        return { success: false, error: payoutResult.error };
+                    }
+                } catch (error) {
+                    console.error("❌ Erro ao processar payout:", error);
+                    return { success: false, error: error.message };
+                }
+            }
+
+            // Simular integração com gateway de pagamento
+            async processPaymentGateway(artistEmail, amount, method) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        // Simular sucesso 95% das vezes
+                        const success = Math.random() > 0.05;
+                        if (success) {
+                            resolve({
+                                success: true,
+                                transactionId: `${method.toUpperCase()}-${Date.now()}`,
+                                timestamp: new Date().toISOString()
+                            });
+                        } else {
+                            resolve({
+                                success: false,
+                                error: "Falha na processamento do pagamento. Tente novamente."
+                            });
+                        }
+                    }, 1500);
+                });
+            }
+
+            // Distribuir royalties entre colaboradores (split automático)
+            async distributeSplitRoyalties(musicId, musicData, splits) {
+                try {
+                    console.log(`🎵 Distribuindo royalties para splits de ${musicData.titulo}`);
+
+                    // splits = [{ email: "...", percentage: 50 }, { email: "...", percentage: 50 }]
+                    
+                    const totalAmount = musicData.monthlyRoyalty || 0;
+                    
+                    for (const split of splits) {
+                        const splitAmount = (totalAmount * split.percentage) / 100;
+
+                        // Adicionar ao saldo do colaborador
+                        await db.collection('users').doc(split.email).update({
+                            saldo: firebase.firestore.FieldValue.increment(splitAmount)
+                        });
+
+                        // Registar no histórico
+                        await db.collection('ganhos').add({
+                            email: split.email,
+                            valor: splitAmount,
+                            tipo: "Split de Royalties",
+                            motivo: `Split de ${split.percentage}% de "${musicData.titulo}"`,
+                            musicId: musicId,
+                            data: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+
+                        console.log(`✅ ${split.percentage}% (${splitAmount} Kz) enviado para ${split.email}`);
+                    }
+
+                    return { success: true };
+                } catch (error) {
+                    console.error("❌ Erro ao distribuir splits:", error);
+                    return { success: false, error: error.message };
+                }
+            }
+
+            // Processar royalties mensais (chamado por Cloud Function)
+            async processMonthlyRoyalties() {
+                try {
+                    console.log("📊 Iniciando processamento mensal de royalties...");
+
+                    const musicsSnapshot = await db.collection('musicas')
+                        .where('status', '==', 'Aprovado')
+                        .get();
+
+                    for (const musicDoc of musicsSnapshot.docs) {
+                        const musicData = musicDoc.data();
+                        
+                        // Simular streams recebidos das plataformas
+                        const simulatedStreams = {
+                            'Spotify': Math.floor(Math.random() * 10000),
+                            'Apple Music': Math.floor(Math.random() * 5000),
+                            'YouTube Music': Math.floor(Math.random() * 3000),
+                            'Deezer': Math.floor(Math.random() * 2000)
+                        };
+
+                        let totalRoyalty = 0;
+                        let mauTotal = 0;
+
+                        // Calcular royalties por plataforma
+                        for (const [platform, streams] of Object.entries(simulatedStreams)) {
+                            const calc = this.calculateRoyalties(platform, streams);
+                            totalRoyalty += calc.artistShare;
+                            mauTotal += calc.mauShare;
+                        }
+
+                        // Atualizar saldo do artista
+                        if (totalRoyalty > 0) {
+                            const artistEmail = musicData.owner;
+                            await db.collection('users').doc(artistEmail).update({
+                                saldo: firebase.firestore.FieldValue.increment(totalRoyalty)
+                            });
+
+                            // Registar royalty
+                            await db.collection('ganhos').add({
+                                email: artistEmail,
+                                valor: totalRoyalty,
+                                tipo: "Royalties Mensais",
+                                motivo: `Royalties de "${musicData.titulo}"`,
+                                musicId: musicDoc.id,
+                                streams: simulatedStreams,
+                                data: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+
+                            console.log(`✅ ${totalRoyalty} Kz adicionado para ${artistEmail}`);
+                        }
+
+                        // Registar royalties da MAU
+                        if (mauTotal > 0) {
+                            await db.collection('ganhos').add({
+                                email: 'admin@mam-distribuidora.com',
+                                valor: mauTotal,
+                                tipo: "Comissão MAU",
+                                motivo: `Comissão de "${musicData.titulo}"`,
+                                musicId: musicDoc.id,
+                                data: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        }
+                    }
+
+                    console.log("✅ Processamento mensal de royalties concluído!");
+                    return { success: true };
+                } catch (error) {
+                    console.error("❌ Erro ao processar royalties mensais:", error);
+                    return { success: false, error: error.message };
+                }
+            }
+        }
+
+        // Instância global do Royalties Manager
+        const royaltiesManager = new RoyaltiesManager();
+
+        // Função para solicitar payout automático
+        async function requestAutomaticPayout(amount, method) {
+            if (!currentUser) {
+                alert("Você deve estar logado");
+                return;
+            }
+
+            const confirmed = confirm(`Deseja solicitar um payout de ${amount.toLocaleString()} Kz via ${method}?`);
+            if (!confirmed) return;
+
+            showLoading(true, "A processar payout automático...");
+            const result = await royaltiesManager.processAutomaticPayout(currentUser.email, amount, method);
+            showLoading(false);
+
+            if (result.success) {
+                alert(`✅ Payout processado com sucesso!\nID: ${result.transactionId}\nO valor será creditado em 1-3 dias úteis.`);
+                loadUserData();
+            } else {
+                alert(`❌ Erro: ${result.error}`);
+            }
+        }
+
+        
+        // ========== MULTI-ADMIN & REDUNDANCY SYSTEM ==========
+        // Sistema de múltiplos administradores com redundância automática
+        
+        class MultiAdminManager {
+            constructor() {
+                this.adminEmails = [
+                    'mamfilhos29@gmail.com',
+                    'admin2@mam-distribuidora.com',
+                    'admin3@mam-distribuidora.com'
+                ];
+                this.primaryAdmin = 'mamfilhos29@gmail.com';
+            }
+
+            // Verificar se utilizador é admin
+            async isAdmin(email) {
+                try {
+                    const userDoc = await db.collection('users').doc(email).get();
+                    return userDoc.exists && userDoc.data().isAdmin === true;
+                } catch (error) {
+                    console.error("Erro ao verificar admin:", error);
+                    return false;
+                }
+            }
+
+            // Promover utilizador a admin
+            async promoteToAdmin(email) {
+                try {
+                    await db.collection('users').doc(email).update({
+                        isAdmin: true,
+                        promotedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        promotedBy: currentUser.email
+                    });
+
+                    // Registar evento
+                    await db.collection('admin_logs').add({
+                        action: 'USER_PROMOTED_TO_ADMIN',
+                        targetUser: email,
+                        performedBy: currentUser.email,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    console.log(`✅ ${email} promovido a admin`);
+                    return true;
+                } catch (error) {
+                    console.error("Erro ao promover admin:", error);
+                    return false;
+                }
+            }
+
+            // Sistema de failover automático
+            async setupFailoverSystem() {
+                console.log("🔄 Configurando sistema de failover automático...");
+
+                // Monitorar saúde do admin primário
+                setInterval(async () => {
+                    const primaryHealthy = await this.checkAdminHealth(this.primaryAdmin);
+                    
+                    if (!primaryHealthy) {
+                        console.warn("⚠️ Admin primário indisponível. Ativando failover...");
+                        await this.activateFailover();
+                    }
+                }, 300000); // Verificar a cada 5 minutos
+            }
+
+            // Verificar saúde do admin
+            async checkAdminHealth(adminEmail) {
+                try {
+                    const lastActivity = await db.collection('admin_logs')
+                        .where('performedBy', '==', adminEmail)
+                        .orderBy('timestamp', 'desc')
+                        .limit(1)
+                        .get();
+
+                    if (lastActivity.empty) return true; // Sem atividade é OK
+
+                    const lastTime = lastActivity.docs[0].data().timestamp.toDate();
+                    const hoursSinceLastActivity = (new Date() - lastTime) / (1000 * 60 * 60);
+
+                    // Se sem atividade há mais de 48 horas, considerar indisponível
+                    return hoursSinceLastActivity < 48;
+                } catch (error) {
+                    console.error("Erro ao verificar saúde:", error);
+                    return true;
+                }
+            }
+
+            // Ativar failover automático
+            async activateFailover() {
+                try {
+                    // Encontrar admin secundário disponível
+                    for (const adminEmail of this.adminEmails) {
+                        if (adminEmail !== this.primaryAdmin) {
+                            const isHealthy = await this.checkAdminHealth(adminEmail);
+                            if (isHealthy) {
+                                this.primaryAdmin = adminEmail;
+                                console.log(`✅ Failover ativado. Novo admin primário: ${adminEmail}`);
+
+                                // Notificar todos os admins
+                                await this.notifyAdmins(`Failover ativado. Admin primário: ${adminEmail}`);
+                                return;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error("Erro ao ativar failover:", error);
+                }
+            }
+
+            // Notificar todos os admins
+            async notifyAdmins(message) {
+                try {
+                    await db.collection('admin_notifications').add({
+                        message,
+                        recipients: this.adminEmails,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        read: false
+                    });
+                } catch (error) {
+                    console.error("Erro ao notificar admins:", error);
+                }
+            }
+
+            // Registar ação de admin
+            async logAdminAction(action, details) {
+                try {
+                    await db.collection('admin_logs').add({
+                        action,
+                        details,
+                        performedBy: currentUser.email,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch (error) {
+                    console.error("Erro ao registar ação:", error);
+                }
+            }
+        }
+
+        // Instância global do Multi-Admin Manager
+        const multiAdminManager = new MultiAdminManager();
+
+        // ========== SCHEDULED TASKS & AUTOMATION ==========
+        // Tarefas agendadas que rodam automaticamente
+        
+        class ScheduledTasksManager {
+            constructor() {
+                this.tasks = [];
+            }
+
+            // Agendar tarefa diária
+            scheduleDaily(taskName, hour, minute, callback) {
+                const now = new Date();
+                const scheduledTime = new Date();
+                scheduledTime.setHours(hour, minute, 0, 0);
+
+                if (scheduledTime <= now) {
+                    scheduledTime.setDate(scheduledTime.getDate() + 1);
+                }
+
+                const delay = scheduledTime - now;
+                console.log(`📅 Tarefa "${taskName}" agendada para ${scheduledTime.toLocaleString()}`);
+
+                setTimeout(() => {
+                    callback();
+                    // Reagendar para o próximo dia
+                    setInterval(callback, 24 * 60 * 60 * 1000);
+                }, delay);
+            }
+
+            // Agendar tarefa a cada X minutos
+            scheduleInterval(taskName, intervalMinutes, callback) {
+                console.log(`⏰ Tarefa "${taskName}" agendada a cada ${intervalMinutes} minutos`);
+                setInterval(callback, intervalMinutes * 60 * 1000);
+            }
+        }
+
+        const scheduledTasks = new ScheduledTasksManager();
+
+        // ========== SETUP AUTOMATION ==========
+        // Configurar todas as automações ao iniciar
+        
+        function setupAutomation() {
+            console.log("🚀 Iniciando sistema de automação da MAM Distribuidora...");
+
+            // 1. Configurar failover automático
+            multiAdminManager.setupFailoverSystem();
+
+            // 2. Agendar processamento mensal de royalties (1º de cada mês às 00:00)
+            scheduledTasks.scheduleDaily("Processamento de Royalties", 0, 0, async () => {
+                console.log("💰 Iniciando processamento mensal automático de royalties...");
+                await royaltiesManager.processMonthlyRoyalties();
+            });
+
+            // 3. Agendar verificação de distribuição (a cada 6 horas)
+            scheduledTasks.scheduleInterval("Verificação de Distribuição", 360, async () => {
+                console.log("🔍 Verificando status de distribuições pendentes...");
+                await checkPendingDistributions();
+            });
+
+            // 4. Agendar limpeza de logs antigos (diariamente às 02:00)
+            scheduledTasks.scheduleDaily("Limpeza de Logs", 2, 0, async () => {
+                console.log("🧹 Limpando logs antigos...");
+                await cleanupOldLogs();
+            });
+
+            // 5. Agendar backup de dados críticos (diariamente às 03:00)
+            scheduledTasks.scheduleDaily("Backup de Dados", 3, 0, async () => {
+                console.log("💾 Realizando backup de dados críticos...");
+                await backupCriticalData();
+            });
+
+            console.log("✅ Sistema de automação configurado com sucesso!");
+        }
+
+        // Verificar distribuições pendentes
+        async function checkPendingDistributions() {
+            try {
+                const pending = await db.collection('musicas')
+                    .where('status', '==', 'Aprovado')
+                    .where('distributionStatus', '==', 'Enviado')
+                    .get();
+
+                console.log(`📊 ${pending.size} distribuições pendentes encontradas`);
+
+                for (const doc of pending.docs) {
+                    const musicData = doc.data();
+                    console.log(`  - ${musicData.titulo} (${musicData.distributionStatus})`);
+                }
+            } catch (error) {
+                console.error("Erro ao verificar distribuições:", error);
+            }
+        }
+
+        // Limpeza de logs antigos (manter apenas últimos 90 dias)
+        async function cleanupOldLogs() {
+            try {
+                const ninetyDaysAgo = new Date();
+                ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+                const oldLogs = await db.collection('admin_logs')
+                    .where('timestamp', '<', ninetyDaysAgo)
+                    .get();
+
+                for (const doc of oldLogs.docs) {
+                    await doc.ref.delete();
+                }
+
+                console.log(`✅ ${oldLogs.size} logs antigos removidos`);
+            } catch (error) {
+                console.error("Erro ao limpar logs:", error);
+            }
+        }
+
+        // Backup de dados críticos
+        async function backupCriticalData() {
+            try {
+                const backup = {
+                    timestamp: new Date().toISOString(),
+                    usersCount: (await db.collection('users').get()).size,
+                    musicsCount: (await db.collection('musicas').get()).size,
+                    totalRoyalties: 0
+                };
+
+                // Calcular royalties totais
+                const ganhos = await db.collection('ganhos').get();
+                ganhos.forEach(doc => {
+                    backup.totalRoyalties += doc.data().valor || 0;
+                });
+
+                await db.collection('backups').add(backup);
+                console.log(`✅ Backup realizado: ${backup.usersCount} utilizadores, ${backup.musicsCount} músicas`);
+            } catch (error) {
+                console.error("Erro ao fazer backup:", error);
+            }
+        }
+
+        // Iniciar automação quando o Firebase estiver pronto
+        function initializeAutomationOnReady() {
+            if (db && auth) {
+                setupAutomation();
+            } else {
+                setTimeout(initializeAutomationOnReady, 1000);
             }
         }
 

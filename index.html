@@ -2385,6 +2385,9 @@ if (firebase.appCheck) {
                             transactionId: payoutResult.transactionId
                         });
 
+                        // 7. Enviar notificação por e-mail
+                        await emailNotifier.notifySaque(artistEmail, amount, method, payoutResult.transactionId);
+
                         console.log("✅ Payout concluído com sucesso!");
                         return { success: true, transactionId: payoutResult.transactionId };
                     } else {
@@ -2450,6 +2453,9 @@ if (firebase.appCheck) {
                             data: firebase.firestore.FieldValue.serverTimestamp()
                         });
 
+                        // Enviar notificação por e-mail
+                        await emailNotifier.notifyGanho(split.email, splitAmount, "Split de Royalties", `Split de ${split.percentage}% de "${musicData.titulo}"`);
+
                         console.log(`✅ ${split.percentage}% (${splitAmount} Kz) enviado para ${split.email}`);
                     }
 
@@ -2507,6 +2513,9 @@ if (firebase.appCheck) {
                                 streams: simulatedStreams,
                                 data: firebase.firestore.FieldValue.serverTimestamp()
                             });
+
+                            // Enviar notificação por e-mail
+                            await emailNotifier.notifyGanho(artistEmail, totalRoyalty, "Royalties Mensais", `Royalties de "${musicData.titulo}"`);
 
                             console.log(`✅ ${totalRoyalty} Kz adicionado para ${artistEmail}`);
                         }
@@ -2908,6 +2917,165 @@ if (firebase.appCheck) {
                     document.getElementById('saldo-disponivel').innerText = saldoReal.toLocaleString() + ' Kz';
                 }
             });
+        }
+
+        
+        // ========== EMAIL NOTIFICATION SYSTEM ==========
+        class EmailNotifier {
+            constructor() {
+                this.fromEmail = "notificacoes@mam-distribuidora.com";
+            }
+
+            async notifySaque(email, valor, metodo, transactionId) {
+                try {
+                    await db.collection('email_queue').add({
+                        to: email,
+                        subject: `Saque Processado - ${valor.toLocaleString()} Kz`,
+                        type: 'saque',
+                        valor: valor,
+                        metodo: metodo,
+                        transactionId: transactionId,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        sent: false
+                    });
+                    console.log("Notificação de saque enfileirada");
+                    return true;
+                } catch (error) {
+                    console.error("Erro ao enviar notificação:", error);
+                    return false;
+                }
+            }
+
+            async notifyGanho(email, valor, tipo, motivo) {
+                try {
+                    await db.collection('email_queue').add({
+                        to: email,
+                        subject: `Novo Ganho Recebido - ${valor.toLocaleString()} Kz`,
+                        type: 'ganho',
+                        valor: valor,
+                        tipoGanho: tipo,
+                        motivo: motivo,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        sent: false
+                    });
+                    console.log("Notificação de ganho enfileirada");
+                    return true;
+                } catch (error) {
+                    console.error("Erro ao enviar notificação:", error);
+                    return false;
+                }
+            }
+        }
+
+        const emailNotifier = new EmailNotifier();
+
+        
+        let currentLaunchType = 'Single';
+        let audioTracksCount = 1;
+
+        function selectLaunchType(type) {
+            currentLaunchType = type;
+            document.getElementById('modal-album-solo').style.display = 'none';
+            document.getElementById('music-tipo-lancamento').value = type;
+            
+            if (type === 'Album') {
+                document.getElementById('audio-tracks-container').style.display = 'block';
+                document.getElementById('add-track-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('audio-tracks-container').style.display = 'none';
+                document.getElementById('add-track-btn').style.display = 'none';
+            }
+        }
+
+        function showLaunchTypeModal() {
+            document.getElementById('modal-album-solo').style.display = 'flex';
+        }
+
+        function addAudioTrack() {
+            audioTracksCount++;
+            const container = document.getElementById('audio-tracks-container');
+            const trackDiv = document.createElement('div');
+            trackDiv.id = `track-${audioTracksCount}`;
+            trackDiv.style.cssText = 'background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ddd;';
+            trackDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <label><strong>Faixa ${audioTracksCount}</strong></label>
+                    <button type="button" class="btn btn-danger" onclick="removeAudioTrack(${audioTracksCount})" style="padding: 5px 10px; font-size: 0.9em;">✕</button>
+                </div>
+                <input type="file" id="audio-track-${audioTracksCount}" accept="audio/wav,audio/mpeg" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            `;
+            container.appendChild(trackDiv);
+        }
+
+        function removeAudioTrack(trackNum) {
+            document.getElementById(`track-${trackNum}`).remove();
+        }
+
+        
+        // ========== SISTEMA COMPLETO DE EMAILS AUTOMÁTICOS ==========
+        async function sendEmailNotification(type, email, data) {
+            try {
+                const emailTemplates = {
+                    // Email de confirmação de cadastro
+                    'signup_confirmation': {
+                        subject: 'Confirme seu Cadastro na MAM Distribuidora',
+                        body: `Olá ${data.nome},\n\nBem-vindo à MAM Distribuidora!\n\nPor favor, confirme seu e-mail clicando no link abaixo:\nhttps://mam-distribuidora.com/confirm?email=${email}\n\nSe não se registou, ignore este e-mail.\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                    },
+                    // Email de lançamento em processamento
+                    'launch_processing': {
+                        subject: 'Seu Lançamento Está em Processamento',
+                        body: `Olá ${data.nome},\n\nRecebemos seu lançamento: "${data.titulo}"\n\nEstamos a validar a qualidade do áudio e da capa. Você receberá uma atualização em breve.\n\nID do Lançamento: ${data.musicId}\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                    },
+                    // Email de lançamento aprovado
+                    'launch_approved': {
+                        subject: 'Lançamento Aprovado! 🎉',
+                        body: `Olá ${data.nome},\n\nParabéns! Seu lançamento "${data.titulo}" foi aprovado!\n\nEm breve, sua música estará disponível em todas as plataformas digitais (Spotify, Apple Music, etc).\n\nID do Lançamento: ${data.musicId}\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                    },
+                    // Email de lançamento rejeitado
+                    'launch_rejected': {
+                        subject: 'Lançamento Rejeitado - Ação Necessária',
+                        body: `Olá ${data.nome},\n\nInfelizmente, seu lançamento "${data.titulo}" foi rejeitado pelos seguintes motivos:\n\n${data.motivo}\n\nPor favor, corrija os problemas e reenvie.\n\nSuporte: mamfilhos29@gmail.com | +244 937 881 307\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                    },
+                    // Email de saque em processamento
+                    'withdraw_processing': {
+                        subject: 'Seu Saque Está em Processamento',
+                        body: `Olá ${data.nome},\n\nRecebemos seu pedido de saque de ${data.valor.toLocaleString()} Kz.\n\nEstamos a processar a transferência para sua conta. Você receberá uma confirmação em breve.\n\nID da Transação: ${data.transactionId}\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                    },
+                    // Email de saque concluído
+                    'withdraw_completed': {
+                        subject: 'Saque Concluído com Sucesso! 💰',
+                        body: `Olá ${data.nome},\n\nSeu saque foi processado com sucesso!\n\nValor: ${data.valor.toLocaleString()} Kz\nMétodo: ${data.metodo}\nID da Transação: ${data.transactionId}\n\nO dinheiro deve chegar em sua conta em 1-3 dias úteis.\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                    },
+                    // Email de ganho recebido
+                    'earning_received': {
+                        subject: 'Novo Ganho Recebido! 💰',
+                        body: `Olá ${data.nome},\n\nVocê recebeu um novo ganho de ${data.valor.toLocaleString()} Kz!\n\nTipo: ${data.tipo}\nMotivo: ${data.motivo}\n\nSeu novo saldo está disponível em sua carteira.\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                    }
+                };
+
+                const template = emailTemplates[type];
+                if (!template) {
+                    console.error('Template de email não encontrado:', type);
+                    return false;
+                }
+
+                // Adicionar à fila de emails no Firestore
+                await db.collection('email_queue').add({
+                    to: email,
+                    subject: template.subject,
+                    body: template.body,
+                    type: type,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    sent: false,
+                    data: data
+                });
+
+                console.log(`✅ Email de ${type} enfileirado para ${email}`);
+                return true;
+            } catch (error) {
+                console.error('Erro ao enviar email:', error);
+                return false;
+            }
         }
 
         </script>

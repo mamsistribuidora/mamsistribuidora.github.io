@@ -2844,52 +2844,70 @@ if (firebase.appCheck) {
         }
 
         
-        async function requestDirectPayout() {
-            if (!currentUser) {
-                alert("Você deve estar logado");
-                return;
+        // Controlar número de áudios baseado em Álbum/Solo
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipoLancamento = document.getElementById('music-tipo-lancamento');
+            const audioInput = document.getElementById('music-audio');
+            
+            if (tipoLancamento) {
+                tipoLancamento.addEventListener('change', function() {
+                    if (this.value === 'Single') {
+                        audioInput.setAttribute('multiple', false);
+                        audioInput.setAttribute('accept', 'audio/wav,audio/mpeg');
+                    } else if (this.value === 'Album') {
+                        audioInput.setAttribute('multiple', true);
+                        audioInput.setAttribute('accept', 'audio/wav,audio/mpeg');
+                    }
+                });
             }
+        });
 
-            const userDoc = await db.collection('users').doc(currentUser.email).get();
-            if (!userDoc.exists) {
-                alert("Perfil não encontrado");
-                return;
-            }
-
-            const userData = userDoc.data();
-            const saldoDisponivel = userData.saldo || 0;
-
-            if (saldoDisponivel < 5000) {
-                alert(`Saldo insuficiente. Mínimo: 5.000 Kz. Seu saldo: ${saldoDisponivel.toLocaleString()} Kz`);
-                return;
-            }
-
-            const confirmado = confirm(`Deseja sacar ${saldoDisponivel.toLocaleString()} Kz? O valor será transferido em 1-3 dias úteis.`);
-            if (!confirmado) return;
-
-            showLoading(true, "A processar transferência...");
-
+        
+        // Carregar ganhos reais totais da carteira
+        async function loadRealBalance() {
+            if (!currentUser) return;
+            
             try {
-                await db.collection('payouts').add({
-                    email: currentUser.email,
-                    valor: saldoDisponivel,
-                    status: "Processado",
-                    dataProcessamento: firebase.firestore.FieldValue.serverTimestamp(),
-                    transactionId: `PAYOUT-${Date.now()}`
+                const userDoc = await db.collection('users').doc(currentUser.email).get();
+                if (!userDoc.exists) return;
+
+                const userData = userDoc.data();
+                const saldoReal = userData.saldo || 0;
+
+                // Atualizar exibição da carteira
+                document.getElementById('stat-saldo').innerText = saldoReal.toLocaleString() + ' Kz';
+                document.getElementById('saldo-disponivel').innerText = saldoReal.toLocaleString() + ' Kz';
+
+                // Carregar histórico de ganhos
+                const ganhosSnapshot = await db.collection('ganhos')
+                    .where('email', '==', currentUser.email)
+                    .get();
+
+                let totalGanhos = 0;
+                ganhosSnapshot.forEach(doc => {
+                    const ganho = doc.data();
+                    if (ganho.tipo !== 'Saque Direto' && ganho.valor > 0) {
+                        totalGanhos += ganho.valor;
+                    }
                 });
 
-                await db.collection('users').doc(currentUser.email).update({
-                    saldo: 0,
-                    ultimoSaque: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                showLoading(false);
-                alert(`Saque Processado! Valor: ${saldoDisponivel.toLocaleString()} Kz. Será creditado em 1-3 dias úteis.`);
-                loadUserData();
+                document.getElementById('ganhos-acumulados').innerText = totalGanhos.toLocaleString() + ' Kz';
             } catch (error) {
-                showLoading(false);
-                alert("Erro: " + error.message);
+                console.error("Erro ao carregar saldo real:", error);
             }
+        }
+
+        // Usar onSnapshot para atualizar em tempo real
+        function setupRealtimeBalance() {
+            if (!currentUser) return;
+            
+            db.collection('users').doc(currentUser.email).onSnapshot(doc => {
+                if (doc.exists) {
+                    const saldoReal = doc.data().saldo || 0;
+                    document.getElementById('stat-saldo').innerText = saldoReal.toLocaleString() + ' Kz';
+                    document.getElementById('saldo-disponivel').innerText = saldoReal.toLocaleString() + ' Kz';
+                }
+            });
         }
 
         </script>

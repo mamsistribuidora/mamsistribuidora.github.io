@@ -295,10 +295,10 @@
                             <label>Produtores/Produtora</label>
                             <input type="text" id="music-produtores" placeholder="Ex: Produtor 1, Produtor 2">
 
-                            <label>ISRC (International Standard Recording Code)</label>
+                            <label>ISRC (International Standard Recording Code) <button type="button" class="btn btn-small btn-sec" style="display: inline-flex; width: auto; padding: 4px 8px; margin-left: 10px;" onclick="generateISRC()">Gerar ISRC</button></label>
                             <input type="text" id="music-isrc" placeholder="Ex: USRC17607839" maxlength="12">
 
-                            <label>UPC (Universal Product Code)</label>
+                            <label>UPC (Universal Product Code) <button type="button" class="btn btn-small btn-sec" style="display: inline-flex; width: auto; padding: 4px 8px; margin-left: 10px;" onclick="generateUPC()">Gerar UPC</button></label>
                             <input type="text" id="music-upc" placeholder="Ex: 5901234123457" maxlength="13">
                         </div>
                         <div>
@@ -778,6 +778,32 @@ if (firebase.appCheck) {
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
             }
+        }
+
+        function generateISRC() {
+            const country = "AO"; // Angola
+            const registrant = "MAM"; // MAM Distribuidora
+            const year = new Date().getFullYear().toString().slice(-2);
+            const random = Math.floor(10000 + Math.random() * 90000);
+            const isrc = `${country}${registrant}${year}${random}`;
+            document.getElementById('music-isrc').value = isrc;
+        }
+
+        function generateUPC() {
+            let upc = "0"; // Prefixo padrão
+            for (let i = 0; i < 11; i++) {
+                upc += Math.floor(Math.random() * 10);
+            }
+            
+            // Cálculo do dígito verificador (Check Digit)
+            let sum = 0;
+            for (let i = 0; i < 12; i++) {
+                sum += parseInt(upc[i]) * (i % 2 === 0 ? 3 : 1);
+            }
+            const checkDigit = (10 - (sum % 10)) % 10;
+            upc += checkDigit;
+            
+            document.getElementById('music-upc').value = upc;
         }
 
         function populateSelects() {

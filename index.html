@@ -317,11 +317,11 @@
                             </select>
 
                             <label>Capa do Lançamento (3000x3000px - PNG/JPG)</label>
-                            <input type="file" id="music-capa" accept="image/png,image/jpeg">
+                            <input type="file" id="music-capa" accept="image/*">
                             <small style="color: var(--gray);">Dimensão obrigatória: 3000x3000 pixels</small>
                             
                             <label>Ficheiro de Áudio (WAV)</label>
-                            <input type="file" id="music-audio" accept="audio/wav">
+                            <input type="file" id="music-audio" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3">
                             <small style="color: var(--gray);">Formato obrigatório: WAV</small>
                             
                             <label>Data de Lançamento</label>
@@ -1978,10 +1978,13 @@ if (firebase.appCheck) {
                     return false;
                 }
 
-                // Verificar tipo MIME
-                const validTypes = ['audio/wav', 'audio/mpeg', 'audio/mp3'];
-                if (!validTypes.includes(file.type)) {
-                    this.errors.push(`Formato inválido: ${file.type}. Apenas WAV e MP3 são aceitos.`);
+                // Verificar tipo MIME ou extensão para maior compatibilidade
+                const validTypes = ['audio/wav', 'audio/mpeg', 'audio/mp3', 'audio/x-wav'];
+                const fileName = file.name.toLowerCase();
+                const isAudioExtension = fileName.endsWith('.mp3') || fileName.endsWith('.wav');
+                
+                if (!validTypes.includes(file.type) && !isAudioExtension) {
+                    this.errors.push(`Formato inválido: ${file.type || 'desconhecido'}. Apenas WAV e MP3 são aceitos.`);
                     return false;
                 }
 

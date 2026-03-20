@@ -274,64 +274,66 @@
 
                 <div class="card">
                     <h3><i class="fas fa-rocket"></i> Novo Lançamento</h3>
-                    <div class="grid">
-                        <div>
-                            <label>Título da Música/Álbum</label>
-                            <input type="text" id="music-titulo" placeholder="Ex: O Meu Sucesso">
-                            
-                            <label>Artista Principal</label>
-                            <select id="music-artista-select">
-                                <option value="">Selecione um artista...</option>
-                            </select>
-                            
-                            <label>Estilo Musical</label>
-                            <select id="music-estilo">
-                                <option value="">Selecione o estilo...</option>
-                            </select>
+                    <button class="btn" onclick="showLaunchTypeModal()" style="margin-bottom: 20px;">
+                        <i class="fas fa-plus"></i> Começar Novo Lançamento
+                    </button>
 
-                            <label>Colaboradores (separados por vírgula)</label>
-                            <input type="text" id="music-colaboradores" placeholder="Ex: Artista 1, Artista 2, Artista 3">
-
-                            <label>Produtores/Produtora</label>
-                            <input type="text" id="music-produtores" placeholder="Ex: Produtor 1, Produtor 2">
-
-                            <label>ISRC (International Standard Recording Code)</label>
-                            <input type="text" id="music-isrc" placeholder="Ex: USRC17607839" maxlength="12">
-
-                            <label>UPC (Universal Product Code)</label>
-                            <input type="text" id="music-upc" placeholder="Ex: 5901234123457" maxlength="13">
-                        </div>
-                        <div>
-                            <label>Gênero Musical</label>
-                            <select id="music-genero">
-                                <option value="">Selecione o gênero...</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="Eletrônico">Eletrônico</option>
-                                <option value="Afro House">Afro House</option>
-                                <option value="Kizomba">Kizomba</option>
-                                <option value="Gospel">Gospel</option>
-                            </select>
-
-                            <label>Capa do Lançamento (3000x3000px - PNG/JPG)</label>
-                            <input type="file" id="music-capa" accept="image/png,image/jpeg">
-                            <small style="color: var(--gray);">Dimensão obrigatória: 3000x3000 pixels</small>
-                            
-                            <label>Ficheiro de Áudio (WAV)</label>
-                            <input type="file" id="music-audio" accept="audio/wav">
-                            <small style="color: var(--gray);">Formato obrigatório: WAV</small>
-                            
-                            <label>Data de Lançamento</label>
-                            <input type="date" id="music-data">
+                    <!-- Modal -->
+                    <div id="modal-album-solo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center;">
+                        <div style="background: var(--card); padding: 40px; border-radius: 12px; text-align: center; max-width: 500px; border: 2px solid var(--gold);">
+                            <h2 style="color: var(--gold); margin-bottom: 20px;">Tipo de Lançamento</h2>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0;">
+                                <button class="btn" onclick="selectLaunchType('Single')" style="padding: 30px; background: #1a1a1a; color: var(--gold); border: 2px solid var(--gold);">🎵 Single</button>
+                                <button class="btn" onclick="selectLaunchType('Album')" style="padding: 30px; background: #1a1a1a; color: var(--gold); border: 2px solid var(--gold);">💿 Álbum</button>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn" onclick="handleUploadMusic()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
-                    <button class="btn btn-sec" onclick="alert('Após aprovação, você poderá exportar o DDEX XML para as lojas digitais.')" style="margin-left: 10px;">
-                        <i class="fas fa-file-export"></i> DDEX (após aprovação)
-                    </button>
+
+                    <!-- Formulário -->
+                    <div id="launch-form-container" style="display: none;">
+                        <div class="grid">
+                            <div>
+                                <label>Título</label>
+                                <input type="text" id="music-titulo" placeholder="Ex: O Meu Sucesso">
+                                <label>Artista</label>
+                                <select id="music-artista-select"><option value="">Selecione...</option></select>
+                                <label>Estilo</label>
+                                <select id="music-estilo"><option value="">Selecione...</option></select>
+                                <label>Colaboradores</label>
+                                <input type="text" id="music-colaboradores" placeholder="Separados por vírgula">
+                                <label>Produtores</label>
+                                <input type="text" id="music-produtores">
+                                <label>ISRC</label>
+                                <input type="text" id="music-isrc" maxlength="12">
+                                <label>UPC</label>
+                                <input type="text" id="music-upc" maxlength="13">
+                            </div>
+                            <div>
+                                <label>Gênero</label>
+                                <select id="music-genero">
+                                    <option value="">Selecione...</option>
+                                    <option value="Pop">Pop</option>
+                                    <option value="Hip Hop">Hip Hop</option>
+                                    <option value="R&B">R&B</option>
+                                    <option value="Eletrônico">Eletrônico</option>
+                                    <option value="Afrobeats">Afrobeats</option>
+                                </select>
+                                <label>Capa (3000x3000px)</label>
+                                <input type="file" id="music-capa" accept="image/png,image/jpeg">
+                                <label>Áudio (WAV/MP3)</label>
+                                <input type="file" id="music-audio" accept="audio/wav,audio/mpeg">
+                                <div id="audio-tracks-container" style="display: none; margin-top: 15px;">
+                                    <button type="button" class="btn btn-sec" onclick="addAudioTrack()">+ Adicionar Faixa</button>
+                                    <div id="extra-tracks"></div>
+                                </div>
+                                <label>Data de Lançamento</label>
+                                <input type="date" id="music-data">
+                                <input type="hidden" id="music-tipo-lancamento" value="Single">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="handleUploadMusic()">Enviar para Revisão</button>
+                        <button class="btn btn-sec" onclick="closeLaunchForm()" style="margin-left: 10px;">Cancelar</button>
+                    </div>
                 </div>
             </div>
 
@@ -2989,6 +2991,15 @@ if (firebase.appCheck) {
 
         function showLaunchTypeModal() {
             document.getElementById('modal-album-solo').style.display = 'flex';
+        }
+
+        function closeLaunchForm() {
+            document.getElementById('launch-form-container').style.display = 'none';
+            document.getElementById('music-titulo').value = '';
+            document.getElementById('music-audio').value = '';
+            document.getElementById('music-capa').value = '';
+            audioTracksCount = 1;
+            document.getElementById('extra-tracks').innerHTML = '';
         }
 
         function addAudioTrack() {

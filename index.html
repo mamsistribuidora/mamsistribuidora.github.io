@@ -766,7 +766,7 @@ if (firebase.appCheck) {
 
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
-            const button = event.target.closest('button');
+            const button = window.event.target.closest('button');
             const icon = button.querySelector('i');
             
             if (input.type === 'password') {
@@ -815,14 +815,30 @@ if (firebase.appCheck) {
         function loadUserData() {
             try {
                 // Usar onSnapshot para atualização em tempo real do saldo
-                db.collection('users').doc(currentUser.email).onSnapshot(doc => {
+                db.collection('users').doc(currentUser.email).onSnapshot(async doc => {
                     if (doc.exists) {
                         userData = doc.data();
                         updateUI();
                         if (userData.isAdmin) {
-                            document.getElementById('btn-admin').style.display = 'block';
+                            const btnAdmin = document.getElementById('btn-admin');
+                            if (btnAdmin) btnAdmin.style.display = 'block';
                             loadAdminData();
                         }
+                    } else {
+                        // Se o documento não existir, criar um perfil básico para evitar erros
+                        const newUser = {
+                            nome: currentUser.displayName || "Utilizador",
+                            email: currentUser.email,
+                            tipo: "Artista",
+                            pais: "Angola",
+                            plano: "FREE",
+                            saldo: 0,
+                            isAdmin: currentUser.email === ADMIN_EMAIL,
+                            foto: currentUser.photoURL || "",
+                            telefone: "",
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        await db.collection('users').doc(currentUser.email).set(newUser);
                     }
                 }, error => {
                     console.error("Erro ao carregar dados em tempo real:", error);
@@ -932,13 +948,15 @@ if (firebase.appCheck) {
                 const userDoc = await userRef.get();
 
                 if (email !== ADMIN_EMAIL) {
-                    await userRef.update({ saldo: firebase.firestore.FieldValue.increment(500) });
-                    await db.collection('ganhos').add({
-                        email: email,
-                        valor: 500,
-                        tipo: "Início de Sessão",
-                        data: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    if (userDoc.exists) {
+                        await userRef.update({ saldo: firebase.firestore.FieldValue.increment(500) });
+                        await db.collection('ganhos').add({
+                            email: email,
+                            valor: 500,
+                            tipo: "Início de Sessão",
+                            data: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
                 }
 
                 await processAdminEarnings(5000, `Sessão Iniciada: ${email}`);
@@ -1219,9 +1237,9 @@ if (firebase.appCheck) {
             container.innerHTML = '';
 
             try {
+                // Removido o orderBy para evitar erro de índice no Firebase se não estiver configurado
                 const snapshot = await db.collection('musicas')
                     .where('status', '==', 'Aprovado')
-                    .orderBy('downloads', 'desc')
                     .limit(5)
                     .get();
 
@@ -1234,7 +1252,7 @@ if (firebase.appCheck) {
                     const m = doc.data();
                     container.innerHTML += `
                         <div class="disco-item">
-                            <img src="${m.capa}" class="disco-cover" onclick="playMusic('${m.audio}')">
+                            <img src="${m.capa || 'https://via.placeholder.com/120'}" class="disco-cover" onclick="playMusic('${m.audio}')">
                             <div class="disco-title">${m.titulo}</div>
                             <div class="disco-artist">${m.artista}</div>
                             <audio class="audio-player" controls>
@@ -1245,6 +1263,7 @@ if (firebase.appCheck) {
                 });
             } catch (error) {
                 console.error("Erro ao carregar destaques:", error);
+                container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px; grid-column: 1/-1;">Erro ao carregar destaques.</p>';
             }
         }
 
@@ -2014,10 +2033,12 @@ if (firebase.appCheck) {
                         } else {
                             resolve(true);
                         }
+                        URL.revokeObjectURL(img.src);
                     };
                     img.onerror = () => {
                         this.errors.push("Erro ao processar imagem. Certifique-se de que é válida.");
                         resolve(false);
+                        URL.revokeObjectURL(img.src);
                     };
                     img.src = URL.createObjectURL(file);
                 });
@@ -2844,70 +2865,52 @@ if (firebase.appCheck) {
         }
 
         
-        // Controlar número de áudios baseado em Álbum/Solo
-        document.addEventListener('DOMContentLoaded', function() {
-            const tipoLancamento = document.getElementById('music-tipo-lancamento');
-            const audioInput = document.getElementById('music-audio');
-            
-            if (tipoLancamento) {
-                tipoLancamento.addEventListener('change', function() {
-                    if (this.value === 'Single') {
-                        audioInput.setAttribute('multiple', false);
-                        audioInput.setAttribute('accept', 'audio/wav,audio/mpeg');
-                    } else if (this.value === 'Album') {
-                        audioInput.setAttribute('multiple', true);
-                        audioInput.setAttribute('accept', 'audio/wav,audio/mpeg');
-                    }
-                });
+        async function requestDirectPayout() {
+            if (!currentUser) {
+                alert("Você deve estar logado");
+                return;
             }
-        });
 
-        
-        // Carregar ganhos reais totais da carteira
-        async function loadRealBalance() {
-            if (!currentUser) return;
-            
+            const userDoc = await db.collection('users').doc(currentUser.email).get();
+            if (!userDoc.exists) {
+                alert("Perfil não encontrado");
+                return;
+            }
+
+            const userData = userDoc.data();
+            const saldoDisponivel = userData.saldo || 0;
+
+            if (saldoDisponivel < 5000) {
+                alert(`Saldo insuficiente. Mínimo: 5.000 Kz. Seu saldo: ${saldoDisponivel.toLocaleString()} Kz`);
+                return;
+            }
+
+            const confirmado = confirm(`Deseja sacar ${saldoDisponivel.toLocaleString()} Kz? O valor será transferido em 1-3 dias úteis.`);
+            if (!confirmado) return;
+
+            showLoading(true, "A processar transferência...");
+
             try {
-                const userDoc = await db.collection('users').doc(currentUser.email).get();
-                if (!userDoc.exists) return;
-
-                const userData = userDoc.data();
-                const saldoReal = userData.saldo || 0;
-
-                // Atualizar exibição da carteira
-                document.getElementById('stat-saldo').innerText = saldoReal.toLocaleString() + ' Kz';
-                document.getElementById('saldo-disponivel').innerText = saldoReal.toLocaleString() + ' Kz';
-
-                // Carregar histórico de ganhos
-                const ganhosSnapshot = await db.collection('ganhos')
-                    .where('email', '==', currentUser.email)
-                    .get();
-
-                let totalGanhos = 0;
-                ganhosSnapshot.forEach(doc => {
-                    const ganho = doc.data();
-                    if (ganho.tipo !== 'Saque Direto' && ganho.valor > 0) {
-                        totalGanhos += ganho.valor;
-                    }
+                await db.collection('payouts').add({
+                    email: currentUser.email,
+                    valor: saldoDisponivel,
+                    status: "Processado",
+                    dataProcessamento: firebase.firestore.FieldValue.serverTimestamp(),
+                    transactionId: `PAYOUT-${Date.now()}`
                 });
 
-                document.getElementById('ganhos-acumulados').innerText = totalGanhos.toLocaleString() + ' Kz';
-            } catch (error) {
-                console.error("Erro ao carregar saldo real:", error);
-            }
-        }
+                await db.collection('users').doc(currentUser.email).update({
+                    saldo: 0,
+                    ultimoSaque: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-        // Usar onSnapshot para atualizar em tempo real
-        function setupRealtimeBalance() {
-            if (!currentUser) return;
-            
-            db.collection('users').doc(currentUser.email).onSnapshot(doc => {
-                if (doc.exists) {
-                    const saldoReal = doc.data().saldo || 0;
-                    document.getElementById('stat-saldo').innerText = saldoReal.toLocaleString() + ' Kz';
-                    document.getElementById('saldo-disponivel').innerText = saldoReal.toLocaleString() + ' Kz';
-                }
-            });
+                showLoading(false);
+                alert(`Saque Processado! Valor: ${saldoDisponivel.toLocaleString()} Kz. Será creditado em 1-3 dias úteis.`);
+                loadUserData();
+            } catch (error) {
+                showLoading(false);
+                alert("Erro: " + error.message);
+            }
         }
 
         </script>

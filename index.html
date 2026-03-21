@@ -1478,9 +1478,9 @@ if (firebase.appCheck) {
                     fotoUrl = await storageRef.getDownloadURL();
                 }
 
-                await db.collection('users').doc(currentUser.email).update({
+                await db.collection('users').doc(currentUser.email).set({
                     nome, telefone, pais, foto: fotoUrl
-                });
+                }, { merge: true });
 
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();
@@ -2098,11 +2098,13 @@ if (firebase.appCheck) {
                 }
 
                 // Validar que a data não é no passado
-                const lancDate = new Date(dataLanc);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                if (lancDate < today) {
-                    this.errors.push("Data de lançamento não pode ser no passado");
+                if (dataLanc) {
+                    const lancDate = new Date(dataLanc + "T00:00:00");
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    if (lancDate < today) {
+                        this.errors.push("Data de lançamento não pode ser no passado");
+                    }
                 }
 
                 return this.errors.length === 0;

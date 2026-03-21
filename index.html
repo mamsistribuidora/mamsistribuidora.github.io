@@ -1199,17 +1199,38 @@ if (firebase.appCheck) {
         }
 
         async function uploadMusicWithValidation(titulo, artista, estilo, genero, colaboradores, produtores, isrc, upc, capaFile, audioFile, dataLanc) {
-
-            showLoading(true, "A enviar lançamento...");
+            if (!currentUser) return alert("Sessão expirada. Por favor, faça login novamente.");
+            
+            showLoading(true, "A enviar lançamento (0%)...");
             try {
-                const capaRef = storage.ref(`capas/${currentUser.email}_${Date.now()}`);
-                await capaRef.put(capaFile);
+                console.log("Iniciando upload da capa...");
+                const capaRef = storage.ref().child(`capas/${currentUser.email}_${Date.now()}`);
+                const capaTask = capaRef.put(capaFile);
+                
+                capaTask.on('state_changed', (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 50;
+                    showLoading(true, `A enviar capa (${Math.round(progress)}%)...`);
+                });
+
+                await capaTask;
                 const capaUrl = await capaRef.getDownloadURL();
+                console.log("Capa enviada:", capaUrl);
 
-                const audioRef = storage.ref(`audios/${currentUser.email}_${Date.now()}`);
-                await audioRef.put(audioFile);
+                showLoading(true, "A enviar áudio (50%)...");
+                console.log("Iniciando upload do áudio...");
+                const audioRef = storage.ref().child(`audios/${currentUser.email}_${Date.now()}`);
+                const audioTask = audioRef.put(audioFile);
+
+                audioTask.on('state_changed', (snapshot) => {
+                    const progress = 50 + (snapshot.bytesTransferred / snapshot.totalBytes) * 45;
+                    showLoading(true, `A enviar áudio (${Math.round(progress)}%)...`);
+                });
+
+                await audioTask;
                 const audioUrl = await audioRef.getDownloadURL();
+                console.log("Áudio enviado:", audioUrl);
 
+                showLoading(true, "A registar na base de dados...");
                 await db.collection('musicas').add({
                     titulo,
                     artista,
@@ -1473,9 +1494,18 @@ if (firebase.appCheck) {
                         showLoading(false);
                         return alert("A imagem não pode exceder 5MB!");
                     }
-                    const storageRef = storage.ref(`perfis/${currentUser.email}_${Date.now()}`);
-                    await storageRef.put(fotoFile);
+                    console.log("Iniciando upload da foto de perfil...");
+                    const storageRef = storage.ref().child(`perfis/${currentUser.email}_${Date.now()}`);
+                    const uploadTask = storageRef.put(fotoFile);
+                    
+                    uploadTask.on('state_changed', (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        showLoading(true, `A enviar foto (${Math.round(progress)}%)...`);
+                    });
+
+                    await uploadTask;
                     fotoUrl = await storageRef.getDownloadURL();
+                    console.log("Foto de perfil enviada:", fotoUrl);
                 }
 
                 await db.collection('users').doc(currentUser.email).set({

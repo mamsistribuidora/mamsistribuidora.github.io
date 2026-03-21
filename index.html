@@ -1204,31 +1204,21 @@ if (firebase.appCheck) {
             showLoading(true, "A enviar lançamento (0%)...");
             try {
                 console.log("Iniciando upload da capa...");
-                const capaRef = storage.ref().child(`capas/${currentUser.email}_${Date.now()}`);
-                const capaTask = capaRef.put(capaFile);
+                const capaRef = storage.ref().child('capas/' + currentUser.email + '_' + Date.now());
                 
-                capaTask.on('state_changed', (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 50;
-                    showLoading(true, `A enviar capa (${Math.round(progress)}%)...`);
+                // Upload simplificado para evitar travamento em 0%
+                const capaSnapshot = await capaRef.put(capaFile).catch(err => {
+                    throw new Error("Erro no Storage (Capa): " + err.message + ". Verifique as regras do Firebase.");
                 });
+                const capaUrl = await capaSnapshot.ref.getDownloadURL();
 
-                await capaTask;
-                const capaUrl = await capaRef.getDownloadURL();
-                console.log("Capa enviada:", capaUrl);
-
-                showLoading(true, "A enviar áudio (50%)...");
-                console.log("Iniciando upload do áudio...");
-                const audioRef = storage.ref().child(`audios/${currentUser.email}_${Date.now()}`);
-                const audioTask = audioRef.put(audioFile);
-
-                audioTask.on('state_changed', (snapshot) => {
-                    const progress = 50 + (snapshot.bytesTransferred / snapshot.totalBytes) * 45;
-                    showLoading(true, `A enviar áudio (${Math.round(progress)}%)...`);
+                showLoading(true, "Capa OK! A enviar áudio...");
+                const audioRef = storage.ref().child('audios/' + currentUser.email + '_' + Date.now());
+                
+                const audioSnapshot = await audioRef.put(audioFile).catch(err => {
+                    throw new Error("Erro no Storage (Áudio): " + err.message + ". Ficheiro muito grande ou permissão negada.");
                 });
-
-                await audioTask;
-                const audioUrl = await audioRef.getDownloadURL();
-                console.log("Áudio enviado:", audioUrl);
+                const audioUrl = await audioSnapshot.ref.getDownloadURL();
 
                 showLoading(true, "A registar na base de dados...");
                 await db.collection('musicas').add({
@@ -1264,7 +1254,8 @@ if (firebase.appCheck) {
                 loadUserMusic();
                 loadFeed();
             } catch (error) {
-                alert("Erro no upload: " + error.message);
+                console.error("ERRO CRÍTICO NO UPLOAD:", error);
+                alert("⚠️ FALHA NO ENVIO:\n\n" + error.message + "\n\nSugestão: Verifique se o seu Firebase Storage tem as regras de segurança abertas para gravação ou se os ficheiros são demasiado grandes.");
             }
             showLoading(false);
         }
@@ -1495,17 +1486,11 @@ if (firebase.appCheck) {
                         return alert("A imagem não pode exceder 5MB!");
                     }
                     console.log("Iniciando upload da foto de perfil...");
-                    const storageRef = storage.ref().child(`perfis/${currentUser.email}_${Date.now()}`);
-                    const uploadTask = storageRef.put(fotoFile);
-                    
-                    uploadTask.on('state_changed', (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        showLoading(true, `A enviar foto (${Math.round(progress)}%)...`);
+                    const storageRef = storage.ref().child('perfis/' + currentUser.email + '_' + Date.now());
+                    const fotoSnapshot = await storageRef.put(fotoFile).catch(err => {
+                        throw new Error("Erro no Storage (Foto): " + err.message);
                     });
-
-                    await uploadTask;
-                    fotoUrl = await storageRef.getDownloadURL();
-                    console.log("Foto de perfil enviada:", fotoUrl);
+                    fotoUrl = await fotoSnapshot.ref.getDownloadURL();
                 }
 
                 await db.collection('users').doc(currentUser.email).set({
@@ -1515,7 +1500,8 @@ if (firebase.appCheck) {
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();
             } catch (error) {
-                alert("Erro: " + error.message);
+                console.error("ERRO NO PERFIL:", error);
+                alert("⚠️ ERRO AO ATUALIZAR PERFIL:\n\n" + error.message);
             }
             showLoading(false);
         }

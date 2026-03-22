@@ -108,6 +108,13 @@
         .footer-links a { color: var(--gray); text-decoration: none; transition: 0.3s; }
         .footer-links a:hover { color: var(--gold); }
 
+        /* Global Header & Nav */
+        #global-header { background: rgba(0,0,0,0.98); border-bottom: 2px solid var(--gold); padding: 15px; position: sticky; top: 0; z-index: 1000; text-align: center; }
+        #global-nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; }
+        
+        /* Global Footer */
+        #global-footer { background: #050505; border-top: 1px solid #222; padding: 40px 20px; text-align: center; color: var(--gray); font-size: 0.8rem; margin-top: 50px; }
+
         /* Responsive */
         @media (max-width: 600px) {
             .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
@@ -123,8 +130,30 @@
         <p id="loading-text">Processando...</p>
     </div>
 
+    <!-- HEADER GLOBAL - Aparece sempre -->
+    <header id="global-header">
+        <div class="logo">
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
+            <div class="logo-text">MAM Distribuidora</div>
+        </div>
+    </header>
+
+    <!-- NAV GLOBAL - Aparece sempre -->
+    <nav id="global-nav">
+        <button class="nav-btn active" onclick="showSectionGlobal('home', this)"><i class="fas fa-home"></i> Início</button>
+        <button class="nav-btn" onclick="showSectionGlobal('planos', this)"><i class="fas fa-tags"></i> Planos</button>
+        <button class="nav-btn" id="nav-artistas" style="display: none;" onclick="showSectionGlobal('artistas', this)"><i class="fas fa-users"></i> Artistas</button>
+        <button class="nav-btn" id="nav-lancar" style="display: none;" onclick="showSectionGlobal('lancar', this)"><i class="fas fa-cloud-upload-alt"></i> Lançar</button>
+        <button class="nav-btn" id="nav-minhas-musicas" style="display: none;" onclick="showSectionGlobal('minhas-musicas', this)"><i class="fas fa-music"></i> Minhas Músicas</button>
+        <button class="nav-btn" id="nav-carteira" style="display: none;" onclick="showSectionGlobal('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
+        <button class="nav-btn" id="nav-perfil" style="display: none;" onclick="showSectionGlobal('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
+        <button class="nav-btn" id="btn-admin-global" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSectionGlobal('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO</button>
+        <button class="nav-btn" id="nav-login" onclick="showAuthScreen()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+        <button class="nav-btn" id="nav-logout" style="display: none; color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
+    </nav>
+
     <!-- AUTH SCREEN -->
-    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 150px); padding: 20px;">
         <div style="max-width: 450px; width: 100%;">
             <div style="text-align: center; margin-bottom: 40px;">
                 <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 20px; box-shadow: 0 0 20px rgba(212,175,55,0.3);">
@@ -347,7 +376,7 @@
                             <input type="date" id="music-data">
                         </div>
                     </div>
-                    <button class="btn" onclick="handleUploadMusic()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
+                    <button class="btn" onclick="enviarLancamento()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
                     <button class="btn btn-sec" onclick="alert('Após aprovação, você poderá exportar o DDEX XML para as lojas digitais.')" style="margin-left: 10px;">
                         <i class="fas fa-file-export"></i> DDEX (após aprovação)
                     </button>
@@ -1232,10 +1261,23 @@ if (firebase.appCheck) {
             }
         }
 
+        // Função principal de lançamento - corrigida
+        async function enviarLancamento() {
+            console.log('Upload iniciado - enviarLancamento chamada');
+            try {
+                // Redirecionar para o novo sistema Gatekeeper
+                await gatekeeperValidateAndUpload();
+            } catch (error) {
+                console.error('Erro no enviarLancamento:', error);
+                showLoading(false);
+                alert('Erro ao processar lançamento: ' + error.message);
+            }
+        }
+
+        // Alias para compatibilidade
         async function handleUploadMusic() {
-            console.log('Upload iniciado - handleUploadMusic chamada');
-            // Redirecionar para o novo sistema Gatekeeper
-            await gatekeeperValidateAndUpload();
+            console.log('Upload iniciado - handleUploadMusic chamada (redirecionando para enviarLancamento)');
+            await enviarLancamento();
         }
 
         async function handleUploadMusicOld() {
@@ -1585,9 +1627,11 @@ if (firebase.appCheck) {
                     nome, telefone, pais, foto: fotoUrl
                 });
 
+                showLoading(false);
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();
             } catch (error) {
+                showLoading(false);
                 console.error("Erro ao atualizar perfil:", error);
                 alert("Erro: " + error.message);
             } finally {
@@ -3048,6 +3092,86 @@ if (firebase.appCheck) {
             }
         }
 
+        // ============ FUNÇÕES DE NAVEGAÇÃO GLOBAL ============
+        function showSectionGlobal(sectionId, btn) {
+            // Se o utilizador não está logado, apenas mostrar secções públicas
+            if (!currentUser && !['home', 'planos'].includes(sectionId)) {
+                alert('Por favor, inicie sessão para aceder a esta secção.');
+                showAuthScreen();
+                return;
+            }
+
+            // Se está logado, usar a função normal
+            if (currentUser) {
+                showSection(sectionId, btn);
+                return;
+            }
+
+            // Para não logados, mostrar apenas home/planos
+            document.querySelectorAll('#global-nav .nav-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            
+            // Esconder auth e mostrar secção pública
+            if (sectionId === 'planos') {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                showSection('planos', document.querySelector('#nav-menu .nav-btn:nth-child(5)'));
+            } else {
+                showAuthScreen();
+            }
+        }
+
+        function showAuthScreen() {
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+            updateGlobalNavForLoggedOut();
+        }
+
+        function updateGlobalNavForLoggedIn() {
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'inline-flex';
+            document.getElementById('nav-artistas').style.display = 'inline-flex';
+            document.getElementById('nav-lancar').style.display = 'inline-flex';
+            document.getElementById('nav-minhas-musicas').style.display = 'inline-flex';
+            document.getElementById('nav-carteira').style.display = 'inline-flex';
+            document.getElementById('nav-perfil').style.display = 'inline-flex';
+        }
+
+        function updateGlobalNavForLoggedOut() {
+            document.getElementById('nav-login').style.display = 'inline-flex';
+            document.getElementById('nav-logout').style.display = 'none';
+            document.getElementById('nav-artistas').style.display = 'none';
+            document.getElementById('nav-lancar').style.display = 'none';
+            document.getElementById('nav-minhas-musicas').style.display = 'none';
+            document.getElementById('nav-carteira').style.display = 'none';
+            document.getElementById('nav-perfil').style.display = 'none';
+            document.getElementById('btn-admin-global').style.display = 'none';
+        }
+
+        // Atualizar as funções showApp e showAuth para também atualizar a nav global
+        const originalShowApp = showApp;
+        showApp = function() {
+            originalShowApp();
+            updateGlobalNavForLoggedIn();
+        };
+
+        const originalShowAuth = showAuth;
+        showAuth = function() {
+            originalShowAuth();
+            updateGlobalNavForLoggedOut();
+        };
+
         </script>
+
+    <!-- FOOTER GLOBAL - Aparece sempre -->
+    <footer id="global-footer">
+        <div class="footer-links">
+            <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
+            <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
+            <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
+        </div>
+        <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
+        <p style="margin-top: 10px; color: var(--gold); font-weight: bold;">Fundador: Matias Arsénio Manuel</p>
+    </footer>
 </body>
 </html>

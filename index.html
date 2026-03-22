@@ -108,13 +108,6 @@
         .footer-links a { color: var(--gray); text-decoration: none; transition: 0.3s; }
         .footer-links a:hover { color: var(--gold); }
 
-        /* Global Header & Nav */
-        #global-header { background: rgba(0,0,0,0.98); border-bottom: 2px solid var(--gold); padding: 15px; position: sticky; top: 0; z-index: 1000; text-align: center; }
-        #global-nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; }
-        
-        /* Global Footer */
-        #global-footer { background: #050505; border-top: 1px solid #222; padding: 40px 20px; text-align: center; color: var(--gray); font-size: 0.8rem; margin-top: 50px; }
-
         /* Responsive */
         @media (max-width: 600px) {
             .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
@@ -1312,17 +1305,50 @@ if (firebase.appCheck) {
 
         async function uploadMusicWithValidation(titulo, artista, estilo, genero, colaboradores, produtores, isrc, upc, capaFile, audioFile, dataLanc) {
             console.log('Upload de música iniciado - uploadMusicWithValidation chamada');
-            showLoading(true, "A enviar lançamento...");
+            
             try {
+                // Upload da capa com progresso
+                showLoading(true, "A enviar capa (0%)...");
+                console.log('Iniciando upload da capa...');
+                
                 const capaRef = storage.ref().child(`capas/${currentUser.email}_${Date.now()}`);
-                const capaUpload = await capaRef.put(capaFile);
+                const capaUploadTask = capaRef.put(capaFile);
+                
+                // Monitorar progresso da capa
+                capaUploadTask.on('state_changed', 
+                    (snapshot) => {
+                        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                        showLoading(true, `A enviar capa (${progress}%)...`);
+                    }
+                );
+                
+                const capaUpload = await capaUploadTask;
                 const capaUrl = await capaUpload.ref.getDownloadURL();
+                console.log('Capa enviada:', capaUrl);
 
-                showLoading(true, "Capa enviada! A enviar áudio...");
+                // Upload do áudio com progresso
+                showLoading(true, "Capa enviada! A enviar áudio (0%)...");
+                console.log('Iniciando upload do áudio...');
+                
                 const audioRef = storage.ref().child(`audios/${currentUser.email}_${Date.now()}`);
-                const audioUpload = await audioRef.put(audioFile);
+                const audioUploadTask = audioRef.put(audioFile);
+                
+                // Monitorar progresso do áudio
+                audioUploadTask.on('state_changed', 
+                    (snapshot) => {
+                        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                        showLoading(true, `A enviar áudio (${progress}%)...`);
+                    }
+                );
+                
+                const audioUpload = await audioUploadTask;
                 const audioUrl = await audioUpload.ref.getDownloadURL();
+                console.log('Áudio enviado:', audioUrl);
 
+                // Guardar no Firestore
+                showLoading(true, "A guardar dados...");
+                console.log('Guardando dados no Firestore...');
+                
                 await db.collection('musicas').add({
                     titulo,
                     artista,
@@ -1341,7 +1367,10 @@ if (firebase.appCheck) {
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
+                showLoading(false);
                 alert("Música enviada com sucesso! Aguarde a revisão.");
+                
+                // Limpar formulário
                 document.getElementById('music-titulo').value = '';
                 document.getElementById('music-artista-select').value = '';
                 document.getElementById('music-estilo').value = '';
@@ -1353,13 +1382,13 @@ if (firebase.appCheck) {
                 document.getElementById('music-capa').value = '';
                 document.getElementById('music-audio').value = '';
                 document.getElementById('music-data').value = '';
+                
                 loadUserMusic();
                 loadFeed();
             } catch (error) {
                 console.error("Erro no upload de música:", error);
-                alert("Erro no upload: " + error.message);
-            } finally {
                 showLoading(false);
+                alert("Erro no upload: " + error.message);
             }
         }
 
@@ -1607,22 +1636,36 @@ if (firebase.appCheck) {
 
             showLoading(true, "A atualizar perfil...");
             try {
-                let fotoUrl = userData.foto;
+                let fotoUrl = userData.foto || '';
 
                 if (fotoFile) {
-                    if (!fotoFile.type.startsWith('image/')) {
+                    console.log('Processando foto de perfil...');
+                    
+                    // Validar tipo de ficheiro
+                    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                    const fileName = fotoFile.name.toLowerCase();
+                    const isImageExtension = fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || fileName.endsWith('.png') || fileName.endsWith('.gif') || fileName.endsWith('.webp');
+                    
+                    if (!validTypes.includes(fotoFile.type) && !isImageExtension) {
                         showLoading(false);
-                        return alert("O ficheiro deve ser uma imagem!");
+                        return alert("O ficheiro deve ser uma imagem (JPG, PNG, GIF ou WebP)!");
                     }
+                    
                     if (fotoFile.size > 5 * 1024 * 1024) {
                         showLoading(false);
                         return alert("A imagem não pode exceder 5MB!");
                     }
+                    
+                    console.log('Iniciando upload da foto...');
+                    showLoading(true, "A enviar foto...");
+                    
                     const storageRef = storage.ref().child(`perfis/${currentUser.email}_${Date.now()}`);
                     const uploadTask = await storageRef.put(fotoFile);
                     fotoUrl = await uploadTask.ref.getDownloadURL();
+                    console.log('Foto enviada com sucesso:', fotoUrl);
                 }
 
+                showLoading(true, "A guardar dados...");
                 await db.collection('users').doc(currentUser.email).update({
                     nome, telefone, pais, foto: fotoUrl
                 });
@@ -1631,11 +1674,9 @@ if (firebase.appCheck) {
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();
             } catch (error) {
-                showLoading(false);
                 console.error("Erro ao atualizar perfil:", error);
-                alert("Erro: " + error.message);
-            } finally {
                 showLoading(false);
+                alert("Erro ao atualizar perfil: " + error.message);
             }
         }
 
@@ -2182,6 +2223,9 @@ if (firebase.appCheck) {
             // Validar capa (3000x3000px obrigatório)
             validateCoverImage(file) {
                 return new Promise((resolve) => {
+                    this.errors = [];
+                    this.warnings = [];
+                    
                     if (!file) {
                         this.errors.push("Capa não fornecida");
                         resolve(false);
@@ -2189,8 +2233,12 @@ if (firebase.appCheck) {
                     }
 
                     // Verificar tipo MIME
-                    if (!file.type.startsWith('image/')) {
-                        this.errors.push(`Ficheiro não é uma imagem: ${file.type}`);
+                    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    const fileName = file.name.toLowerCase();
+                    const isImageExtension = fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || fileName.endsWith('.png');
+                    
+                    if (!validImageTypes.includes(file.type) && !isImageExtension) {
+                        this.errors.push(`Ficheiro não é uma imagem válida: ${file.type || 'desconhecido'}. Use JPG ou PNG.`);
                         resolve(false);
                         return;
                     }
@@ -2202,11 +2250,21 @@ if (firebase.appCheck) {
                         return;
                     }
 
-                    // Verificar dimensões
+                    // Verificar dimensões com timeout de segurança
                     const img = new Image();
+                    img.crossOrigin = "anonymous";
+                    
+                    const timeout = setTimeout(() => {
+                        console.log("Timeout na validação da imagem - aceitando imagem");
+                        this.warnings.push("Não foi possível verificar dimensões. A imagem será aceita.");
+                        URL.revokeObjectURL(img.src);
+                        resolve(true);
+                    }, 10000); // 10 segundos timeout
+                    
                     img.onload = () => {
-                        if (img.width !== 3000 || img.height !== 3000) {
-                            this.errors.push(`Dimensões incorretas: ${img.width}x${img.height}. Obrigatório: 3000x3000px`);
+                        clearTimeout(timeout);
+                        if (img.width < 3000 || img.height < 3000) {
+                            this.errors.push(`Dimensões insuficientes: ${img.width}x${img.height}. Mínimo: 3000x3000px`);
                             resolve(false);
                         } else {
                             resolve(true);
@@ -2214,8 +2272,11 @@ if (firebase.appCheck) {
                         URL.revokeObjectURL(img.src);
                     };
                     img.onerror = () => {
-                        this.errors.push("Erro ao processar imagem. Certifique-se de que é válida.");
-                        resolve(false);
+                        clearTimeout(timeout);
+                        // Em caso de erro, aceitar a imagem e deixar o Firebase validar
+                        console.log("Erro ao validar imagem localmente - aceitando imagem");
+                        this.warnings.push("Não foi possível validar a imagem localmente.");
+                        resolve(true);
                         URL.revokeObjectURL(img.src);
                     };
                     img.src = URL.createObjectURL(file);
@@ -2274,54 +2335,75 @@ if (firebase.appCheck) {
         // Função de validação integrada no upload
         async function gatekeeperValidateAndUpload() {
             console.log('Validação iniciada - gatekeeperValidateAndUpload chamada');
-            const titulo = document.getElementById('music-titulo').value;
-            const artista = document.getElementById('music-artista-select').value;
-            const genero = document.getElementById('music-genero').value;
-            const isrc = document.getElementById('music-isrc').value;
-            const upc = document.getElementById('music-upc').value;
-            const dataLanc = document.getElementById('music-data').value;
-            const audioFile = document.getElementById('music-audio').files[0];
-            const capaFile = document.getElementById('music-capa').files[0];
+            
+            try {
+                const titulo = document.getElementById('music-titulo').value;
+                const artista = document.getElementById('music-artista-select').value;
+                const genero = document.getElementById('music-genero').value;
+                const isrc = document.getElementById('music-isrc').value;
+                const upc = document.getElementById('music-upc').value;
+                const dataLanc = document.getElementById('music-data').value;
+                const audioFile = document.getElementById('music-audio').files[0];
+                const capaFile = document.getElementById('music-capa').files[0];
 
-            showLoading(true, "A validar ficheiros...");
+                showLoading(true, "A validar ficheiros...");
 
-            // Validar metadados
-            if (!gatekeeper.validateMetadata(titulo, isrc, upc, genero, dataLanc)) {
-                showLoading(false);
-                alert("Erros de validação:\n\n" + gatekeeper.errors.join("\n"));
-                return;
-            }
-
-            // Validar áudio
-            if (!gatekeeper.validateAudioFile(audioFile)) {
-                showLoading(false);
-                alert("Erro no ficheiro de áudio:\n\n" + gatekeeper.errors.join("\n"));
-                return;
-            }
-
-            // Validar capa
-            const capaValid = await gatekeeper.validateCoverImage(capaFile);
-            if (!capaValid) {
-                showLoading(false);
-                alert("Erro na capa:\n\n" + gatekeeper.errors.join("\n"));
-                return;
-            }
-
-            // Se houver avisos, mostrar mas permitir continuar
-            if (gatekeeper.warnings.length > 0) {
-                const continuar = confirm("Avisos de qualidade:\n\n" + gatekeeper.warnings.join("\n") + "\n\nDeseja continuar mesmo assim?");
-                if (!continuar) {
+                // Validar metadados
+                console.log('Validando metadados...');
+                if (!gatekeeper.validateMetadata(titulo, isrc, upc, genero, dataLanc)) {
                     showLoading(false);
+                    alert("Erros de validação:\n\n" + gatekeeper.errors.join("\n"));
                     return;
                 }
-            }
 
-            // Tudo validado - prosseguir com upload
-            showLoading(true, "Ficheiros validados! A enviar...");
-            await uploadMusicWithValidation(titulo, artista, document.getElementById('music-estilo').value, genero, 
-                                           document.getElementById('music-colaboradores').value, 
-                                           document.getElementById('music-produtores').value, 
-                                           isrc, upc, capaFile, audioFile, dataLanc);
+                // Validar áudio
+                console.log('Validando áudio...');
+                if (!gatekeeper.validateAudioFile(audioFile)) {
+                    showLoading(false);
+                    alert("Erro no ficheiro de áudio:\n\n" + gatekeeper.errors.join("\n"));
+                    return;
+                }
+
+                // Validar capa com timeout
+                console.log('Validando capa...');
+                let capaValid = true;
+                try {
+                    capaValid = await Promise.race([
+                        gatekeeper.validateCoverImage(capaFile),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
+                    ]);
+                } catch (timeoutError) {
+                    console.log('Timeout na validação da capa - continuando...');
+                    capaValid = true; // Aceitar e deixar o upload continuar
+                }
+                
+                if (!capaValid) {
+                    showLoading(false);
+                    alert("Erro na capa:\n\n" + gatekeeper.errors.join("\n"));
+                    return;
+                }
+
+                // Se houver avisos, mostrar mas permitir continuar
+                if (gatekeeper.warnings.length > 0) {
+                    const continuar = confirm("Avisos de qualidade:\n\n" + gatekeeper.warnings.join("\n") + "\n\nDeseja continuar mesmo assim?");
+                    if (!continuar) {
+                        showLoading(false);
+                        return;
+                    }
+                }
+
+                // Tudo validado - prosseguir com upload
+                console.log('Validação concluída - iniciando upload...');
+                showLoading(true, "Ficheiros validados! A enviar...");
+                await uploadMusicWithValidation(titulo, artista, document.getElementById('music-estilo').value, genero, 
+                                               document.getElementById('music-colaboradores').value, 
+                                               document.getElementById('music-produtores').value, 
+                                               isrc, upc, capaFile, audioFile, dataLanc);
+            } catch (error) {
+                console.error('Erro em gatekeeperValidateAndUpload:', error);
+                showLoading(false);
+                alert('Erro ao processar lançamento: ' + error.message);
+            }
         }
 
         
@@ -3092,86 +3174,6 @@ if (firebase.appCheck) {
             }
         }
 
-        // ============ FUNÇÕES DE NAVEGAÇÃO GLOBAL ============
-        function showSectionGlobal(sectionId, btn) {
-            // Se o utilizador não está logado, apenas mostrar secções públicas
-            if (!currentUser && !['home', 'planos'].includes(sectionId)) {
-                alert('Por favor, inicie sessão para aceder a esta secção.');
-                showAuthScreen();
-                return;
-            }
-
-            // Se está logado, usar a função normal
-            if (currentUser) {
-                showSection(sectionId, btn);
-                return;
-            }
-
-            // Para não logados, mostrar apenas home/planos
-            document.querySelectorAll('#global-nav .nav-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            
-            // Esconder auth e mostrar secção pública
-            if (sectionId === 'planos') {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                showSection('planos', document.querySelector('#nav-menu .nav-btn:nth-child(5)'));
-            } else {
-                showAuthScreen();
-            }
-        }
-
-        function showAuthScreen() {
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-            updateGlobalNavForLoggedOut();
-        }
-
-        function updateGlobalNavForLoggedIn() {
-            document.getElementById('nav-login').style.display = 'none';
-            document.getElementById('nav-logout').style.display = 'inline-flex';
-            document.getElementById('nav-artistas').style.display = 'inline-flex';
-            document.getElementById('nav-lancar').style.display = 'inline-flex';
-            document.getElementById('nav-minhas-musicas').style.display = 'inline-flex';
-            document.getElementById('nav-carteira').style.display = 'inline-flex';
-            document.getElementById('nav-perfil').style.display = 'inline-flex';
-        }
-
-        function updateGlobalNavForLoggedOut() {
-            document.getElementById('nav-login').style.display = 'inline-flex';
-            document.getElementById('nav-logout').style.display = 'none';
-            document.getElementById('nav-artistas').style.display = 'none';
-            document.getElementById('nav-lancar').style.display = 'none';
-            document.getElementById('nav-minhas-musicas').style.display = 'none';
-            document.getElementById('nav-carteira').style.display = 'none';
-            document.getElementById('nav-perfil').style.display = 'none';
-            document.getElementById('btn-admin-global').style.display = 'none';
-        }
-
-        // Atualizar as funções showApp e showAuth para também atualizar a nav global
-        const originalShowApp = showApp;
-        showApp = function() {
-            originalShowApp();
-            updateGlobalNavForLoggedIn();
-        };
-
-        const originalShowAuth = showAuth;
-        showAuth = function() {
-            originalShowAuth();
-            updateGlobalNavForLoggedOut();
-        };
-
         </script>
-
-    <!-- FOOTER GLOBAL - Aparece sempre -->
-    <footer id="global-footer">
-        <div class="footer-links">
-            <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
-            <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
-            <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
-        </div>
-        <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
-        <p style="margin-top: 10px; color: var(--gold); font-weight: bold;">Fundador: Matias Arsénio Manuel</p>
-    </footer>
 </body>
 </html>

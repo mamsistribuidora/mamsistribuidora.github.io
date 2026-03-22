@@ -1095,9 +1095,9 @@ if (firebase.appCheck) {
                         showLoading(false);
                         return alert("A imagem não pode exceder 10MB!");
                     }
-                    const storageRef = storage.ref(`artistas/${currentUser.email}_${Date.now()}`);
-                    await storageRef.put(fotoFile);
-                    fotoUrl = await storageRef.getDownloadURL();
+                    const storageRef = storage.ref().child(`artistas/${currentUser.email}_${Date.now()}`);
+                    const uploadTask = await storageRef.put(fotoFile);
+                    fotoUrl = await uploadTask.ref.getDownloadURL();
                 }
 
                 const artistData = {
@@ -1125,9 +1125,11 @@ if (firebase.appCheck) {
                 loadUserArtists();
                 alert("Artista salvo com sucesso!");
             } catch (error) {
+                console.error("Erro ao salvar artista:", error);
                 alert("Erro: " + error.message);
+            } finally {
+                showLoading(false);
             }
-            showLoading(false);
         }
 
         async function editArtist(id) {
@@ -1164,7 +1166,6 @@ if (firebase.appCheck) {
         }
 
         async function handleUploadMusic() {
-            console.log('Upload iniciado');
             // Redirecionar para o novo sistema Gatekeeper
             await gatekeeperValidateAndUpload();
         }
@@ -1200,28 +1201,18 @@ if (firebase.appCheck) {
         }
 
         async function uploadMusicWithValidation(titulo, artista, estilo, genero, colaboradores, produtores, isrc, upc, capaFile, audioFile, dataLanc) {
-            if (!currentUser) return alert("Sessão expirada. Por favor, faça login novamente.");
-            
-            showLoading(true, "A enviar lançamento (0%)...");
+
+            showLoading(true, "A enviar lançamento...");
             try {
-                console.log("Iniciando upload da capa...");
-                const capaRef = storage.ref().child('capas/' + currentUser.email + '_' + Date.now());
-                
-                // Upload simplificado para evitar travamento em 0%
-                const capaSnapshot = await capaRef.put(capaFile).catch(err => {
-                    throw new Error("Erro no Storage (Capa): " + err.message + ". Verifique as regras do Firebase.");
-                });
-                const capaUrl = await capaSnapshot.ref.getDownloadURL();
+                const capaRef = storage.ref().child(`capas/${currentUser.email}_${Date.now()}`);
+                const capaUpload = await capaRef.put(capaFile);
+                const capaUrl = await capaUpload.ref.getDownloadURL();
 
-                showLoading(true, "Capa OK! A enviar áudio...");
-                const audioRef = storage.ref().child('audios/' + currentUser.email + '_' + Date.now());
-                
-                const audioSnapshot = await audioRef.put(audioFile).catch(err => {
-                    throw new Error("Erro no Storage (Áudio): " + err.message + ". Ficheiro muito grande ou permissão negada.");
-                });
-                const audioUrl = await audioSnapshot.ref.getDownloadURL();
+                showLoading(true, "Capa enviada! A enviar áudio...");
+                const audioRef = storage.ref().child(`audios/${currentUser.email}_${Date.now()}`);
+                const audioUpload = await audioRef.put(audioFile);
+                const audioUrl = await audioUpload.ref.getDownloadURL();
 
-                showLoading(true, "A registar na base de dados...");
                 await db.collection('musicas').add({
                     titulo,
                     artista,
@@ -1255,10 +1246,11 @@ if (firebase.appCheck) {
                 loadUserMusic();
                 loadFeed();
             } catch (error) {
-                console.error("ERRO CRÍTICO NO UPLOAD:", error);
-                alert("⚠️ FALHA NO ENVIO:\n\n" + error.message + "\n\nSugestão: Verifique se o seu Firebase Storage tem as regras de segurança abertas para gravação ou se os ficheiros são demasiado grandes.");
+                console.error("Erro no upload de música:", error);
+                alert("Erro no upload: " + error.message);
+            } finally {
+                showLoading(false);
             }
-            showLoading(false);
         }
 
         async function loadUserMusic() {
@@ -1486,25 +1478,23 @@ if (firebase.appCheck) {
                         showLoading(false);
                         return alert("A imagem não pode exceder 5MB!");
                     }
-                    console.log("Iniciando upload da foto de perfil...");
-                    const storageRef = storage.ref().child('perfis/' + currentUser.email + '_' + Date.now());
-                    const fotoSnapshot = await storageRef.put(fotoFile).catch(err => {
-                        throw new Error("Erro no Storage (Foto): " + err.message);
-                    });
-                    fotoUrl = await fotoSnapshot.ref.getDownloadURL();
+                    const storageRef = storage.ref().child(`perfis/${currentUser.email}_${Date.now()}`);
+                    const uploadTask = await storageRef.put(fotoFile);
+                    fotoUrl = await uploadTask.ref.getDownloadURL();
                 }
 
-                await db.collection('users').doc(currentUser.email).set({
+                await db.collection('users').doc(currentUser.email).update({
                     nome, telefone, pais, foto: fotoUrl
-                }, { merge: true });
+                });
 
                 alert("Perfil atualizado com sucesso!");
                 loadUserData();
             } catch (error) {
-                console.error("ERRO NO PERFIL:", error);
-                alert("⚠️ ERRO AO ATUALIZAR PERFIL:\n\n" + error.message);
+                console.error("Erro ao atualizar perfil:", error);
+                alert("Erro: " + error.message);
+            } finally {
+                showLoading(false);
             }
-            showLoading(false);
         }
 
         function openPlanPayment(plan, amount) {
@@ -2115,13 +2105,11 @@ if (firebase.appCheck) {
                 }
 
                 // Validar que a data não é no passado
-                if (dataLanc) {
-                    const lancDate = new Date(dataLanc + "T00:00:00");
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    if (lancDate < today) {
-                        this.errors.push("Data de lançamento não pode ser no passado");
-                    }
+                const lancDate = new Date(dataLanc);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (lancDate < today) {
+                    this.errors.push("Data de lançamento não pode ser no passado");
                 }
 
                 return this.errors.length === 0;

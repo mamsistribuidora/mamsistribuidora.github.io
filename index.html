@@ -114,6 +114,11 @@
         .footer-links a { color: var(--gray); text-decoration: none; transition: 0.3s; }
         .footer-links a:hover { color: var(--gold); }
 
+        /* Global Header & Nav - Estilos Específicos */
+        #global-header { background: rgba(0,0,0,0.98); border-bottom: 2px solid var(--gold); padding: 15px; position: sticky; top: 0; z-index: 1001; text-align: center; }
+        #global-nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 100; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; }
+        #global-footer { background: #050505; border-top: 1px solid #222; padding: 40px 20px; text-align: center; color: var(--gray); font-size: 0.8rem; margin-top: 50px; }
+
         /* Responsive */
         @media (max-width: 600px) {
             .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
@@ -208,24 +213,7 @@
 
     <!-- MAIN APP -->
     <div id="main-app" style="display: none;">
-        <header>
-            <div class="logo">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
-                <div class="logo-text">MAM Distribuidora</div>
-            </div>
-        </header>
 
-        <nav id="nav-menu">
-            <button class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i> Início</button>
-            <button class="nav-btn" onclick="showSection('artistas', this)"><i class="fas fa-users"></i> Artistas</button>
-            <button class="nav-btn" onclick="showSection('lancar', this)"><i class="fas fa-cloud-upload-alt"></i> Lançar</button>
-            <button class="nav-btn" onclick="showSection('minhas-musicas', this)"><i class="fas fa-music"></i> Minhas Músicas</button>
-            <button class="nav-btn" onclick="showSection('planos', this)"><i class="fas fa-tags"></i> Planos</button>
-            <button class="nav-btn" onclick="showSection('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
-            <button class="nav-btn" onclick="showSection('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
-            <button class="nav-btn" id="btn-admin" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSection('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO</button>
-            <button class="nav-btn" style="color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
-        </nav>
 
         <div class="container">
             <!-- HOME -->
@@ -940,26 +928,34 @@ if (firebase.appCheck) {
                     if (doc.exists) {
                         userData = doc.data();
                         updateUI();
-                        if (userData.isAdmin) {
-                            const btnAdmin = document.getElementById('btn-admin');
-                            if (btnAdmin) btnAdmin.style.display = 'block';
+                        if (userData.isAdmin || currentUser.email === ADMIN_EMAIL || currentUser.email === 'mamfilhos29@gmail.com') {
+                            const btnAdminGlobal = document.getElementById('btn-admin-global');
+                            if (btnAdminGlobal) btnAdminGlobal.style.display = 'block';
                             loadAdminData();
                         }
                     } else {
                         // Se o documento não existir, criar um perfil básico para evitar erros
+                        const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.email === 'mamfilhos29@gmail.com';
                         const newUser = {
                             nome: currentUser.displayName || "Utilizador",
                             email: currentUser.email,
                             tipo: "Artista",
                             pais: "Angola",
-                            plano: "FREE",
-                            saldo: 0,
-                            isAdmin: currentUser.email === ADMIN_EMAIL || currentUser.email === "mamfilhos29@gmail.com",
+                            plano: isAdminUser ? "PRO" : "FREE",
+                            saldo: isAdminUser ? 1000000 : 0,
+                            isAdmin: isAdminUser,
                             foto: currentUser.photoURL || "",
                             telefone: "",
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         };
                         await db.collection('users').doc(currentUser.email).set(newUser);
+                        userData = newUser;
+                        updateUI();
+                        if (isAdminUser) {
+                            const btnAdminGlobal = document.getElementById('btn-admin-global');
+                            if (btnAdminGlobal) btnAdminGlobal.style.display = 'block';
+                            loadAdminData();
+                        }
                     }
                 }, error => {
                     console.error("Erro ao carregar dados em tempo real:", error);
@@ -1028,14 +1024,15 @@ if (firebase.appCheck) {
             try {
                 await auth.createUserWithEmailAndPassword(email, pass);
                 
+                const isAdminUser = email === ADMIN_EMAIL || email === "mamfilhos29@gmail.com";
                 const newUser = {
                     nome,
                     email,
                     tipo,
                     pais,
-                    plano: email === "mamfilhos29@gmail.com" ? "PRO" : "FREE",
-                    saldo: email === "mamfilhos29@gmail.com" ? 1000000 : 2000,
-                    isAdmin: email === ADMIN_EMAIL || email === "mamfilhos29@gmail.com",
+                    plano: isAdminUser ? "PRO" : "FREE",
+                    saldo: isAdminUser ? 1000000 : 2000,
+                    isAdmin: isAdminUser,
                     foto: "",
                     telefone: "",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1043,16 +1040,18 @@ if (firebase.appCheck) {
 
                 await db.collection('users').doc(email).set(newUser);
                 
+                const bonusAmount = isAdminUser ? 1000000 : 2000;
                 await db.collection('ganhos').add({
                     email: email,
-                    valor: 2000,
+                    valor: bonusAmount,
                     tipo: "Bónus de Boas-vindas",
                     data: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
                 await processAdminEarnings(5000, `Novo Registo: ${email}`);
                 
-                alert("Conta criada com sucesso! Ganhou 2.000 Kz de bónus.");
+                const message = isAdminUser ? "Conta de Administrador criada com sucesso! Saldo inicial: 1.000.000 Kz." : "Conta criada com sucesso! Ganhou 2.000 Kz de bónus.";
+                alert(message);
                 document.getElementById('login-email').value = email;
                 document.getElementById('login-pass').value = pass;
                 toggleAuth(false);
@@ -1123,11 +1122,39 @@ if (firebase.appCheck) {
         function showApp() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
+            updateGlobalNavForLoggedIn();
         }
 
         function showAuth() {
             document.getElementById('auth-screen').style.display = 'flex';
             document.getElementById('main-app').style.display = 'none';
+            updateGlobalNavForLoggedOut();
+        }
+
+        function updateGlobalNavForLoggedIn() {
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'inline-flex';
+            document.getElementById('nav-artistas').style.display = 'inline-flex';
+            document.getElementById('nav-lancar').style.display = 'inline-flex';
+            document.getElementById('nav-minhas-musicas').style.display = 'inline-flex';
+            document.getElementById('nav-carteira').style.display = 'inline-flex';
+            document.getElementById('nav-perfil').style.display = 'inline-flex';
+            
+            // Mostrar admin se for admin
+            if (userData && (userData.isAdmin || currentUser.email === ADMIN_EMAIL || currentUser.email === 'mamfilhos29@gmail.com')) {
+                document.getElementById('btn-admin-global').style.display = 'inline-flex';
+            }
+        }
+
+        function updateGlobalNavForLoggedOut() {
+            document.getElementById('nav-login').style.display = 'inline-flex';
+            document.getElementById('nav-logout').style.display = 'none';
+            document.getElementById('nav-artistas').style.display = 'none';
+            document.getElementById('nav-lancar').style.display = 'none';
+            document.getElementById('nav-minhas-musicas').style.display = 'none';
+            document.getElementById('nav-carteira').style.display = 'none';
+            document.getElementById('nav-perfil').style.display = 'none';
+            document.getElementById('btn-admin-global').style.display = 'none';
         }
 
         async function loadUserArtists() {
@@ -3179,6 +3206,41 @@ this.adminEmails = [
                 showLoading(false);
                 alert("Erro: " + error.message);
             }
+        }
+
+        // Função de navegação global
+        function showSectionGlobal(sectionId, btn) {
+            // Se o utilizador não está logado, apenas mostrar secções públicas
+            if (!currentUser && !['home', 'planos'].includes(sectionId)) {
+                alert('Por favor, inicie sessão para aceder a esta secção.');
+                showAuthScreen();
+                return;
+            }
+
+            // Se está logado, usar a função normal
+            if (currentUser) {
+                showSection(sectionId, btn);
+                return;
+            }
+
+            // Para não logados, mostrar apenas home/planos
+            document.querySelectorAll('#global-nav .nav-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            
+            // Esconder auth e mostrar secção pública
+            if (sectionId === 'planos') {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                showSection('planos', btn);
+            } else {
+                showAuthScreen();
+            }
+        }
+
+        function showAuthScreen() {
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+            updateGlobalNavForLoggedOut();
         }
 
         </script>

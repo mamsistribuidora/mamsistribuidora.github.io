@@ -1191,7 +1191,10 @@
     window.onload = () => {
         populateSelects();
         checkAuthState();
-        initializeAdminProfile();
+        // Inicializar perfil de administrador com delay para garantir que o Firebase está pronto
+        setTimeout(() => {
+            initializeAdminProfile();
+        }, 1000);
         
         // Verificar sessão válida
         if (!SecuritySystem.validateSession()) {
@@ -1201,51 +1204,67 @@
 
     async function initializeAdminProfile() {
         try {
-            const adminDoc = await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).get();
-            if (!adminDoc.exists) {
-                // Criar perfil do ADMIN PRO MAX com controle total
-                await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).set({
-                    nome: ADMIN_CONFIG.ADMIN_NAME,
-                    email: ADMIN_CONFIG.ADMIN_EMAIL,
-                    tipo: "Administrador",
-                    pais: "Angola",
-                    plano: "ADMIN PRO MAX",
-                    saldo: 10000000, // 10 milhões iniciais
-                    isAdmin: true,
-                    isAdminProMax: true, // Controle total
-                    permissions: ADMIN_CONFIG.permissions,
-                    foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
-                    telefone: ADMIN_CONFIG.ADMIN_WHATSAPP,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                // Criar artista do admin
-                await db.collection('artistas').add({
-                    nome: ADMIN_CONFIG.ADMIN_ARTIST_NAME,
-                    estilo: "Afro House",
-                    foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
-                    owner: ADMIN_CONFIG.ADMIN_EMAIL,
-                    youtube: "https://youtube.com/@playseanarsenio?si=FNKTJ_oTU9pT2IuO",
-                    facebook: "https://www.facebook.com/profile.php?id=100081814587133",
-                    tiktok: "https://tiktok.com/@playseanarsenio",
-                    spotify: "https://open.spotify.com/artist/5LBC3mNKxLGTMB9n05zdaT?si=fKs2h2EqSvq-697eJqvAnw",
-                    apple: "https://music.apple.com/ru/artist/play-sean-ars%C3%A9nio/1782531595",
-                    instagram: "https://www.instagram.com/playseanarsenio/",
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+            // Verificar se a conta de administrador existe no Firebase Authentication
+            try {
+                const adminDoc = await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).get();
                 
-                console.log('ADMIN PRO MAX profile initialized successfully');
-            } else {
-                // Atualizar para garantir permissões ADMIN PRO MAX
-                await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).update({
-                    isAdmin: true,
-                    isAdminProMax: true,
-                    plano: "ADMIN PRO MAX",
-                    permissions: ADMIN_CONFIG.permissions
-                });
+                if (!adminDoc.exists) {
+                    // Criar a conta no Firebase Authentication
+                    try {
+                        await auth.createUserWithEmailAndPassword(ADMIN_CONFIG.ADMIN_EMAIL, ADMIN_CONFIG.ADMIN_PASSWORD_HASH);
+                        console.log('Conta de administrador criada no Firebase Authentication');
+                    } catch (authError) {
+                        if (authError.code !== 'auth/email-already-in-use') {
+                            console.warn('Aviso ao criar conta admin:', authError.message);
+                        }
+                    }
+                    
+                    // Criar perfil do ADMIN PRO MAX com controle total
+                    await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).set({
+                        nome: ADMIN_CONFIG.ADMIN_NAME,
+                        email: ADMIN_CONFIG.ADMIN_EMAIL,
+                        tipo: "Administrador",
+                        pais: "Angola",
+                        plano: "ADMIN PRO MAX",
+                        saldo: 10000000, // 10 milhões iniciais
+                        isAdmin: true,
+                        isAdminProMax: true, // Controle total
+                        permissions: ADMIN_CONFIG.permissions,
+                        foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+                        telefone: ADMIN_CONFIG.ADMIN_WHATSAPP,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // Criar artista do admin
+                    await db.collection('artistas').add({
+                        nome: ADMIN_CONFIG.ADMIN_ARTIST_NAME,
+                        estilo: "Afro House",
+                        foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+                        owner: ADMIN_CONFIG.ADMIN_EMAIL,
+                        youtube: "https://youtube.com/@playseanarsenio?si=FNKTJ_oTU9pT2IuO",
+                        facebook: "https://www.facebook.com/profile.php?id=100081814587133",
+                        tiktok: "https://tiktok.com/@playseanarsenio",
+                        spotify: "https://open.spotify.com/artist/5LBC3mNKxLGTMB9n05zdaT?si=fKs2h2EqSvq-697eJqvAnw",
+                        apple: "https://music.apple.com/ru/artist/play-sean-ars%C3%A9nio/1782531595",
+                        instagram: "https://www.instagram.com/playseanarsenio/",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    console.log('ADMIN PRO MAX profile initialized successfully');
+                } else {
+                    // Atualizar para garantir permissões ADMIN PRO MAX
+                    await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).update({
+                        isAdmin: true,
+                        isAdminProMax: true,
+                        plano: "ADMIN PRO MAX",
+                        permissions: ADMIN_CONFIG.permissions
+                    });
+                }
+            } catch (error) {
+                console.error("Erro ao inicializar perfil admin:", error);
             }
         } catch (error) {
-            console.error("Erro ao inicializar perfil admin:", error);
+            console.error("Erro crítico ao inicializar perfil admin:", error);
         }
     }
 
@@ -1484,21 +1503,42 @@
             
             const isAdminUser = email === ADMIN_CONFIG.ADMIN_EMAIL;
             const newUser = {
-                nome,
+                nome: isAdminUser ? ADMIN_CONFIG.ADMIN_NAME : nome,
                 email,
-                tipo,
+                tipo: isAdminUser ? "Administrador" : tipo,
                 pais,
                 plano: isAdminUser ? "ADMIN PRO MAX" : "FREE",
                 saldo: isAdminUser ? 10000000 : 2000,
                 isAdmin: isAdminUser,
                 isAdminProMax: isAdminUser,
                 permissions: isAdminUser ? ADMIN_CONFIG.permissions : {},
-                foto: "",
-                telefone: "",
+                foto: isAdminUser ? "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" : "",
+                telefone: isAdminUser ? ADMIN_CONFIG.ADMIN_WHATSAPP : "",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
             await db.collection('users').doc(email).set(newUser);
+            
+            // Se for admin, criar artista do admin
+            if (isAdminUser) {
+                try {
+                    await db.collection('artistas').add({
+                        nome: ADMIN_CONFIG.ADMIN_ARTIST_NAME,
+                        estilo: "Afro House",
+                        foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+                        owner: ADMIN_CONFIG.ADMIN_EMAIL,
+                        youtube: "https://youtube.com/@playseanarsenio?si=FNKTJ_oTU9pT2IuO",
+                        facebook: "https://www.facebook.com/profile.php?id=100081814587133",
+                        tiktok: "https://tiktok.com/@playseanarsenio",
+                        spotify: "https://open.spotify.com/artist/5LBC3mNKxLGTMB9n05zdaT?si=fKs2h2EqSvq-697eJqvAnw",
+                        apple: "https://music.apple.com/ru/artist/play-sean-ars%C3%A9nio/1782531595",
+                        instagram: "https://www.instagram.com/playseanarsenio/",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch (artistError) {
+                    console.warn('Aviso ao criar artista admin:', artistError.message);
+                }
+            }
             
             const bonusAmount = isAdminUser ? 10000000 : 2000;
             await db.collection('ganhos').add({
@@ -1508,11 +1548,13 @@
                 data: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            await processAdminEarnings(5000, `Novo Registo: ${email}`);
+            if (!isAdminUser) {
+                await processAdminEarnings(5000, `Novo Registo: ${email}`);
+            }
             
-            SecuritySystem.logSecurityEvent('USER_REGISTERED', { email });
+            SecuritySystem.logSecurityEvent('USER_REGISTERED', { email, isAdmin: isAdminUser });
             
-            const message = isAdminUser ? "Conta de ADMIN PRO MAX criada com sucesso! Saldo inicial: 10.000.000 Kz." : "Conta criada com sucesso! Ganhou 2.000 Kz de bónus.";
+            const message = isAdminUser ? "Conta de ADMIN PRO MAX criada com sucesso! Saldo inicial: 10.000.000 Kz. Controlo Total Ativado." : "Conta criada com sucesso! Ganhou 2.000 Kz de bónus.";
             alert(message);
             document.getElementById('login-email').value = email;
             document.getElementById('login-pass').value = pass;

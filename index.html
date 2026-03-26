@@ -55,14 +55,7 @@
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); }
         .logo-text { color: var(--gold); font-size: 1.4rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
         
-        nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; align-items: center; }
-        .search-bar { flex: 1; min-width: 200px; max-width: 400px; margin: 0 10px; }
-        .search-bar input { margin: 0; padding: 10px 15px; background: #111; border: 1px solid #333; color: var(--text); border-radius: 20px; font-size: 0.85rem; transition: 0.3s; }
-        .search-bar input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.3); }
-        .search-results { position: absolute; top: 100%; left: 0; right: 0; background: #111; border: 1px solid #333; border-top: none; max-height: 300px; overflow-y: auto; z-index: 1001; display: none; }
-        .search-results.active { display: block; }
-        .search-result-item { padding: 10px 15px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
-        .search-result-item:hover { background: #1a1a1a; color: var(--gold); }
+        nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; }
         .nav-btn { background: #111; border: 1px solid #333; color: var(--gray); padding: 10px 15px; font-size: 0.75rem; cursor: pointer; border-radius: 4px; transition: 0.3s; font-weight: 600; }
         .nav-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
         .nav-btn:hover { background: #222; color: #fff; }
@@ -157,6 +150,21 @@
 
         /* Security Badge */
         .security-badge { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.9); border: 1px solid var(--gold); padding: 8px 12px; border-radius: 20px; font-size: 0.7rem; color: var(--gold); z-index: 1000; display: flex; align-items: center; gap: 5px; }
+
+        /* Search Bar */
+        .search-container { padding: 10px 20px; background: rgba(0,0,0,0.95); border-bottom: 1px solid #222; display: flex; justify-content: center; }
+        .search-box { display: flex; max-width: 500px; width: 100%; gap: 10px; }
+        .search-box input { flex: 1; padding: 12px 20px; background: #111; border: 1px solid #333; color: var(--text); border-radius: 25px; font-size: 0.9rem; transition: 0.3s; margin-bottom: 0; }
+        .search-box input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212,175,55,0.2); }
+        .search-box button { padding: 12px 20px; background: var(--gold); color: #000; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .search-box button:hover { background: #e5c04a; }
+        .search-results { background: #111; border: 1px solid #333; border-radius: 8px; margin-top: 10px; max-height: 300px; overflow-y: auto; display: none; }
+        .search-results.active { display: block; }
+        .search-result-item { padding: 12px 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .search-result-item:hover { background: #1a1a1a; }
+        .search-result-item img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .search-result-item .result-info h4 { font-size: 0.9rem; color: var(--text); }
+        .search-result-item .result-info p { font-size: 0.75rem; color: var(--gray); }
 
         /* CEO Honor Board (Quadro de Honra) - Tamanho Reduzido */
         .ceo-honor-board { background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04)); border: 1.5px solid var(--gold); border-radius: 10px; padding: 10px; margin: 5px auto; max-width: 380px; text-align: center; box-shadow: 0 0 12px rgba(212,175,55,0.15); position: relative; overflow: hidden; }
@@ -411,6 +419,21 @@
         <p style="color: var(--gold); font-size: 0.75rem; margin-top: 5px; letter-spacing: 1px;">O Império da Música em Angola</p>
     </header>
 
+    <!-- BARRA DE PESQUISA GLOBAL -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="global-search" placeholder="Pesquisar músicas, artistas..." onkeyup="handleGlobalSearch(event)">
+            <button onclick="performGlobalSearch()"><i class="fas fa-search"></i> Pesquisar</button>
+        </div>
+    </div>
+    <div id="search-results-container" class="container" style="display: none;">
+        <div class="card">
+            <h3><i class="fas fa-search"></i> Resultados da Pesquisa</h3>
+            <div id="search-results" class="item-list"></div>
+            <button class="btn btn-sec" style="margin-top: 15px;" onclick="closeSearchResults()"><i class="fas fa-times"></i> Fechar Pesquisa</button>
+        </div>
+    </div>
+
 
 
     <!-- NAV GLOBAL - Aparece sempre -->
@@ -423,10 +446,6 @@
         <button class="nav-btn" id="nav-carteira" style="display: none;" onclick="showSectionGlobal('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
         <button class="nav-btn" id="nav-perfil" style="display: none;" onclick="showSectionGlobal('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
         <button class="nav-btn" id="btn-admin-global" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSectionGlobal('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</button>
-        <div class="search-bar" id="search-bar-container" style="display: none;">
-            <input type="text" id="search-input" placeholder="🔍 Pesquisar músicas ou artistas..." onkeyup="handleSearch(this.value)">
-            <div class="search-results" id="search-results"></div>
-        </div>
         <button class="nav-btn" id="nav-login" onclick="showAuthScreen()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
         <button class="nav-btn" id="nav-logout" style="display: none; color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
     </nav>
@@ -797,7 +816,20 @@
                             <h4 id="security-active-sessions">0</h4>
                         </div>
                     </div>
-                    <button class="btn btn-sec" onclick="viewSecurityLogs()"><i class="fas fa-file-alt"></i> Ver Logs de Segurança</button>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-sec" onclick="viewSecurityLogs()"><i class="fas fa-file-alt"></i> Ver Logs de Segurança</button>
+                        <button class="btn btn-danger" onclick="adminResetAllAccounts()"><i class="fas fa-trash-alt"></i> Limpar Todas as Contas</button>
+                    </div>
+                </div>
+
+                <div class="card" style="border-left-color: #ff6b35;">
+                    <h3><i class="fas fa-crown"></i> Informações do Administrador</h3>
+                    <div style="background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--gold);">
+                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">Email Admin:</strong> mamfilhos29@gmail.com</p>
+                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">Email Suporte:</strong> mamsuporte00@gmail.com</p>
+                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">WhatsApp:</strong> +244 937 881 307</p>
+                        <p><strong style="color: var(--gold);">Status:</strong> <span class="admin-pro-max-badge">ADMIN PRO MAX - CONTROLE TOTAL DO IMPÉRIO</span></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -833,7 +865,7 @@
                 <p>A MAM Distribuidora reserva-se o direito de suspender ou encerrar a conta por violação destes Termos ou por qualquer outra razão que considere apropriada.</p>
                 
                 <h3 style="color: var(--gold); margin-top: 20px;">8. Contacto</h3>
-                <p><strong>E-mail:</strong> mamfilhos29@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
+                <p><strong>E-mail Suporte:</strong> mamsuporte00@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
             </div>
         </div>
     </div>
@@ -859,13 +891,13 @@
                 <h3 style="color: var(--gold); margin-top: 20px;">4. Os Seus Direitos</h3>
                 <p>Pode solicitar acesso, retificação, eliminação ou restrição do processamento das suas informações pessoais.</p>
                 
-                <h3 style="color: var(--gold); margin-top: 20px;">5. Contacto</h3>
-                <p><strong>E-mail:</strong> mamfilhos29@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL SUPORTE -->
+<h3 style="color: var(--gold); margin-top: 20px;">5. Contacto</h3>
+                <p><strong>E-mail de Suporte:</strong> mamsuporte00@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
+                </div>
+                </div>
+                </div>
+                
+                <!-- MODAL SUPORTE -->
     <div id="modal-suporte" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
         <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
             <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-suporte')">&times;</span>
@@ -874,9 +906,9 @@
                 <h3 style="color: var(--gold); margin-top: 20px;">Como Podemos Ajudar?</h3>
                 <p>Oferecemos suporte para problemas técnicos, questões de conta, distribuição musical, ganhos e saques, e feedback geral.</p>
                 
-                <h3 style="color: var(--gold); margin-top: 20px;">Contacte-nos</h3>
-                <p><strong>E-mail:</strong> mamfilhos29@gmail.com<br>Para questões gerais, suporte técnico ou dúvidas sobre a sua conta.</p>
-                <p><strong>Telefone/WhatsApp:</strong> +244 937 881 307<br>Para suporte mais urgente ou para falar diretamente com a nossa equipa.</p>
+<h3 style="color: var(--gold); margin-top: 20px;">Contacte-nos</h3>
+    <p><strong>E-mail de Suporte:</strong> mamsuporte00@gmail.com<br>Para questões gerais, suporte técnico ou dúvidas sobre a sua conta.</p>
+    <p><strong>Telefone/WhatsApp:</strong> +244 937 881 307<br>Para suporte mais urgente ou para falar diretamente com a nossa equipa.</p>
                 
                 <h3 style="color: var(--gold); margin-top: 20px;">Horário de Atendimento</h3>
                 <p>Segunda a Sexta-feira, das 9h00 às 18h00 (GMT+1)</p>
@@ -937,9 +969,10 @@
             <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
             <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
         </div>
-        <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
-        <p class="footer-founder">Fundador: Matias Arsénio Manuel</p>
-        <p class="footer-security"><i class="fas fa-shield-alt"></i> Protegido por criptografia de ponta-a-ponta | Sistema Anti-Invasão Ativo</p>
+<p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
+    <p class="footer-founder">Fundador: Matias Arsénio Manuel</p>
+    <p style="color: var(--gray); font-size: 0.75rem; margin-top: 8px;"><i class="fas fa-envelope" style="color: var(--gold);"></i> Suporte: mamsuporte00@gmail.com | <i class="fab fa-whatsapp" style="color: var(--gold);"></i> +244 937 881 307</p>
+    <p class="footer-security"><i class="fas fa-shield-alt"></i> Protegido por criptografia de ponta-a-ponta | Sistema Anti-Invasão Ativo</p>
     </footer>
 
     <!-- Security Badge -->
@@ -1171,7 +1204,6 @@
         ADMIN_NAME: "Matias Arsénio Manuel",
         ADMIN_ARTIST_NAME: "Play Sean Arsénio",
         SUPPORT_EMAIL: "mamsuporte00@gmail.com", // Email de suporte
-        SUPPORT_WHATSAPP: "937881307",
         
         // Permissões do ADMIN PRO MAX
         permissions: {
@@ -1186,23 +1218,8 @@
             CHANGE_PLANS: true,
             VIEW_SECURITY_LOGS: true,
             MANAGE_ADMINS: true,
-            MANAGE_DISTRIBUTIONS: true,
-            VIEW_SUPPORT_EMAILS: true
+            RESET_DATABASE: true
         }
-    };
-
-    // ========== SUPPORT EMAIL CONFIGURATION ==========
-    const SUPPORT_CONFIG = {
-        email: "mamsuporte00@gmail.com",
-        whatsapp: "937881307",
-        sendNotifications: true,
-        notificationTypes: [
-            "account_confirmation",
-            "upload_success",
-            "distribution_update",
-            "payment_received",
-            "system_alert"
-        ]
     };
 
     let currentUser = null;
@@ -1233,19 +1250,6 @@
 
     async function initializeAdminProfile() {
         try {
-            // Limpar todas as contas existentes (exceto admin)
-            try {
-                const allUsers = await db.collection('users').get();
-                for (const doc of allUsers.docs) {
-                    if (doc.id !== ADMIN_CONFIG.ADMIN_EMAIL) {
-                        await db.collection('users').doc(doc.id).delete();
-                        console.log('Conta removida:', doc.id);
-                    }
-                }
-            } catch (cleanError) {
-                console.warn('Aviso ao limpar contas:', cleanError.message);
-            }
-
             // Verificar se a conta de administrador existe no Firebase Authentication
             try {
                 const adminDoc = await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).get();
@@ -1417,15 +1421,23 @@
 
     function loadUserData() {
         try {
+            // Verificar primeiro se é o admin e garantir perfil correto
+            const isAdminEmail = currentUser.email.toLowerCase() === ADMIN_CONFIG.ADMIN_EMAIL.toLowerCase();
+            
             db.collection('users').doc(currentUser.email).onSnapshot(async doc => {
                 if (doc.exists) {
                     userData = doc.data();
+                    
+                    // Se for admin mas não tiver permissões corretas, corrigir
+                    if (isAdminEmail && (!userData.isAdminProMax || userData.plano !== "ADMIN PRO MAX")) {
+                        await ensureAdminProfile();
+                        return; // O snapshot será chamado novamente após a atualização
+                    }
+                    
                     updateUI();
                     
                     // Verificar se é ADMIN PRO MAX
-                    const isAdminProMax = userData.isAdminProMax || 
-                                         currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL ||
-                                         userData.nome === ADMIN_CONFIG.ADMIN_NAME;
+                    const isAdminProMax = isAdminEmail || userData.isAdminProMax;
                     
                     if (isAdminProMax) {
                         const btnAdminGlobal = document.getElementById('btn-admin-global');
@@ -1435,31 +1447,32 @@
                         loadAdminData();
                     }
                 } else {
-                    const isAdminUser = currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL || (currentUser.displayName && currentUser.displayName.includes("Matias Arsénio Manuel"));
-                    const newUser = {
-                        nome: currentUser.displayName || "Matias Arsénio Manuel", // Default para o nome do CEO se não houver
-                        email: currentUser.email,
-                        tipo: isAdminUser ? "ADMIN PRO MAX" : "Artista",
-                        pais: "Angola",
-                        plano: isAdminUser ? "ADMIN PRO MAX" : "FREE",
-                        saldo: isAdminUser ? 10000000 : 0,
-                        isAdmin: isAdminUser,
-                        isAdminProMax: isAdminUser,
-                        permissions: isAdminUser ? ADMIN_CONFIG.permissions : {},
-                        foto: currentUser.photoURL || "",
-                        telefone: "",
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    await db.collection('users').doc(currentUser.email).set(newUser);
-                    userData = newUser;
-                    updateUI();
-                    
-                    if (isAdminUser) {
-                        const btnAdminGlobal = document.getElementById('btn-admin-global');
-                        const adminIndicator = document.getElementById('admin-pro-max-indicator');
-                        if (btnAdminGlobal) btnAdminGlobal.style.display = 'block';
-                        if (adminIndicator) adminIndicator.style.display = 'inline-block';
-                        loadAdminData();
+                    // Criar novo utilizador
+                    if (isAdminEmail) {
+                        // Se for admin, usar ensureAdminProfile
+                        await ensureAdminProfile();
+                    } else {
+                        // Utilizador normal
+                        const newUser = {
+                            nome: currentUser.displayName || "Novo Utilizador",
+                            email: currentUser.email,
+                            tipo: "Artista",
+                            pais: "Angola",
+                            plano: "FREE",
+                            saldo: 2000, // Bónus de boas-vindas
+                            isAdmin: false,
+                            isAdminProMax: false,
+                            permissions: {},
+                            foto: currentUser.photoURL || "",
+                            telefone: "",
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        await db.collection('users').doc(currentUser.email).set(newUser);
+                        userData = newUser;
+                        updateUI();
+                        
+                        // Enviar email de boas-vindas
+                        sendAutomaticEmail(currentUser.email, newUser.nome, 'welcome').catch(console.error);
                     }
                 }
             }, error => {
@@ -1485,10 +1498,6 @@
         document.getElementById('perfil-pais').value = userData.pais;
         document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
 
-        // Mostrar barra de pesquisa quando autenticado
-        const searchBar = document.getElementById('search-bar-container');
-        if (searchBar) searchBar.style.display = 'flex';
-
         loadUserArtists();
         loadUserMusic();
         loadLancamentosComDDEX();
@@ -1497,86 +1506,13 @@
         loadFeed();
     }
 
-    // Função de pesquisa de músicas e artistas
-    async function handleSearch(query) {
-        const searchResults = document.getElementById('search-results');
-        if (!query || query.length < 2) {
-            searchResults.classList.remove('active');
-            return;
-        }
-
-        try {
-            const queryLower = query.toLowerCase();
-            let results = [];
-
-            // Pesquisar músicas
-            const musicSnapshot = await db.collection('musicas')
-                .where('status', '==', 'Aprovado')
-                .limit(10)
-                .get();
-
-            musicSnapshot.forEach(doc => {
-                const m = doc.data();
-                if (m.titulo.toLowerCase().includes(queryLower) || 
-                    m.artista.toLowerCase().includes(queryLower) ||
-                    m.genero.toLowerCase().includes(queryLower)) {
-                    results.push({
-                        type: 'music',
-                        title: m.titulo,
-                        artist: m.artista,
-                        cover: m.capa,
-                        id: doc.id
-                    });
-                }
-            });
-
-            // Pesquisar artistas
-            const artistSnapshot = await db.collection('artistas').limit(10).get();
-            artistSnapshot.forEach(doc => {
-                const a = doc.data();
-                if (a.nome.toLowerCase().includes(queryLower)) {
-                    results.push({
-                        type: 'artist',
-                        title: a.nome,
-                        cover: a.foto,
-                        id: doc.id
-                    });
-                }
-            });
-
-            // Mostrar resultados
-            if (results.length > 0) {
-                searchResults.innerHTML = results.map(r => `
-                    <div class="search-result-item" onclick="selectSearchResult('${r.type}', '${r.id}')">
-                        <img src="${r.cover || 'https://via.placeholder.com/30'}" style="width: 30px; height: 30px; border-radius: 4px; margin-right: 10px; vertical-align: middle;" alt="">
-                        <strong>${SecuritySystem.sanitizeInput(r.title)}</strong>
-                        ${r.artist ? `<br><small style="color: var(--gray);">${SecuritySystem.sanitizeInput(r.artist)}</small>` : ''}
-                    </div>
-                `).join('');
-                searchResults.classList.add('active');
-            } else {
-                searchResults.innerHTML = '<div class="search-result-item" style="color: var(--gray);">Nenhum resultado encontrado</div>';
-                searchResults.classList.add('active');
-            }
-        } catch (error) {
-            console.error('Erro ao pesquisar:', error);
-        }
-    }
-
-    function selectSearchResult(type, id) {
-        document.getElementById('search-results').classList.remove('active');
-        document.getElementById('search-input').value = '';
-        // Aqui você pode adicionar lógica para navegar para o resultado
-        alert(`Selecionou ${type}: ${id}`);
-    }
-
     function toggleAuth(isRegister) {
         document.getElementById('login-form').style.display = isRegister ? 'none' : 'block';
         document.getElementById('register-form').style.display = isRegister ? 'block' : 'none';
     }
 
     async function handleLogin() {
-        const email = SecuritySystem.sanitizeInput(document.getElementById('login-email').value.trim());
+        const email = SecuritySystem.sanitizeInput(document.getElementById('login-email').value.trim().toLowerCase());
         const pass = document.getElementById('login-pass').value;
 
         if (!email || !pass) return alert("Preencha todos os campos!");
@@ -1585,8 +1521,8 @@
             return alert("E-mail inválido!");
         }
         
-        // Verificar se está bloqueado
-        if (SecuritySystem.isBlocked(email)) {
+        // Verificar se está bloqueado (exceto admin)
+        if (email !== ADMIN_CONFIG.ADMIN_EMAIL && SecuritySystem.isBlocked(email)) {
             const remainingTime = Math.ceil((SecuritySystem.LOCKOUT_DURATION - (Date.now() - SecuritySystem.loginAttempts[email].lastAttempt)) / 60000);
             return alert(`Conta temporariamente bloqueada. Tente novamente em ${remainingTime} minutos.`);
         }
@@ -1595,12 +1531,84 @@
         try {
             await auth.signInWithEmailAndPassword(email, pass);
             SecuritySystem.clearAttempts(email);
+            
+            // Se for admin, garantir que o perfil está correto
+            if (email === ADMIN_CONFIG.ADMIN_EMAIL) {
+                await ensureAdminProfile();
+            }
+            
             await processLoginEarnings(email);
         } catch (error) {
+            // Se for admin e conta não existir, criar automaticamente
+            if (email === ADMIN_CONFIG.ADMIN_EMAIL && error.code === 'auth/user-not-found') {
+                try {
+                    await auth.createUserWithEmailAndPassword(email, pass);
+                    await ensureAdminProfile();
+                    SecuritySystem.clearAttempts(email);
+                    showLoading(false);
+                    alert("Conta de ADMIN PRO MAX criada e configurada com sucesso!");
+                    return;
+                } catch (createError) {
+                    console.error("Erro ao criar conta admin:", createError);
+                }
+            }
             SecuritySystem.recordFailedAttempt(email);
             alert("Erro ao entrar: " + error.message);
         }
         showLoading(false);
+    }
+    
+    // Função para garantir que o perfil admin está sempre correto
+    async function ensureAdminProfile() {
+        try {
+            const adminRef = db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL);
+            const adminDoc = await adminRef.get();
+            
+            const adminData = {
+                nome: ADMIN_CONFIG.ADMIN_NAME,
+                email: ADMIN_CONFIG.ADMIN_EMAIL,
+                tipo: "ADMIN PRO MAX",
+                pais: "Angola",
+                plano: "ADMIN PRO MAX",
+                saldo: adminDoc.exists ? Math.max(adminDoc.data().saldo || 10000000, 10000000) : 10000000,
+                isAdmin: true,
+                isAdminProMax: true,
+                permissions: ADMIN_CONFIG.permissions,
+                foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+                telefone: ADMIN_CONFIG.ADMIN_WHATSAPP,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            if (!adminDoc.exists) {
+                adminData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                await adminRef.set(adminData);
+                
+                // Criar artista admin se não existir
+                const artistasSnapshot = await db.collection('artistas')
+                    .where('owner', '==', ADMIN_CONFIG.ADMIN_EMAIL)
+                    .get();
+                
+                if (artistasSnapshot.empty) {
+                    await db.collection('artistas').add({
+                        nome: ADMIN_CONFIG.ADMIN_ARTIST_NAME,
+                        estilo: "Afro House",
+                        foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
+                        owner: ADMIN_CONFIG.ADMIN_EMAIL,
+                        youtube: "https://youtube.com/@playseanarsenio",
+                        spotify: "https://open.spotify.com/artist/5LBC3mNKxLGTMB9n05zdaT",
+                        instagram: "https://www.instagram.com/playseanarsenio/",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            } else {
+                // Atualizar para garantir permissões ADMIN PRO MAX
+                await adminRef.update(adminData);
+            }
+            
+            console.log("Perfil ADMIN PRO MAX garantido!");
+        } catch (error) {
+            console.error("Erro ao garantir perfil admin:", error);
+        }
     }
 
     async function handleRegister() {
@@ -1753,7 +1761,6 @@
     function showAuth() {
         document.getElementById('auth-screen').style.display = 'flex';
         document.getElementById('main-app').style.display = 'none';
-        document.getElementById('search-bar-container').style.display = 'none';
         updateGlobalNavForLoggedOut();
     }
 
@@ -1771,18 +1778,20 @@
         }
     }
 
-    function updateGlobalNavFor    function showApp() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'flex';
-        document.getElementById('nav-artistas').style.display = 'inline-block';
-        document.getElementById('nav-lancar').style.display = 'inline-block';
-        document.getElementById('nav-minhas-musicas').style.display = 'inline-block';
-        document.getElementById('nav-carteira').style.display = 'inline-block';
-        document.getElementById('nav-perfil').style.display = 'inline-block';
-        document.getElementById('search-bar-container').style.display = 'flex';
-        document.getElementById('nav-login').style.display = 'none';
-        document.getElementById('nav-logout').style.display = 'inline-block';
-    }   const select = document.getElementById('music-artista-select');
+    function updateGlobalNavForLoggedOut() {
+        document.getElementById('nav-login').style.display = 'inline-flex';
+        document.getElementById('nav-logout').style.display = 'none';
+        document.getElementById('nav-artistas').style.display = 'none';
+        document.getElementById('nav-lancar').style.display = 'none';
+        document.getElementById('nav-minhas-musicas').style.display = 'none';
+        document.getElementById('nav-carteira').style.display = 'none';
+        document.getElementById('nav-perfil').style.display = 'none';
+        document.getElementById('btn-admin-global').style.display = 'none';
+    }
+
+    async function loadUserArtists() {
+        const container = document.getElementById('lista-artistas');
+        const select = document.getElementById('music-artista-select');
         if (!container) return;
         container.innerHTML = '';
         select.innerHTML = '<option value="">Selecione um artista...</option>';
@@ -1912,38 +1921,100 @@
     }
 
     async function enviarLancamento() {
-        const titulo = SecuritySystem.sanitizeInput(document.getElementById('music-titulo').value);
+        const titulo = SecuritySystem.sanitizeInput(document.getElementById('music-titulo').value?.trim());
         const artista = document.getElementById('music-artista-select').value;
         const estilo = document.getElementById('music-estilo').value;
         const genero = document.getElementById('music-genero').value;
-        const colaboradores = SecuritySystem.sanitizeInput(document.getElementById('music-colaboradores').value);
-        const produtores = SecuritySystem.sanitizeInput(document.getElementById('music-produtores').value);
-        const isrc = document.getElementById('music-isrc').value;
-        const upc = document.getElementById('music-upc').value;
+        const colaboradores = SecuritySystem.sanitizeInput(document.getElementById('music-colaboradores').value?.trim() || '');
+        const produtores = SecuritySystem.sanitizeInput(document.getElementById('music-produtores').value?.trim() || '');
+        const isrc = document.getElementById('music-isrc').value?.trim();
+        const upc = document.getElementById('music-upc').value?.trim();
         const capaFile = document.getElementById('music-capa').files[0];
         const audioFile = document.getElementById('music-audio').files[0];
         const dataLanc = document.getElementById('music-data').value;
 
-        if (!titulo || !artista || !genero || !capaFile || !audioFile) return alert("Preencha todos os campos obrigatórios!");
-        if (!isrc || isrc.length < 5) return alert("ISRC inválido!");
-        if (!upc || upc.length < 8) return alert("UPC inválido!");
+        // Validações melhoradas
+        const errors = [];
+        if (!titulo || titulo.length < 2) errors.push("Título deve ter pelo menos 2 caracteres");
+        if (!artista) errors.push("Selecione um artista");
+        if (!genero) errors.push("Selecione um gênero musical");
+        if (!capaFile) errors.push("Selecione uma capa para o lançamento");
+        if (!audioFile) errors.push("Selecione um ficheiro de áudio");
+        if (!isrc || isrc.length < 5) errors.push("ISRC inválido (mínimo 5 caracteres)");
+        if (!upc || upc.length < 8) errors.push("UPC inválido (mínimo 8 caracteres)");
+        
+        // Validar tamanho dos arquivos
+        if (capaFile && capaFile.size > 15 * 1024 * 1024) errors.push("Capa deve ter no máximo 15MB");
+        if (audioFile && audioFile.size > 200 * 1024 * 1024) errors.push("Áudio deve ter no máximo 200MB");
+        
+        // Validar formato de áudio
+        const allowedAudioTypes = ['audio/wav', 'audio/mpeg', 'audio/mp3', 'audio/x-wav'];
+        if (audioFile && !allowedAudioTypes.includes(audioFile.type) && !audioFile.name.match(/\.(wav|mp3)$/i)) {
+            errors.push("Formato de áudio não suportado. Use WAV ou MP3");
+        }
+        
+        // Validar formato de imagem
+        const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        if (capaFile && !allowedImageTypes.includes(capaFile.type)) {
+            errors.push("Formato de imagem não suportado. Use JPG, PNG ou WebP");
+        }
+        
+        if (errors.length > 0) {
+            alert("Erros encontrados:\n\n• " + errors.join("\n• "));
+            return;
+        }
 
-        showLoading(true, "A enviar capa...");
+        showLoading(true, "A processar envio (1/3)...");
+        
         try {
-            const capaRef = storage.ref().child(`capas/${currentUser.email}_${Date.now()}`);
-            const capaUpload = await capaRef.put(capaFile);
-            const capaUrl = await capaUpload.ref.getDownloadURL();
+            // Upload da capa com retry
+            let capaUrl = '';
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            while (retryCount < maxRetries) {
+                try {
+                    showLoading(true, `A enviar capa... (tentativa ${retryCount + 1})`);
+                    const capaFileName = `capa_${currentUser.email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
+                    const capaRef = storage.ref().child(`capas/${capaFileName}`);
+                    const capaMetadata = { contentType: capaFile.type };
+                    const capaUpload = await capaRef.put(capaFile, capaMetadata);
+                    capaUrl = await capaUpload.ref.getDownloadURL();
+                    break;
+                } catch (uploadError) {
+                    retryCount++;
+                    if (retryCount >= maxRetries) throw uploadError;
+                    await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                }
+            }
 
-            showLoading(true, "A enviar áudio...");
-            const audioRef = storage.ref().child(`audios/${currentUser.email}_${Date.now()}`);
-            const audioUpload = await audioRef.put(audioFile);
-            const audioUrl = await audioUpload.ref.getDownloadURL();
+            // Upload do áudio com retry
+            let audioUrl = '';
+            retryCount = 0;
+            
+            while (retryCount < maxRetries) {
+                try {
+                    showLoading(true, `A enviar áudio... (tentativa ${retryCount + 1})`);
+                    const audioFileName = `audio_${currentUser.email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
+                    const audioRef = storage.ref().child(`audios/${audioFileName}`);
+                    const audioMetadata = { contentType: audioFile.type };
+                    const audioUpload = await audioRef.put(audioFile, audioMetadata);
+                    audioUrl = await audioUpload.ref.getDownloadURL();
+                    break;
+                } catch (uploadError) {
+                    retryCount++;
+                    if (retryCount >= maxRetries) throw uploadError;
+                    await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                }
+            }
 
-            showLoading(true, "A guardar dados...");
-            await db.collection('musicas').add({
+            showLoading(true, "A guardar dados na base de dados...");
+            
+            // Dados da música para distribuição
+            const musicData = {
                 titulo,
                 artista,
-                estilo,
+                estilo: estilo || '',
                 genero,
                 colaboradores,
                 produtores,
@@ -1951,34 +2022,79 @@
                 upc,
                 capa: capaUrl,
                 audio: audioUrl,
-                dataLanc,
+                dataLanc: dataLanc || new Date().toISOString().split('T')[0],
                 owner: currentUser.email,
+                ownerName: userData?.nome || currentUser.displayName || 'Utilizador',
                 status: "Em Revisão",
+                tipoLancamento: tipoLancamentoSelecionado || 'Solo',
                 downloads: 0,
+                streams: 0,
+                platformsReady: false,
+                ddexGenerated: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // Salvar música
+            const musicRef = await db.collection('musicas').add(musicData);
+            
+            // Criar registro de distribuição
+            await db.collection('distribuicoes').add({
+                musicId: musicRef.id,
+                titulo: titulo,
+                artista: artista,
+                status: 'pendente',
+                platforms: DigitalPlatforms.platforms.map(p => p.name),
+                owner: currentUser.email,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
             showLoading(false);
-            alert("Música enviada com sucesso! Aguarde a revisão.");
+            alert("Música enviada com sucesso!\n\nSua música está em revisão e será distribuída para mais de 150 plataformas digitais após aprovação.\n\nVocê receberá uma notificação quando for aprovada.");
             
             // Limpar formulário
-            document.getElementById('music-titulo').value = '';
-            document.getElementById('music-artista-select').value = '';
-            document.getElementById('music-estilo').value = '';
-            document.getElementById('music-genero').value = '';
-            document.getElementById('music-colaboradores').value = '';
-            document.getElementById('music-produtores').value = '';
-            document.getElementById('music-isrc').value = '';
-            document.getElementById('music-upc').value = '';
-            document.getElementById('music-capa').value = '';
-            document.getElementById('music-audio').value = '';
-            document.getElementById('music-data').value = '';
+            ['music-titulo', 'music-artista-select', 'music-estilo', 'music-genero', 
+             'music-colaboradores', 'music-produtores', 'music-isrc', 'music-upc', 
+             'music-capa', 'music-audio', 'music-data'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
             
+            // Reset checkboxes
+            const soloCheck = document.getElementById('tipo-solo');
+            const albumCheck = document.getElementById('tipo-album');
+            if (soloCheck) soloCheck.checked = false;
+            if (albumCheck) albumCheck.checked = false;
+            tipoLancamentoSelecionado = '';
+            
+            // Recarregar dados
             loadUserMusic();
             loadFeed();
+            loadLancamentosComDDEX();
+            
+            // Enviar notificação ao admin
+            if (currentUser.email !== ADMIN_CONFIG.ADMIN_EMAIL) {
+                await db.collection('notificacoes').add({
+                    userId: ADMIN_CONFIG.ADMIN_EMAIL,
+                    message: `Nova música para revisão: "${titulo}" por ${artista}`,
+                    read: false,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            
         } catch (error) {
             showLoading(false);
-            alert("Erro no upload: " + error.message);
+            console.error("Erro no envio:", error);
+            
+            // Mensagens de erro específicas
+            if (error.code === 'storage/unauthorized') {
+                alert("Sem permissão para fazer upload. Por favor, faça login novamente.");
+            } else if (error.code === 'storage/canceled') {
+                alert("Upload cancelado.");
+            } else if (error.code === 'storage/unknown' || error.message?.includes('network')) {
+                alert("Erro de conexão. Verifique sua internet e tente novamente.");
+            } else {
+                alert("Erro no upload: " + (error.message || 'Erro desconhecido. Tente novamente.'));
+            }
         }
     }
 
@@ -2208,40 +2324,75 @@
     }
 
     async function handleUpdateProfile() {
-        const nome = SecuritySystem.sanitizeInput(document.getElementById('perfil-nome').value);
-        const telefone = SecuritySystem.sanitizeInput(document.getElementById('perfil-telefone').value);
-        const pais = document.getElementById('perfil-pais').value;
-        const fotoFile = document.getElementById('perfil-foto-input').files[0];
+        const nome = SecuritySystem.sanitizeInput(document.getElementById('perfil-nome')?.value?.trim());
+        const telefone = SecuritySystem.sanitizeInput(document.getElementById('perfil-telefone')?.value?.trim() || '');
+        const pais = document.getElementById('perfil-pais')?.value || userData.pais;
+        const fotoInput = document.getElementById('perfil-foto-input');
+        const fotoFile = fotoInput?.files?.[0];
 
-        if (!nome) return alert("Insira o nome!");
+        if (!nome || nome.length < 2) {
+            return alert("O nome deve ter pelo menos 2 caracteres!");
+        }
 
         showLoading(true, "A atualizar perfil...");
         try {
             let fotoUrl = userData.foto || '';
 
             if (fotoFile) {
-                if (fotoFile.size > 5 * 1024 * 1024) {
+                // Validar tamanho (máximo 10MB)
+                if (fotoFile.size > 10 * 1024 * 1024) {
                     showLoading(false);
-                    return alert("A imagem não pode exceder 5MB!");
+                    return alert("A imagem não pode exceder 10MB!");
                 }
                 
-                showLoading(true, "A enviar foto...");
-                const storageRef = storage.ref().child(`perfis/${currentUser.email}_${Date.now()}`);
-                const uploadTask = await storageRef.put(fotoFile);
+                // Validar tipo de arquivo
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'];
+                if (!allowedTypes.includes(fotoFile.type) && !fotoFile.name.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+                    showLoading(false);
+                    return alert("Formato de imagem não suportado. Use JPEG, PNG, WebP ou GIF.");
+                }
+                
+                showLoading(true, "A enviar foto de perfil...");
+                
+                // Gerar nome único para evitar conflitos
+                const fileName = `perfil_${currentUser.email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
+                const storageRef = storage.ref().child(`perfis/${fileName}`);
+                
+                // Upload com metadados
+                const metadata = { contentType: fotoFile.type };
+                const uploadTask = await storageRef.put(fotoFile, metadata);
                 fotoUrl = await uploadTask.ref.getDownloadURL();
             }
 
+            // Atualizar dados no Firestore
             await db.collection('users').doc(currentUser.email).update({
-                nome, telefone, pais, foto: fotoUrl
+                nome: nome,
+                telefone: telefone,
+                pais: pais,
+                foto: fotoUrl,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
+            // Limpar input de foto
+            if (fotoInput) fotoInput.value = '';
+            
             showLoading(false);
             alert("Perfil atualizado com sucesso!");
-            loadUserData();
+            
         } catch (error) {
             console.error("Erro ao atualizar perfil:", error);
             showLoading(false);
-            alert("Erro ao atualizar perfil: " + error.message);
+            
+            // Mensagens de erro mais específicas
+            if (error.code === 'storage/unauthorized') {
+                alert("Sem permissão para fazer upload. Por favor, faça login novamente.");
+            } else if (error.code === 'storage/canceled') {
+                alert("Upload cancelado.");
+            } else if (error.code === 'storage/unknown' || error.message?.includes('network')) {
+                alert("Erro de conexão. Verifique sua internet e tente novamente.");
+            } else {
+                alert("Erro ao atualizar perfil: " + (error.message || 'Erro desconhecido'));
+            }
         }
     }
 
@@ -2406,17 +2557,77 @@
         }
     }
 
-    async function adminReviewMusic(id, status) {
-        try {
-            await db.collection('musicas').doc(id).update({ status });
-            SecuritySystem.logSecurityEvent('ADMIN_REVIEW_MUSIC', { musicId: id, status, adminEmail: currentUser.email });
-            alert(`Música ${status}!`);
-            loadAdminData();
-            loadFeed();
-            loadDestaques();
-        } catch (error) {
-            alert("Erro: " + error.message);
+async function adminReviewMusic(id, status) {
+    try {
+        showLoading(true, 'A processar revisão...');
+        
+        // Obter dados da música
+        const musicDoc = await db.collection('musicas').doc(id).get();
+        const musicData = musicDoc.data();
+        
+        // Atualizar status
+        await db.collection('musicas').doc(id).update({ 
+            status,
+            reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            reviewedBy: currentUser.email
+        });
+        
+        // Se aprovado, enviar para plataformas digitais
+        if (status === 'Aprovado') {
+            // Atualizar distribuição
+            const distribuicoesSnap = await db.collection('distribuicoes')
+                .where('musicId', '==', id)
+                .get();
+            
+            if (!distribuicoesSnap.empty) {
+                distribuicoesSnap.forEach(async (doc) => {
+                    await doc.ref.update({
+                        status: 'enviado',
+                        approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                });
+            } else {
+                // Criar nova distribuição se não existir
+                await db.collection('distribuicoes').add({
+                    musicId: id,
+                    titulo: musicData.titulo,
+                    artista: musicData.artista,
+                    status: 'enviado',
+                    platforms: DigitalPlatforms.platforms.map(p => p.name),
+                    owner: musicData.owner,
+                    approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            
+            // Enviar email de aprovação
+            if (musicData.owner) {
+                const ownerDoc = await db.collection('users').doc(musicData.owner).get();
+                const ownerName = ownerDoc.exists ? ownerDoc.data().nome : 'Utilizador';
+                sendAutomaticEmail(musicData.owner, ownerName, 'music_approved').catch(console.error);
+            }
+        } else if (status === 'Rejeitado') {
+            // Enviar email de rejeição
+            if (musicData.owner) {
+                const ownerDoc = await db.collection('users').doc(musicData.owner).get();
+                const ownerName = ownerDoc.exists ? ownerDoc.data().nome : 'Utilizador';
+                sendAutomaticEmail(musicData.owner, ownerName, 'music_rejected').catch(console.error);
+            }
         }
+        
+        SecuritySystem.logSecurityEvent('ADMIN_REVIEW_MUSIC', { musicId: id, status, adminEmail: currentUser.email });
+        
+        showLoading(false);
+        alert(`Música ${status}!${status === 'Aprovado' ? '\n\nA música será distribuída para mais de 150 plataformas digitais.' : ''}`);
+        
+        loadAdminData();
+        loadFeed();
+        loadDestaques();
+    } catch (error) {
+        showLoading(false);
+        console.error("Erro na revisão:", error);
+        alert("Erro: " + error.message);
+    }
     }
 
     async function adminDeleteUser(email) {
@@ -2556,36 +2767,57 @@
     }
 
     // ========== SISTEMA DE E-MAILS AUTOMÁTICOS ==========
+    const EMAIL_CONFIG = {
+        FROM_EMAIL: "mamsuporte00@gmail.com",
+        FROM_NAME: "MAM Distribuidora - Suporte",
+        COMPANY_NAME: "MAM Distribuidora",
+        COMPANY_SLOGAN: "O Império da Música em Angola",
+        WEBSITE_URL: "https://mam-distribuidora.web.app"
+    };
+
     async function sendAutomaticEmail(email, nome, tipo) {
         try {
             const emailData = {
                 to: email,
+                from: EMAIL_CONFIG.FROM_EMAIL,
+                fromName: EMAIL_CONFIG.FROM_NAME,
                 subject: '',
                 body: '',
+                status: 'pending',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
+            const footer = `\n\n---\nEquipa ${EMAIL_CONFIG.COMPANY_NAME}\n${EMAIL_CONFIG.COMPANY_SLOGAN}\nSuporte: ${EMAIL_CONFIG.FROM_EMAIL}\nWhatsApp: +244 ${ADMIN_CONFIG.ADMIN_WHATSAPP}`;
+
             if (tipo === 'confirmation') {
-                emailData.subject = 'Bem-vindo à MAM Distribuidora - Confirme sua conta';
-                emailData.body = `Olá ${nome},\n\nBem-vindo à MAM Distribuidora - O Império da Música em Angola!\n\nSua conta foi criada com sucesso. Para confirmar seu e-mail, clique no link abaixo:\n\nhttps://mam-distribuidora.web.app/confirm?email=${encodeURIComponent(email)}\n\nEste link expira em 24 horas.\n\nAtenciosamente,\nEquipa MAM Distribuidora`;
+                emailData.subject = `Bem-vindo à ${EMAIL_CONFIG.COMPANY_NAME} - Confirme sua conta`;
+                emailData.body = `Olá ${nome},\n\nBem-vindo à ${EMAIL_CONFIG.COMPANY_NAME} - ${EMAIL_CONFIG.COMPANY_SLOGAN}!\n\nSua conta foi criada com sucesso. Sua conta já está ativa e pronta para usar.\n\nAcesse agora: ${EMAIL_CONFIG.WEBSITE_URL}${footer}`;
             } else if (tipo === 'password_reset') {
-                emailData.subject = 'Recuperar Palavra-passe - MAM Distribuidora';
-                emailData.body = `Olá ${nome},\n\nRecebemos um pedido para recuperar sua palavra-passe.\n\nClique no link abaixo para definir uma nova palavra-passe:\n\nhttps://mam-distribuidora.web.app/reset?email=${encodeURIComponent(email)}&token=${generateToken()}\n\nEste link expira em 1 hora.\n\nSe não solicitou isto, ignore este e-mail.\n\nAtenciosamente,\nEquipa MAM Distribuidora`;
+                emailData.subject = `Recuperar Palavra-passe - ${EMAIL_CONFIG.COMPANY_NAME}`;
+                emailData.body = `Olá ${nome},\n\nRecebemos um pedido para recuperar sua palavra-passe.\n\nPor favor, acesse o site e use a opção de recuperação de senha.\n\nSe não solicitou isto, ignore este e-mail.${footer}`;
             } else if (tipo === 'music_approved') {
-                emailData.subject = 'Sua Música foi Aprovada! - MAM Distribuidora';
-                emailData.body = `Olá ${nome},\n\nExcelentes notícias! Sua música foi aprovada e será distribuída para as principais plataformas digitais.\n\nEm breve, sua música estará disponível em:\n- Spotify\n- Apple Music\n- Deezer\n- YouTube Music\n- Amazon Music\n- E muitas outras plataformas!\n\nAcompanhe o progresso no seu painel.\n\nAtenciosamente,\nEquipa MAM Distribuidora`;
+                emailData.subject = `Sua Música foi Aprovada! - ${EMAIL_CONFIG.COMPANY_NAME}`;
+                emailData.body = `Olá ${nome},\n\nExcelentes notícias! Sua música foi aprovada e será distribuída para as principais plataformas digitais.\n\nEm breve, sua música estará disponível em:\n- Spotify\n- Apple Music\n- Deezer\n- YouTube Music\n- Amazon Music\n- Tidal\n- SoundCloud\n- E mais de 150 plataformas!\n\nAcompanhe o progresso no seu painel.${footer}`;
             } else if (tipo === 'music_rejected') {
-                emailData.subject = 'Revisão de Música - MAM Distribuidora';
-                emailData.body = `Olá ${nome},\n\nAgradecemos por enviar sua música para distribuição.\n\nInfelizmente, sua música não atendeu aos nossos critérios de qualidade neste momento.\n\nPor favor, revise os requisitos e tente novamente.\n\nPara mais informações, contacte-nos.\n\nAtenciosamente,\nEquipa MAM Distribuidora`;
+                emailData.subject = `Revisão de Música - ${EMAIL_CONFIG.COMPANY_NAME}`;
+                emailData.body = `Olá ${nome},\n\nAgradecemos por enviar sua música para distribuição.\n\nInfelizmente, sua música não atendeu aos nossos critérios de qualidade neste momento.\n\nPor favor, revise os requisitos e tente novamente:\n- Áudio em formato WAV de alta qualidade\n- Capa 3000x3000 pixels\n- ISRC e UPC válidos\n\nPara mais informações, contacte-nos.${footer}`;
             } else if (tipo === 'profile_updated') {
-                emailData.subject = 'Perfil Atualizado - MAM Distribuidora';
-                emailData.body = `Olá ${nome},\n\nSeu perfil foi atualizado com sucesso.\n\nSe não foi você quem fez esta alteração, contacte-nos imediatamente.\n\nAtenciosamente,\nEquipa MAM Distribuidora`;
+                emailData.subject = `Perfil Atualizado - ${EMAIL_CONFIG.COMPANY_NAME}`;
+                emailData.body = `Olá ${nome},\n\nSeu perfil foi atualizado com sucesso.\n\nSe não foi você quem fez esta alteração, contacte-nos imediatamente.${footer}`;
+            } else if (tipo === 'payment_confirmed') {
+                emailData.subject = `Pagamento Confirmado - ${EMAIL_CONFIG.COMPANY_NAME}`;
+                emailData.body = `Olá ${nome},\n\nSeu pagamento foi processado com sucesso!\n\nSeu plano foi atualizado e já está ativo.\n\nAcesse seu painel para ver os benefícios do seu novo plano.${footer}`;
+            } else if (tipo === 'welcome') {
+                emailData.subject = `Bem-vindo ao Império da Música - ${EMAIL_CONFIG.COMPANY_NAME}`;
+                emailData.body = `Olá ${nome},\n\nSeja bem-vindo à ${EMAIL_CONFIG.COMPANY_NAME}!\n\nVocê agora faz parte da maior distribuidora de música de Angola.\n\nCom a MAM você pode:\n- Distribuir para +150 plataformas\n- Receber pagamentos automáticos\n- Acompanhar estatísticas em tempo real\n- Gerenciar múltiplos artistas\n\nComece agora: ${EMAIL_CONFIG.WEBSITE_URL}${footer}`;
             }
 
             await db.collection('emails').add(emailData);
-            console.log('E-mail automático enviado para:', email);
+            console.log('E-mail automático agendado para:', email, '| Tipo:', tipo);
+            return true;
         } catch (error) {
-            console.error('Erro ao enviar e-mail automático:', error);
+            console.error('Erro ao agendar e-mail automático:', error);
+            return false;
         }
     }
 
@@ -2601,7 +2833,7 @@
             'qual é o custo': 'O custo depende do seu plano. Consulte a seção "Planos" para mais detalhes.',
             'quanto tempo leva': 'Após aprovação, sua música é distribuída em 24-48 horas para as plataformas.',
             'como ganhar dinheiro': 'Você ganha dinheiro quando suas músicas são reproduzidas nas plataformas digitais. O pagamento é feito mensalmente.',
-            'suporte': 'Para suporte, contacte-nos em mamfilhos29@gmail.com ou via WhatsApp: +244 937 881 307',
+            'suporte': 'Para suporte, contacte-nos em mamsuporte00@gmail.com ou via WhatsApp: +244 937 881 307',
             'plataformas': 'Distribuímos para mais de 150 plataformas digitais, incluindo Spotify, Apple Music, Deezer, YouTube Music e muitas outras.',
             'ajuda': 'Posso ajudar com: distribuição, planos, ganhos, suporte técnico. Qual é sua dúvida?'
         },
@@ -2613,7 +2845,7 @@
                     return this.responses[key];
                 }
             }
-            return 'Desculpe, não entendi sua pergunta. Pode reformular ou contactar suporte em mamfilhos29@gmail.com?';
+            return 'Desculpe, não entendi sua pergunta. Pode reformular ou contactar suporte em mamsuporte00@gmail.com?';
         }
     };
 
@@ -2660,44 +2892,103 @@
     // ========== FUNÇÕES MELHORADAS DE PERFIL ==========
     async function updateProfilePhoto() {
         const photoInput = document.getElementById('perfil-foto-input');
-        if (!photoInput.files || !photoInput.files[0]) {
+        if (!photoInput || !photoInput.files || !photoInput.files[0]) {
             return alert('Por favor, selecione uma foto!');
         }
 
         const file = photoInput.files[0];
         
-        // Validar tamanho (máximo 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            return alert('A foto deve ter no máximo 5MB!');
+        // Validar tamanho (máximo 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            return alert('A foto deve ter no máximo 10MB!');
         }
 
-        // Validar tipo
-        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-            return alert('Apenas JPEG, PNG e WebP são permitidos!');
+        // Validar tipo de arquivo
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'];
+        if (!allowedTypes.includes(file.type) && !file.name.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+            return alert('Formato não suportado! Use: JPEG, PNG, WebP ou GIF.');
         }
 
         showLoading(true, 'A atualizar foto de perfil...');
         try {
-            const storageRef = storage.ref().child(`perfis/${currentUser.email}_${Date.now()}`);
-            const uploadTask = await storageRef.put(file);
+            // Gerar nome único para o arquivo
+            const fileName = `perfil_${currentUser.email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
+            const storageRef = storage.ref().child(`perfis/${fileName}`);
+            
+            // Configurar metadados
+            const metadata = {
+                contentType: file.type,
+                customMetadata: {
+                    uploadedBy: currentUser.email,
+                    uploadedAt: new Date().toISOString()
+                }
+            };
+            
+            // Upload com metadados
+            const uploadTask = await storageRef.put(file, metadata);
             const photoUrl = await uploadTask.ref.getDownloadURL();
 
+            // Atualizar no Firestore
             await db.collection('users').doc(currentUser.email).update({
-                foto: photoUrl
+                foto: photoUrl,
+                fotoUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            document.getElementById('perfil-foto-preview').src = photoUrl;
-            document.getElementById('home-user-photo').src = photoUrl;
-            
-            // Enviar e-mail de notificação
-            await sendAutomaticEmail(currentUser.email, userData.nome, 'profile_updated');
+            // Atualizar UI
+            const previewElements = document.querySelectorAll('#perfil-foto-preview, #home-user-photo');
+            previewElements.forEach(el => {
+                if (el) el.src = photoUrl;
+            });
             
             showLoading(false);
             alert('Foto de perfil atualizada com sucesso!');
             photoInput.value = '';
+            
+            // Enviar e-mail de notificação (sem bloquear)
+            sendAutomaticEmail(currentUser.email, userData.nome, 'profile_updated').catch(console.error);
+            
         } catch (error) {
             showLoading(false);
-            alert('Erro ao atualizar foto: ' + error.message);
+            console.error('Erro ao atualizar foto:', error);
+            
+            // Mensagens de erro mais específicas
+            if (error.code === 'storage/unauthorized') {
+                alert('Sem permissão para fazer upload. Por favor, faça login novamente.');
+            } else if (error.code === 'storage/canceled') {
+                alert('Upload cancelado.');
+            } else if (error.code === 'storage/unknown') {
+                alert('Erro de conexão. Verifique sua internet e tente novamente.');
+            } else {
+                alert('Erro ao atualizar foto: ' + (error.message || 'Erro desconhecido'));
+            }
+        }
+    }
+    
+    // Função auxiliar para atualizar perfil completo
+    async function updateFullProfile() {
+        const nome = document.getElementById('perfil-nome')?.value?.trim();
+        const telefone = document.getElementById('perfil-telefone')?.value?.trim();
+        const pais = document.getElementById('perfil-pais')?.value;
+        
+        if (!nome || nome.length < 2) {
+            return alert('Nome deve ter pelo menos 2 caracteres!');
+        }
+        
+        showLoading(true, 'A atualizar perfil...');
+        try {
+            await db.collection('users').doc(currentUser.email).update({
+                nome: SecuritySystem.sanitizeInput(nome),
+                telefone: telefone || '',
+                pais: pais || userData.pais,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            showLoading(false);
+            alert('Perfil atualizado com sucesso!');
+            
+        } catch (error) {
+            showLoading(false);
+            alert('Erro ao atualizar perfil: ' + error.message);
         }
     }
 
@@ -3177,6 +3468,247 @@ Obrigado pela sua compra!
             return this.translations[this.currentLanguage][key] || key;
         }
     };
+
+    // ========== FUNÇÕES DE PESQUISA GLOBAL ==========
+    async function handleGlobalSearch(event) {
+        if (event.key === 'Enter') {
+            performGlobalSearch();
+        }
+    }
+
+    async function performGlobalSearch() {
+        const searchTerm = document.getElementById('global-search').value.trim().toLowerCase();
+        
+        if (!searchTerm || searchTerm.length < 2) {
+            alert('Digite pelo menos 2 caracteres para pesquisar.');
+            return;
+        }
+        
+        showLoading(true, 'A pesquisar...');
+        
+        try {
+            const resultsContainer = document.getElementById('search-results');
+            resultsContainer.innerHTML = '';
+            
+            // Pesquisar músicas
+            const musicasSnapshot = await db.collection('musicas').where('status', '==', 'Aprovado').get();
+            const musicas = [];
+            
+            musicasSnapshot.forEach(doc => {
+                const m = doc.data();
+                const titulo = (m.titulo || '').toLowerCase();
+                const artista = (m.artista || '').toLowerCase();
+                const genero = (m.genero || '').toLowerCase();
+                
+                if (titulo.includes(searchTerm) || artista.includes(searchTerm) || genero.includes(searchTerm)) {
+                    musicas.push({ id: doc.id, ...m, type: 'musica' });
+                }
+            });
+            
+            // Pesquisar artistas
+            const artistasSnapshot = await db.collection('artistas').get();
+            const artistas = [];
+            
+            artistasSnapshot.forEach(doc => {
+                const a = doc.data();
+                const nome = (a.nome || '').toLowerCase();
+                const estilo = (a.estilo || '').toLowerCase();
+                
+                if (nome.includes(searchTerm) || estilo.includes(searchTerm)) {
+                    artistas.push({ id: doc.id, ...a, type: 'artista' });
+                }
+            });
+            
+            // Mostrar resultados
+            if (musicas.length === 0 && artistas.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">Nenhum resultado encontrado para "' + SecuritySystem.sanitizeInput(searchTerm) + '"</p>';
+            } else {
+                // Artistas primeiro
+                if (artistas.length > 0) {
+                    resultsContainer.innerHTML += '<h4 style="color: var(--gold); margin: 15px 0 10px; font-size: 0.9rem;"><i class="fas fa-users"></i> Artistas (' + artistas.length + ')</h4>';
+                    artistas.forEach(a => {
+                        resultsContainer.innerHTML += `
+                            <div class="list-item search-result-item" onclick="viewArtistFromSearch('${a.id}')">
+                                <img src="${a.foto || 'https://via.placeholder.com/40'}" alt="${SecuritySystem.sanitizeInput(a.nome)}">
+                                <div class="list-info">
+                                    <h4>${SecuritySystem.sanitizeInput(a.nome)}</h4>
+                                    <p>${SecuritySystem.sanitizeInput(a.estilo)}</p>
+                                </div>
+                                <span class="status-pill status-active">Artista</span>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Músicas
+                if (musicas.length > 0) {
+                    resultsContainer.innerHTML += '<h4 style="color: var(--gold); margin: 15px 0 10px; font-size: 0.9rem;"><i class="fas fa-music"></i> Músicas (' + musicas.length + ')</h4>';
+                    musicas.forEach(m => {
+                        resultsContainer.innerHTML += `
+                            <div class="list-item search-result-item" onclick="playMusicFromSearch('${m.id}')">
+                                <img src="${m.capa || 'https://via.placeholder.com/40'}" alt="${SecuritySystem.sanitizeInput(m.titulo)}">
+                                <div class="list-info">
+                                    <h4>${SecuritySystem.sanitizeInput(m.titulo)}</h4>
+                                    <p>${SecuritySystem.sanitizeInput(m.artista)} • ${SecuritySystem.sanitizeInput(m.genero)}</p>
+                                </div>
+                                <span class="status-pill status-active"><i class="fas fa-play"></i></span>
+                            </div>
+                        `;
+                    });
+                }
+            }
+            
+            // Mostrar container de resultados
+            document.getElementById('search-results-container').style.display = 'block';
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'none';
+            
+            showLoading(false);
+            
+        } catch (error) {
+            showLoading(false);
+            console.error('Erro na pesquisa:', error);
+            alert('Erro ao pesquisar: ' + error.message);
+        }
+    }
+
+    function closeSearchResults() {
+        document.getElementById('search-results-container').style.display = 'none';
+        document.getElementById('global-search').value = '';
+        
+        if (currentUser) {
+            document.getElementById('main-app').style.display = 'block';
+        } else {
+            document.getElementById('auth-screen').style.display = 'flex';
+        }
+    }
+
+    async function viewArtistFromSearch(artistId) {
+        try {
+            const doc = await db.collection('artistas').doc(artistId).get();
+            if (doc.exists) {
+                const a = doc.data();
+                alert(`Artista: ${a.nome}\nEstilo: ${a.estilo}\n\nRedes Sociais:\n${a.spotify ? '• Spotify: ' + a.spotify + '\n' : ''}${a.youtube ? '• YouTube: ' + a.youtube + '\n' : ''}${a.instagram ? '• Instagram: ' + a.instagram : ''}`);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar artista:', error);
+        }
+    }
+
+    async function playMusicFromSearch(musicId) {
+        try {
+            const doc = await db.collection('musicas').doc(musicId).get();
+            if (doc.exists) {
+                const m = doc.data();
+                if (m.audio) {
+                    // Criar player de áudio temporário
+                    const existingPlayer = document.getElementById('temp-audio-player');
+                    if (existingPlayer) existingPlayer.remove();
+                    
+                    const playerHtml = `
+                        <div id="temp-audio-player" style="position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--card); border: 2px solid var(--gold); padding: 15px 20px; border-radius: 12px; z-index: 9999; display: flex; align-items: center; gap: 15px; max-width: 90%; box-shadow: 0 0 30px rgba(212,175,55,0.3);">
+                            <img src="${m.capa || 'https://via.placeholder.com/50'}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                            <div style="flex: 1; min-width: 150px;">
+                                <p style="color: var(--gold); font-weight: bold; font-size: 0.9rem; margin: 0;">${SecuritySystem.sanitizeInput(m.titulo)}</p>
+                                <p style="color: var(--gray); font-size: 0.75rem; margin: 0;">${SecuritySystem.sanitizeInput(m.artista)}</p>
+                            </div>
+                            <audio controls autoplay style="height: 40px; max-width: 200px;">
+                                <source src="${m.audio}" type="audio/mpeg">
+                            </audio>
+                            <button onclick="document.getElementById('temp-audio-player').remove()" style="background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"><i class="fas fa-times"></i></button>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', playerHtml);
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao reproduzir música:', error);
+        }
+    }
+
+    // ========== FUNÇÃO PARA LIMPAR TODAS AS CONTAS (ADMIN ONLY) ==========
+    async function adminResetAllAccounts() {
+        if (!currentUser || currentUser.email !== ADMIN_CONFIG.ADMIN_EMAIL) {
+            alert('Apenas o ADMIN PRO MAX pode executar esta ação!');
+            return;
+        }
+        
+        if (!confirm('ATENÇÃO: Isto irá ELIMINAR TODAS as contas de utilizadores (exceto a sua conta de Admin).\n\nTem certeza que deseja continuar?')) {
+            return;
+        }
+        
+        if (!confirm('Esta ação é IRREVERSÍVEL!\n\nDigite "CONFIRMAR" para prosseguir.') || prompt('Digite CONFIRMAR para continuar:') !== 'CONFIRMAR') {
+            alert('Operação cancelada.');
+            return;
+        }
+        
+        showLoading(true, 'A limpar base de dados...');
+        
+        try {
+            // Eliminar todos os utilizadores exceto admin
+            const usersSnapshot = await db.collection('users').get();
+            const batch1 = db.batch();
+            let userCount = 0;
+            
+            usersSnapshot.forEach(doc => {
+                if (doc.id !== ADMIN_CONFIG.ADMIN_EMAIL) {
+                    batch1.delete(doc.ref);
+                    userCount++;
+                }
+            });
+            
+            if (userCount > 0) await batch1.commit();
+            
+            // Eliminar artistas que não pertencem ao admin
+            const artistasSnapshot = await db.collection('artistas').get();
+            const batch2 = db.batch();
+            let artistCount = 0;
+            
+            artistasSnapshot.forEach(doc => {
+                const a = doc.data();
+                if (a.owner !== ADMIN_CONFIG.ADMIN_EMAIL) {
+                    batch2.delete(doc.ref);
+                    artistCount++;
+                }
+            });
+            
+            if (artistCount > 0) await batch2.commit();
+            
+            // Eliminar músicas que não pertencem ao admin
+            const musicasSnapshot = await db.collection('musicas').get();
+            const batch3 = db.batch();
+            let musicCount = 0;
+            
+            musicasSnapshot.forEach(doc => {
+                const m = doc.data();
+                if (m.owner !== ADMIN_CONFIG.ADMIN_EMAIL) {
+                    batch3.delete(doc.ref);
+                    musicCount++;
+                }
+            });
+            
+            if (musicCount > 0) await batch3.commit();
+            
+            // Log de segurança
+            await SecuritySystem.logSecurityEvent('ADMIN_RESET_DATABASE', {
+                adminEmail: currentUser.email,
+                deletedUsers: userCount,
+                deletedArtists: artistCount,
+                deletedMusics: musicCount,
+                timestamp: new Date().toISOString()
+            });
+            
+            showLoading(false);
+            alert(`Base de dados limpa com sucesso!\n\nEliminados:\n- ${userCount} utilizadores\n- ${artistCount} artistas\n- ${musicCount} músicas\n\nSua conta de ADMIN PRO MAX foi preservada.`);
+            
+            loadAdminData();
+            
+        } catch (error) {
+            showLoading(false);
+            console.error('Erro ao limpar base de dados:', error);
+            alert('Erro ao limpar base de dados: ' + error.message);
+        }
+    }
 
     // ========== OTIMIZAÇÃO SEO ==========
     const SEOOptimization = {

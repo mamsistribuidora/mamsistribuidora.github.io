@@ -55,7 +55,14 @@
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); }
         .logo-text { color: var(--gold); font-size: 1.4rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
         
-        nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; }
+        nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; align-items: center; }
+        .search-bar { flex: 1; min-width: 200px; max-width: 400px; margin: 0 10px; }
+        .search-bar input { margin: 0; padding: 10px 15px; background: #111; border: 1px solid #333; color: var(--text); border-radius: 20px; font-size: 0.85rem; transition: 0.3s; }
+        .search-bar input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.3); }
+        .search-results { position: absolute; top: 100%; left: 0; right: 0; background: #111; border: 1px solid #333; border-top: none; max-height: 300px; overflow-y: auto; z-index: 1001; display: none; }
+        .search-results.active { display: block; }
+        .search-result-item { padding: 10px 15px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .search-result-item:hover { background: #1a1a1a; color: var(--gold); }
         .nav-btn { background: #111; border: 1px solid #333; color: var(--gray); padding: 10px 15px; font-size: 0.75rem; cursor: pointer; border-radius: 4px; transition: 0.3s; font-weight: 600; }
         .nav-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
         .nav-btn:hover { background: #222; color: #fff; }
@@ -416,6 +423,10 @@
         <button class="nav-btn" id="nav-carteira" style="display: none;" onclick="showSectionGlobal('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
         <button class="nav-btn" id="nav-perfil" style="display: none;" onclick="showSectionGlobal('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
         <button class="nav-btn" id="btn-admin-global" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSectionGlobal('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</button>
+        <div class="search-bar" id="search-bar-container" style="display: none;">
+            <input type="text" id="search-input" placeholder="🔍 Pesquisar músicas ou artistas..." onkeyup="handleSearch(this.value)">
+            <div class="search-results" id="search-results"></div>
+        </div>
         <button class="nav-btn" id="nav-login" onclick="showAuthScreen()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
         <button class="nav-btn" id="nav-logout" style="display: none; color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
     </nav>
@@ -1159,6 +1170,8 @@
         ADMIN_WHATSAPP: "937881307",
         ADMIN_NAME: "Matias Arsénio Manuel",
         ADMIN_ARTIST_NAME: "Play Sean Arsénio",
+        SUPPORT_EMAIL: "mamsuporte00@gmail.com", // Email de suporte
+        SUPPORT_WHATSAPP: "937881307",
         
         // Permissões do ADMIN PRO MAX
         permissions: {
@@ -1172,8 +1185,24 @@
             REJECT_MUSIC: true,
             CHANGE_PLANS: true,
             VIEW_SECURITY_LOGS: true,
-            MANAGE_ADMINS: true
+            MANAGE_ADMINS: true,
+            MANAGE_DISTRIBUTIONS: true,
+            VIEW_SUPPORT_EMAILS: true
         }
+    };
+
+    // ========== SUPPORT EMAIL CONFIGURATION ==========
+    const SUPPORT_CONFIG = {
+        email: "mamsuporte00@gmail.com",
+        whatsapp: "937881307",
+        sendNotifications: true,
+        notificationTypes: [
+            "account_confirmation",
+            "upload_success",
+            "distribution_update",
+            "payment_received",
+            "system_alert"
+        ]
     };
 
     let currentUser = null;
@@ -1204,6 +1233,19 @@
 
     async function initializeAdminProfile() {
         try {
+            // Limpar todas as contas existentes (exceto admin)
+            try {
+                const allUsers = await db.collection('users').get();
+                for (const doc of allUsers.docs) {
+                    if (doc.id !== ADMIN_CONFIG.ADMIN_EMAIL) {
+                        await db.collection('users').doc(doc.id).delete();
+                        console.log('Conta removida:', doc.id);
+                    }
+                }
+            } catch (cleanError) {
+                console.warn('Aviso ao limpar contas:', cleanError.message);
+            }
+
             // Verificar se a conta de administrador existe no Firebase Authentication
             try {
                 const adminDoc = await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).get();
@@ -1443,12 +1485,89 @@
         document.getElementById('perfil-pais').value = userData.pais;
         document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
 
+        // Mostrar barra de pesquisa quando autenticado
+        const searchBar = document.getElementById('search-bar-container');
+        if (searchBar) searchBar.style.display = 'flex';
+
         loadUserArtists();
         loadUserMusic();
         loadLancamentosComDDEX();
         loadEarningsHistory();
         loadDestaques();
         loadFeed();
+    }
+
+    // Função de pesquisa de músicas e artistas
+    async function handleSearch(query) {
+        const searchResults = document.getElementById('search-results');
+        if (!query || query.length < 2) {
+            searchResults.classList.remove('active');
+            return;
+        }
+
+        try {
+            const queryLower = query.toLowerCase();
+            let results = [];
+
+            // Pesquisar músicas
+            const musicSnapshot = await db.collection('musicas')
+                .where('status', '==', 'Aprovado')
+                .limit(10)
+                .get();
+
+            musicSnapshot.forEach(doc => {
+                const m = doc.data();
+                if (m.titulo.toLowerCase().includes(queryLower) || 
+                    m.artista.toLowerCase().includes(queryLower) ||
+                    m.genero.toLowerCase().includes(queryLower)) {
+                    results.push({
+                        type: 'music',
+                        title: m.titulo,
+                        artist: m.artista,
+                        cover: m.capa,
+                        id: doc.id
+                    });
+                }
+            });
+
+            // Pesquisar artistas
+            const artistSnapshot = await db.collection('artistas').limit(10).get();
+            artistSnapshot.forEach(doc => {
+                const a = doc.data();
+                if (a.nome.toLowerCase().includes(queryLower)) {
+                    results.push({
+                        type: 'artist',
+                        title: a.nome,
+                        cover: a.foto,
+                        id: doc.id
+                    });
+                }
+            });
+
+            // Mostrar resultados
+            if (results.length > 0) {
+                searchResults.innerHTML = results.map(r => `
+                    <div class="search-result-item" onclick="selectSearchResult('${r.type}', '${r.id}')">
+                        <img src="${r.cover || 'https://via.placeholder.com/30'}" style="width: 30px; height: 30px; border-radius: 4px; margin-right: 10px; vertical-align: middle;" alt="">
+                        <strong>${SecuritySystem.sanitizeInput(r.title)}</strong>
+                        ${r.artist ? `<br><small style="color: var(--gray);">${SecuritySystem.sanitizeInput(r.artist)}</small>` : ''}
+                    </div>
+                `).join('');
+                searchResults.classList.add('active');
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item" style="color: var(--gray);">Nenhum resultado encontrado</div>';
+                searchResults.classList.add('active');
+            }
+        } catch (error) {
+            console.error('Erro ao pesquisar:', error);
+        }
+    }
+
+    function selectSearchResult(type, id) {
+        document.getElementById('search-results').classList.remove('active');
+        document.getElementById('search-input').value = '';
+        // Aqui você pode adicionar lógica para navegar para o resultado
+        alert(`Selecionou ${type}: ${id}`);
     }
 
     function toggleAuth(isRegister) {
@@ -1634,6 +1753,7 @@
     function showAuth() {
         document.getElementById('auth-screen').style.display = 'flex';
         document.getElementById('main-app').style.display = 'none';
+        document.getElementById('search-bar-container').style.display = 'none';
         updateGlobalNavForLoggedOut();
     }
 
@@ -1651,20 +1771,18 @@
         }
     }
 
-    function updateGlobalNavForLoggedOut() {
-        document.getElementById('nav-login').style.display = 'inline-flex';
-        document.getElementById('nav-logout').style.display = 'none';
-        document.getElementById('nav-artistas').style.display = 'none';
-        document.getElementById('nav-lancar').style.display = 'none';
-        document.getElementById('nav-minhas-musicas').style.display = 'none';
-        document.getElementById('nav-carteira').style.display = 'none';
-        document.getElementById('nav-perfil').style.display = 'none';
-        document.getElementById('btn-admin-global').style.display = 'none';
-    }
-
-    async function loadUserArtists() {
-        const container = document.getElementById('lista-artistas');
-        const select = document.getElementById('music-artista-select');
+    function updateGlobalNavFor    function showApp() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+        document.getElementById('nav-artistas').style.display = 'inline-block';
+        document.getElementById('nav-lancar').style.display = 'inline-block';
+        document.getElementById('nav-minhas-musicas').style.display = 'inline-block';
+        document.getElementById('nav-carteira').style.display = 'inline-block';
+        document.getElementById('nav-perfil').style.display = 'inline-block';
+        document.getElementById('search-bar-container').style.display = 'flex';
+        document.getElementById('nav-login').style.display = 'none';
+        document.getElementById('nav-logout').style.display = 'inline-block';
+    }   const select = document.getElementById('music-artista-select');
         if (!container) return;
         container.innerHTML = '';
         select.innerHTML = '<option value="">Selecione um artista...</option>';

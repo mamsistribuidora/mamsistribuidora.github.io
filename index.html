@@ -469,7 +469,20 @@
                     </button>
                 </div>
                 <button class="btn" onclick="handleLogin()">Entrar Agora <i class="fas fa-sign-in-alt"></i></button>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Não tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(true)">Criar Conta Grátis</span></p>
+                <p style="text-align: center; font-size: 0.85rem; margin-top: 15px; color: var(--gray);">
+                    <span style="color: var(--gold); cursor: pointer;" onclick="showPasswordRecovery()">Esqueceu a palavra-passe?</span>
+                </p>
+                <p style="text-align: center; font-size: 0.85rem; margin-top: 10px; color: var(--gray);">Não tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(true)">Criar Conta Grátis</span></p>
+            </div>
+
+            <div class="card" id="recovery-form" style="display: none;">
+                <h3><i class="fas fa-key"></i> Recuperar Palavra-passe</h3>
+                <p style="color: var(--gray); font-size: 0.85rem; margin-bottom: 15px;">Introduza o seu e-mail e enviaremos um link para redefinir a sua palavra-passe.</p>
+                <input type="email" id="recovery-email" placeholder="E-mail registado" autocomplete="email">
+                <button class="btn" onclick="handlePasswordRecovery()"><i class="fas fa-paper-plane"></i> Enviar Link de Recuperação</button>
+                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">
+                    <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="hidePasswordRecovery()"><i class="fas fa-arrow-left"></i> Voltar ao Login</span>
+                </p>
             </div>
 
             <div class="card" id="register-form" style="display: none;">
@@ -719,13 +732,83 @@
             <!-- CARTEIRA -->
             <div id="carteira" class="section">
                 <div class="stat-box" style="margin-bottom: 20px; padding: 40px;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <label style="color: var(--gold); font-size: 0.85rem;">Moeda:</label>
+                        <select id="currency-selector" onchange="changeCurrency(this.value)" style="width: auto; padding: 8px 15px; margin-bottom: 0; font-size: 0.85rem; min-width: 200px;">
+                            <option value="AOA">🇦🇴 AOA - Kwanza Angolano</option>
+                            <option value="USD">🇺🇸 USD - Dólar Americano</option>
+                            <option value="EUR">🇪🇺 EUR - Euro</option>
+                            <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
+                            <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
+                            <option value="ZAR">🇿🇦 ZAR - Rand Sul-Africano</option>
+                            <option value="NGN">🇳🇬 NGN - Naira Nigeriana</option>
+                            <option value="KES">🇰🇪 KES - Xelim Queniano</option>
+                            <option value="GHS">🇬🇭 GHS - Cedi Ganês</option>
+                            <option value="XOF">🌍 XOF - Franco CFA</option>
+                            <option value="MZN">🇲🇿 MZN - Metical Moçambicano</option>
+                            <option value="CVE">🇨🇻 CVE - Escudo Cabo-Verdiano</option>
+                            <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
+                            <option value="CNY">🇨🇳 CNY - Yuan Chinês</option>
+                            <option value="INR">🇮🇳 INR - Rupia Indiana</option>
+                            <option value="AUD">🇦🇺 AUD - Dólar Australiano</option>
+                            <option value="CAD">🇨🇦 CAD - Dólar Canadense</option>
+                            <option value="CHF">🇨🇭 CHF - Franco Suíço</option>
+                            <option value="RUB">🇷🇺 RUB - Rublo Russo</option>
+                            <option value="AED">🇦🇪 AED - Dirham dos EAU</option>
+                            <option value="SAR">🇸🇦 SAR - Rial Saudita</option>
+                            <option value="EGP">🇪🇬 EGP - Libra Egípcia</option>
+                            <option value="MAD">🇲🇦 MAD - Dirham Marroquino</option>
+                            <option value="TZS">🇹🇿 TZS - Xelim Tanzaniano</option>
+                            <option value="UGX">🇺🇬 UGX - Xelim Ugandês</option>
+                            <option value="RWF">🇷🇼 RWF - Franco Ruandês</option>
+                            <option value="XAF">🌍 XAF - Franco CFA Central</option>
+                            <option value="BWP">🇧🇼 BWP - Pula do Botswana</option>
+                            <option value="NAD">🇳🇦 NAD - Dólar Namibiano</option>
+                            <option value="ZMW">🇿🇲 ZMW - Kwacha Zambiano</option>
+                            <option value="MWK">🇲🇼 MWK - Kwacha Malauiano</option>
+                            <option value="STN">🇸🇹 STN - Dobra São-Tomense</option>
+                            <option value="GMD">🇬🇲 GMD - Dalasi Gambiano</option>
+                            <option value="SLL">🇸🇱 SLL - Leone Serra-Leonês</option>
+                            <option value="LRD">🇱🇷 LRD - Dólar Liberiano</option>
+                            <option value="MXN">🇲🇽 MXN - Peso Mexicano</option>
+                            <option value="ARS">🇦🇷 ARS - Peso Argentino</option>
+                            <option value="CLP">🇨🇱 CLP - Peso Chileno</option>
+                            <option value="COP">🇨🇴 COP - Peso Colombiano</option>
+                            <option value="PEN">🇵🇪 PEN - Sol Peruano</option>
+                            <option value="KRW">🇰🇷 KRW - Won Sul-Coreano</option>
+                            <option value="SGD">🇸🇬 SGD - Dólar de Singapura</option>
+                            <option value="MYR">🇲🇾 MYR - Ringgit Malaio</option>
+                            <option value="THB">🇹🇭 THB - Baht Tailandês</option>
+                            <option value="IDR">🇮🇩 IDR - Rupia Indonésia</option>
+                            <option value="PHP">🇵🇭 PHP - Peso Filipino</option>
+                            <option value="VND">🇻🇳 VND - Dong Vietnamita</option>
+                            <option value="PKR">🇵🇰 PKR - Rupia Paquistanesa</option>
+                            <option value="BDT">🇧🇩 BDT - Taka de Bangladesh</option>
+                            <option value="LKR">🇱🇰 LKR - Rupia do Sri Lanka</option>
+                            <option value="NPR">🇳🇵 NPR - Rupia Nepalesa</option>
+                            <option value="TRY">🇹🇷 TRY - Lira Turca</option>
+                            <option value="ILS">🇮🇱 ILS - Shekel Israelense</option>
+                            <option value="PLN">🇵🇱 PLN - Zloty Polonês</option>
+                            <option value="CZK">🇨🇿 CZK - Coroa Checa</option>
+                            <option value="HUF">🇭🇺 HUF - Forint Húngaro</option>
+                            <option value="RON">🇷🇴 RON - Leu Romeno</option>
+                            <option value="SEK">🇸🇪 SEK - Coroa Sueca</option>
+                            <option value="NOK">🇳🇴 NOK - Coroa Norueguesa</option>
+                            <option value="DKK">🇩🇰 DKK - Coroa Dinamarquesa</option>
+                            <option value="HKD">🇭🇰 HKD - Dólar de Hong Kong</option>
+                            <option value="TWD">🇹🇼 TWD - Dólar Taiwanês</option>
+                            <option value="NZD">🇳🇿 NZD - Dólar Neozelandês</option>
+                        </select>
+                    </div>
                     <p>Saldo Disponível para Saque</p>
                     <h4 style="font-size: 3rem;" id="wallet-saldo">0 Kz</h4>
+                    <p id="wallet-saldo-converted" style="color: var(--gray); font-size: 1rem; margin-top: 5px;"></p>
                     <button class="btn btn-small" style="margin: 20px auto 0;" onclick="openModal('modal-saque')">Solicitar Levantamento</button>
                 </div>
 
                 <div class="card">
-                    <h3><i class="fas fa-history"></i> Histórico de Ganhos (Reais)</h3>
+                    <h3><i class="fas fa-history"></i> Histórico de Ganhos (Valores Reais)</h3>
+                    <p style="color: var(--gray); font-size: 0.75rem; margin-bottom: 15px;"><i class="fas fa-info-circle"></i> Todos os valores apresentados são reais e provêm das plataformas de streaming.</p>
                     <div id="historico-ganhos">
                     </div>
                 </div>
@@ -818,8 +901,8 @@
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-sec" onclick="viewSecurityLogs()"><i class="fas fa-file-alt"></i> Ver Logs de Segurança</button>
-                        <button class="btn btn-danger" onclick="adminResetAllAccounts()"><i class="fas fa-trash-alt"></i> Limpar Todas as Contas</button>
                     </div>
+                    <p style="color: var(--gray); font-size: 0.75rem; margin-top: 10px;"><i class="fas fa-info-circle"></i> Para eliminar contas, utilize a pesquisa acima e elimine uma a uma para maior segurança.</p>
                 </div>
 
                 <div class="card" style="border-left-color: #ff6b35;">
@@ -1400,17 +1483,41 @@
     }
 
     function checkAuthState() {
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                await loadUserData();
-                showApp();
-                startSessionTracking();
-                SecuritySystem.logSecurityEvent('USER_LOGIN', { email: user.email });
-            } else {
-                showAuth();
-            }
-        });
+        // Configurar persistência LOCAL para manter sessão após fechar/atualizar navegador
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        currentUser = user;
+                        await loadUserData();
+                        showApp();
+                        startSessionTracking();
+                        
+                        // Só registar evento se for um novo login (não refresh)
+                        const lastLogin = localStorage.getItem('mam_last_login');
+                        const now = Date.now();
+                        if (!lastLogin || (now - parseInt(lastLogin)) > 60000) { // Mais de 1 minuto
+                            SecuritySystem.logSecurityEvent('USER_LOGIN', { email: user.email });
+                            localStorage.setItem('mam_last_login', now.toString());
+                        }
+                    } else {
+                        showAuth();
+                    }
+                });
+            })
+            .catch((error) => {
+                console.error('Erro ao configurar persistência:', error);
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        currentUser = user;
+                        await loadUserData();
+                        showApp();
+                        startSessionTracking();
+                    } else {
+                        showAuth();
+                    }
+                });
+            });
     }
 
     function startSessionTracking() {
@@ -1497,6 +1604,17 @@
         document.getElementById('perfil-telefone').value = userData.telefone || '';
         document.getElementById('perfil-pais').value = userData.pais;
         document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
+
+        // Atualizar display da carteira com moeda selecionada
+        updateWalletDisplay();
+
+        // Restaurar moeda selecionada
+        const savedCurrency = localStorage.getItem('mam_currency');
+        if (savedCurrency) {
+            const currencySelector = document.getElementById('currency-selector');
+            if (currencySelector) currencySelector.value = savedCurrency;
+            selectedCurrency = savedCurrency;
+        }
 
         loadUserArtists();
         loadUserMusic();
@@ -1681,7 +1799,12 @@
             
             SecuritySystem.logSecurityEvent('USER_REGISTERED', { email, isAdmin: isAdminUser });
             
-            const message = isAdminUser ? "Conta de ADMIN PRO MAX criada com sucesso! Saldo inicial: 10.000.000 Kz. Controlo Total Ativado." : "Conta criada com sucesso! Ganhou 2.000 Kz de bónus.";
+            // Enviar email de confirmação
+            await sendEmailConfirmation(email, nome);
+            
+            const message = isAdminUser 
+                ? "Conta de ADMIN PRO MAX criada com sucesso! Saldo inicial: 10.000.000 Kz. Controlo Total Ativado." 
+                : "Conta criada com sucesso! Ganhou 2.000 Kz de bónus.\n\nUm e-mail de confirmação foi enviado para " + email + ".\nPor favor, verifique a sua caixa de entrada (incluindo spam).";
             alert(message);
             document.getElementById('login-email').value = email;
             document.getElementById('login-pass').value = pass;
@@ -1691,6 +1814,212 @@
             alert("Erro ao registar: " + error.message);
         }
         showLoading(false);
+    }
+
+    // ========== RECUPERAÇÃO DE PALAVRA-PASSE ==========
+    function showPasswordRecovery() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'none';
+        document.getElementById('recovery-form').style.display = 'block';
+    }
+
+    function hidePasswordRecovery() {
+        document.getElementById('recovery-form').style.display = 'none';
+        document.getElementById('login-form').style.display = 'block';
+    }
+
+    async function handlePasswordRecovery() {
+        const email = document.getElementById('recovery-email').value.trim().toLowerCase();
+        
+        if (!email) return alert("Por favor, introduza o seu e-mail!");
+        if (!SecuritySystem.isValidEmail(email)) return alert("E-mail inválido!");
+
+        showLoading(true, "A enviar link de recuperação...");
+        try {
+            await auth.sendPasswordResetEmail(email, {
+                url: window.location.href,
+                handleCodeInApp: false
+            });
+            
+            // Registar email de recuperação na base de dados
+            await db.collection('emails').add({
+                to: email,
+                subject: "Recuperação de Palavra-passe - MAM Distribuidora",
+                body: `Olá,\n\nRecebemos um pedido para redefinir a sua palavra-passe na MAM Distribuidora.\n\nSe não fez este pedido, pode ignorar este e-mail.\n\nAtenciosamente,\nEquipa MAM Distribuidora\n\nSuporte: mamfilhos29@gmail.com\nWhatsApp: +244 937 881 307`,
+                tipo: 'recovery',
+                status: 'enviado',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            SecuritySystem.logSecurityEvent('PASSWORD_RECOVERY_REQUESTED', { email });
+            
+            showLoading(false);
+            alert("Link de recuperação enviado com sucesso!\n\nVerifique a sua caixa de e-mail (incluindo spam) e siga as instruções para redefinir a sua palavra-passe.");
+            hidePasswordRecovery();
+            document.getElementById('recovery-email').value = '';
+        } catch (error) {
+            showLoading(false);
+            if (error.code === 'auth/user-not-found') {
+                alert("Este e-mail não está registado na nossa plataforma.");
+            } else {
+                alert("Erro ao enviar link de recuperação: " + error.message);
+            }
+        }
+    }
+
+    // ========== CONFIRMAÇÃO DE EMAIL NO REGISTO ==========
+    async function sendEmailConfirmation(email, nome) {
+        try {
+            // Enviar email de verificação através do Firebase Auth
+            const user = auth.currentUser;
+            if (user) {
+                await user.sendEmailVerification({
+                    url: window.location.href,
+                    handleCodeInApp: false
+                });
+            }
+            
+            // Registar confirmação na base de dados
+            await db.collection('emails').add({
+                to: email,
+                subject: "Confirmação de Conta - MAM Distribuidora",
+                body: `Olá ${nome},\n\nBem-vindo à MAM Distribuidora - O Império da Música!\n\nA sua conta foi criada com sucesso. Por favor, confirme o seu e-mail clicando no link enviado.\n\nCom a MAM você pode:\n- Distribuir para +150 plataformas\n- Receber pagamentos automáticos\n- Acompanhar estatísticas em tempo real\n- Gerenciar múltiplos artistas\n\nSuporte: mamfilhos29@gmail.com\nWhatsApp: +244 937 881 307\n\nAtenciosamente,\nEquipa MAM Distribuidora`,
+                tipo: 'confirmation',
+                status: 'enviado',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log('Email de confirmação enviado para:', email);
+        } catch (error) {
+            console.error('Erro ao enviar email de confirmação:', error);
+        }
+    }
+
+    // ========== SISTEMA DE CONVERSÃO DE MOEDAS ==========
+    const CurrencySystem = {
+        // Taxas de câmbio aproximadas em relação ao Kwanza (AOA)
+        // Atualizadas periodicamente - estas são taxas aproximadas
+        rates: {
+            AOA: 1,
+            USD: 0.0012,      // 1 AOA ≈ 0.0012 USD
+            EUR: 0.0011,      // 1 AOA ≈ 0.0011 EUR
+            GBP: 0.00095,     // 1 AOA ≈ 0.00095 GBP
+            BRL: 0.006,       // 1 AOA ≈ 0.006 BRL
+            ZAR: 0.022,       // 1 AOA ≈ 0.022 ZAR
+            NGN: 1.85,        // 1 AOA ≈ 1.85 NGN
+            KES: 0.19,        // 1 AOA ≈ 0.19 KES
+            GHS: 0.015,       // 1 AOA ≈ 0.015 GHS
+            XOF: 0.72,        // 1 AOA ≈ 0.72 XOF
+            MZN: 0.076,       // 1 AOA ≈ 0.076 MZN
+            CVE: 0.12,        // 1 AOA ≈ 0.12 CVE
+            JPY: 0.18,        // 1 AOA ≈ 0.18 JPY
+            CNY: 0.0086,      // 1 AOA ≈ 0.0086 CNY
+            INR: 0.1,         // 1 AOA ≈ 0.1 INR
+            AUD: 0.0018,      // 1 AOA ≈ 0.0018 AUD
+            CAD: 0.0016,      // 1 AOA ≈ 0.0016 CAD
+            CHF: 0.001,       // 1 AOA ≈ 0.001 CHF
+            RUB: 0.1,         // 1 AOA ≈ 0.1 RUB
+            AED: 0.0044,      // 1 AOA ≈ 0.0044 AED
+            SAR: 0.0045,      // 1 AOA ≈ 0.0045 SAR
+            EGP: 0.037,       // 1 AOA ≈ 0.037 EGP
+            MAD: 0.012,       // 1 AOA ≈ 0.012 MAD
+            TZS: 3.0,         // 1 AOA ≈ 3.0 TZS
+            UGX: 4.4,         // 1 AOA ≈ 4.4 UGX
+            RWF: 1.52,        // 1 AOA ≈ 1.52 RWF
+            XAF: 0.72,        // 1 AOA ≈ 0.72 XAF
+            BWP: 0.016,       // 1 AOA ≈ 0.016 BWP
+            NAD: 0.022,       // 1 AOA ≈ 0.022 NAD
+            ZMW: 0.031,       // 1 AOA ≈ 0.031 ZMW
+            MWK: 2.0,         // 1 AOA ≈ 2.0 MWK
+            STN: 0.027,       // 1 AOA ≈ 0.027 STN
+            GMD: 0.081,       // 1 AOA ≈ 0.081 GMD
+            SLL: 26.7,        // 1 AOA ≈ 26.7 SLL
+            LRD: 0.23,        // 1 AOA ≈ 0.23 LRD
+            MXN: 0.02,        // 1 AOA ≈ 0.02 MXN
+            ARS: 1.1,         // 1 AOA ≈ 1.1 ARS
+            CLP: 1.1,         // 1 AOA ≈ 1.1 CLP
+            COP: 4.8,         // 1 AOA ≈ 4.8 COP
+            PEN: 0.0045,      // 1 AOA ≈ 0.0045 PEN
+            KRW: 1.6,         // 1 AOA ≈ 1.6 KRW
+            SGD: 0.0016,      // 1 AOA ≈ 0.0016 SGD
+            MYR: 0.0055,      // 1 AOA ≈ 0.0055 MYR
+            THB: 0.043,       // 1 AOA ≈ 0.043 THB
+            IDR: 18.8,        // 1 AOA ≈ 18.8 IDR
+            PHP: 0.067,       // 1 AOA ≈ 0.067 PHP
+            VND: 30.0,        // 1 AOA ≈ 30.0 VND
+            PKR: 0.33,        // 1 AOA ≈ 0.33 PKR
+            BDT: 0.13,        // 1 AOA ≈ 0.13 BDT
+            LKR: 0.36,        // 1 AOA ≈ 0.36 LKR
+            NPR: 0.16,        // 1 AOA ≈ 0.16 NPR
+            TRY: 0.039,       // 1 AOA ≈ 0.039 TRY
+            ILS: 0.0044,      // 1 AOA ≈ 0.0044 ILS
+            PLN: 0.0048,      // 1 AOA ≈ 0.0048 PLN
+            CZK: 0.028,       // 1 AOA ≈ 0.028 CZK
+            HUF: 0.43,        // 1 AOA ≈ 0.43 HUF
+            RON: 0.0055,      // 1 AOA ≈ 0.0055 RON
+            SEK: 0.013,       // 1 AOA ≈ 0.013 SEK
+            NOK: 0.013,       // 1 AOA ≈ 0.013 NOK
+            DKK: 0.0082,      // 1 AOA ≈ 0.0082 DKK
+            HKD: 0.0094,      // 1 AOA ≈ 0.0094 HKD
+            TWD: 0.038,       // 1 AOA ≈ 0.038 TWD
+            NZD: 0.002        // 1 AOA ≈ 0.002 NZD
+        },
+
+        symbols: {
+            AOA: 'Kz', USD: '$', EUR: '€', GBP: '£', BRL: 'R$', ZAR: 'R',
+            NGN: '₦', KES: 'KSh', GHS: 'GH₵', XOF: 'CFA', MZN: 'MT',
+            CVE: '$', JPY: '¥', CNY: '¥', INR: '₹', AUD: 'A$', CAD: 'C$',
+            CHF: 'CHF', RUB: '₽', AED: 'د.إ', SAR: '﷼', EGP: 'E£',
+            MAD: 'د.م.', TZS: 'TSh', UGX: 'USh', RWF: 'FRw', XAF: 'FCFA',
+            BWP: 'P', NAD: 'N$', ZMW: 'ZK', MWK: 'MK', STN: 'Db',
+            GMD: 'D', SLL: 'Le', LRD: 'L$', MXN: '$', ARS: '$', CLP: '$',
+            COP: '$', PEN: 'S/', KRW: '₩', SGD: 'S$', MYR: 'RM',
+            THB: '฿', IDR: 'Rp', PHP: '₱', VND: '₫', PKR: '₨',
+            BDT: '৳', LKR: 'Rs', NPR: 'Rs', TRY: '₺', ILS: '₪',
+            PLN: 'zł', CZK: 'Kč', HUF: 'Ft', RON: 'lei', SEK: 'kr',
+            NOK: 'kr', DKK: 'kr', HKD: 'HK$', TWD: 'NT$', NZD: 'NZ$'
+        },
+
+        convert(amountInAOA, toCurrency) {
+            const rate = this.rates[toCurrency] || 1;
+            return amountInAOA * rate;
+        },
+
+        format(amount, currency) {
+            const symbol = this.symbols[currency] || currency;
+            const formatted = amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return `${symbol} ${formatted}`;
+        }
+    };
+
+    let selectedCurrency = localStorage.getItem('mam_currency') || 'AOA';
+
+    function changeCurrency(currency) {
+        selectedCurrency = currency;
+        localStorage.setItem('mam_currency', currency);
+        updateWalletDisplay();
+    }
+
+    function updateWalletDisplay() {
+        if (!userData) return;
+        
+        const saldoAOA = userData.saldo || 0;
+        const walletSaldoEl = document.getElementById('wallet-saldo');
+        const statSaldoEl = document.getElementById('stat-saldo');
+        const convertedEl = document.getElementById('wallet-saldo-converted');
+        
+        // Mostrar sempre em Kwanzas como valor principal
+        if (walletSaldoEl) walletSaldoEl.innerText = `${saldoAOA.toLocaleString()} Kz`;
+        if (statSaldoEl) statSaldoEl.innerText = `${saldoAOA.toLocaleString()} Kz`;
+        
+        // Mostrar conversão se a moeda selecionada não for AOA
+        if (selectedCurrency !== 'AOA' && convertedEl) {
+            const convertedAmount = CurrencySystem.convert(saldoAOA, selectedCurrency);
+            convertedEl.innerText = `≈ ${CurrencySystem.format(convertedAmount, selectedCurrency)}`;
+            convertedEl.style.display = 'block';
+        } else if (convertedEl) {
+            convertedEl.style.display = 'none';
+        }
     }
 
     async function processLoginEarnings(email) {
@@ -3626,89 +3955,9 @@ Obrigado pela sua compra!
         }
     }
 
-    // ========== FUNÇÃO PARA LIMPAR TODAS AS CONTAS (ADMIN ONLY) ==========
-    async function adminResetAllAccounts() {
-        if (!currentUser || currentUser.email !== ADMIN_CONFIG.ADMIN_EMAIL) {
-            alert('Apenas o ADMIN PRO MAX pode executar esta ação!');
-            return;
-        }
-        
-        if (!confirm('ATENÇÃO: Isto irá ELIMINAR TODAS as contas de utilizadores (exceto a sua conta de Admin).\n\nTem certeza que deseja continuar?')) {
-            return;
-        }
-        
-        if (!confirm('Esta ação é IRREVERSÍVEL!\n\nDigite "CONFIRMAR" para prosseguir.') || prompt('Digite CONFIRMAR para continuar:') !== 'CONFIRMAR') {
-            alert('Operação cancelada.');
-            return;
-        }
-        
-        showLoading(true, 'A limpar base de dados...');
-        
-        try {
-            // Eliminar todos os utilizadores exceto admin
-            const usersSnapshot = await db.collection('users').get();
-            const batch1 = db.batch();
-            let userCount = 0;
-            
-            usersSnapshot.forEach(doc => {
-                if (doc.id !== ADMIN_CONFIG.ADMIN_EMAIL) {
-                    batch1.delete(doc.ref);
-                    userCount++;
-                }
-            });
-            
-            if (userCount > 0) await batch1.commit();
-            
-            // Eliminar artistas que não pertencem ao admin
-            const artistasSnapshot = await db.collection('artistas').get();
-            const batch2 = db.batch();
-            let artistCount = 0;
-            
-            artistasSnapshot.forEach(doc => {
-                const a = doc.data();
-                if (a.owner !== ADMIN_CONFIG.ADMIN_EMAIL) {
-                    batch2.delete(doc.ref);
-                    artistCount++;
-                }
-            });
-            
-            if (artistCount > 0) await batch2.commit();
-            
-            // Eliminar músicas que não pertencem ao admin
-            const musicasSnapshot = await db.collection('musicas').get();
-            const batch3 = db.batch();
-            let musicCount = 0;
-            
-            musicasSnapshot.forEach(doc => {
-                const m = doc.data();
-                if (m.owner !== ADMIN_CONFIG.ADMIN_EMAIL) {
-                    batch3.delete(doc.ref);
-                    musicCount++;
-                }
-            });
-            
-            if (musicCount > 0) await batch3.commit();
-            
-            // Log de segurança
-            await SecuritySystem.logSecurityEvent('ADMIN_RESET_DATABASE', {
-                adminEmail: currentUser.email,
-                deletedUsers: userCount,
-                deletedArtists: artistCount,
-                deletedMusics: musicCount,
-                timestamp: new Date().toISOString()
-            });
-            
-            showLoading(false);
-            alert(`Base de dados limpa com sucesso!\n\nEliminados:\n- ${userCount} utilizadores\n- ${artistCount} artistas\n- ${musicCount} músicas\n\nSua conta de ADMIN PRO MAX foi preservada.`);
-            
-            loadAdminData();
-            
-        } catch (error) {
-            showLoading(false);
-            console.error('Erro ao limpar base de dados:', error);
-            alert('Erro ao limpar base de dados: ' + error.message);
-        }
-    }
+    // ========== FUNÇÃO REMOVIDA POR SEGURANÇA ==========
+    // A função adminResetAllAccounts foi removida para evitar eliminação acidental de contas.
+    // Para eliminar contas, utilize a pesquisa de utilizadores e elimine uma a uma.
 
     // ========== OTIMIZAÇÃO SEO ==========
     const SEOOptimization = {

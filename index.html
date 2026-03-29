@@ -883,32 +883,7 @@
                     </div>
                 </div>
 
-                <!-- Gerenciamento de Artistas -->
-                <div class="card">
-                    <h3><i class="fas fa-users"></i> Adicionar Artista</h3>
-                    <form id="form-add-artista" style="display: flex; flex-direction: column; gap: 10px;">
-                        <input type="text" id="artista-nome" placeholder="Nome do Artista" required>
-                        <input type="text" id="artista-genero" placeholder="Género Musical" required>
-                        <input type="file" id="artista-foto" accept="image/*">
-                        <button type="submit" class="btn"><i class="fas fa-save"></i> Salvar Artista</button>
-                    </form>
-                </div>
 
-                <!-- Gerenciamento de Músicas -->
-                <div class="card">
-                    <h3><i class="fas fa-music"></i> Adicionar Música</h3>
-                    <form id="form-add-musica" style="display: flex; flex-direction: column; gap: 10px;">
-                        <input type="text" id="musica-titulo" placeholder="Título da Música" required>
-                        <select id="musica-artista-select" required>
-                            <option value="">Selecione um artista...</option>
-                        </select>
-                        <input type="text" id="musica-genero" placeholder="Género Musical" required>
-                        <input type="file" id="musica-capa" accept="image/*">
-                        <input type="file" id="musica-arquivo-wav" accept="audio/wav" required>
-                        <input type="file" id="musica-arquivo-mp3" accept="audio/mp3">
-                        <button type="submit" class="btn"><i class="fas fa-upload"></i> Upload Música</button>
-                    </form>
-                </div>
 
                 <div class="card">
                     <h3><i class="fas fa-shield-alt"></i> Segurança do Sistema</h3>
@@ -2180,6 +2155,9 @@
     }
 
     async function handleSaveArtist() {
+        // Validacao de seguranca: apenas o proprietario pode editar
+        if (!currentUser) return alert("Voce deve estar autenticado!");
+        
         const id = document.getElementById('edit-artista-id').value;
         const nome = SecuritySystem.sanitizeInput(document.getElementById('artista-nome').value);
         const estilo = document.getElementById('artista-estilo').value;
@@ -2192,6 +2170,20 @@
         const instagram = document.getElementById('artista-instagram').value;
 
         if (!nome || !estilo) return alert("Preencha o nome e estilo!");
+        
+        // Se esta a editar, verificar se e o proprietario
+        if (id) {
+            try {
+                const artistDoc = await db.collection('artistas').doc(id).get();
+                if (!artistDoc.exists) return alert("Artista nao encontrado!");
+                if (artistDoc.data().owner !== currentUser.email) {
+                    return alert("Voce nao tem permissao para editar este artista!");
+                }
+            } catch (error) {
+                console.error("Erro ao verificar proprietario:", error);
+                return alert("Erro ao verificar permissoes!");
+            }
+        }
 
         showLoading(true, "A salvar artista...");
         try {
@@ -2265,8 +2257,17 @@
     }
 
     async function deleteArtist(id) {
+        if (!currentUser) return alert("Voce deve estar autenticado!");
+        
         if (confirm("Deseja remover este artista?")) {
             try {
+                // Verificar se e o proprietario
+                const artistDoc = await db.collection('artistas').doc(id).get();
+                if (!artistDoc.exists) return alert("Artista nao encontrado!");
+                if (artistDoc.data().owner !== currentUser.email) {
+                    return alert("Voce nao tem permissao para remover este artista!");
+                }
+                
                 await db.collection('artistas').doc(id).delete();
                 loadUserArtists();
                 alert("Artista removido!");
@@ -2277,6 +2278,9 @@
     }
 
     async function enviarLancamento() {
+        // Validacao de seguranca: apenas utilizadores autenticados podem enviar musicas
+        if (!currentUser) return alert("Voce deve estar autenticado para enviar musicas!");
+        
         const titulo = SecuritySystem.sanitizeInput(document.getElementById('music-titulo').value?.trim());
         const artista = document.getElementById('music-artista-select').value;
         const estilo = document.getElementById('music-estilo').value;
@@ -2545,12 +2549,13 @@
 
             snapshot.forEach(doc => {
                 const m = doc.data();
+                const musicId = doc.id;
                 container.innerHTML += `
                     <div class="disco-item">
                         <img src="${m.capa}" class="disco-cover" alt="${SecuritySystem.sanitizeInput(m.titulo)}">
                         <div class="disco-title">${SecuritySystem.sanitizeInput(m.titulo)}</div>
                         <div class="disco-artist">${SecuritySystem.sanitizeInput(m.artista)}</div>
-                        <audio class="audio-player" controls>
+                        <audio class="audio-player" controls onended="handleMusicEnded('${musicId}', '${m.owner}')">
                             <source src="${m.audio}" type="audio/mpeg">
                         </audio>
                     </div>
@@ -2561,9 +2566,82 @@
         }
     }
 
+    // ========== SISTEMA DE GANHOS REAIS ==========
+    async function handleMusicEnded(musicId, musicOwner) {
+        if (!currentUser) return;
+        
+        try {
+            // Ganho para o utilizador (artista/dono da música)
+            const userGainAmount = 300; // 300 Kz
+            const platformGainAmount = 5000; // 5000 Kz para a plataforma
+            
+            // Verificar se já foi registado ganho para esta música nesta sessão
+            const gainKey = `music_gain_${musicId}_${currentUser.email}`;
+            if (sessionStorage.getItem(gainKey)) {
+                console.log('Ganho já foi registado para esta música nesta sessão');
+                return;
+            }
+            
+            // Registar ganho para o utilizador
+            if (musicOwner === currentUser.email) {
+                await db.collection('users').doc(currentUser.email).update({
+                    saldo: firebase.firestore.FieldValue.increment(userGainAmount)
+                });
+                
+                // Registar no histórico de ganhos
+                await db.collection('ganhos').add({
+                    email: currentUser.email,
+                    valor: userGainAmount,
+                    tipo: "Reprodução de Música",
+                    motivo: `Música: ${musicId}`,
+                    data: firebase.firestore.FieldValue.serverTimestamp(),
+                    musicId: musicId,
+                    isRealEarning: true
+                });
+            }
+            
+            // Registar ganho para a plataforma (admin)
+            const adminRef = db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL);
+            await adminRef.update({
+                saldo: firebase.firestore.FieldValue.increment(platformGainAmount)
+            });
+            
+            // Registar no histórico de ganhos da plataforma
+            await db.collection('ganhos').add({
+                email: ADMIN_CONFIG.ADMIN_EMAIL,
+                valor: platformGainAmount,
+                tipo: "Ganho de Plataforma",
+                motivo: `Reprodução de: ${musicId}`,
+                data: firebase.firestore.FieldValue.serverTimestamp(),
+                musicId: musicId,
+                isRealEarning: true,
+                isAdminEarning: true
+            });
+            
+            // Marcar como registado nesta sessão
+            sessionStorage.setItem(gainKey, 'true');
+            
+            // Atualizar display do saldo
+            updateWalletDisplay();
+            
+            console.log(`Ganhos registados: ${userGainAmount} Kz para utilizador, ${platformGainAmount} Kz para plataforma`);
+        } catch (error) {
+            console.error('Erro ao registar ganhos:', error);
+        }
+    }
+
     async function deleteMusic(id) {
+        if (!currentUser) return alert("Voce deve estar autenticado!");
+        
         if (confirm("Deseja cancelar este lançamento?")) {
             try {
+                // Verificar se e o proprietario
+                const musicDoc = await db.collection('musicas').doc(id).get();
+                if (!musicDoc.exists) return alert("Musica nao encontrada!");
+                if (musicDoc.data().owner !== currentUser.email) {
+                    return alert("Voce nao tem permissao para remover esta musica!");
+                }
+                
                 await db.collection('musicas').doc(id).delete();
                 loadUserMusic();
                 loadFeed();
@@ -2583,16 +2661,23 @@
             const snapshot = await db.collection('ganhos')
                 .where('email', '==', currentUser.email)
                 .orderBy('data', 'desc')
-                .limit(20)
+                .limit(50)
                 .get();
 
-            if (snapshot.empty) {
-                container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum ganho registado ainda.</p>';
+            const realEarnings = [];
+            snapshot.forEach(doc => {
+                const g = doc.data();
+                if (g.isRealEarning === true) {
+                    realEarnings.push(g);
+                }
+            });
+
+            if (realEarnings.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum ganho real registado ainda. Os ganhos aparecerao aqui quando terminar de ouvir musicas.</p>';
                 return;
             }
 
-            snapshot.forEach(doc => {
-                const g = doc.data();
+            realEarnings.forEach(g => {
                 const dataStr = g.data ? g.data.toDate().toLocaleDateString() : '...';
                 container.innerHTML += `
                     <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222;">

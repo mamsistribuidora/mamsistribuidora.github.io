@@ -1195,14 +1195,15 @@
      * @param {string} resourceType - 'image' ou 'video' (para áudio usa-se 'video')
      * @returns {Promise<string>} - URL do ficheiro enviado
      */
-    async function uploadToCloudinary(file, resourceType = 'auto') {
+    async function uploadToCloudinary(file) {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', CLOUDINARY_CONFIG.UPLOAD_PRESET);
-        formData.append('folder', CLOUDINARY_CONFIG.FOLDER);
+        formData.append('upload_preset', 'mam_distribuidora');
 
         try {
-            const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.CLOUD_NAME}/${resourceType}/upload`, {
+            // Endpoint fixo conforme solicitado: /auto/upload
+            // Sem headers adicionais (o navegador define o Content-Type automaticamente para FormData)
+            const response = await fetch(`https://api.cloudinary.com/v1_1/dbjhwnhoq/auto/upload`, {
                 method: 'POST',
                 body: formData
             });
@@ -1213,6 +1214,7 @@
             }
 
             const data = await response.json();
+            // Salva o secure_url conforme solicitado
             return data.secure_url;
         } catch (error) {
             console.error('Erro no Cloudinary:', error);
@@ -1455,10 +1457,13 @@
         const container = document.getElementById('audios-adicionais-container');
         const audioDiv = document.createElement('div');
         audioDiv.id = `audio-adicional-${audioCount}`;
-        audioDiv.style.cssText = 'display: flex; gap: 10px; margin-bottom: 15px; align-items: center;';
+        audioDiv.style.cssText = 'display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding: 15px; background: #111; border: 1px solid #333; border-radius: 8px;';
         audioDiv.innerHTML = `
-            <input type="file" class="audio-adicional" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3" style="flex: 1; margin-bottom: 0;">
-            <button type="button" class="btn btn-small btn-danger" style="width: auto; padding: 10px 15px;" onclick="removerAudio(${audioCount})" title="Remover este áudio"><i class="fas fa-trash"></i></button>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" class="audio-titulo-adicional" placeholder="Título da faixa" style="flex: 1; margin-bottom: 0;">
+                <button type="button" class="btn btn-small btn-danger" style="width: auto; padding: 10px 15px;" onclick="removerAudio(${audioCount})" title="Remover esta faixa"><i class="fas fa-trash"></i></button>
+            </div>
+            <input type="file" class="audio-adicional" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3" style="margin-bottom: 0;">
         `;
         container.appendChild(audioDiv);
     }
@@ -2372,6 +2377,31 @@
             showLoading(true, "A enviar áudio para o Cloudinary...");
             const audioUrl = await uploadToCloudinary(audioFile, 'video');
 
+            // Processar faixas adicionais
+            const faixasAdicionais = [];
+            const audioAdicionaisElements = document.querySelectorAll('[id^="audio-adicional-"]');
+            
+            for (const audioElement of audioAdicionaisElements) {
+                const tituloInput = audioElement.querySelector('.audio-titulo-adicional');
+                const fileInput = audioElement.querySelector('.audio-adicional');
+                
+                if (tituloInput && fileInput && fileInput.files[0]) {
+                    const tituloFaixa = SecuritySystem.sanitizeInput(tituloInput.value?.trim());
+                    const audioFile = fileInput.files[0];
+                    
+                    if (tituloFaixa && audioFile) {
+                        showLoading(true, `A enviar faixa adicional: ${tituloFaixa}...`);
+                        const audioUrlFaixa = await uploadToCloudinary(audioFile);
+                        
+                        faixasAdicionais.push({
+                            titulo: tituloFaixa,
+                            audio: audioUrlFaixa,
+                            uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                }
+            }
+
             showLoading(true, "A guardar dados na base de dados...");
             
             // Dados da música para distribuição
@@ -2386,6 +2416,7 @@
                 upc,
                 capa: capaUrl,
                 audio: audioUrl,
+                faixasAdicionais: faixasAdicionais.length > 0 ? faixasAdicionais : [],
                 dataLanc: dataLanc || new Date().toISOString().split('T')[0],
                 owner: currentUser.email,
                 ownerName: userData?.nome || currentUser.displayName || 'Utilizador',
@@ -2422,6 +2453,11 @@
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
+            
+            // Limpar faixas adicionais
+            const audiosContainer = document.getElementById('audios-adicionais-container');
+            if (audiosContainer) audiosContainer.innerHTML = '';
+            audioCount = 0;
             
             // Reset checkboxes
             const soloCheck = document.getElementById('tipo-solo');

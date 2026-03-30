@@ -10,7 +10,7 @@
     <meta name="robots" content="index, follow">
     
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data: blob:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebaseapp.com wss://*.firebaseio.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data: blob:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebaseapp.com wss://*.firebaseio.com https://api.cloudinary.com; media-src https://res.cloudinary.com;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -24,7 +24,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
     
     <style>
         :root { 
@@ -1305,6 +1304,106 @@
         }
     };
 
+    // ========== CLOUDINARY CENTRALIZED UPLOAD SYSTEM ==========
+    const CloudinaryUpload = {
+        CONFIG: {
+            CLOUD_NAME: 'dbjhwnhoq',
+            UPLOAD_PRESET: 'mam_distribuidora',
+            API_ENDPOINTS: {
+                IMAGE: 'https://api.cloudinary.com/v1_1/dbjhwnhoq/image/upload',
+                AUDIO: 'https://api.cloudinary.com/v1_1/dbjhwnhoq/auto/upload'
+            },
+            MAX_RETRIES: 3,
+            TIMEOUT: 60000,
+            VALIDATION: {
+                IMAGES: {
+                    TYPES: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'],
+                    MAX_SIZE: 15 * 1024 * 1024, // 15MB
+                    MIN_DIMENSION: 200
+                },
+                AUDIO: {
+                    TYPES: ['audio/wav', 'audio/mpeg', 'audio/mp3', 'audio/x-wav'],
+                    MAX_SIZE: 200 * 1024 * 1024 // 200MB
+                }
+            }
+        },
+
+        // Função principal de upload com retry automático
+        async uploadWithRetry(file, fileType = 'image', retryCount = 0) {
+            try {
+                // Validar arquivo
+                this.validateFile(file, fileType);
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', this.CONFIG.UPLOAD_PRESET);
+                
+                const endpoint = fileType === 'audio' ? this.CONFIG.API_ENDPOINTS.AUDIO : this.CONFIG.API_ENDPOINTS.IMAGE;
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), this.CONFIG.TIMEOUT);
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro Cloudinary ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.secure_url) {
+                    throw new Error('URL segura não retornada pelo Cloudinary');
+                }
+                
+                console.log('[v0] Upload bem-sucedido:', fileType, data.public_id);
+                return data.secure_url;
+                
+            } catch (error) {
+                console.error('[v0] Erro upload (tentativa ' + (retryCount + 1) + '):', error.message);
+                
+                if (retryCount < this.CONFIG.MAX_RETRIES) {
+                    console.log('[v0] Retentando upload em 2 segundos...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return this.uploadWithRetry(file, fileType, retryCount + 1);
+                }
+                
+                throw new Error(`Falha no upload após ${this.CONFIG.MAX_RETRIES} tentativas: ${error.message}`);
+            }
+        },
+
+        // Validar arquivo antes do upload
+        validateFile(file, fileType) {
+            const config = fileType === 'audio' ? this.CONFIG.VALIDATION.AUDIO : this.CONFIG.VALIDATION.IMAGES;
+            
+            if (!file) {
+                throw new Error(`${fileType} não selecionado`);
+            }
+            
+            // Validar tipo
+            const isValidType = config.TYPES.includes(file.type) || 
+                               file.name.match(fileType === 'audio' ? /\.(wav|mp3)$/i : /\.(jpg|jpeg|png|webp|gif)$/i);
+            
+            if (!isValidType) {
+                const formats = config.TYPES.join(', ');
+                throw new Error(`Formato inválido. Aceitos: ${formats}`);
+            }
+            
+            // Validar tamanho
+            if (file.size > config.MAX_SIZE) {
+                const maxMB = Math.round(config.MAX_SIZE / 1024 / 1024);
+                throw new Error(`Ficheiro excede ${maxMB}MB`);
+            }
+            
+            return true;
+        }
+    };
+
     // ========== ADMIN PRO MAX CONFIGURATION ==========
     const ADMIN_CONFIG = {
         // E-mail e senha do ADMIN PRO MAX (controlador total)
@@ -2217,17 +2316,15 @@
             let fotoUrl = document.getElementById('artista-foto-preview').src;
 
             if (fotoFile) {
-                if (!fotoFile.type.startsWith('image/')) {
+                try {
+                    showLoading(true, "A enviar foto do artista para Cloudinary...");
+                    fotoUrl = await CloudinaryUpload.uploadWithRetry(fotoFile, 'image');
+                    console.log('[v0] Foto do artista carregada com sucesso:', fotoUrl);
+                } catch (uploadError) {
                     showLoading(false);
-                    return alert("O ficheiro deve ser uma imagem!");
+                    console.error('[v0] Erro ao enviar foto do artista:', uploadError);
+                    return alert("Erro ao enviar foto: " + uploadError.message);
                 }
-                if (fotoFile.size > 10 * 1024 * 1024) {
-                    showLoading(false);
-                    return alert("A imagem não pode exceder 10MB!");
-                }
-                const storageRef = storage.ref().child(`artistas/${currentUser.email}_${Date.now()}`);
-                const uploadTask = await storageRef.put(fotoFile);
-                fotoUrl = await uploadTask.ref.getDownloadURL();
             }
 
             const artistData = {
@@ -2253,12 +2350,12 @@
 
             closeModal('modal-artista');
             loadUserArtists();
+            showLoading(false);
             alert("Artista salvo com sucesso!");
         } catch (error) {
             console.error("Erro ao salvar artista:", error);
-            alert("Erro: " + error.message);
-        } finally {
             showLoading(false);
+            alert("Erro: " + error.message);
         }
     }
 
@@ -2318,53 +2415,25 @@
         if (!isrc || isrc.length < 5) errors.push("ISRC inválido (mínimo 5 caracteres)");
         if (!upc || upc.length < 8) errors.push("UPC inválido (mínimo 8 caracteres)");
         
-        // Validar tamanho dos arquivos
-        if (capaFile && capaFile.size > 15 * 1024 * 1024) errors.push("Capa deve ter no máximo 15MB");
-        if (audioFile && audioFile.size > 200 * 1024 * 1024) errors.push("Áudio deve ter no máximo 200MB");
-        
-        // Validar formato de áudio
-        const allowedAudioTypes = ['audio/wav', 'audio/mpeg', 'audio/mp3', 'audio/x-wav'];
-        if (audioFile && !allowedAudioTypes.includes(audioFile.type) && !audioFile.name.match(/\.(wav|mp3)$/i)) {
-            errors.push("Formato de áudio não suportado. Use WAV ou MP3");
-        }
-        
-        // Validar formato de imagem
-        const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-        if (capaFile && !allowedImageTypes.includes(capaFile.type)) {
-            errors.push("Formato de imagem não suportado. Use JPG, PNG ou WebP");
-        }
-        
         if (errors.length > 0) {
             alert("Erros encontrados:\n\n• " + errors.join("\n• "));
             return;
         }
 
-        showLoading(true, "A processar envio (1/3)...");
+        showLoading(true, "A processar envio (1/3) - Validando ficheiros...");
         
         try {
-            // Upload da capa
-            showLoading(true, "A enviar capa para o Cloudinary...");
-            const formDataCapa = new FormData();
-            formDataCapa.append('file', capaFile);
-            formDataCapa.append('upload_preset', 'mam_distribuidora');
-            const resCapa = await fetch('https://api.cloudinary.com/v1_1/dbjhwnhoq/image/upload', { 
-                method: 'POST', 
-                body: formDataCapa 
-            });
-            const dataCapa = await resCapa.json();
-            const capaUrl = dataCapa.secure_url;
+            console.log('[v0] Iniciando envio de lançamento:', titulo);
+            
+            // Upload da capa com retry
+            showLoading(true, "A enviar capa (2/3) - Enviando para Cloudinary...");
+            const capaUrl = await CloudinaryUpload.uploadWithRetry(capaFile, 'image');
+            console.log('[v0] Capa carregada com sucesso:', capaUrl);
 
-            // Upload do áudio
-            showLoading(true, "A enviar áudio para o Cloudinary...");
-            const formDataAudio = new FormData();
-            formDataAudio.append('file', audioFile);
-            formDataAudio.append('upload_preset', 'mam_distribuidora');
-            const resAudio = await fetch('https://api.cloudinary.com/v1_1/dbjhwnhoq/auto/upload', { 
-                method: 'POST', 
-                body: formDataAudio 
-            });
-            const dataAudio = await resAudio.json();
-            const audioUrl = dataAudio.secure_url;
+            // Upload do áudio com retry
+            showLoading(true, "A enviar áudio (3/3) - Enviando para Cloudinary...");
+            const audioUrl = await CloudinaryUpload.uploadWithRetry(audioFile, 'audio');
+            console.log('[v0] Áudio carregado com sucesso:', audioUrl);
 
             showLoading(true, "A guardar dados na base de dados...");
             
@@ -2394,6 +2463,7 @@
 
             // Salvar música
             const musicRef = await db.collection('musicas').add(musicData);
+            console.log('[v0] Música salva com ID:', musicRef.id);
             
             // Criar registro de distribuição
             await db.collection('distribuicoes').add({
@@ -2441,13 +2511,17 @@
             
         } catch (error) {
             showLoading(false);
-            console.error("Erro no envio:", error);
+            console.error("[v0] Erro no envio:", error);
             
             // Mensagens de erro específicas
             if (error.message?.includes('Cloudinary')) {
                 alert("Erro no Cloudinary: " + error.message);
             } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
                 alert("Erro de conexão ao Cloudinary. Verifique sua internet.");
+            } else if (error.message?.includes('Formato')) {
+                alert("Erro de formato de ficheiro: " + error.message);
+            } else if (error.message?.includes('excede')) {
+                alert("Ficheiro muito grande: " + error.message);
             } else {
                 alert("Erro no processamento: " + (error.message || 'Erro desconhecido.'));
             }
@@ -2699,29 +2773,15 @@
             let fotoUrl = userData.foto || '';
 
             if (fotoFile) {
-                // Validar tamanho (máximo 10MB)
-                if (fotoFile.size > 10 * 1024 * 1024) {
+                try {
+                    showLoading(true, "A enviar foto de perfil para Cloudinary...");
+                    fotoUrl = await CloudinaryUpload.uploadWithRetry(fotoFile, 'image');
+                    console.log('[v0] Foto de perfil carregada com sucesso:', fotoUrl);
+                } catch (uploadError) {
                     showLoading(false);
-                    return alert("A imagem não pode exceder 10MB!");
+                    console.error('[v0] Erro ao enviar foto:', uploadError);
+                    return alert("Erro ao enviar foto: " + uploadError.message);
                 }
-                
-                // Validar tipo de arquivo
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'];
-                if (!allowedTypes.includes(fotoFile.type) && !fotoFile.name.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
-                    showLoading(false);
-                    return alert("Formato de imagem não suportado. Use JPEG, PNG, WebP ou GIF.");
-                }
-                
-                showLoading(true, "A enviar foto de perfil...");
-                
-                // Gerar nome único para evitar conflitos
-                const fileName = `perfil_${currentUser.email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
-                const storageRef = storage.ref().child(`perfis/${fileName}`);
-                
-                // Upload com metadados
-                const metadata = { contentType: fotoFile.type };
-                const uploadTask = await storageRef.put(fotoFile, metadata);
-                fotoUrl = await uploadTask.ref.getDownloadURL();
             }
 
             // Atualizar dados no Firestore
@@ -2736,23 +2796,18 @@
             // Limpar input de foto
             if (fotoInput) fotoInput.value = '';
             
+            // Atualizar UI
+            userData.foto = fotoUrl;
+            document.getElementById('perfil-foto-preview').src = fotoUrl;
+            document.getElementById('home-user-photo').src = fotoUrl;
+            
             showLoading(false);
             alert("Perfil atualizado com sucesso!");
             
         } catch (error) {
             console.error("Erro ao atualizar perfil:", error);
             showLoading(false);
-            
-            // Mensagens de erro mais específicas
-            if (error.code === 'storage/unauthorized') {
-                alert("Sem permissão para fazer upload. Por favor, faça login novamente.");
-            } else if (error.code === 'storage/canceled') {
-                alert("Upload cancelado.");
-            } else if (error.code === 'storage/unknown' || error.message?.includes('network')) {
-                alert("Erro de conexão. Verifique sua internet e tente novamente.");
-            } else {
-                alert("Erro ao atualizar perfil: " + (error.message || 'Erro desconhecido'));
-            }
+            alert("Erro ao atualizar perfil: " + (error.message || 'Erro desconhecido'));
         }
     }
 
@@ -3258,40 +3313,25 @@ async function adminReviewMusic(id, status) {
 
         const file = photoInput.files[0];
         
-        // Validar tamanho (máximo 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-            return alert('A foto deve ter no máximo 10MB!');
-        }
-
-        // Validar tipo de arquivo
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'];
-        if (!allowedTypes.includes(file.type) && !file.name.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
-            return alert('Formato não suportado! Use: JPEG, PNG, WebP ou GIF.');
-        }
-
         showLoading(true, 'A atualizar foto de perfil...');
         try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'mam_distribuidora');
-            const res = await fetch('https://api.cloudinary.com/v1_1/dbjhwnhoq/image/upload', { 
-                method: 'POST', 
-                body: formData 
-            });
-            const data = await res.json();
-            const finalUrl = data.secure_url;
+            console.log('[v0] Iniciando upload de foto de perfil');
+            const fotoUrl = await CloudinaryUpload.uploadWithRetry(file, 'image');
+            console.log('[v0] Foto carregada com sucesso:', fotoUrl);
 
             // Atualizar no Firestore
             await db.collection('users').doc(currentUser.email).update({
-                foto: finalUrl,
+                foto: fotoUrl,
                 fotoUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
             // Atualizar UI
             const previewElements = document.querySelectorAll('#perfil-foto-preview, #home-user-photo');
             previewElements.forEach(el => {
-                if (el) el.src = finalUrl;
+                if (el) el.src = fotoUrl;
             });
+            
+            userData.foto = fotoUrl;
             
             showLoading(false);
             alert('Foto de perfil atualizada com sucesso!');
@@ -3302,18 +3342,8 @@ async function adminReviewMusic(id, status) {
             
         } catch (error) {
             showLoading(false);
-            console.error('Erro ao atualizar foto:', error);
-            
-            // Mensagens de erro mais específicas
-            if (error.code === 'storage/unauthorized') {
-                alert('Sem permissão para fazer upload. Por favor, faça login novamente.');
-            } else if (error.code === 'storage/canceled') {
-                alert('Upload cancelado.');
-            } else if (error.code === 'storage/unknown') {
-                alert('Erro de conexão. Verifique sua internet e tente novamente.');
-            } else {
-                alert('Erro ao atualizar foto: ' + (error.message || 'Erro desconhecido'));
-            }
+            console.error('[v0] Erro ao atualizar foto:', error);
+            alert('Erro ao atualizar foto: ' + (error.message || 'Erro desconhecido'));
         }
     }
     

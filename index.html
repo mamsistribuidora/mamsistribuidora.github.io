@@ -1516,13 +1516,12 @@
 
         const response = await fetch('https://api.cloudinary.com/v1_1/dbjhwnhoq/auto/upload', {
             method: 'POST',
-            body: formData,
-            // NÃO ADICIONE HEADERS AQUI. O NAVEGADOR DEVE GERAR O CONTENT-TYPE AUTOMATICAMENTE.
+            body: formData
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error.message || 'Erro no upload');
+            throw new Error(errorData.error.message || 'Erro no upload para o Cloudinary');
         }
 
         const data = await response.json();
@@ -2454,14 +2453,12 @@
             console.error("Erro no envio:", error);
             
             // Mensagens de erro específicas
-            if (error.code === 'storage/unauthorized') {
-                alert("Sem permissão para fazer upload. Por favor, faça login novamente.");
-            } else if (error.code === 'storage/canceled') {
-                alert("Upload cancelado.");
-            } else if (error.code === 'storage/unknown' || error.message?.includes('network')) {
-                alert("Erro de conexão. Verifique sua internet e tente novamente.");
+            if (error.message?.includes('Cloudinary')) {
+                alert("Erro no Cloudinary: " + error.message);
+            } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+                alert("Erro de conexão ao Cloudinary. Verifique sua internet.");
             } else {
-                alert("Erro no upload: " + (error.message || 'Erro desconhecido. Tente novamente.'));
+                alert("Erro no processamento: " + (error.message || 'Erro desconhecido.'));
             }
         }
     }
@@ -2529,6 +2526,8 @@
                         <div class="disco-artist">${SecuritySystem.sanitizeInput(m.artista)}</div>
                         <audio class="audio-player" controls>
                             <source src="${m.audio}" type="audio/mpeg">
+                            <source src="${m.audio}" type="audio/wav">
+                            Seu navegador não suporta o player de áudio.
                         </audio>
                     </div>
                 `;
@@ -2564,6 +2563,8 @@
                         <div class="disco-artist">${SecuritySystem.sanitizeInput(m.artista)}</div>
                         <audio class="audio-player" controls>
                             <source src="${m.audio}" type="audio/mpeg">
+                            <source src="${m.audio}" type="audio/wav">
+                            Seu navegador não suporta o player de áudio.
                         </audio>
                     </div>
                 `;

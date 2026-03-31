@@ -1398,7 +1398,7 @@
                         tipo: "Administrador",
                         pais: "Angola",
                         plano: "ADMIN PRO MAX",
-                        saldo: 10000000, // 10 milhões iniciais
+                        saldo: 0, // Começa a carteira em 0 Kz
                         isAdmin: true,
                         isAdminProMax: true, // Controle total
                         permissions: ADMIN_CONFIG.permissions,
@@ -1458,10 +1458,13 @@
         const container = document.getElementById('audios-adicionais-container');
         const audioDiv = document.createElement('div');
         audioDiv.id = `audio-adicional-${audioCount}`;
-        audioDiv.style.cssText = 'display: flex; gap: 10px; margin-bottom: 15px; align-items: center;';
+        audioDiv.style.cssText = 'display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; padding: 10px; border: 1px solid #333; border-radius: 8px;';
         audioDiv.innerHTML = `
-            <input type="file" class="audio-adicional" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3" style="flex: 1; margin-bottom: 0;">
-            <button type="button" class="btn btn-small btn-danger" style="width: auto; padding: 10px 15px;" onclick="removerAudio(${audioCount})" title="Remover este áudio"><i class="fas fa-trash"></i></button>
+            <input type="text" class="audio-titulo-adicional" placeholder="Título da Faixa (Obrigatório)" required style="margin-bottom: 5px;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="file" class="audio-adicional" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3" style="flex: 1; margin-bottom: 0;" required>
+                <button type="button" class="btn btn-small btn-danger" style="width: auto; padding: 10px 15px;" onclick="removerAudio(${audioCount})" title="Remover este áudio"><i class="fas fa-trash"></i></button>
+            </div>
         `;
         container.appendChild(audioDiv);
     }
@@ -1692,7 +1695,16 @@
 
         showLoading(true, "A entrar...");
         try {
-            await auth.signInWithEmailAndPassword(email, pass);
+            const userCredential = await auth.signInWithEmailAndPassword(email, pass);
+            const user = userCredential.user;
+
+            // Verificação de E-mail Obrigatória (exceto admin)
+            if (email !== ADMIN_CONFIG.ADMIN_EMAIL && !user.emailVerified) {
+                showLoading(false);
+                await auth.signOut();
+                return alert("Por favor, confirme o seu e-mail para ativar a sua conta. Verifique a sua caixa de entrada.");
+            }
+
             SecuritySystem.clearAttempts(email);
             
             // Se for admin, garantir que o perfil está correto
@@ -1700,6 +1712,12 @@
                 await ensureAdminProfile();
             }
             
+            // Taxa de Login: 100 Kz para a plataforma
+            await db.collection('stats').doc('platform_earnings').set({
+                total: firebase.firestore.FieldValue.increment(100),
+                lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
             await processLoginEarnings(email);
         } catch (error) {
             // Se for admin e conta não existir, criar automaticamente
@@ -1798,7 +1816,7 @@
                 tipo: isAdminUser ? "Administrador" : tipo,
                 pais,
                 plano: isAdminUser ? "ADMIN PRO MAX" : "FREE",
-                saldo: isAdminUser ? 10000000 : 2000,
+                saldo: 0, // Começa a carteira em 0 Kz
                 isAdmin: isAdminUser,
                 isAdminProMax: isAdminUser,
                 permissions: isAdminUser ? ADMIN_CONFIG.permissions : {},
@@ -1808,6 +1826,11 @@
             };
 
             await db.collection('users').doc(email).set(newUser);
+
+            // Ganhos por Nova Conta: +5.000 Kz ao adminBalance
+            if (!isAdminUser) {
+                await processAdminEarnings(5000, `Novo Registo: ${email}`);
+            }
             
             // Se for admin, criar artista do admin
             if (isAdminUser) {
@@ -1830,17 +1853,16 @@
                 }
             }
             
-            const bonusAmount = isAdminUser ? 10000000 : 2000;
+            // Bónus de boas-vindas removido conforme pedido (carteira começa em 0)
+            /*
+            const bonusAmount = isAdminUser ? 0 : 0;
             await db.collection('ganhos').add({
                 email: email,
                 valor: bonusAmount,
                 tipo: "Bónus de Boas-vindas",
                 data: firebase.firestore.FieldValue.serverTimestamp()
             });
-
-            if (!isAdminUser) {
-                await processAdminEarnings(5000, `Novo Registo: ${email}`);
-            }
+            */
             
             SecuritySystem.logSecurityEvent('USER_REGISTERED', { email, isAdmin: isAdminUser });
             
@@ -1882,7 +1904,7 @@
         showLoading(true, "A enviar link de recuperação...");
         try {
             await auth.sendPasswordResetEmail(email, {
-                url: window.location.href,
+                url: window.location.origin,
                 handleCodeInApp: false
             });
             
@@ -2306,6 +2328,11 @@
         const audioFile = document.getElementById('music-audio').files[0];
         const dataLanc = document.getElementById('music-data').value;
 
+        // Capturar áudios adicionais e seus títulos
+        const audiosAdicionaisInputs = document.querySelectorAll('.audio-adicional');
+        const titulosAdicionaisInputs = document.querySelectorAll('.audio-titulo-adicional');
+        const faixasAdicionais = [];
+
         // Validações melhoradas
         const errors = [];
         if (!titulo || titulo.length < 2) errors.push("Título deve ter pelo menos 2 caracteres");
@@ -2315,6 +2342,16 @@
         if (!audioFile) errors.push("Selecione um ficheiro de áudio");
         if (!isrc || isrc.length < 5) errors.push("ISRC inválido (mínimo 5 caracteres)");
         if (!upc || upc.length < 8) errors.push("UPC inválido (mínimo 8 caracteres)");
+
+        // Validar títulos das faixas adicionais
+        titulosAdicionaisInputs.forEach((input, index) => {
+            if (!input.value.trim()) {
+                errors.push(`Título da faixa adicional ${index + 1} é obrigatório`);
+            }
+            if (!audiosAdicionaisInputs[index].files[0]) {
+                errors.push(`Ficheiro de áudio da faixa adicional ${index + 1} é obrigatório`);
+            }
+        });
         
         if (errors.length > 0) {
             alert("Erros encontrados:\n\n• " + errors.join("\n• "));
@@ -2331,10 +2368,20 @@
             const capaUrl = await uploadFile(capaFile, 'image');
             console.log('[v0] Capa carregada com sucesso:', capaUrl);
 
-            // Upload do áudio com retry
-            showLoading(true, "A enviar áudio (3/3) - Enviando para Cloudinary...");
+            // Upload do áudio principal com retry
+            showLoading(true, "A enviar áudio principal (3/3)...");
             const audioUrl = await uploadFile(audioFile, 'audio');
-            console.log('[v0] Áudio carregado com sucesso:', audioUrl);
+            console.log('[v0] Áudio principal carregado com sucesso:', audioUrl);
+
+            // Upload dos áudios adicionais
+            for (let i = 0; i < audiosAdicionaisInputs.length; i++) {
+                showLoading(true, `A enviar faixa adicional ${i + 1}...`);
+                const url = await uploadFile(audiosAdicionaisInputs[i].files[0], 'audio');
+                faixasAdicionais.push({
+                    titulo: SecuritySystem.sanitizeInput(titulosAdicionaisInputs[i].value.trim()),
+                    audio: url
+                });
+            }
 
             showLoading(true, "A guardar dados na base de dados...");
             
@@ -2350,6 +2397,7 @@
                 upc,
                 capa: capaUrl,
                 audio: audioUrl,
+                faixasAdicionais: faixasAdicionais, // Guardar faixas com seus títulos
                 dataLanc: dataLanc || new Date().toISOString().split('T')[0],
                 owner: currentUser.email,
                 ownerName: userData?.nome || currentUser.displayName || 'Utilizador',
@@ -2491,7 +2539,7 @@
                         <div class="disco-title">${SecuritySystem.sanitizeInput(m.titulo)}</div>
                         <div class="disco-artist">${SecuritySystem.sanitizeInput(m.artista)}</div>
                         <audio class="audio-player" controls>
-                            <source src="${m.audio}" type="audio/mpeg">
+                            <source src="${m.audio.replace('.wav', '.mp3')}" type="audio/mpeg">
                             <source src="${m.audio}" type="audio/wav">
                             Seu navegador não suporta o player de áudio.
                         </audio>
@@ -2528,7 +2576,7 @@
                         <div class="disco-title">${SecuritySystem.sanitizeInput(m.titulo)}</div>
                         <div class="disco-artist">${SecuritySystem.sanitizeInput(m.artista)}</div>
                         <audio class="audio-player" controls>
-                            <source src="${m.audio}" type="audio/mpeg">
+                            <source src="${m.audio.replace('.wav', '.mp3')}" type="audio/mpeg">
                             <source src="${m.audio}" type="audio/wav">
                             Seu navegador não suporta o player de áudio.
                         </audio>
@@ -3092,48 +3140,56 @@ async function adminReviewMusic(id, status) {
         WEBSITE_URL: "https://mam-distribuidora.web.app"
     };
 
-    async function sendAutomaticEmail(email, nome, tipo) {
+    // EmailJS Integration
+    (function() {
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
+        script.onload = function() {
+            emailjs.init("ZIn-7UvE8Z0O6P-e5");
+        };
+        document.head.appendChild(script);
+    })();
+
+    async function sendAutomaticEmail(email, nome, tipo, extraData = {}) {
         try {
-            const emailData = {
-                to: email,
-                from: EMAIL_CONFIG.FROM_EMAIL,
-                fromName: EMAIL_CONFIG.FROM_NAME,
+            const templateParams = {
+                to_email: email,
+                to_name: nome,
+                from_email: "mamfilhos29@gmail.com",
+                company_name: EMAIL_CONFIG.COMPANY_NAME,
                 subject: '',
-                body: '',
-                status: 'pending',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                message: '',
+                ...extraData
             };
 
-            const footer = `\n\n---\nEquipa ${EMAIL_CONFIG.COMPANY_NAME}\n${EMAIL_CONFIG.COMPANY_SLOGAN}\nSuporte: ${EMAIL_CONFIG.FROM_EMAIL}\nWhatsApp: +244 ${ADMIN_CONFIG.ADMIN_WHATSAPP}`;
-
-            if (tipo === 'confirmation') {
-                emailData.subject = `Bem-vindo à ${EMAIL_CONFIG.COMPANY_NAME} - Confirme sua conta`;
-                emailData.body = `Olá ${nome},\n\nBem-vindo à ${EMAIL_CONFIG.COMPANY_NAME} - ${EMAIL_CONFIG.COMPANY_SLOGAN}!\n\nSua conta foi criada com sucesso. Sua conta já está ativa e pronta para usar.\n\nAcesse agora: ${EMAIL_CONFIG.WEBSITE_URL}${footer}`;
-            } else if (tipo === 'password_reset') {
-                emailData.subject = `Recuperar Palavra-passe - ${EMAIL_CONFIG.COMPANY_NAME}`;
-                emailData.body = `Olá ${nome},\n\nRecebemos um pedido para recuperar sua palavra-passe.\n\nPor favor, acesse o site e use a opção de recuperação de senha.\n\nSe não solicitou isto, ignore este e-mail.${footer}`;
+            if (tipo === 'welcome') {
+                templateParams.subject = "Bem-vindo ao Império da Música!";
+                templateParams.message = "Seja bem-vindo à MAM Distribuidora! Sua conta foi criada com sucesso.";
             } else if (tipo === 'music_approved') {
-                emailData.subject = `Sua Música foi Aprovada! - ${EMAIL_CONFIG.COMPANY_NAME}`;
-                emailData.body = `Olá ${nome},\n\nExcelentes notícias! Sua música foi aprovada e será distribuída para as principais plataformas digitais.\n\nEm breve, sua música estará disponível em:\n- Spotify\n- Apple Music\n- Deezer\n- YouTube Music\n- Amazon Music\n- Tidal\n- SoundCloud\n- E mais de 150 plataformas!\n\nAcompanhe o progresso no seu painel.${footer}`;
-            } else if (tipo === 'music_rejected') {
-                emailData.subject = `Revisão de Música - ${EMAIL_CONFIG.COMPANY_NAME}`;
-                emailData.body = `Olá ${nome},\n\nAgradecemos por enviar sua música para distribuição.\n\nInfelizmente, sua música não atendeu aos nossos critérios de qualidade neste momento.\n\nPor favor, revise os requisitos e tente novamente:\n- Áudio em formato WAV de alta qualidade\n- Capa 3000x3000 pixels\n- ISRC e UPC válidos\n\nPara mais informações, contacte-nos.${footer}`;
-            } else if (tipo === 'profile_updated') {
-                emailData.subject = `Perfil Atualizado - ${EMAIL_CONFIG.COMPANY_NAME}`;
-                emailData.body = `Olá ${nome},\n\nSeu perfil foi atualizado com sucesso.\n\nSe não foi você quem fez esta alteração, contacte-nos imediatamente.${footer}`;
-            } else if (tipo === 'payment_confirmed') {
-                emailData.subject = `Pagamento Confirmado - ${EMAIL_CONFIG.COMPANY_NAME}`;
-                emailData.body = `Olá ${nome},\n\nSeu pagamento foi processado com sucesso!\n\nSeu plano foi atualizado e já está ativo.\n\nAcesse seu painel para ver os benefícios do seu novo plano.${footer}`;
-            } else if (tipo === 'welcome') {
-                emailData.subject = `Bem-vindo ao Império da Música - ${EMAIL_CONFIG.COMPANY_NAME}`;
-                emailData.body = `Olá ${nome},\n\nSeja bem-vindo à ${EMAIL_CONFIG.COMPANY_NAME}!\n\nVocê agora faz parte da maior distribuidora de música de Angola.\n\nCom a MAM você pode:\n- Distribuir para +150 plataformas\n- Receber pagamentos automáticos\n- Acompanhar estatísticas em tempo real\n- Gerenciar múltiplos artistas\n\nComece agora: ${EMAIL_CONFIG.WEBSITE_URL}${footer}`;
+                templateParams.subject = "Sua Música foi Aprovada!";
+                templateParams.message = `Parabéns! Sua música "${extraData.titulo || ''}" foi aprovada para distribuição.`;
+            } else if (tipo === 'withdrawal_done') {
+                templateParams.subject = "Saque Realizado com Sucesso";
+                templateParams.message = `Seu saque no valor de ${extraData.valor || 0} Kz foi processado.`;
+            } else if (tipo === 'security_alert') {
+                templateParams.subject = "Alerta de Segurança";
+                templateParams.message = "Houve uma alteração importante na sua conta ou plano.";
             }
 
-            await db.collection('emails').add(emailData);
-            console.log('E-mail automático agendado para:', email, '| Tipo:', tipo);
+            // Enviar via EmailJS
+            await emailjs.send("service_default", "template_default", templateParams);
+            
+            // Manter log no Firestore
+            await db.collection('emails').add({
+                to: email,
+                tipo: tipo,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'sent'
+            });
+
             return true;
         } catch (error) {
-            console.error('Erro ao agendar e-mail automático:', error);
+            console.error('Erro ao enviar e-mail via EmailJS:', error);
             return false;
         }
     }

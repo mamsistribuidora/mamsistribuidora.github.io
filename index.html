@@ -1204,24 +1204,21 @@
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    // 1. A CONEXÃO REAL COM CLOUDINARY (UNIR TUDO)
+    const cloudName = 'dbjhwnhoq';
+    const uploadPreset = 'mam_distribuidora';
+
     async function uploadFile(file, type) {
-        if (!file) return null;
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', 'mam_distribuidora');
-        
-        // 'auto' permite WAV e MP3 em alta qualidade para distribuição real
-        const resourceType = (type === 'audio') ? 'auto' : 'image';
-        
-        const res = await fetch(`https://api.cloudinary.com/v1_1/dbjhwnhoq/${resourceType}/upload`, {
+        formData.append('upload_preset', uploadPreset);
+        const resourceType = type === 'audio' ? 'auto' : 'image';
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
             method: 'POST',
             body: formData
         });
-        
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error.message || 'Erro no Cloudinary');
-        return data.secure_url; // Este é o link real da música/foto
+        if (!res.ok) throw new Error(data.error.message);
+        return data.secure_url;
     }
 
     // ========== SECURITY SYSTEM ==========
@@ -2221,7 +2218,8 @@
             if (fotoFile) {
                 try {
                     showLoading(true, "A enviar foto do artista para Cloudinary...");
-                    fotoUrl = await uploadFile(fotoFile, 'image');
+                    const finalUrl = await uploadFile(fotoFile, 'image');
+                    fotoUrl = finalUrl;
                     console.log('[v0] Foto do artista carregada com sucesso:', fotoUrl);
                 } catch (uploadError) {
                     showLoading(false);
@@ -2678,7 +2676,8 @@
             if (fotoFile) {
                 try {
                     showLoading(true, "A enviar foto de perfil para Cloudinary...");
-                    fotoUrl = await uploadFile(fotoFile, 'image');
+                    const finalUrl = await uploadFile(fotoFile, 'image');
+                    fotoUrl = finalUrl;
                     console.log('[v0] Foto de perfil carregada com sucesso:', fotoUrl);
                 } catch (uploadError) {
                     showLoading(false);
@@ -3219,7 +3218,8 @@ async function adminReviewMusic(id, status) {
         showLoading(true, 'A atualizar foto de perfil...');
         try {
             console.log('[v0] Iniciando upload de foto de perfil');
-            const fotoUrl = await uploadFile(file, 'image');
+            const finalUrl = await uploadFile(file, 'image');
+            const fotoUrl = finalUrl;
             console.log('[v0] Foto carregada com sucesso:', fotoUrl);
 
             // Atualizar no Firestore

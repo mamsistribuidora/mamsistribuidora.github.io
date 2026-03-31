@@ -1204,7 +1204,25 @@
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
+    // 1. A CONEXÃO REAL COM CLOUDINARY (UNIR TUDO)
+    async function uploadFile(file, type) {
+        if (!file) return null;
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'mam_distribuidora');
+        
+        // 'auto' permite WAV e MP3 em alta qualidade para distribuição real
+        const resourceType = (type === 'audio') ? 'auto' : 'image';
+        
+        const res = await fetch(`https://api.cloudinary.com/v1_1/dbjhwnhoq/${resourceType}/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error.message || 'Erro no Cloudinary');
+        return data.secure_url; // Este é o link real da música/foto
+    }
 
     // ========== SECURITY SYSTEM ==========
     const SecuritySystem = {
@@ -1304,105 +1322,7 @@
         }
     };
 
-    // ========== CLOUDINARY CENTRALIZED UPLOAD SYSTEM ==========
-    const CloudinaryUpload = {
-        CONFIG: {
-            CLOUD_NAME: 'dbjhwnhoq',
-            UPLOAD_PRESET: 'mam_distribuidora',
-            API_ENDPOINTS: {
-                IMAGE: 'https://api.cloudinary.com/v1_1/dbjhwnhoq/image/upload',
-                AUDIO: 'https://api.cloudinary.com/v1_1/dbjhwnhoq/auto/upload'
-            },
-            MAX_RETRIES: 3,
-            TIMEOUT: 60000,
-            VALIDATION: {
-                IMAGES: {
-                    TYPES: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'],
-                    MAX_SIZE: 15 * 1024 * 1024, // 15MB
-                    MIN_DIMENSION: 200
-                },
-                AUDIO: {
-                    TYPES: ['audio/wav', 'audio/mpeg', 'audio/mp3', 'audio/x-wav'],
-                    MAX_SIZE: 200 * 1024 * 1024 // 200MB
-                }
-            }
-        },
 
-        // Função principal de upload com retry automático
-        async uploadWithRetry(file, fileType = 'image', retryCount = 0) {
-            try {
-                // Validar arquivo
-                this.validateFile(file, fileType);
-                
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', this.CONFIG.UPLOAD_PRESET);
-                
-                const endpoint = fileType === 'audio' ? this.CONFIG.API_ENDPOINTS.AUDIO : this.CONFIG.API_ENDPOINTS.IMAGE;
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), this.CONFIG.TIMEOUT);
-                
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    body: formData,
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) {
-                    throw new Error(`Erro Cloudinary ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data.secure_url) {
-                    throw new Error('URL segura não retornada pelo Cloudinary');
-                }
-                
-                console.log('[v0] Upload bem-sucedido:', fileType, data.public_id);
-                return data.secure_url;
-                
-            } catch (error) {
-                console.error('[v0] Erro upload (tentativa ' + (retryCount + 1) + '):', error.message);
-                
-                if (retryCount < this.CONFIG.MAX_RETRIES) {
-                    console.log('[v0] Retentando upload em 2 segundos...');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    return this.uploadWithRetry(file, fileType, retryCount + 1);
-                }
-                
-                throw new Error(`Falha no upload após ${this.CONFIG.MAX_RETRIES} tentativas: ${error.message}`);
-            }
-        },
-
-        // Validar arquivo antes do upload
-        validateFile(file, fileType) {
-            const config = fileType === 'audio' ? this.CONFIG.VALIDATION.AUDIO : this.CONFIG.VALIDATION.IMAGES;
-            
-            if (!file) {
-                throw new Error(`${fileType} não selecionado`);
-            }
-            
-            // Validar tipo
-            const isValidType = config.TYPES.includes(file.type) || 
-                               file.name.match(fileType === 'audio' ? /\.(wav|mp3)$/i : /\.(jpg|jpeg|png|webp|gif)$/i);
-            
-            if (!isValidType) {
-                const formats = config.TYPES.join(', ');
-                throw new Error(`Formato inválido. Aceitos: ${formats}`);
-            }
-            
-            // Validar tamanho
-            if (file.size > config.MAX_SIZE) {
-                const maxMB = Math.round(config.MAX_SIZE / 1024 / 1024);
-                throw new Error(`Ficheiro excede ${maxMB}MB`);
-            }
-            
-            return true;
-        }
-    };
 
     // ========== ADMIN PRO MAX CONFIGURATION ==========
     const ADMIN_CONFIG = {
@@ -1608,24 +1528,7 @@
         });
     }
 
-    async function uploadToCloudinary(file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'mam_distribuidora');
 
-        const response = await fetch('https://api.cloudinary.com/v1_1/dbjhwnhoq/auto/upload', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error.message || 'Erro no upload para o Cloudinary');
-        }
-
-        const data = await response.json();
-        return data.secure_url;
-    }
 
     function checkAuthState() {
         // Configurar persistência LOCAL para manter sessão após fechar/atualizar navegador
@@ -2318,7 +2221,7 @@
             if (fotoFile) {
                 try {
                     showLoading(true, "A enviar foto do artista para Cloudinary...");
-                    fotoUrl = await CloudinaryUpload.uploadWithRetry(fotoFile, 'image');
+                    fotoUrl = await uploadFile(fotoFile, 'image');
                     console.log('[v0] Foto do artista carregada com sucesso:', fotoUrl);
                 } catch (uploadError) {
                     showLoading(false);
@@ -2427,12 +2330,12 @@
             
             // Upload da capa com retry
             showLoading(true, "A enviar capa (2/3) - Enviando para Cloudinary...");
-            const capaUrl = await CloudinaryUpload.uploadWithRetry(capaFile, 'image');
+            const capaUrl = await uploadFile(capaFile, 'image');
             console.log('[v0] Capa carregada com sucesso:', capaUrl);
 
             // Upload do áudio com retry
             showLoading(true, "A enviar áudio (3/3) - Enviando para Cloudinary...");
-            const audioUrl = await CloudinaryUpload.uploadWithRetry(audioFile, 'audio');
+            const audioUrl = await uploadFile(audioFile, 'audio');
             console.log('[v0] Áudio carregado com sucesso:', audioUrl);
 
             showLoading(true, "A guardar dados na base de dados...");
@@ -2775,7 +2678,7 @@
             if (fotoFile) {
                 try {
                     showLoading(true, "A enviar foto de perfil para Cloudinary...");
-                    fotoUrl = await CloudinaryUpload.uploadWithRetry(fotoFile, 'image');
+                    fotoUrl = await uploadFile(fotoFile, 'image');
                     console.log('[v0] Foto de perfil carregada com sucesso:', fotoUrl);
                 } catch (uploadError) {
                     showLoading(false);
@@ -3316,7 +3219,7 @@ async function adminReviewMusic(id, status) {
         showLoading(true, 'A atualizar foto de perfil...');
         try {
             console.log('[v0] Iniciando upload de foto de perfil');
-            const fotoUrl = await CloudinaryUpload.uploadWithRetry(file, 'image');
+            const fotoUrl = await uploadFile(file, 'image');
             console.log('[v0] Foto carregada com sucesso:', fotoUrl);
 
             // Atualizar no Firestore

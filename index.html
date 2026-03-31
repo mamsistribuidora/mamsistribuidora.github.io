@@ -1918,19 +1918,27 @@
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            SecuritySystem.logSecurityEvent('PASSWORD_RECOVERY_REQUESTED', { email });
+            try {
+                SecuritySystem.logSecurityEvent('PASSWORD_RECOVERY_REQUESTED', { email });
+            } catch (logError) {
+                console.warn('Aviso ao registar evento:', logError.message);
+            }
             
             showLoading(false);
-            alert("Link de recuperação enviado com sucesso!\n\nVerifique a sua caixa de e-mail (incluindo spam) e siga as instruções para redefinir a sua palavra-passe.");
+            alert("Link de recuperação enviado com sucesso!\n\nVerifique a sua caixa de e-mail (incluindo pasta de spam) e siga as instruções para redefinir a sua palavra-passe.");
             hidePasswordRecovery();
             document.getElementById('recovery-email').value = '';
         } catch (error) {
             showLoading(false);
+            let errorMsg = "Erro ao enviar link de recuperação: ";
             if (error.code === 'auth/user-not-found') {
-                alert("Este e-mail não está registado na nossa plataforma.");
+                errorMsg = "Este e-mail não está registado na nossa plataforma.";
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMsg = "Muitas tentativas. Tente novamente mais tarde.";
             } else {
-                alert("Erro ao enviar link de recuperação: " + error.message);
+                errorMsg += error.message;
             }
+            alert(errorMsg);
         }
     }
 

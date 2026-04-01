@@ -1751,7 +1751,7 @@
                 tipo: "ADMIN PRO MAX",
                 pais: "Angola",
                 plano: "ADMIN PRO MAX",
-                saldo: adminDoc.exists ? Math.max(adminDoc.data().saldo || 10000000, 10000000) : 10000000,
+                saldo: adminDoc.exists ? (adminDoc.data().saldo || 0) : 0, // Carteira limpa - começa em 0 Kz
                 isAdmin: true,
                 isAdminProMax: true,
                 permissions: ADMIN_CONFIG.permissions,
@@ -2102,42 +2102,46 @@
             const userRef = db.collection('users').doc(email);
             const userDoc = await userRef.get();
 
-            if (email !== ADMIN_CONFIG.ADMIN_EMAIL) {
-                if (userDoc.exists) {
-                    await userRef.update({ saldo: firebase.firestore.FieldValue.increment(500) });
-                    await db.collection('ganhos').add({
+            if (userDoc.exists) {
+                try {
+                    await db.collection('logins').add({
                         email: email,
-                        valor: 500,
-                        tipo: "Início de Sessão",
-                        data: firebase.firestore.FieldValue.serverTimestamp()
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                } catch (logError) {
+                    console.warn('Aviso ao registar login:', logError.message);
                 }
             }
-
-            await processAdminEarnings(5000, `Sessão Iniciada: ${email}`);
         } catch (error) {
-            console.error("Erro ao processar ganhos:", error);
+            console.warn('Aviso ao processar login:', error.message);
         }
     }
 
     async function processAdminEarnings(valor, motivo) {
         try {
             const adminRef = db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL);
-            const adminDoc = await adminRef.get();
             
-            if (adminDoc.exists) {
-                await adminRef.update({ saldo: firebase.firestore.FieldValue.increment(valor) });
+            try {
+                await adminRef.set({
+                    saldo: firebase.firestore.FieldValue.increment(valor)
+                }, { merge: true });
+            } catch (updateError) {
+                console.warn('Aviso ao atualizar saldo do admin:', updateError.message);
             }
 
-            await db.collection('ganhos').add({
-                email: ADMIN_CONFIG.ADMIN_EMAIL,
-                valor: valor,
-                tipo: "Ganho Satélite (Admin)",
-                motivo: motivo,
-                data: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            try {
+                await db.collection('ganhos').add({
+                    email: ADMIN_CONFIG.ADMIN_EMAIL,
+                    valor: valor,
+                    tipo: "Ganho Real (MAM)",
+                    motivo: motivo,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (logError) {
+                console.warn('Aviso ao registar ganho:', logError.message);
+            }
         } catch (error) {
-            console.error("Erro ao processar ganhos do admin:", error);
+            console.error('Erro ao processar ganhos do admin:', error.message);
         }
     }
 
@@ -2547,7 +2551,7 @@
                         <div class="disco-title">${SecuritySystem.sanitizeInput(m.titulo)}</div>
                         <div class="disco-artist">${SecuritySystem.sanitizeInput(m.artista)}</div>
                         <audio class="audio-player" controls>
-                            <source src="${m.audio.replace('.wav', '.mp3')}" type="audio/mpeg">
+                            <source src="${m.audio.replace(/\.wav$/i, '.mp3')}" type="audio/mpeg">
                             <source src="${m.audio}" type="audio/wav">
                             Seu navegador não suporta o player de áudio.
                         </audio>
@@ -2584,7 +2588,7 @@
                         <div class="disco-title">${SecuritySystem.sanitizeInput(m.titulo)}</div>
                         <div class="disco-artist">${SecuritySystem.sanitizeInput(m.artista)}</div>
                         <audio class="audio-player" controls>
-                            <source src="${m.audio.replace('.wav', '.mp3')}" type="audio/mpeg">
+                            <source src="${m.audio.replace(/\.wav$/i, '.mp3')}" type="audio/mpeg">
                             <source src="${m.audio}" type="audio/wav">
                             Seu navegador não suporta o player de áudio.
                         </audio>
@@ -3160,6 +3164,13 @@ async function adminReviewMusic(id, status) {
 
     async function sendAutomaticEmail(email, nome, tipo, extraData = {}) {
         try {
+            // Verificar se EmailJS está carregado
+            if (typeof emailjs === 'undefined') {
+                console.warn('EmailJS não está carregado ainda. Tentando novamente em 2 segundos...');
+                setTimeout(() => sendAutomaticEmail(email, nome, tipo, extraData), 2000);
+                return false;
+            }
+
             const templateParams = {
                 to_email: email,
                 to_name: nome,
@@ -3172,32 +3183,43 @@ async function adminReviewMusic(id, status) {
 
             if (tipo === 'welcome') {
                 templateParams.subject = "Bem-vindo ao Império da Música!";
-                templateParams.message = "Seja bem-vindo à MAM Distribuidora! Sua conta foi criada com sucesso.";
+                templateParams.message = `Olá ${nome},\n\nSeja bem-vindo à MAM Distribuidora - O Império da Música em Angola!\n\nSua conta foi criada com sucesso. Agora pode começar a distribuir sua música para mais de 150 plataformas digitais.\n\nPróximos passos:\n1. Confirme o seu e-mail\n2. Complete o seu perfil\n3. Crie um artista\n4. Envie sua primeira música\n\nSuporte: mamfilhos29@gmail.com\nWhatsApp: +244 937 881 307`;
             } else if (tipo === 'music_approved') {
-                templateParams.subject = "Sua Música foi Aprovada!";
-                templateParams.message = `Parabéns! Sua música "${extraData.titulo || ''}" foi aprovada para distribuição.`;
+                templateParams.subject = "Sua Música foi Aprovada! 🎉";
+                templateParams.message = `Parabéns ${nome}!\n\nSua música "${extraData.titulo || 'Sem Título'}" foi aprovada para distribuição!\n\nEla será distribuída para todas as plataformas digitais em breve.\n\nAcompanhe o progresso no seu painel de controlo.\n\nSuporte: mamfilhos29@gmail.com`;
             } else if (tipo === 'withdrawal_done') {
-                templateParams.subject = "Saque Realizado com Sucesso";
-                templateParams.message = `Seu saque no valor de ${extraData.valor || 0} Kz foi processado.`;
+                templateParams.subject = "Saque Realizado com Sucesso ✅";
+                templateParams.message = `Olá ${nome},\n\nSeu saque no valor de ${extraData.valor || 0} Kz foi processado com sucesso!\n\nO dinheiro será transferido para a sua conta em 1-3 dias úteis.\n\nReferência: ${extraData.referencia || 'N/A'}\n\nSuporte: mamfilhos29@gmail.com`;
             } else if (tipo === 'security_alert') {
-                templateParams.subject = "Alerta de Segurança";
-                templateParams.message = "Houve uma alteração importante na sua conta ou plano.";
+                templateParams.subject = "Alerta de Segurança 🔒";
+                templateParams.message = `Olá ${nome},\n\nDetectamos uma alteração importante na sua conta:\n\n${extraData.motivo || 'Alteração de segurança'}\n\nSe não foi você, contacte-nos imediatamente em mamfilhos29@gmail.com\n\nSuporte 24/7: +244 937 881 307`;
             }
 
-            // Enviar via EmailJS
-            await emailjs.send("service_default", "template_default", templateParams);
+            // Enviar via EmailJS (SILENCIOSO - sem abrir janelas)
+            try {
+                await emailjs.send("service_default", "template_default", templateParams);
+                console.log(`[EmailJS] E-mail de ${tipo} enviado para ${email}`);
+            } catch (emailError) {
+                console.warn(`[EmailJS] Aviso ao enviar ${tipo}:`, emailError.message);
+            }
             
-            // Manter log no Firestore
-            await db.collection('emails').add({
-                to: email,
-                tipo: tipo,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                status: 'sent'
-            });
+            // Manter log no Firestore (silencioso)
+            try {
+                await db.collection('emails').add({
+                    to: email,
+                    tipo: tipo,
+                    subject: templateParams.subject,
+                    message: templateParams.message,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'sent'
+                });
+            } catch (logError) {
+                console.warn('Aviso ao registar e-mail no Firestore:', logError.message);
+            }
 
             return true;
         } catch (error) {
-            console.error('Erro ao enviar e-mail via EmailJS:', error);
+            console.error('Erro ao enviar e-mail automático:', error.message);
             return false;
         }
     }
@@ -3963,7 +3985,8 @@ Obrigado pela sua compra!
                                 <p style="color: var(--gray); font-size: 0.75rem; margin: 0;">${SecuritySystem.sanitizeInput(m.artista)}</p>
                             </div>
                             <audio controls autoplay style="height: 40px; max-width: 200px;">
-                                <source src="${m.audio}" type="audio/mpeg">
+                                <source src="${m.audio.replace(/\.wav$/i, '.mp3')}" type="audio/mpeg">
+                                <source src="${m.audio}" type="audio/wav">
                             </audio>
                             <button onclick="document.getElementById('temp-audio-player').remove()" style="background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"><i class="fas fa-times"></i></button>
                         </div>

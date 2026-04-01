@@ -1639,12 +1639,23 @@
     }
 
     function updateUI() {
+        // Verificar se o utilizador tem acesso (role: admin)
+        if (userData.isAdmin) {
+            console.log('[SEGURANÇA] Utilizador admin verificado:', userData.email);
+        }
+        
         document.getElementById('user-display-name').innerText = SecuritySystem.sanitizeInput(userData.nome);
         document.getElementById('user-display-type').innerText = SecuritySystem.sanitizeInput(userData.tipo);
         document.getElementById('user-display-country').innerText = SecuritySystem.sanitizeInput(userData.pais);
-        document.getElementById('user-display-plan').innerText = `PLANO ${userData.plano}`;
-        document.getElementById('stat-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
-        document.getElementById('wallet-saldo').innerText = `${userData.saldo.toLocaleString()} Kz`;
+        
+        // Mostrar plano atual com destaque
+        const planDisplay = userData.plano === 'ADMIN PRO MAX' ? 'ADMIN PRO MAX' : userData.plano;
+        document.getElementById('user-display-plan').innerText = `PLANO ${planDisplay}`;
+        
+        // Mostrar saldo real (sem valores fictícios)
+        const saldoReal = userData.saldo || 0;
+        document.getElementById('stat-saldo').innerText = `${saldoReal.toLocaleString()} Kz`;
+        document.getElementById('wallet-saldo').innerText = `${saldoReal.toLocaleString()} Kz`;
         document.getElementById('home-user-photo').src = userData.foto || 'https://via.placeholder.com/80';
         
         document.getElementById('perfil-nome').value = userData.nome;
@@ -1702,7 +1713,7 @@
             if (email !== ADMIN_CONFIG.ADMIN_EMAIL && !user.emailVerified) {
                 showLoading(false);
                 await auth.signOut();
-                return alert("Por favor, confirme o seu e-mail para ativar a sua conta. Verifique a sua caixa de entrada.");
+                return alert("Ative a sua conta no seu e-mail para continuar.\n\nVerifique a sua caixa de entrada (incluindo pasta de spam) para o link de confirmação.");
             }
 
             SecuritySystem.clearAttempts(email);
@@ -1734,7 +1745,23 @@
                 }
             }
             SecuritySystem.recordFailedAttempt(email);
-            alert("Erro ao entrar: " + error.message);
+            
+            // Traduzir erros do Firebase para português amigável
+            let errorMsg = "Erro ao entrar: ";
+            if (error.code === 'auth/user-not-found') {
+                errorMsg = "E-mail não encontrado. Verifique se está registado ou crie uma nova conta.";
+            } else if (error.code === 'auth/wrong-password') {
+                errorMsg = "Senha errada. Tente novamente ou use 'Esqueci a Senha'.";
+            } else if (error.code === 'auth/invalid-email') {
+                errorMsg = "E-mail inválido. Verifique o formato.";
+            } else if (error.code === 'auth/user-disabled') {
+                errorMsg = "Conta desativada. Contacte o suporte em mamfilhos29@gmail.com.";
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMsg = "Muitas tentativas falhadas. Tente novamente mais tarde ou redefina a senha.";
+            } else {
+                errorMsg += error.message;
+            }
+            alert(errorMsg);
         }
         showLoading(false);
     }
@@ -2228,6 +2255,7 @@
             });
         } catch (error) {
             console.error("Erro ao carregar artistas:", error);
+            container.innerHTML = '<p style="color: var(--danger);">Erro ao carregar artistas. Tente recarregar a página.</p>';
         }
     }
 
@@ -2243,7 +2271,7 @@
         const apple = document.getElementById('artista-apple').value;
         const instagram = document.getElementById('artista-instagram').value;
 
-        if (!nome || !estilo) return alert("Preencha o nome e estilo!");
+        if (!nome || !estilo) return alert("Por favor, preencha o nome e estilo do artista.");
 
         showLoading(true, "A salvar artista...");
         try {
@@ -2290,7 +2318,15 @@
         } catch (error) {
             console.error("Erro ao salvar artista:", error);
             showLoading(false);
-            alert("Erro: " + error.message);
+            let errorMsg = "Erro ao salvar artista: ";
+            if (error.code === 'permission-denied') {
+                errorMsg = "Vocé não tem permissão para salvar artistas.";
+            } else if (error.code === 'not-found') {
+                errorMsg = "Artista não encontrado.";
+            } else {
+                errorMsg += error.message;
+            }
+            alert(errorMsg);
         }
     }
 
@@ -2316,14 +2352,63 @@
     }
 
     async function deleteArtist(id) {
-        if (confirm("Deseja remover este artista?")) {
+        if (confirm("Deseja remover este artista? Esta ação não pode ser desfeita.")) {
             try {
                 await db.collection('artistas').doc(id).delete();
                 loadUserArtists();
-                alert("Artista removido!");
+                alert("Artista removido com sucesso!");
             } catch (error) {
-                alert("Erro: " + error.message);
+                let errorMsg = "Erro ao remover artista: ";
+                if (error.code === 'permission-denied') {
+                    errorMsg = "Vocé não tem permissão para remover este artista.";
+                } else if (error.code === 'not-found') {
+                    errorMsg = "Artista não encontrado. Pode ter sido removido.";
+                } else {
+                    errorMsg += error.message;
+                }
+                alert(errorMsg);
             }
+        }
+    }
+
+    // Guardar rascunho de lançamento
+    async function guardarRascunho() {
+        const titulo = document.getElementById('music-titulo').value?.trim();
+        
+        if (!titulo) {
+            return alert("Por favor, preencha pelo menos o título da música para guardar um rascunho.");
+        }
+        
+        showLoading(true, "A guardar rascunho...");
+        try {
+            const rascunhoData = {
+                titulo: SecuritySystem.sanitizeInput(titulo),
+                artista: document.getElementById('music-artista-select').value,
+                estilo: document.getElementById('music-estilo').value,
+                genero: document.getElementById('music-genero').value,
+                colaboradores: SecuritySystem.sanitizeInput(document.getElementById('music-colaboradores').value?.trim() || ''),
+                produtores: SecuritySystem.sanitizeInput(document.getElementById('music-produtores').value?.trim() || ''),
+                isrc: document.getElementById('music-isrc').value?.trim(),
+                upc: document.getElementById('music-upc').value?.trim(),
+                dataLanc: document.getElementById('music-data').value,
+                tipoLancamento: tipoLancamentoSelecionado || 'Solo',
+                owner: currentUser.email,
+                status: 'rascunho',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            await db.collection('rascunhos').add(rascunhoData);
+            showLoading(false);
+            alert("Rascunho guardado com sucesso! Pode continuar a editar depois.");
+        } catch (error) {
+            showLoading(false);
+            let errorMsg = "Erro ao guardar rascunho: ";
+            if (error.code === 'permission-denied') {
+                errorMsg = "Você não tem permissão para guardar rascunhos.";
+            } else {
+                errorMsg += error.message;
+            }
+            alert(errorMsg);
         }
     }
 
@@ -2366,7 +2451,7 @@
         });
         
         if (errors.length > 0) {
-            alert("Erros encontrados:\n\n• " + errors.join("\n• "));
+            alert("Por favor, corrija os seguintes erros:\n\n• " + errors.join("\n• "));
             return;
         }
 
@@ -2440,6 +2525,11 @@
             showLoading(false);
             alert("Música enviada com sucesso!\n\nSua música está em revisão e será distribuída para mais de 150 plataformas digitais após aprovação.\n\nVocê receberá uma notificação quando for aprovada.");
             
+            // Enviar e-mail de confirmação de música
+            sendAutomaticEmail(currentUser.email, userData?.nome || 'Utilizador', 'music_approved', {
+                titulo: titulo
+            }).catch(err => console.warn('Aviso ao enviar e-mail:', err.message));
+            
             // Limpar formulário
             ['music-titulo', 'music-artista-select', 'music-estilo', 'music-genero', 
              'music-colaboradores', 'music-produtores', 'music-isrc', 'music-upc', 
@@ -2448,12 +2538,19 @@
                 if (el) el.value = '';
             });
             
+            // Limpar áudios adicionais
+            const container = document.getElementById('audios-adicionais-container');
+            if (container) container.innerHTML = '';
+            audioCount = 0;
+            
             // Reset checkboxes
             const soloCheck = document.getElementById('tipo-solo');
             const albumCheck = document.getElementById('tipo-album');
             if (soloCheck) soloCheck.checked = false;
             if (albumCheck) albumCheck.checked = false;
             tipoLancamentoSelecionado = '';
+            
+            loadUserMusic();
             
             // Recarregar dados
             loadUserMusic();
@@ -3939,8 +4036,16 @@ Obrigado pela sua compra!
             
         } catch (error) {
             showLoading(false);
-            console.error('Erro na pesquisa:', error);
-            alert('Erro ao pesquisar: ' + error.message);
+            console.error('[v0] Erro ao enviar música:', error);
+            let errorMsg = "Erro ao enviar música: ";
+            if (error.code === 'permission-denied') {
+                errorMsg = "Vocé não tem permissão para enviar músicas. Verifique o seu plano.";
+            } else if (error.code === 'resource-exhausted') {
+                errorMsg = "Limite de armazenamento atingido. Contacte o suporte.";
+            } else {
+                errorMsg += error.message;
+            }
+            alert(errorMsg);
         }
     }
 

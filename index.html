@@ -1487,23 +1487,106 @@
         } catch (error) { console.error("Erro ao carregar ganhos:", error); }
     }
 
+    // ========== FUNÇÃO DE SAQUE ATUALIZADA ==========
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
         const metodo = document.getElementById('saque-metodo').value;
         const dados = document.getElementById('saque-dados').value;
+        
         if (!valor || valor < 5000) return alert("Valor mínimo de 5.000 Kz");
-        if (valor > userData.saldo) return alert("Saldo insuficiente!");
         if (!metodo || !dados) return alert("Selecione o método e insira os dados!");
-        if (!confirm(`Confirma o levantamento de ${valor.toLocaleString()} Kz para ${metodo}?`)) return;
-        showLoading(true, "A processar pedido...");
+        
+        showLoading(true, "A verificar dados do utilizador...");
+        
         try {
-            await db.collection('saques').add({ email: currentUser.email, nome: userData.nome, valor, metodo, dados, status: "Pendente", data: firebase.firestore.FieldValue.serverTimestamp() });
-            await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
+            // Buscar dados atualizados do Firestore antes da validação
+            const userDocRef = db.collection('users').doc(currentUser.email);
+            const userDoc = await userDocRef.get();
+            
+            if (!userDoc.exists) {
+                showLoading(false);
+                return alert("Erro ao carregar dados do utilizador. Tente novamente.");
+            }
+            
+            const userDataAtualizado = userDoc.data();
+            const planoAtual = userDataAtualizado.plano || 'FREE';
+            const saldoAtual = userDataAtualizado.saldo || 0;
+            
+            // Definir o valor mínimo por plano
+            let valorMinimo = 0;
+            let nomePlanoExibido = planoAtual;
+            
+            if (planoAtual === 'PRO' || planoAtual === 'ADMIN PRO MAX') {
+                valorMinimo = 5000;
+                nomePlanoExibido = 'Pro Max';
+            } else if (planoAtual === 'FREE' || planoAtual === 'BÁSICO' || planoAtual === 'MÉDIO') {
+                valorMinimo = 10000;
+                nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
+            } else {
+                // Fallback para qualquer outro plano
+                valorMinimo = 10000;
+                nomePlanoExibido = planoAtual;
+            }
+            
+            // Validação do valor mínimo do saque baseado no plano
+            if (valor < valorMinimo) {
+                showLoading(false);
+                return alert(`Saldo insuficiente. O mínimo para o plano ${nomePlanoExibido} é ${valorMinimo.toLocaleString()} KZ`);
+            }
+            
+            // Validação do saldo disponível
+            if (valor > saldoAtual) {
+                showLoading(false);
+                return alert(`Saldo insuficiente. O seu saldo atual é de ${saldoAtual.toLocaleString()} KZ e o valor solicitado é ${valor.toLocaleString()} KZ.`);
+            }
+            
+            if (!confirm(`Confirma o levantamento de ${valor.toLocaleString()} Kz para ${metodo}?`)) {
+                showLoading(false);
+                return;
+            }
+            
+            showLoading(true, "A processar pedido de saque...");
+            
+            // Processar o saque com os dados mais recentes
+            await db.collection('saques').add({ 
+                email: currentUser.email, 
+                nome: userDataAtualizado.nome, 
+                valor, 
+                metodo, 
+                dados, 
+                status: "Pendente", 
+                data: firebase.firestore.FieldValue.serverTimestamp(),
+                planoNoMomento: planoAtual
+            });
+            
+            await userDocRef.update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
+            
+            // Registrar no histórico de ganhos como saque
+            await db.collection('ganhos').add({ 
+                email: currentUser.email, 
+                valor: -valor, 
+                tipo: "Saque", 
+                motivo: `Saque de ${valor.toLocaleString()} KZ via ${metodo}`,
+                data: firebase.firestore.FieldValue.serverTimestamp() 
+            });
+            
             alert("Pedido de levantamento enviado! Será processado em breve.");
             closeModal('modal-saque');
-            loadUserData();
-        } catch (error) { alert("Erro: " + error.message); }
-        showLoading(false);
+            
+            // Limpar campos do formulário
+            document.getElementById('saque-valor').value = '';
+            document.getElementById('saque-metodo').value = '';
+            document.getElementById('saque-dados').value = '';
+            
+            // Recarregar dados do utilizador
+            await loadUserData();
+            
+            showLoading(false);
+            
+        } catch (error) { 
+            showLoading(false);
+            alert("Erro ao processar saque: " + error.message); 
+        }
     }
 
     async function handleUpdateProfile() {

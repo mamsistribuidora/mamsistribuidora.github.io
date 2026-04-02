@@ -20,6 +20,9 @@
     <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
@@ -483,6 +486,7 @@
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 1 Artista</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Acesso Básico</li>
+                            <li><i class="fas fa-percent" style="color: var(--gold);"></i> 70% dos Royalties</li>
                         </ul>
                         <button class="btn btn-sec" id="plan-free-btn" onclick="alert('Você já está no Plano Free')">Seu Plano Atual</button>
                     </div>
@@ -495,6 +499,7 @@
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 10 Artistas</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte Prioritário</li>
+                            <li><i class="fas fa-percent" style="color: var(--gold);"></i> 90% dos Royalties</li>
                         </ul>
                         <button class="btn" id="plan-basico-btn" onclick="openPlanPayment('BÁSICO', 10000)">Comprar Agora</button>
                     </div>
@@ -507,6 +512,7 @@
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 30 Artistas</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--success);"></i> Análise Avançada</li>
+                            <li><i class="fas fa-percent" style="color: var(--gold);"></i> 90% dos Royalties</li>
                         </ul>
                         <button class="btn" id="plan-medio-btn" onclick="openPlanPayment('MÉDIO', 20000)">Comprar Agora</button>
                     </div>
@@ -519,6 +525,7 @@
                             <li><i class="fas fa-check" style="color: var(--gold);"></i> Artistas Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos Ilimitados</li>
                             <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte 24/7 VIP</li>
+                            <li><i class="fas fa-percent" style="color: var(--gold);"></i> 100% dos Royalties</li>
                         </ul>
                         <button class="btn" id="plan-promax-btn" onclick="openPlanPayment('PRO', 50000)">Comprar Agora</button>
                     </div>
@@ -774,8 +781,8 @@
         <div class="card" style="max-width: 500px; width: 100%; position: relative;">
             <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-saque')">&times;</span>
             <h3>Solicitar Levantamento</h3>
-            <label>Valor (Kz) - Mínimo 5.000</label>
-            <input type="number" id="saque-valor" min="5000" placeholder="5000">
+            <label>Valor (Kz)</label>
+            <input type="number" id="saque-valor" min="0" placeholder="0">
             <label>Selecione o Método de Levantamento</label>
             <select id="saque-metodo">
                 <option value="">Selecione o método...</option>
@@ -839,6 +846,11 @@
     </div>
 
 <script>
+    // ========== EMAILJS INITIALIZATION ==========
+    (function() {
+        emailjs.init("YOUR_PUBLIC_KEY"); // Substitua pela sua chave pública do EmailJS
+    })();
+
     // ========== FIREBASE CONFIGURATION ==========
     const firebaseConfig = {
         apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
@@ -1055,16 +1067,11 @@
             const userCredential = await auth.signInWithEmailAndPassword(email, pass);
             const user = userCredential.user;
             
-            // ADMIN não precisa verificar email
             if (email !== ADMIN_CONFIG.ADMIN_EMAIL && !user.emailVerified) {
                 showLoading(false);
                 await auth.signOut();
                 return alert("Ative a sua conta no seu e-mail para continuar.\n\nVerifique a sua caixa de entrada (incluindo pasta de spam) para o link de confirmação.");
             }
-            
-            // Bónus de Login: 100 Kz
-            await db.collection('users').doc(email).update({ saldo: firebase.firestore.FieldValue.increment(100) });
-            await db.collection('ganhos').add({ email, valor: 100, tipo: "Bónus de Login", data: firebase.firestore.FieldValue.serverTimestamp() });
             
             if (email === ADMIN_CONFIG.ADMIN_EMAIL) { await ensureAdminProfile(); }
         } catch (error) {
@@ -1122,9 +1129,19 @@
             };
             await db.collection('users').doc(email).set(newUser);
             
-            // Bónus de Registo: 5.000 Kz
-            await db.collection('users').doc(email).update({ saldo: firebase.firestore.FieldValue.increment(5000) });
-            await db.collection('ganhos').add({ email, valor: 5000, tipo: "Bónus de Registo", data: firebase.firestore.FieldValue.serverTimestamp() });
+            // Enviar email de boas-vindas via EmailJS
+            const emailParams = {
+                to_email: email,
+                to_name: nome,
+                message: `Bem-vindo à MAM Distribuidora! Sua conta foi criada com sucesso. Agora você pode distribuir sua música para mais de 150 plataformas digitais.`
+            };
+            
+            try {
+                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID_WELCOME', emailParams);
+                console.log("Email de boas-vindas enviado!");
+            } catch(emailError) {
+                console.error("Erro ao enviar email:", emailError);
+            }
             
             const message = "Conta criada com sucesso!\n\nUm e-mail de confirmação foi enviado para " + email + ".\nPor favor, verifique a sua caixa de entrada (incluindo spam).";
             alert(message);
@@ -1338,10 +1355,27 @@
             
             await db.collection('musicas').add(musicData);
             
+            // Enviar email de notificação de lançamento via EmailJS
+            const emailParams = {
+                to_email: ADMIN_CONFIG.SUPPORT_EMAIL,
+                to_name: "Administrador MAM",
+                user_name: userData.nome,
+                user_email: currentUser.email,
+                music_title: titulo,
+                music_artist: artista,
+                message: `Um novo lançamento foi submetido para revisão: ${titulo} por ${artista}`
+            };
+            
+            try {
+                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID_SUBMISSION', emailParams);
+                console.log("Email de notificação enviado!");
+            } catch(emailError) {
+                console.error("Erro ao enviar email de notificação:", emailError);
+            }
+            
             showLoading(false);
             alert("Música enviada com sucesso! Aguarde revisão.");
             
-            // Limpar formulário
             document.getElementById('music-titulo').value = '';
             document.getElementById('music-artista-select').value = '';
             document.getElementById('music-estilo').value = '';
@@ -1487,19 +1521,18 @@
         } catch (error) { console.error("Erro ao carregar ganhos:", error); }
     }
 
-    // ========== FUNÇÃO DE SAQUE ATUALIZADA ==========
+    // ========== FUNÇÃO DE SAQUE ATUALIZADA COM REGRAS DOS 4 PLANOS ==========
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
         const metodo = document.getElementById('saque-metodo').value;
         const dados = document.getElementById('saque-dados').value;
         
-        if (!valor || valor < 5000) return alert("Valor mínimo de 5.000 Kz");
+        if (!valor || valor <= 0) return alert("Por favor, insira um valor válido.");
         if (!metodo || !dados) return alert("Selecione o método e insira os dados!");
         
         showLoading(true, "A verificar dados do utilizador...");
         
         try {
-            // Buscar dados atualizados do Firestore antes da validação
             const userDocRef = db.collection('users').doc(currentUser.email);
             const userDoc = await userDocRef.get();
             
@@ -1512,29 +1545,31 @@
             const planoAtual = userDataAtualizado.plano || 'FREE';
             const saldoAtual = userDataAtualizado.saldo || 0;
             
-            // Definir o valor mínimo por plano
             let valorMinimo = 0;
-            let nomePlanoExibido = planoAtual;
+            let nomePlanoExibido = '';
             
-            if (planoAtual === 'PRO' || planoAtual === 'ADMIN PRO MAX') {
-                valorMinimo = 5000;
-                nomePlanoExibido = 'Pro Max';
-            } else if (planoAtual === 'FREE' || planoAtual === 'BÁSICO' || planoAtual === 'MÉDIO') {
-                valorMinimo = 10000;
-                nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
-            } else {
-                // Fallback para qualquer outro plano
-                valorMinimo = 10000;
-                nomePlanoExibido = planoAtual;
+            switch(planoAtual) {
+                case 'PRO':
+                case 'ADMIN PRO MAX':
+                    valorMinimo = 5000;
+                    nomePlanoExibido = 'Pro Max';
+                    break;
+                case 'FREE':
+                case 'BÁSICO':
+                case 'MÉDIO':
+                    valorMinimo = 10000;
+                    nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
+                    break;
+                default:
+                    valorMinimo = 10000;
+                    nomePlanoExibido = planoAtual;
             }
             
-            // Validação do valor mínimo do saque baseado no plano
             if (valor < valorMinimo) {
                 showLoading(false);
                 return alert(`Saldo insuficiente. O mínimo para o plano ${nomePlanoExibido} é ${valorMinimo.toLocaleString()} KZ`);
             }
             
-            // Validação do saldo disponível
             if (valor > saldoAtual) {
                 showLoading(false);
                 return alert(`Saldo insuficiente. O seu saldo atual é de ${saldoAtual.toLocaleString()} KZ e o valor solicitado é ${valor.toLocaleString()} KZ.`);
@@ -1547,7 +1582,6 @@
             
             showLoading(true, "A processar pedido de saque...");
             
-            // Processar o saque com os dados mais recentes
             await db.collection('saques').add({ 
                 email: currentUser.email, 
                 nome: userDataAtualizado.nome, 
@@ -1561,7 +1595,6 @@
             
             await userDocRef.update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
             
-            // Registrar no histórico de ganhos como saque
             await db.collection('ganhos').add({ 
                 email: currentUser.email, 
                 valor: -valor, 
@@ -1573,12 +1606,10 @@
             alert("Pedido de levantamento enviado! Será processado em breve.");
             closeModal('modal-saque');
             
-            // Limpar campos do formulário
             document.getElementById('saque-valor').value = '';
             document.getElementById('saque-metodo').value = '';
             document.getElementById('saque-dados').value = '';
             
-            // Recarregar dados do utilizador
             await loadUserData();
             
             showLoading(false);

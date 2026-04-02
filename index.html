@@ -288,24 +288,12 @@
     let currentUser = null;
     let userData = null;
 
-    // Royalty percentages by plan
-    const ROYALTY_PERCENTAGES = {
-        "FREE": 70,
-        "BÁSICO": 80,
-        "MÉDIO": 85,
-        "PRO": 90,
-        "VIP": 100,
-        "ADMIN PRO MAX": 100
-    };
-
-    // Minimum withdrawal by plan
-    const MIN_WITHDRAWAL = {
-        "FREE": 10000,
-        "BÁSICO": 10000,
-        "MÉDIO": 10000,
-        "PRO": 5000,
-        "VIP": 5000,
-        "ADMIN PRO MAX": 5000
+    // OS 4 PLANOS com percentuais de royalties
+    const PLANS = {
+        "FREE": { name: "FREE", percent: 70, minWithdraw: 10000, price: 0, desc: "1 Artista", featured: false },
+        "BÁSICO": { name: "BÁSICO", percent: 80, minWithdraw: 10000, price: 10000, desc: "10 Artistas", featured: false },
+        "MÉDIO": { name: "MÉDIO", percent: 85, minWithdraw: 10000, price: 20000, desc: "30 Artistas", featured: false },
+        "PRO MAX": { name: "PRO MAX", percent: 90, minWithdraw: 5000, price: 50000, desc: "Artistas Ilimitados", featured: true }
     };
 
     function showLoading(show, text = "Processando...") { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
@@ -362,7 +350,7 @@
                 nome, email, tipo, pais: "Angola", plano: "FREE", saldo: 0, 
                 isAdmin: email === ADMIN_EMAIL, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
             });
-            alert("Conta criada! Verifique seu e-mail para confirmar o cadastro.");
+            alert("Conta criada! Verifique seu e-mail para confirmar o cadastro.\n\nSaldo inicial: 0 Kz. Os ganhos vêm dos royalties das suas músicas.");
             showLoading(false);
             toggleAuth(false);
         } catch (error) { alert(getErrorMessage(error)); showLoading(false); }
@@ -414,15 +402,15 @@
     });
 
     async function loadUserData() {
-        document.getElementById('user-welcome').innerHTML = `<h2>Olá, ${userData.nome}!</h2><p>Plano: ${userData.plano} | Saldo: ${(userData.saldo || 0).toLocaleString()} Kz</p>`;
+        document.getElementById('user-welcome').innerHTML = `<h2>Olá, ${userData.nome}!</h2><p>Plano: ${userData.plano} | Saldo: ${(userData.saldo || 0).toLocaleString()} Kz</p><p>Royalties: ${PLANS[userData.plano]?.percent || 70}% do valor bruto</p>`;
         document.getElementById('stat-saldo').innerText = (userData.saldo || 0).toLocaleString() + " Kz";
         document.getElementById('wallet-saldo').innerText = (userData.saldo || 0).toLocaleString() + " Kz";
         document.getElementById('perfil-nome').value = userData.nome;
         document.getElementById('perfil-telefone').value = userData.telefone || '';
         
-        // Update withdrawal minimum info
-        const minWithdraw = MIN_WITHDRAWAL[userData.plano] || 10000;
-        document.getElementById('saque-min-info').innerHTML = `Valor mínimo: ${minWithdraw.toLocaleString()} Kz (Plano ${userData.plano})`;
+        // Update withdrawal minimum info based on user plan
+        const planInfo = PLANS[userData.plano] || PLANS["FREE"];
+        document.getElementById('saque-min-info').innerHTML = `Valor mínimo: ${planInfo.minWithdraw.toLocaleString()} Kz (Plano ${userData.plano})`;
         
         await loadArtistas();
         await loadMinhasMusicas();
@@ -568,9 +556,12 @@
 
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
-        const minWithdraw = MIN_WITHDRAWAL[userData.plano] || 10000;
+        const planInfo = PLANS[userData.plano] || PLANS["FREE"];
+        const minWithdraw = planInfo.minWithdraw;
+        
         if (!valor || valor < minWithdraw) return alert(`Valor mínimo de ${minWithdraw.toLocaleString()} Kz para o plano ${userData.plano}`);
         if (valor > (userData.saldo || 0)) return alert("Saldo insuficiente!");
+        
         await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
         await db.collection('saques').add({ email: currentUser.email, valor, status: "Pendente", data: firebase.firestore.FieldValue.serverTimestamp() });
         alert("Solicitação enviada!");
@@ -622,27 +613,42 @@
     window.adminDeleteUser = async (email) => { if (!userData?.isAdmin) return alert("Acesso negado!"); if (confirm("Excluir utilizador?")) { await db.collection('users').doc(email).delete(); loadAdminData(); } };
 
     async function loadPlanos() {
-        const plans = [
-            { name: "FREE", price: 0, percent: 70, desc: "1 Artista", minWithdraw: 10000 },
-            { name: "BÁSICO", price: 10000, percent: 80, desc: "10 Artistas", minWithdraw: 10000 },
-            { name: "MÉDIO", price: 20000, percent: 85, desc: "30 Artistas", minWithdraw: 10000 },
-            { name: "PRO", price: 30000, percent: 90, desc: "Artistas Ilimitados", minWithdraw: 5000 },
-            { name: "VIP", price: 50000, percent: 100, desc: "Prioridade Máxima", minWithdraw: 5000 }
-        ];
         const container = document.getElementById('plans-container');
         container.innerHTML = '';
-        for (let p of plans) {
-            const isCurrent = userData?.plano === p.name;
-            container.innerHTML += `<div class="plan-card ${p.name === 'VIP' ? 'featured' : ''}"><div class="plan-name">Plano ${p.name}</div><div class="plan-price">${p.price === 0 ? 'Grátis' : p.price.toLocaleString() + ' Kz/mês'}</div><div class="royalty-percent">🎵 ${p.percent}% dos Royalties</div><p>${p.desc}</p><p style="font-size:0.7rem; color:var(--gray);">Saque mínimo: ${p.minWithdraw.toLocaleString()} Kz</p>${isCurrent ? '<div class="current-plan-badge">✅ Plano Atual</div>' : (p.price > 0 ? `<button class="btn" onclick="comprarPlano('${p.name}', ${p.price})">Comprar</button>` : '')}</div>`;
+        
+        for (let [planKey, plan] of Object.entries(PLANS)) {
+            const isCurrent = userData?.plano === planKey;
+            container.innerHTML += `
+                <div class="plan-card ${plan.featured ? 'featured' : ''}">
+                    <div class="plan-name">Plano ${plan.name}</div>
+                    <div class="plan-price">${plan.price === 0 ? 'Grátis' : plan.price.toLocaleString() + ' Kz/mês'}</div>
+                    <div class="royalty-percent">🎵 ${plan.percent}% dos Royalties</div>
+                    <p>${plan.desc}</p>
+                    <p style="font-size:0.7rem; color:var(--gray); margin-top:10px;">Saque mínimo: ${plan.minWithdraw.toLocaleString()} Kz</p>
+                    ${isCurrent ? '<div class="current-plan-badge">✅ Plano Atual</div>' : (plan.price > 0 ? `<button class="btn" onclick="comprarPlano('${planKey}', ${plan.price})">Comprar Agora</button>` : '<button class="btn btn-sec" disabled>Plano Gratuito</button>')}
+                </div>
+            `;
         }
     }
 
     async function comprarPlano(plano, valor) {
-        if ((userData.saldo || 0) < valor) return alert("Saldo insuficiente!");
-        await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor), plano });
-        await db.collection('royalties').add({ email: ADMIN_EMAIL, valor, tipo: `Compra Plano ${plano}`, data: firebase.firestore.FieldValue.serverTimestamp(), percentual: 100 });
+        if ((userData.saldo || 0) < valor) return alert(`Saldo insuficiente! Você precisa de ${valor.toLocaleString()} Kz para este plano.`);
+        
+        await db.collection('users').doc(currentUser.email).update({ 
+            saldo: firebase.firestore.FieldValue.increment(-valor), 
+            plano: plano 
+        });
+        
+        await db.collection('royalties').add({ 
+            email: ADMIN_EMAIL, 
+            valor: valor, 
+            tipo: `Compra Plano ${plano}`, 
+            data: firebase.firestore.FieldValue.serverTimestamp(), 
+            percentual: 100 
+        });
+        
+        alert(`Plano ${plano} ativado com sucesso! Você agora recebe ${PLANS[plano].percent}% dos royalties.`);
         loadUserData();
-        alert(`Plano ${plano} ativado! Você agora recebe ${ROYALTY_PERCENTAGES[plano]}% dos royalties.`);
     }
 
     // Função para processar royalties (chamada quando uma música recebe streams)
@@ -651,7 +657,7 @@
         const music = musicDoc.data();
         const userDoc = await db.collection('users').doc(music.owner).get();
         const userPlan = userDoc.data().plano;
-        const royaltyPercent = ROYALTY_PERCENTAGES[userPlan] || 70;
+        const royaltyPercent = PLANS[userPlan]?.percent || 70;
         const royaltyAmount = (streamValue * royaltyPercent) / 100;
         
         await db.collection('users').doc(music.owner).update({

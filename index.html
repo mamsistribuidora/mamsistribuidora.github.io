@@ -848,7 +848,7 @@
 <script>
     // ========== EMAILJS INITIALIZATION ==========
     (function() {
-        emailjs.init("YOUR_PUBLIC_KEY"); // Substitua pela sua chave pública do EmailJS
+        emailjs.init("5S1h6RPrYmD9N9YjL");
     })();
 
     // ========== FIREBASE CONFIGURATION ==========
@@ -1129,7 +1129,6 @@
             };
             await db.collection('users').doc(email).set(newUser);
             
-            // Enviar email de boas-vindas via EmailJS
             const emailParams = {
                 to_email: email,
                 to_name: nome,
@@ -1137,7 +1136,7 @@
             };
             
             try {
-                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID_WELCOME', emailParams);
+                await emailjs.send('service_pbe3n1o', 'template_9tewq46', emailParams);
                 console.log("Email de boas-vindas enviado!");
             } catch(emailError) {
                 console.error("Erro ao enviar email:", emailError);
@@ -1355,7 +1354,6 @@
             
             await db.collection('musicas').add(musicData);
             
-            // Enviar email de notificação de lançamento via EmailJS
             const emailParams = {
                 to_email: ADMIN_CONFIG.SUPPORT_EMAIL,
                 to_name: "Administrador MAM",
@@ -1367,7 +1365,7 @@
             };
             
             try {
-                await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID_SUBMISSION', emailParams);
+                await emailjs.send('service_pbe3n1o', 'template_9tewq46', emailParams);
                 console.log("Email de notificação enviado!");
             } catch(emailError) {
                 console.error("Erro ao enviar email de notificação:", emailError);
@@ -1521,7 +1519,7 @@
         } catch (error) { console.error("Erro ao carregar ganhos:", error); }
     }
 
-    // ========== FUNÇÃO DE SAQUE ATUALIZADA COM REGRAS DOS 4 PLANOS ==========
+    // ========== FUNÇÃO DE SAQUE COM TRAVA REAL ==========
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
         const metodo = document.getElementById('saque-metodo').value;
@@ -1548,21 +1546,12 @@
             let valorMinimo = 0;
             let nomePlanoExibido = '';
             
-            switch(planoAtual) {
-                case 'PRO':
-                case 'ADMIN PRO MAX':
-                    valorMinimo = 5000;
-                    nomePlanoExibido = 'Pro Max';
-                    break;
-                case 'FREE':
-                case 'BÁSICO':
-                case 'MÉDIO':
-                    valorMinimo = 10000;
-                    nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
-                    break;
-                default:
-                    valorMinimo = 10000;
-                    nomePlanoExibido = planoAtual;
+            if (planoAtual === 'PRO' || planoAtual === 'ADMIN PRO MAX') {
+                valorMinimo = 5000;
+                nomePlanoExibido = 'Pro Max';
+            } else {
+                valorMinimo = 10000;
+                nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
             }
             
             if (valor < valorMinimo) {

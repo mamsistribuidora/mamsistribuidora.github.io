@@ -844,7 +844,7 @@
 <script>
     // ========== EMAILJS INITIALIZATION ==========
     (function() {
-        emailjs.init("S51h6RPyNm9N9YjL");
+        emailjs.init("5S1h6RPrYmD9N9YjL");
     })();
 
     // ========== FIREBASE CONFIGURATION ==========
@@ -1004,7 +1004,7 @@
             updateUI();
             if (userData.isAdmin) { document.getElementById('btn-admin-global').style.display = 'block'; document.getElementById('admin-pro-max-indicator').style.display = 'inline-block'; loadAdminData(); }
         } else {
-            // ALTERADO: saldo: 0 (em vez de 5000)
+            // ALTERADO: saldo inicial = 0 (sem bónus)
             const newUser = { nome: currentUser.displayName || "Novo Utilizador", email: currentUser.email, tipo: "Artista", pais: "Angola", plano: "FREE", saldo: 0, isAdmin: currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
             await db.collection('users').doc(currentUser.email).set(newUser);
             userData = newUser;
@@ -1120,7 +1120,7 @@
             const result = await auth.createUserWithEmailAndPassword(email, pass);
             await result.user.sendEmailVerification();
             
-            // ALTERADO: saldo: 0 (em vez de 5000)
+            // ALTERADO: saldo inicial = 0 (sem bónus)
             const newUser = {
                 nome, email, tipo, pais, plano: "FREE", saldo: 0,
                 isAdmin: email === ADMIN_CONFIG.ADMIN_EMAIL,
@@ -1553,12 +1553,9 @@
             if (planoAtual === 'PRO' || planoAtual === 'ADMIN PRO MAX') {
                 valorMinimo = 5000;
                 nomePlanoExibido = 'Pro Max';
-            } else if (planoAtual === 'FREE' || planoAtual === 'BÁSICO' || planoAtual === 'MÉDIO') {
-                valorMinimo = 10000;
-                nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
             } else {
                 valorMinimo = 10000;
-                nomePlanoExibido = planoAtual;
+                nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
             }
             
             // Validação do valor mínimo do saque baseado no plano

@@ -9,21 +9,19 @@
     <meta name="author" content="Matias Arsénio Manuel">
     <meta name="robots" content="index, follow">
     
-    <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data: blob:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebaseapp.com wss://*.firebaseio.com https://api.cloudinary.com; media-src https://res.cloudinary.com;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     
     <title>MAM Distribuidora - O Império da Música</title>
     <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <style>
         :root { 
@@ -48,7 +46,6 @@
             flex-direction: column;
         }
         
-        /* Header & Nav */
         header { background: rgba(0,0,0,0.98); border-bottom: 2px solid var(--gold); padding: 15px; position: sticky; top: 0; z-index: 1000; text-align: center; }
         .logo { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); }
@@ -59,180 +56,91 @@
         .nav-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
         .nav-btn:hover { background: #222; color: #fff; }
 
-        /* Layout */
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; flex: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; }
         .section { display: none; animation: fadeIn 0.5s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Components */
         .card { background: var(--card); border: 1px solid #222; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .card h3 { color: var(--gold); font-size: 1.1rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
         
         input, select, textarea { width: 100%; padding: 14px; background: #000; border: 1px solid #333; color: var(--text); border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; transition: 0.3s; }
-        input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
-        
-        .password-container { position: relative; margin-bottom: 15px; }
-        .password-container input { margin-bottom: 0; padding-right: 45px; }
-        .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gold); cursor: pointer; font-size: 1.1rem; }
+        input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; }
         
         .btn { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn:hover { background: #e5c04a; transform: translateY(-2px); }
-        .btn:active { transform: scale(0.98); }
         .btn-sec { background: #222; color: var(--gold); border: 1px solid var(--gold); }
         .btn-danger { background: var(--danger); color: #fff; }
         .btn-small { padding: 8px 12px; font-size: 0.7rem; width: auto; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        
-        /* Stats */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .music-card, .artist-card { background: #111; border: 1px solid #333; border-radius: 12px; overflow: hidden; transition: 0.3s; }
+        .music-card:hover, .artist-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .music-card-img, .artist-card-img { width: 100%; height: 200px; object-fit: cover; }
+        .music-card-info, .artist-card-info { padding: 15px; }
+        .music-card-title, .artist-card-name { color: var(--gold); font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
+        .music-card-artist, .artist-card-style { color: var(--gray); font-size: 0.8rem; margin-bottom: 10px; }
+        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; display: inline-block; }
+        .status-active { background: rgba(40,167,69,0.2); color: #28a745; }
+        .status-pending { background: rgba(255,193,7,0.2); color: #ffc107; }
+
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.3); padding: 20px; border-radius: 10px; text-align: center; }
         .stat-box h4 { color: var(--gold); font-size: 1.8rem; margin-bottom: 5px; }
-        .stat-box p { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; }
 
-        /* Lists */
-        .item-list { display: flex; flex-direction: column; gap: 12px; }
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 20px 0; }
+        .plan-card { background: var(--card); border: 2px solid #333; padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; }
+        .plan-card:hover { border-color: var(--gold); }
+        .plan-card.featured { border-color: var(--gold); }
+        .plan-name { color: var(--gold); font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; }
+        .plan-price { font-size: 2rem; color: var(--gold); margin: 15px 0; }
+        .royalty-percent { font-size: 1.2rem; color: var(--success); margin: 10px 0; }
+        .current-plan-badge { background: var(--gold); color: #000; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin-top: 10px; display: inline-block; }
+
+        #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .email-verify-warning { position: fixed; top: 0; left: 0; right: 0; background: var(--danger); color: white; text-align: center; padding: 15px; z-index: 10000; font-weight: bold; }
+        .profile-upload { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
+        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
+        
+        @media (max-width: 768px) {
+            .grid-cards { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+            .container { padding: 15px; }
+        }
+        
         .list-item { background: #111; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; border: 1px solid #222; transition: 0.3s; }
         .list-item:hover { border-color: var(--gold); background: #151515; }
-        .list-item img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #333; }
+        .list-item img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
         .list-info { flex: 1; }
         .list-info h4 { font-size: 0.95rem; margin-bottom: 4px; }
         .list-info p { font-size: 0.75rem; color: var(--gray); }
         .list-actions { display: flex; gap: 8px; }
-
-        /* Profile Photo */
-        .profile-upload { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
-        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
-        .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #000; }
-
-        /* Admin Specific */
-        .admin-badge { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; vertical-align: middle; }
-        .admin-pro-max-badge { background: linear-gradient(135deg, var(--gold), #ff6b35); color: #000; padding: 4px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; vertical-align: middle; box-shadow: 0 0 10px rgba(212,175,55,0.5); animation: glow 2s ease-in-out infinite alternate; }
-        @keyframes glow { from { box-shadow: 0 0 5px rgba(212,175,55,0.5); } to { box-shadow: 0 0 20px rgba(212,175,55,0.8); } }
-        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; }
-        .status-active { background: rgba(40,167,69,0.2); color: #28a745; }
-        .status-pending { background: rgba(255,193,7,0.2); color: #ffc107; }
-        .status-error { background: rgba(220,53,69,0.2); color: #dc3545; }
-
-        /* Loading Overlay */
-        #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Disco/Vinyl Style */
-        .disco-item { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
-        .disco-item:hover { border-color: var(--gold); background: #151515; }
-        .disco-cover { width: 120px; height: 120px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(212,175,55,0.3); }
-        .disco-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .disco-item { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; transition: 0.3s; }
+        .disco-cover { width: 120px; height: 120px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
+        .disco-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; }
         .disco-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
         .audio-player { width: 100%; margin-top: 10px; }
-
-        /* Plans Grid */
-        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
-        .plan-card { background: var(--card); border: 2px solid #333; padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; }
-        .plan-card:hover { border-color: var(--gold); box-shadow: 0 0 20px rgba(212,175,55,0.2); }
-        .plan-card.featured { border-color: var(--gold); }
-        .plan-name { color: var(--gold); font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; }
-        .plan-price { font-size: 2rem; color: var(--gold); margin: 15px 0; }
-        .plan-features { text-align: left; margin: 20px 0; font-size: 0.9rem; list-style: none; }
-        .plan-features li { margin: 8px 0; color: var(--gray); }
-
-        /* Footer - Global */
-        footer { background: #050505; border-top: 1px solid #222; padding: 40px 20px; text-align: center; color: var(--gray); font-size: 0.8rem; margin-top: auto; }
-        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-        .footer-links a { color: var(--gray); text-decoration: none; transition: 0.3s; }
-        .footer-links a:hover { color: var(--gold); }
-        .footer-founder { margin-top: 10px; color: var(--gold); font-weight: bold; }
-        .footer-security { margin-top: 15px; font-size: 0.7rem; color: #555; }
-        .footer-security i { color: var(--gold); margin-right: 5px; }
-
-        /* Security Badge */
-        .security-badge { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.9); border: 1px solid var(--gold); padding: 8px 12px; border-radius: 20px; font-size: 0.7rem; color: var(--gold); z-index: 1000; display: flex; align-items: center; gap: 5px; }
-
-        /* Search Bar */
-        .search-container { padding: 10px 20px; background: rgba(0,0,0,0.95); border-bottom: 1px solid #222; display: flex; justify-content: center; }
-        .search-box { display: flex; max-width: 500px; width: 100%; gap: 10px; }
-        .search-box input { flex: 1; padding: 12px 20px; background: #111; border: 1px solid #333; color: var(--text); border-radius: 25px; font-size: 0.9rem; transition: 0.3s; margin-bottom: 0; }
-        .search-box input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212,175,55,0.2); }
-        .search-box button { padding: 12px 20px; background: var(--gold); color: #000; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .search-box button:hover { background: #e5c04a; }
-        .search-results { background: #111; border: 1px solid #333; border-radius: 8px; margin-top: 10px; max-height: 300px; overflow-y: auto; display: none; }
-        .search-results.active { display: block; }
-        .search-result-item { padding: 12px 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .search-result-item:hover { background: #1a1a1a; }
-        .search-result-item img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .search-result-item .result-info h4 { font-size: 0.9rem; color: var(--text); }
-        .search-result-item .result-info p { font-size: 0.75rem; color: var(--gray); }
-
-        /* CEO Honor Board */
-        .ceo-honor-board { background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04)); border: 1.5px solid var(--gold); border-radius: 10px; padding: 10px; margin: 5px auto; max-width: 380px; text-align: center; box-shadow: 0 0 12px rgba(212,175,55,0.15); position: relative; overflow: hidden; }
-        .ceo-honor-board::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(212,175,55,0.03) 2px, rgba(212,175,55,0.03) 4px); pointer-events: none; }
-        .ceo-content { position: relative; z-index: 1; }
-        .ceo-title { color: var(--gold); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .ceo-title i { font-size: 0.85rem; }
-        .ceo-photo { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; box-shadow: 0 0 8px rgba(212,175,55,0.2); margin-bottom: 5px; }
-        .ceo-name { color: var(--text); font-size: 0.85rem; font-weight: bold; margin-bottom: 2px; }
-        .ceo-alias { color: var(--gold); font-size: 0.7rem; margin-bottom: 5px; font-weight: 600; }
-        .ceo-info { text-align: center; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(212,175,55,0.1); }
-        .ceo-info p { color: var(--gray); font-size: 0.65rem; margin-bottom: 2px; line-height: 1.2; }
-        .ceo-info strong { color: var(--gold); }
-        .ceo-socials-title { color: var(--gold); font-size: 0.65rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .ceo-socials { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
-        .social-btn { width: 28px; height: 28px; border-radius: 50%; background: rgba(212,175,55,0.15); border: 1px solid var(--gold); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; cursor: pointer; transition: 0.3s; text-decoration: none; }
-        .social-btn:hover { background: var(--gold); color: #000; transform: scale(1.1); }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
-            .logo-text { font-size: 1.1rem; }
-            .container { padding: 15px; }
-            .footer-links { flex-direction: column; gap: 10px; }
-            .grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-            .stat-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 480px) {
-            .grid { grid-template-columns: 1fr; }
-            .list-item { flex-direction: column; text-align: center; }
-        }
+        .admin-badge { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 </head>
 <body>
 
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <p id="loading-text">Processando...</p>
+    <div id="loading-overlay"><div class="spinner"></div><p id="loading-text">Processando...</p></div>
+    <div id="email-verify-warning" class="email-verify-warning" style="display: none;">
+        ⚠️ Confirme seu e-mail no Gmail para ativar sua conta! Verifique sua caixa de entrada (incluindo spam).
     </div>
 
-    <!-- HEADER GLOBAL -->
-    <header id="global-header">
+    <header>
         <div class="logo">
             <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" alt="MAM Logo">
             <h1 class="logo-text">MAM DISTRIBUIDORA</h1>
         </div>
-        <p style="color: var(--gold); font-size: 0.75rem; margin-top: 5px; letter-spacing: 1px;">O Império da Música em Angola</p>
+        <p style="color: var(--gold); font-size: 0.75rem;">O Império da Música em Angola</p>
     </header>
 
-    <!-- BARRA DE PESQUISA GLOBAL -->
-    <div class="search-container">
-        <div class="search-box">
-            <input type="text" id="global-search" placeholder="Pesquisar músicas, artistas..." onkeyup="handleGlobalSearch(event)">
-            <button onclick="performGlobalSearch()"><i class="fas fa-search"></i> Pesquisar</button>
-        </div>
-    </div>
-    <div id="search-results-container" class="container" style="display: none;">
-        <div class="card">
-            <h3><i class="fas fa-search"></i> Resultados da Pesquisa</h3>
-            <div id="search-results" class="item-list"></div>
-            <button class="btn btn-sec" style="margin-top: 15px;" onclick="closeSearchResults()"><i class="fas fa-times"></i> Fechar Pesquisa</button>
-        </div>
-    </div>
-
-    <!-- NAV GLOBAL -->
     <nav id="global-nav">
         <button class="nav-btn active" onclick="showSectionGlobal('home', this)"><i class="fas fa-home"></i> Início</button>
         <button class="nav-btn" onclick="showSectionGlobal('planos', this)"><i class="fas fa-tags"></i> Planos</button>
@@ -241,75 +149,36 @@
         <button class="nav-btn" id="nav-minhas-musicas" style="display: none;" onclick="showSectionGlobal('minhas-musicas', this)"><i class="fas fa-music"></i> Minhas Músicas</button>
         <button class="nav-btn" id="nav-carteira" style="display: none;" onclick="showSectionGlobal('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
         <button class="nav-btn" id="nav-perfil" style="display: none;" onclick="showSectionGlobal('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
-        <button class="nav-btn" id="btn-admin-global" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSectionGlobal('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</button>
+        <button class="nav-btn" id="btn-admin-global" style="display: none;" onclick="showSectionGlobal('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN</button>
         <button class="nav-btn" id="nav-login" onclick="showAuthScreen()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-        <button class="nav-btn" id="nav-logout" style="display: none; color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
+        <button class="nav-btn" id="nav-logout" style="display: none;" onclick="handleLogout()"><i class="fas fa-power-off"></i> Sair</button>
     </nav>
 
     <!-- AUTH SCREEN -->
-    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 250px); padding: 20px; flex: 1;">
+    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 250px); padding: 20px;">
         <div style="max-width: 450px; width: 100%;">
-            <div style="text-align: center; margin-bottom: 40px;">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 20px; box-shadow: 0 0 20px rgba(212,175,55,0.3);" alt="MAM Logo">
-                <h1 class="logo-text">MAM DISTRIBUIDORA</h1>
-                <p style="color: var(--gray); font-size: 0.9rem; margin-top: 5px;">A sua música no topo do mundo</p>
-            </div>
-            
             <div class="card" id="login-form">
                 <h3><i class="fas fa-lock"></i> Acesso Restrito</h3>
-                <input type="email" id="login-email" placeholder="E-mail" autocomplete="email">
-                <div class="password-container">
-                    <input type="password" id="login-pass" placeholder="Palavra-passe" autocomplete="current-password">
-                    <button class="toggle-password" type="button" onclick="togglePasswordVisibility('login-pass')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
+                <input type="email" id="login-email" placeholder="E-mail">
+                <input type="password" id="login-pass" placeholder="Palavra-passe">
                 <button class="btn" onclick="handleLogin()">Entrar Agora <i class="fas fa-sign-in-alt"></i></button>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 15px; color: var(--gray);">
-                    <span style="color: var(--gold); cursor: pointer;" onclick="showPasswordRecovery()">Esqueceu a palavra-passe?</span>
-                </p>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 10px; color: var(--gray);">Não tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(true)">Criar Conta Grátis</span></p>
+                <p style="text-align: center; margin-top: 15px; color: var(--gray);">Não tem conta? <span style="color: var(--gold); cursor: pointer;" onclick="toggleAuth(true)">Criar Conta Grátis</span></p>
+                <p style="text-align: center; margin-top: 10px;"><span style="color: var(--gold); cursor: pointer;" onclick="showPasswordRecovery()">Esqueceu a palavra-passe?</span></p>
             </div>
-
-            <div class="card" id="recovery-form" style="display: none;">
-                <h3><i class="fas fa-key"></i> Recuperar Palavra-passe</h3>
-                <p style="color: var(--gray); font-size: 0.85rem; margin-bottom: 15px;">Introduza o seu e-mail e enviaremos um link para redefinir a sua palavra-passe.</p>
-                <input type="email" id="recovery-email" placeholder="E-mail registado" autocomplete="email">
-                <button class="btn" onclick="handlePasswordRecovery()"><i class="fas fa-paper-plane"></i> Enviar Link de Recuperação</button>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">
-                    <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="hidePasswordRecovery()"><i class="fas fa-arrow-left"></i> Voltar ao Login</span>
-                </p>
-            </div>
-
             <div class="card" id="register-form" style="display: none;">
                 <h3><i class="fas fa-user-plus"></i> Novo Registo</h3>
-                <input type="text" id="reg-nome" placeholder="Nome Completo" autocomplete="name">
-                <input type="email" id="reg-email" placeholder="E-mail" autocomplete="email">
-                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <select id="reg-tipo">
-                        <option value="Agente">Agente</option>
-                        <option value="Produtor">Produtor</option>
-                        <option value="Artista">Artista</option>
-                        <option value="Editora">Editora</option>
-                    </select>
-                    <select id="reg-pais">
-                        <option value="">País</option>
-                    </select>
-                </div>
-                <div class="password-container">
-                    <input type="password" id="reg-pass" placeholder="Palavra-passe (mín. 6 caracteres)" autocomplete="new-password">
-                    <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                <div class="password-container">
-                    <input type="password" id="reg-pass-confirm" placeholder="Confirmar Palavra-passe" autocomplete="new-password">
-                    <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass-confirm')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
+                <input type="text" id="reg-nome" placeholder="Nome Completo">
+                <input type="email" id="reg-email" placeholder="E-mail">
+                <select id="reg-tipo"><option value="Artista">Artista</option><option value="Produtor">Produtor</option><option value="Agente">Agente</option></select>
+                <input type="password" id="reg-pass" placeholder="Palavra-passe (mín. 6 caracteres)">
                 <button class="btn" onclick="handleRegister()">Criar Conta <i class="fas fa-user-plus"></i></button>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(false)">Entrar Aqui</span></p>
+                <p style="text-align: center; margin-top: 15px;">Já tem conta? <span style="color: var(--gold); cursor: pointer;" onclick="toggleAuth(false)">Entrar</span></p>
+            </div>
+            <div class="card" id="recovery-form" style="display: none;">
+                <h3><i class="fas fa-key"></i> Recuperar Senha</h3>
+                <input type="email" id="recovery-email" placeholder="E-mail registado">
+                <button class="btn" onclick="handlePasswordRecovery()">Enviar Link</button>
+                <p style="text-align: center; margin-top: 15px;"><span style="color: var(--gold); cursor: pointer;" onclick="hidePasswordRecovery()">Voltar</span></p>
             </div>
         </div>
     </div>
@@ -317,529 +186,87 @@
     <!-- MAIN APP -->
     <div id="main-app" style="display: none; flex: 1;">
         <div class="container">
-            <!-- HOME -->
             <div id="home" class="section active">
-                <div class="card">
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <img id="home-user-photo" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold);" alt="Foto de Perfil">
-                        <div>
-                            <h2 style="font-size: 1.2rem;">Olá, <span id="user-display-name">...</span>!</h2>
-                            <p style="color: var(--gray); font-size: 0.85rem;"><span id="user-display-type">...</span> | <span id="user-display-country">...</span></p>
-                            <div style="margin-top: 8px;">
-                                <span class="status-pill status-active" id="user-display-plan">PLANO FREE</span>
-                                <span id="admin-pro-max-indicator" style="display: none;" class="admin-pro-max-badge">ADMIN PRO MAX</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-grid">
-                    <div class="stat-box">
-                        <p>Saldo Atual</p>
-                        <h4 id="stat-saldo">0 Kz</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Artistas</p>
-                        <h4 id="stat-artistas-count">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Lançamentos</p>
-                        <h4 id="stat-musicas-count">0</h4>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-star"></i> Destaques - Top 5 Músicas Mais Ouvidas</h3>
-                    <div id="destaques-container" class="grid">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-compact-disc"></i> Feed - Todas as Músicas Lançadas</h3>
-                    <div id="feed-container" class="grid">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-bullhorn"></i> Novidades</h3>
-                    <p style="font-size: 0.9rem; color: var(--gray); line-height: 1.6;">
-                        Bem-vindo à nova era da MAM Distribuidora. Agora com pagamentos automáticos e gestão em tempo real. 
-                        Lançamos a sua música em mais de 150 plataformas digitais incluindo Spotify, Apple Music e Deezer.
-                    </p>
-                </div>
+                <div class="card"><h3><i class="fas fa-chart-line"></i> Dashboard</h3><div id="user-welcome"></div></div>
+                <div class="stat-grid"><div class="stat-box"><p>Saldo</p><h4 id="stat-saldo">0 Kz</h4></div><div class="stat-box"><p>Artistas</p><h4 id="stat-artistas-count">0</h4></div><div class="stat-box"><p>Músicas</p><h4 id="stat-musicas-count">0</h4></div></div>
+                <div class="card"><h3><i class="fas fa-star"></i> Destaques</h3><div id="destaques-container" class="grid-cards"></div></div>
             </div>
 
-            <!-- ARTISTAS -->
             <div id="artistas" class="section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="color: var(--gold);">Meus Artistas</h2>
-                    <button class="btn btn-small" onclick="openModal('modal-artista')"><i class="fas fa-plus"></i> Novo Artista</button>
-                </div>
-                <div id="lista-artistas" class="grid">
-                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><h2 style="color: var(--gold);">Meus Artistas</h2><button class="btn btn-small" onclick="openArtistModal()"><i class="fas fa-plus"></i> Novo Artista</button></div>
+                <div id="lista-artistas" class="grid-cards"></div>
             </div>
 
-            <!-- LANÇAR -->
             <div id="lancar" class="section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="color: var(--gold);">Gerenciar Lançamentos</h2>
+                <div class="card"><h3><i class="fas fa-rocket"></i> Novo Lançamento</h3>
+                    <input type="text" id="music-titulo" placeholder="Título da Música">
+                    <select id="music-artista-select"><option value="">Selecione um artista</option></select>
+                    <select id="music-genero"><option value="Pop">Pop</option><option value="Afro House">Afro House</option><option value="Kizomba">Kizomba</option><option value="Hip Hop">Hip Hop</option></select>
+                    <input type="text" id="music-isrc" placeholder="ISRC">
+                    <input type="text" id="music-upc" placeholder="UPC">
+                    <input type="file" id="music-capa" accept="image/*">
+                    <input type="file" id="music-audio" accept="audio/wav,audio/mpeg">
+                    <input type="date" id="music-data">
+                    <button class="btn" onclick="guardarRascunho()"><i class="fas fa-save"></i> Guardar Rascunho</button>
+                    <button class="btn" onclick="enviarLancamento()"><i class="fas fa-paper-plane"></i> Enviar para Revisão</button>
                 </div>
-                <div id="lista-lancamentos" class="grid" style="margin-bottom: 30px;">
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-rocket"></i> Novo Lançamento</h3>
-                    
-                    <label style="font-weight: bold; color: var(--gold); margin-bottom: 15px; display: block;">Tipo de Lançamento</label>
-                    <div style="display: flex; gap: 30px; margin-bottom: 25px; padding: 15px; background: #111; border-radius: 8px; border: 1px solid #333;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="tipo-solo" name="tipo-lancamento" value="Solo" style="width: 20px; height: 20px; cursor: pointer;" onchange="handleTipoLancamento('solo')">
-                            <label for="tipo-solo" style="margin: 0; cursor: pointer; color: var(--text);">Solo</label>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="tipo-album" name="tipo-lancamento" value="Album" style="width: 20px; height: 20px; cursor: pointer;" onchange="handleTipoLancamento('album')">
-                            <label for="tipo-album" style="margin: 0; cursor: pointer; color: var(--text);">Album</label>
-                        </div>
-                    </div>
-                    
-                    <div class="grid">
-                        <div>
-                            <label>Título da Música/Álbum</label>
-                            <input type="text" id="music-titulo" placeholder="Ex: O Meu Sucesso">
-                            
-                            <label>Artista Principal</label>
-                            <select id="music-artista-select">
-                                <option value="">Selecione um artista...</option>
-                            </select>
-                            
-                            <label>Estilo Musical</label>
-                            <select id="music-estilo">
-                                <option value="">Selecione o estilo...</option>
-                            </select>
-
-                            <label>Colaboradores (separados por vírgula)</label>
-                            <input type="text" id="music-colaboradores" placeholder="Ex: Artista 1, Artista 2, Artista 3">
-
-                            <label>Produtores/Produtora</label>
-                            <input type="text" id="music-produtores" placeholder="Ex: Produtor 1, Produtor 2">
-
-                            <label>ISRC <button type="button" class="btn btn-small btn-sec" style="display: inline-flex; width: auto; padding: 4px 8px; margin-left: 10px;" onclick="generateISRC()">Gerar ISRC</button></label>
-                            <input type="text" id="music-isrc" placeholder="Ex: USRC17607839" maxlength="12">
-
-                            <label>UPC <button type="button" class="btn btn-small btn-sec" style="display: inline-flex; width: auto; padding: 4px 8px; margin-left: 10px;" onclick="generateUPC()">Gerar UPC</button></label>
-                            <input type="text" id="music-upc" placeholder="Ex: 5901234123457" maxlength="13">
-                        </div>
-                        <div>
-                            <label>Gênero Musical</label>
-                            <select id="music-genero">
-                                <option value="">Selecione o gênero...</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="Eletrônico">Eletrônico</option>
-                                <option value="Afro House">Afro House</option>
-                                <option value="Kizomba">Kizomba</option>
-                                <option value="Gospel">Gospel</option>
-                            </select>
-
-                            <label>Capa do Lançamento (3000x3000px - PNG/JPG)</label>
-                            <input type="file" id="music-capa" accept="image/*">
-                            <small style="color: var(--gray);">Dimensão obrigatória: 3000x3000 pixels</small>
-                            
-                            <label>Ficheiro de Áudio (WAV)</label>
-                            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                                <input type="file" id="music-audio" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3" style="flex: 1; margin-bottom: 0;">
-                                <button type="button" class="btn btn-small btn-sec" style="width: auto; padding: 10px 15px;" onclick="adicionarAudio()" title="Adicionar mais áudios para álbum"><i class="fas fa-plus"></i></button>
-                            </div>
-                            <div id="audios-adicionais-container"></div>
-                            <small style="color: var(--gray);">Formato obrigatório: WAV</small>
-                            
-                            <label>Data de Lançamento</label>
-                            <input type="date" id="music-data">
-                        </div>
-                    </div>
-                    <button class="btn" onclick="enviarLancamento()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
-                </div>
+                <div class="card"><h3><i class="fas fa-history"></i> Meus Lançamentos</h3><div id="lista-lancamentos" class="grid-cards"></div></div>
             </div>
 
-            <!-- MINHAS MÚSICAS -->
-            <div id="minhas-musicas" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fas fa-music"></i> Minhas Músicas</h2>
-                <div id="minhas-musicas-container" class="grid" style="margin-bottom: 30px;">
-                </div>
-            </div>
+            <div id="minhas-musicas" class="section"><h2 style="color: var(--gold);">Minhas Músicas</h2><div id="minhas-musicas-container" class="grid-cards"></div></div>
 
-            <!-- PLANOS -->
             <div id="planos" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;">Escolha o Seu Plano</h2>
-                <div class="plans-grid" id="plans-container">
-                    <div class="plan-card">
-                        <div class="plan-name">Plano Free</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">Gratuito</p>
-                        <div class="plan-price">Grátis</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 1 Artista</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Acesso Básico</li>
-                        </ul>
-                        <button class="btn btn-sec" id="plan-free-btn" onclick="alert('Você já está no Plano Free')">Seu Plano Atual</button>
-                    </div>
-
-                    <div class="plan-card">
-                        <div class="plan-name">Plano Básico</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">10.000 Kz/mês</p>
-                        <div class="plan-price">10.000 Kz</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 10 Artistas</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte Prioritário</li>
-                        </ul>
-                        <button class="btn" id="plan-basico-btn" onclick="openPlanPayment('BÁSICO', 10000)">Comprar Agora</button>
-                    </div>
-
-                    <div class="plan-card">
-                        <div class="plan-name">Plano Médio</div>
-                        <p style="color: var(--gray); font-size: 0.9rem;">20.000 Kz/mês</p>
-                        <div class="plan-price">20.000 Kz</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 30 Artistas</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--success);"></i> Análise Avançada</li>
-                        </ul>
-                        <button class="btn" id="plan-medio-btn" onclick="openPlanPayment('MÉDIO', 20000)">Comprar Agora</button>
-                    </div>
-
-                    <div class="plan-card featured">
-                        <div class="plan-name">Plano Pro MAX</div>
-                        <p style="color: var(--gold); font-size: 0.9rem;">50.000 Kz/mês</p>
-                        <div class="plan-price">50.000 Kz</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Artistas Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos Ilimitados</li>
-                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte 24/7 VIP</li>
-                        </ul>
-                        <button class="btn" id="plan-promax-btn" onclick="openPlanPayment('PRO', 50000)">Comprar Agora</button>
-                    </div>
-                </div>
+                <h2 style="color: var(--gold);">Escolha o Seu Plano</h2>
+                <div class="plans-grid" id="plans-container"></div>
             </div>
 
-            <!-- CARTEIRA -->
             <div id="carteira" class="section">
-                <div class="stat-box" style="margin-bottom: 20px; padding: 40px;">
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <label style="color: var(--gold); font-size: 0.85rem;">Moeda:</label>
-                        <select id="currency-selector" onchange="changeCurrency(this.value)" style="width: auto; padding: 8px 15px; margin-bottom: 0; font-size: 0.85rem; min-width: 200px;">
-                            <option value="AOA">🇦🇴 AOA - Kwanza Angolano</option>
-                            <option value="USD">🇺🇸 USD - Dólar Americano</option>
-                            <option value="EUR">🇪🇺 EUR - Euro</option>
-                        </select>
-                    </div>
-                    <p>Saldo Disponível para Saque</p>
-                    <h4 style="font-size: 3rem;" id="wallet-saldo">0 Kz</h4>
-                    <p id="wallet-saldo-converted" style="color: var(--gray); font-size: 1rem; margin-top: 5px;"></p>
-                    <button class="btn btn-small" style="margin: 20px auto 0;" onclick="openModal('modal-saque')">Solicitar Levantamento</button>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-history"></i> Histórico de Ganhos (Valores Reais)</h3>
-                    <p style="color: var(--gray); font-size: 0.75rem; margin-bottom: 15px;"><i class="fas fa-info-circle"></i> Todos os valores apresentados são reais e provêm das plataformas de streaming.</p>
-                    <div id="historico-ganhos">
-                    </div>
-                </div>
+                <div class="stat-box"><p>Saldo Disponível</p><h4 id="wallet-saldo">0 Kz</h4><button class="btn btn-small" onclick="openModal('modal-saque')">Solicitar Levantamento</button></div>
+                <div class="card"><h3>Histórico de Royalties</h3><div id="historico-ganhos"></div></div>
             </div>
 
-            <!-- PERFIL -->
             <div id="perfil" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-user-edit"></i> Editar Perfil</h3>
-                    <div class="profile-upload">
-                        <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img" alt="Foto de Perfil">
-                        <label for="perfil-foto-input" class="upload-overlay">
-                            <i class="fas fa-camera"></i>
-                        </label>
-                        <input type="file" id="perfil-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'perfil-foto-preview')">
-                    </div>
-                    
-                    <div class="grid">
-                        <div>
-                            <label>Nome Completo</label>
-                            <input type="text" id="perfil-nome">
-                            <label>E-mail (Não alterável)</label>
-                            <input type="email" id="perfil-email" disabled>
-                        </div>
-                        <div>
-                            <label>Telefone / WhatsApp</label>
-                            <input type="text" id="perfil-telefone" placeholder="+244 ...">
-                            <label>País</label>
-                            <select id="perfil-pais"></select>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="handleUpdateProfile()">Salvar Alterações em Tempo Real <i class="fas fa-save"></i></button>
+                <div class="card"><h3>Editar Perfil</h3>
+                    <div class="profile-upload"><img id="perfil-foto-preview" class="profile-img"><label for="perfil-foto-input" class="upload-overlay"><i class="fas fa-camera"></i></label><input type="file" id="perfil-foto-input" style="display: none;" accept="image/*"></div>
+                    <input type="text" id="perfil-nome" placeholder="Nome">
+                    <input type="text" id="perfil-telefone" placeholder="Telefone">
+                    <button class="btn" onclick="handleUpdateProfile()">Salvar Alterações</button>
                 </div>
             </div>
 
-            <!-- ADMIN PRO MAX -->
             <div id="admin" class="section">
-                <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fas fa-shield-alt"></i> Painel Administrativo PRO MAX <span class="admin-pro-max-badge">CONTROLE TOTAL</span></h2>
-                
-                <div class="stat-grid">
-                    <div class="stat-box">
-                        <p>Total Utilizadores</p>
-                        <h4 id="admin-total-users">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Total Artistas</p>
-                        <h4 id="admin-total-artists">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Músicas em Revisão</p>
-                        <h4 id="admin-pending-music">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Ganhos MAM</p>
-                        <h4 id="admin-total-earnings">0 Kz</h4>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-users-cog"></i> Gestão de Utilizadores e Planos</h3>
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="admin-user-search" placeholder="Pesquisar por e-mail ou nome..." style="margin-bottom: 0;">
-                        <button class="btn btn-small" onclick="searchUsers()"><i class="fas fa-search"></i></button>
-                    </div>
-                    <div id="admin-users-list" class="item-list">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-tasks"></i> Revisão de Lançamentos</h3>
-                    <div id="admin-music-review" class="grid">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-shield-alt"></i> Segurança do Sistema</h3>
-                    <div class="stat-grid">
-                        <div class="stat-box">
-                            <p>Tentativas de Login</p>
-                            <h4 id="security-login-attempts">0</h4>
-                        </div>
-                        <div class="stat-box">
-                            <p>IPs Bloqueados</p>
-                            <h4 id="security-blocked-ips">0</h4>
-                        </div>
-                        <div class="stat-box">
-                            <p>Sessões Ativas</p>
-                            <h4 id="security-active-sessions">0</h4>
-                        </div>
-                    </div>
-                    <button class="btn btn-sec" onclick="viewSecurityLogs()"><i class="fas fa-file-alt"></i> Ver Logs de Segurança</button>
-                    <p style="color: var(--gray); font-size: 0.75rem; margin-top: 10px;"><i class="fas fa-info-circle"></i> Para eliminar contas, utilize a pesquisa acima e elimine uma a uma para maior segurança.</p>
-                </div>
-
-                <div class="card" style="border-left-color: #ff6b35;">
-                    <h3><i class="fas fa-crown"></i> Informações do Administrador</h3>
-                    <div style="background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--gold);">
-                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">Email Admin:</strong> mamfilhos29@gmail.com</p>
-                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">Email Suporte:</strong> mamfilhos29@gmail.com</p>
-                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">WhatsApp:</strong> +244 937 881 307</p>
-                        <p><strong style="color: var(--gold);">Status:</strong> <span class="admin-pro-max-badge">ADMIN PRO MAX - CONTROLE TOTAL DO IMPÉRIO</span></p>
-                    </div>
-                </div>
+                <h2 style="color: var(--gold);">Painel Administrativo</h2>
+                <div class="stat-grid"><div class="stat-box"><p>Total Utilizadores</p><h4 id="admin-total-users">0</h4></div><div class="stat-box"><p>Músicas Pendentes</p><h4 id="admin-pending-music">0</h4></div></div>
+                <div class="card"><h3>Revisão de Lançamentos</h3><div id="admin-music-review" class="grid-cards"></div></div>
+                <div class="card"><h3>Gestão de Utilizadores</h3><div id="admin-users-list"></div></div>
             </div>
         </div>
-    </div>
-
-    <!-- MODAL TERMOS DE USO -->
-    <div id="modal-termos" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
-        <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-termos')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Termos de Uso</h2>
-            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text);">
-                <p><strong>Última atualização:</strong> 18 de Março de 2026</p>
-                <h3 style="color: var(--gold); margin-top: 20px;">1. Aceitação dos Termos</h3>
-                <p>Ao criar uma conta, carregar conteúdo ou utilizar qualquer funcionalidade da plataforma MAM Distribuidora, o utilizador reconhece que leu, compreendeu e aceitou estes Termos de Uso, bem como a nossa Política de Privacidade.</p>
-                <h3 style="color: var(--gold); margin-top: 20px;">2. Contacto</h3>
-                <p><strong>E-mail Suporte:</strong> mamfilhos29@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL POLÍTICA DE PRIVACIDADE -->
-    <div id="modal-privacidade" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
-        <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-privacidade')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Política de Privacidade</h2>
-            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text);">
-                <p><strong>Última atualização:</strong> 18 de Março de 2026</p>
-                <h3 style="color: var(--gold); margin-top: 20px;">1. Contacto</h3>
-                <p><strong>E-mail de Suporte:</strong> mamfilhos29@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- MODAL SUPORTE -->
-    <div id="modal-suporte" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
-        <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-suporte')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Suporte da MAM Distribuidora</h2>
-            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text);">
-                <h3 style="color: var(--gold); margin-top: 20px;">Contacte-nos</h3>
-                <p><strong>E-mail de Suporte:</strong> mamfilhos29@gmail.com</p>
-                <p><strong>Telefone/WhatsApp:</strong> +244 937 881 307</p>
-                <h3 style="color: var(--gold); margin-top: 20px;">Horário de Atendimento</h3>
-                <p>Segunda a Sexta-feira, das 9h00 às 18h00 (GMT+1)</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- CEO HONOR BOARD -->
-    <div class="ceo-honor-board">
-        <div class="ceo-content">
-            <div class="ceo-title">
-                <i class="fas fa-crown"></i> Fundador & C.E.O <i class="fas fa-crown"></i>
-            </div>
-            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663449848063/svnyMcLnPxuUgKTg.webp" alt="Matias Arsénio Manuel" class="ceo-photo">
-            <div class="ceo-name">Matias Arsénio Manuel</div>
-            <div class="ceo-alias">Play Sean</div>
-            <div class="ceo-info">
-                <p><strong>Nacionalidade:</strong> Angolano 🇦🇴</p>
-                <p><strong>Nascimento:</strong> 20 de Maio de 1995 em Luanda</p>
-                <p><strong>Cargo:</strong> Fundador e C.E.O da MAM Distribuidora</p>
-            </div>
-            <div class="ceo-socials-title">Redes Sociais Oficiais</div>
-            <div class="ceo-socials">
-                <a href="https://www.facebook.com/profile.php?id=100081814587133" target="_blank" class="social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.tiktok.com/@playseanarsenio" target="_blank" class="social-btn" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                <a href="https://youtube.com/@playseanarsenio?si=FNKTJ_oTU9pT2IuO" target="_blank" class="social-btn" title="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://www.instagram.com/playseanarsenio/" target="_blank" class="social-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://open.spotify.com/artist/5LBC3mNKxLGTMB9n05zdaT?si=fKs2h2EqSvq-697eJqvAnw" target="_blank" class="social-btn" title="Spotify"><i class="fab fa-spotify"></i></a>
-                <a href="https://music.apple.com/ru/artist/play-sean-ars%C3%A9nio/1782531595" target="_blank" class="social-btn" title="Apple Music"><i class="fab fa-apple"></i></a>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER GLOBAL -->
-    <footer id="global-footer">
-        <div class="footer-links">
-            <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
-            <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
-            <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
-        </div>
-        <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
-        <p class="footer-founder">Fundador: Matias Arsénio Manuel</p>
-        <p style="color: var(--gray); font-size: 0.75rem; margin-top: 8px;"><i class="fas fa-envelope" style="color: var(--gold);"></i> Suporte: mamfilhos29@gmail.com | <i class="fab fa-whatsapp" style="color: var(--gold);"></i> +244 937 881 307</p>
-        <p class="footer-security"><i class="fas fa-shield-alt"></i> Protegido por criptografia de ponta-a-ponta | Sistema Anti-Invasão Ativo</p>
-    </footer>
-
-    <!-- Security Badge -->
-    <div class="security-badge" id="security-badge">
-        <i class="fas fa-lock"></i> Conexão Segura
     </div>
 
     <!-- MODALS -->
-    <div id="modal-artista" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-artista')">&times;</span>
-            <h3 id="modal-artista-title">Novo Artista</h3>
-            <div class="profile-upload">
-                <img id="artista-foto-preview" src="https://via.placeholder.com/120" class="profile-img" alt="Foto do Artista">
-                <label for="artista-foto-input" class="upload-overlay">
-                    <i class="fas fa-camera"></i>
-                </label>
-                <input type="file" id="artista-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'artista-foto-preview')">
-            </div>
-            <input type="hidden" id="edit-artista-id">
-            <label>Nome do Artista</label>
-            <input type="text" id="artista-nome" placeholder="Nome artístico">
-            <label>Estilo Principal</label>
-            <select id="artista-estilo"></select>
-            
-            <label>Links de Redes Sociais</label>
-            <input type="url" id="artista-youtube" placeholder="Link YouTube">
-            <input type="url" id="artista-facebook" placeholder="Link Facebook">
-            <input type="url" id="artista-tiktok" placeholder="Link TikTok">
-            <input type="url" id="artista-spotify" placeholder="Link Spotify">
-            <input type="url" id="artista-apple" placeholder="Link Apple Music">
-            <input type="url" id="artista-instagram" placeholder="Link Instagram">
-            
-            <button class="btn" id="btn-save-artista" onclick="handleSaveArtist()">Salvar Artista</button>
+    <div id="modal-artista" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="card" style="max-width: 500px; width: 100%;">
+            <span style="float: right; cursor: pointer; font-size: 1.5rem;" onclick="closeModal('modal-artista')">&times;</span>
+            <h3>Novo Artista</h3>
+            <div class="profile-upload"><img id="artista-foto-preview" class="profile-img"><label for="artista-foto-input" class="upload-overlay"><i class="fas fa-camera"></i></label><input type="file" id="artista-foto-input" style="display: none;" accept="image/*"></div>
+            <input type="text" id="artista-nome" placeholder="Nome do Artista">
+            <select id="artista-estilo"><option value="Afro House">Afro House</option><option value="Kizomba">Kizomba</option></select>
+            <button class="btn" onclick="handleSaveArtist()">Salvar Artista</button>
         </div>
     </div>
 
-    <!-- MODAL SAQUE -->
-    <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-saque')">&times;</span>
+    <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="card" style="max-width: 500px;"><span style="float: right; cursor: pointer;" onclick="closeModal('modal-saque')">&times;</span>
             <h3>Solicitar Levantamento</h3>
-            <label>Valor (Kz) - Mínimo 5.000</label>
-            <input type="number" id="saque-valor" min="5000" placeholder="5000">
-            <label>Selecione o Método de Levantamento</label>
-            <select id="saque-metodo">
-                <option value="">Selecione o método...</option>
-                <option value="BFA">Banco BFA (Angola)</option>
-                <option value="BAI">Banco BAI (Angola)</option>
-                <option value="BIC">Banco BIC (Angola)</option>
-                <option value="Multicaixa">Multicaixa Express (Angola)</option>
-                <option value="Visa">Visa</option>
-                <option value="PayPal">PayPal</option>
-                <option value="Pix">Pix (Brasil)</option>
-            </select>
-            <label>Dados do Pagamento (IBAN / Número / Email)</label>
-            <input type="text" id="saque-dados" placeholder="Insira os dados aqui">
-            <button class="btn" onclick="handleRequestWithdraw()">Confirmar Saque</button>
+            <p id="saque-min-info" style="color: var(--gray); margin-bottom: 10px;">Valor mínimo: 10.000 Kz</p>
+            <input type="number" id="saque-valor" placeholder="Valor">
+            <button class="btn" onclick="handleRequestWithdraw()">Confirmar</button>
         </div>
     </div>
 
-    <!-- MODAL PAGAMENTO PLANO -->
-    <div id="modal-plan-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-plan-payment')">&times;</span>
-            <h3>Comprar Plano <span id="plan-name-display">...</span></h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Valor: <b id="plan-price-display">0</b> Kz</p>
-            <p style="color: var(--gray); margin-bottom: 20px;">Escolha o método de pagamento:</p>
-            <button class="btn" onclick="selectPaymentMethod('mam')"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
-            <button class="btn btn-sec" style="margin-top: 10px;" onclick="selectPaymentMethod('banco')"><i class="fas fa-university"></i> Transferência Bancária</button>
-        </div>
-    </div>
-
-    <!-- MODAL PAGAMENTO CARTEIRA MAM -->
-    <div id="modal-pagamento-mam" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-mam')">&times;</span>
-            <h3>Confirmar Pagamento</h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name">...</b></p>
-            <p style="color: var(--gold); font-size: 1.5rem; margin-bottom: 20px;">Valor: <b id="pay-amount">0</b> Kz</p>
-            <p style="color: var(--gray); margin-bottom: 20px;">O pagamento será processado automaticamente da sua carteira MAM para a carteira do administrador.</p>
-            <button class="btn" onclick="processPlanPaymentMAM()">Confirmar Pagamento</button>
-        </div>
-    </div>
-
-    <!-- MODAL TRANSFERÊNCIA BANCÁRIA -->
-    <div id="modal-pagamento-banco" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
-        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
-            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-banco')">&times;</span>
-            <h3>Informações Bancárias</h3>
-            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name-banco">...</b> - Valor: <b id="pay-amount-banco">0</b> Kz</p>
-            
-            <div style="background: #111; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333;">
-                <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">Dados para Transferência:</p>
-                <p><b>Titular:</b> Matias Arsénio Manuel</p>
-                <p><b>Conta BFA:</b> 0006 0000 86316866301 52</p>
-                <p><b>IBAN:</b> 0006 0000 86316866301 52</p>
-                <p><b>VISA:</b> 4937242025023852</p>
-                <p><b>Multicaixa Express:</b> 937881307</p>
-            </div>
-
-            <label>Após realizar a transferência, clique no botão abaixo para enviar o comprovativo:</label>
-            <button class="btn" onclick="sendProofWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo via WhatsApp</button>
-        </div>
-    </div>
+    <footer><p>&copy; 2026 MAM Distribuidora | Suporte: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307</p></footer>
 
 <script>
-    // ========== FIREBASE CONFIGURATION ==========
     const firebaseConfig = {
         apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
         authDomain: "mam-distribuidora-6043f.firebaseapp.com",
@@ -853,981 +280,411 @@
     const db = firebase.firestore();
     const cloudName = 'dbjhwnhoq';
     const uploadPreset = 'mam_distribuidora';
+    const ADMIN_EMAIL = "mamfilhos29@gmail.com";
+
+    // EmailJS Configuration
+    emailjs.init("ZIn-7UvE8Z0O6P-e5");
+
+    let currentUser = null;
+    let userData = null;
+
+    // Royalty percentages by plan
+    const ROYALTY_PERCENTAGES = {
+        "FREE": 70,
+        "BÁSICO": 80,
+        "MÉDIO": 85,
+        "PRO": 90,
+        "VIP": 100,
+        "ADMIN PRO MAX": 100
+    };
+
+    // Minimum withdrawal by plan
+    const MIN_WITHDRAWAL = {
+        "FREE": 10000,
+        "BÁSICO": 10000,
+        "MÉDIO": 10000,
+        "PRO": 5000,
+        "VIP": 5000,
+        "ADMIN PRO MAX": 5000
+    };
+
+    function showLoading(show, text = "Processando...") { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     async function uploadFile(file, type) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', uploadPreset);
-        const resourceType = type === 'audio' ? 'auto' : 'image';
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
-            method: 'POST',
-            body: formData
-        });
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${type === 'audio' ? 'auto' : 'image'}/upload`, { method: 'POST', body: formData });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error.message);
+        if (!res.ok) throw new Error(data.error?.message || 'Upload falhou');
         return data.secure_url;
     }
 
-    // ========== ADMIN CONFIG ==========
-    const ADMIN_CONFIG = {
-        ADMIN_EMAIL: "mamfilhos29@gmail.com",
-        ADMIN_PASSWORD_HASH: "Angell28",
-        ADMIN_WHATSAPP: "937881307",
-        ADMIN_NAME: "Matias Arsénio Manuel",
-        ADMIN_ARTIST_NAME: "Play Sean Arsénio",
-        SUPPORT_EMAIL: "mamfilhos29@gmail.com"
-    };
+    function getErrorMessage(error) {
+        if (error.code === 'auth/wrong-password') return 'Senha incorreta. Tente novamente.';
+        if (error.code === 'auth/user-not-found') return 'Conta não encontrada. Verifique o e-mail.';
+        if (error.code === 'auth/email-already-in-use') return 'E-mail já em uso. Faça login ou recupere a senha.';
+        if (error.code === 'auth/weak-password') return 'A senha deve ter pelo menos 6 caracteres.';
+        return 'Erro: ' + (error.message || 'Tente novamente mais tarde.');
+    }
 
-    let currentUser = null;
-    let userData = null;
-
-    const PAISES = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau", "Timor-Leste", "Outro"];
-    const ESTILOS = ["Kizomba", "Semba", "Kuduro", "Afro House", "Hip Hop", "Rap", "R&B", "Pop", "Rock", "Jazz", "Gospel"];
-
-    let currentPlanPayment = { plan: '', amount: 0, method: '' };
-    let audioCount = 0;
-    let tipoLancamentoSelecionado = '';
-
-    // ========== INITIALIZATION ==========
-    window.onload = () => {
-        populateSelects();
-        checkAuthState();
-        setTimeout(() => { initializeAdminProfile(); }, 1000);
-        carregarRascunho();
-    };
-
-    async function initializeAdminProfile() {
+    async function handleLogin() {
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-pass').value;
+        if (!email || !pass) return alert("Preencha todos os campos!");
+        showLoading(true);
         try {
-            const adminDoc = await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).get();
-            if (!adminDoc.exists) {
-                await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).set({
-                    nome: ADMIN_CONFIG.ADMIN_NAME,
-                    email: ADMIN_CONFIG.ADMIN_EMAIL,
-                    tipo: "Administrador",
-                    pais: "Angola",
-                    plano: "ADMIN PRO MAX",
-                    saldo: 0,
-                    isAdmin: true,
-                    isAdminProMax: true,
-                    foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
-                    telefone: ADMIN_CONFIG.ADMIN_WHATSAPP,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+            const result = await auth.signInWithEmailAndPassword(email, pass);
+            if (result.user.email !== ADMIN_EMAIL && !result.user.emailVerified) {
+                await auth.signOut();
+                showLoading(false);
+                document.getElementById('email-verify-warning').style.display = 'block';
+                return;
             }
-        } catch (error) { console.error("Erro ao inicializar admin:", error); }
+            document.getElementById('email-verify-warning').style.display = 'none';
+        } catch (error) { alert(getErrorMessage(error)); showLoading(false); }
     }
 
-    function handleTipoLancamento(tipo) {
-        const soloCheckbox = document.getElementById('tipo-solo');
-        const albumCheckbox = document.getElementById('tipo-album');
-        if (tipo === 'solo') { albumCheckbox.checked = false; tipoLancamentoSelecionado = soloCheckbox.checked ? 'Solo' : ''; }
-        else if (tipo === 'album') { soloCheckbox.checked = false; tipoLancamentoSelecionado = albumCheckbox.checked ? 'Album' : ''; }
-    }
-
-    function adicionarAudio() {
-        audioCount++;
-        const container = document.getElementById('audios-adicionais-container');
-        const audioDiv = document.createElement('div');
-        audioDiv.id = `audio-adicional-${audioCount}`;
-        audioDiv.style.cssText = 'display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; padding: 10px; border: 1px solid #333; border-radius: 8px;';
-        audioDiv.innerHTML = `
-            <input type="text" class="audio-titulo-adicional" placeholder="Título da Faixa (Obrigatório)" required style="margin-bottom: 5px;">
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="file" class="audio-adicional" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3" style="flex: 1; margin-bottom: 0;" required>
-                <button type="button" class="btn btn-small btn-danger" style="width: auto; padding: 10px 15px;" onclick="removerAudio(${audioCount})" title="Remover este áudio"><i class="fas fa-trash"></i></button>
-            </div>
-        `;
-        container.appendChild(audioDiv);
-    }
-
-    function removerAudio(id) {
-        const audioDiv = document.getElementById(`audio-adicional-${id}`);
-        if (audioDiv) audioDiv.remove();
-    }
-
-    function togglePasswordVisibility(inputId) {
-        const input = document.getElementById(inputId);
-        const button = event.target.closest('button');
-        const icon = button.querySelector('i');
-        if (input.type === 'password') { input.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
-        else { input.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
-    }
-
-    function generateISRC() {
-        const country = "AO";
-        const registrant = "MAM";
-        const year = new Date().getFullYear().toString().slice(-2);
-        const random = Math.floor(10000 + Math.random() * 90000);
-        document.getElementById('music-isrc').value = `${country}${registrant}${year}${random}`;
-    }
-
-    function generateUPC() {
-        let upc = "0";
-        for (let i = 0; i < 11; i++) upc += Math.floor(Math.random() * 10);
-        let sum = 0;
-        for (let i = 0; i < 12; i++) sum += parseInt(upc[i]) * (i % 2 === 0 ? 3 : 1);
-        const checkDigit = (10 - (sum % 10)) % 10;
-        document.getElementById('music-upc').value = upc + checkDigit;
-    }
-
-    function populateSelects() {
-        const paisSelects = [document.getElementById('reg-pais'), document.getElementById('perfil-pais')];
-        const estiloSelects = [document.getElementById('music-estilo'), document.getElementById('artista-estilo')];
-        PAISES.forEach(p => { paisSelects.forEach(s => { if (s) s.innerHTML += `<option value="${p}">${p}</option>`; }); });
-        ESTILOS.forEach(e => { estiloSelects.forEach(s => { if (s) s.innerHTML += `<option value="${e}">${e}</option>`; }); });
-    }
-
-    function checkAuthState() {
-        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    currentUser = user;
-                    await loadUserData();
-                    showApp();
-                } else { showAuth(); }
+    async function handleRegister() {
+        const nome = document.getElementById('reg-nome').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const tipo = document.getElementById('reg-tipo').value;
+        const pass = document.getElementById('reg-pass').value;
+        if (!nome || !email || !pass) return alert("Preencha todos os campos!");
+        if (pass.length < 6) return alert("Senha deve ter no mínimo 6 caracteres!");
+        showLoading(true);
+        try {
+            const result = await auth.createUserWithEmailAndPassword(email, pass);
+            await result.user.sendEmailVerification();
+            await db.collection('users').doc(email).set({ 
+                nome, email, tipo, pais: "Angola", plano: "FREE", saldo: 0, 
+                isAdmin: email === ADMIN_EMAIL, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
             });
-        });
+            alert("Conta criada! Verifique seu e-mail para confirmar o cadastro.");
+            showLoading(false);
+            toggleAuth(false);
+        } catch (error) { alert(getErrorMessage(error)); showLoading(false); }
     }
 
-    async function loadUserData() {
-        const doc = await db.collection('users').doc(currentUser.email).get();
-        if (doc.exists) {
-            userData = doc.data();
-            updateUI();
-            if (userData.isAdmin) { document.getElementById('btn-admin-global').style.display = 'block'; document.getElementById('admin-pro-max-indicator').style.display = 'inline-block'; loadAdminData(); }
-        } else {
-            const newUser = { nome: currentUser.displayName || "Novo Utilizador", email: currentUser.email, tipo: "Artista", pais: "Angola", plano: "FREE", saldo: 0, isAdmin: currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
-            await db.collection('users').doc(currentUser.email).set(newUser);
-            userData = newUser;
-            updateUI();
-        }
-    }
-
-    function updateUI() {
-        document.getElementById('user-display-name').innerText = userData.nome;
-        document.getElementById('user-display-type').innerText = userData.tipo;
-        document.getElementById('user-display-country').innerText = userData.pais;
-        const planDisplay = userData.plano === 'ADMIN PRO MAX' ? 'ADMIN PRO MAX' : userData.plano;
-        document.getElementById('user-display-plan').innerText = `PLANO ${planDisplay}`;
-        const saldoReal = userData.saldo || 0;
-        document.getElementById('stat-saldo').innerText = `${saldoReal.toLocaleString()} Kz`;
-        document.getElementById('wallet-saldo').innerText = `${saldoReal.toLocaleString()} Kz`;
-        document.getElementById('home-user-photo').src = userData.foto || 'https://via.placeholder.com/80';
-        document.getElementById('perfil-nome').value = userData.nome;
-        document.getElementById('perfil-email').value = userData.email;
-        document.getElementById('perfil-telefone').value = userData.telefone || '';
-        document.getElementById('perfil-pais').value = userData.pais;
-        document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
-        updateWalletDisplay();
-        loadUserArtists();
-        loadUserMusic();
-        loadLancamentos();
-        loadEarningsHistory();
-        loadDestaques();
-        loadFeed();
-        updatePlanButtons();
-    }
-
-    function updatePlanButtons() {
-        const currentPlan = userData.plano;
-        const freeBtn = document.getElementById('plan-free-btn');
-        const basicoBtn = document.getElementById('plan-basico-btn');
-        const medioBtn = document.getElementById('plan-medio-btn');
-        const promaxBtn = document.getElementById('plan-promax-btn');
-        
-        if (currentPlan === 'FREE') { freeBtn.innerText = '✅ Plano Atual'; freeBtn.disabled = true; freeBtn.style.opacity = '0.7'; }
-        else if (currentPlan === 'BÁSICO') { basicoBtn.innerText = '✅ Plano Atual'; basicoBtn.disabled = true; basicoBtn.style.opacity = '0.7'; }
-        else if (currentPlan === 'MÉDIO') { medioBtn.innerText = '✅ Plano Atual'; medioBtn.disabled = true; medioBtn.style.opacity = '0.7'; }
-        else if (currentPlan === 'PRO' || currentPlan === 'ADMIN PRO MAX') { promaxBtn.innerText = '✅ Plano Atual'; promaxBtn.disabled = true; promaxBtn.style.opacity = '0.7'; }
+    async function handlePasswordRecovery() {
+        const email = document.getElementById('recovery-email').value.trim();
+        if (!email) return alert("Digite seu e-mail!");
+        try { await auth.sendPasswordResetEmail(email); alert("Link de recuperação enviado para " + email); hidePasswordRecovery(); } 
+        catch (error) { alert(getErrorMessage(error)); }
     }
 
     function toggleAuth(isRegister) {
         document.getElementById('login-form').style.display = isRegister ? 'none' : 'block';
         document.getElementById('register-form').style.display = isRegister ? 'block' : 'none';
-    }
-
-    async function handleLogin() {
-        const email = document.getElementById('login-email').value.trim().toLowerCase();
-        const pass = document.getElementById('login-pass').value;
-        if (!email || !pass) return alert("Preencha todos os campos!");
-        showLoading(true, "A entrar...");
-        try {
-            const userCredential = await auth.signInWithEmailAndPassword(email, pass);
-            const user = userCredential.user;
-            
-            // ADMIN não precisa verificar email
-            if (email !== ADMIN_CONFIG.ADMIN_EMAIL && !user.emailVerified) {
-                showLoading(false);
-                await auth.signOut();
-                return alert("Ative a sua conta no seu e-mail para continuar.\n\nVerifique a sua caixa de entrada (incluindo pasta de spam) para o link de confirmação.");
-            }
-            
-            // Bónus de Login: 100 Kz
-            await db.collection('users').doc(email).update({ saldo: firebase.firestore.FieldValue.increment(100) });
-            await db.collection('ganhos').add({ email, valor: 100, tipo: "Bónus de Login", data: firebase.firestore.FieldValue.serverTimestamp() });
-            
-            if (email === ADMIN_CONFIG.ADMIN_EMAIL) { await ensureAdminProfile(); }
-        } catch (error) {
-            let errorMsg = "Erro ao entrar: ";
-            if (error.code === 'auth/user-not-found') errorMsg = "E-mail não encontrado. Verifique se está registado ou crie uma nova conta.";
-            else if (error.code === 'auth/wrong-password') errorMsg = "Senha errada. Tente novamente ou use 'Esqueci a Senha'.";
-            else if (error.code === 'auth/invalid-email') errorMsg = "E-mail inválido. Verifique o formato.";
-            else if (error.code === 'auth/user-disabled') errorMsg = "Conta desativada. Contacte o suporte.";
-            else errorMsg += error.message;
-            alert(errorMsg);
-        }
-        showLoading(false);
-    }
-    
-    async function ensureAdminProfile() {
-        try {
-            const adminRef = db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL);
-            const adminDoc = await adminRef.get();
-            const adminData = {
-                nome: ADMIN_CONFIG.ADMIN_NAME,
-                email: ADMIN_CONFIG.ADMIN_EMAIL,
-                tipo: "ADMIN PRO MAX",
-                pais: "Angola",
-                plano: "ADMIN PRO MAX",
-                saldo: adminDoc.exists ? (adminDoc.data().saldo || 0) : 0,
-                isAdmin: true,
-                isAdminProMax: true,
-                foto: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg",
-                telefone: ADMIN_CONFIG.ADMIN_WHATSAPP
-            };
-            if (!adminDoc.exists) { adminData.createdAt = firebase.firestore.FieldValue.serverTimestamp(); await adminRef.set(adminData); }
-            else { await adminRef.update(adminData); }
-        } catch (error) { console.error("Erro ao garantir perfil admin:", error); }
-    }
-
-    async function handleRegister() {
-        const nome = document.getElementById('reg-nome').value.trim();
-        const email = document.getElementById('reg-email').value.trim().toLowerCase();
-        const tipo = document.getElementById('reg-tipo').value;
-        const pais = document.getElementById('reg-pais').value;
-        const pass = document.getElementById('reg-pass').value;
-        const passConfirm = document.getElementById('reg-pass-confirm').value;
-        if (!nome || !email || !pais || pass.length < 6) return alert("Preencha todos os campos corretamente!");
-        if (pass !== passConfirm) return alert("As palavras-passe não coincidem!");
-        showLoading(true, "A criar conta...");
-        try {
-            const result = await auth.createUserWithEmailAndPassword(email, pass);
-            await result.user.sendEmailVerification();
-            
-            const newUser = {
-                nome, email, tipo, pais, plano: "FREE", saldo: 0,
-                isAdmin: email === ADMIN_CONFIG.ADMIN_EMAIL,
-                isAdminProMax: email === ADMIN_CONFIG.ADMIN_EMAIL,
-                foto: "", telefone: "", createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            await db.collection('users').doc(email).set(newUser);
-            
-            // Bónus de Registo: 5.000 Kz
-            await db.collection('users').doc(email).update({ saldo: firebase.firestore.FieldValue.increment(5000) });
-            await db.collection('ganhos').add({ email, valor: 5000, tipo: "Bónus de Registo", data: firebase.firestore.FieldValue.serverTimestamp() });
-            
-            const message = "Conta criada com sucesso!\n\nUm e-mail de confirmação foi enviado para " + email + ".\nPor favor, verifique a sua caixa de entrada (incluindo spam).";
-            alert(message);
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-pass').value = pass;
-            toggleAuth(false);
-        } catch (error) { alert("Erro ao registar: " + error.message); }
-        showLoading(false);
-    }
-
-    function showPasswordRecovery() {
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('register-form').style.display = 'none';
-        document.getElementById('recovery-form').style.display = 'block';
-    }
-
-    function hidePasswordRecovery() {
         document.getElementById('recovery-form').style.display = 'none';
-        document.getElementById('login-form').style.display = 'block';
     }
+    function showPasswordRecovery() { document.getElementById('login-form').style.display = 'none'; document.getElementById('recovery-form').style.display = 'block'; }
+    function hidePasswordRecovery() { document.getElementById('recovery-form').style.display = 'none'; document.getElementById('login-form').style.display = 'block'; }
 
-    async function handlePasswordRecovery() {
-        const email = document.getElementById('recovery-email').value.trim().toLowerCase();
-        if (!email) return alert("Por favor, introduza o seu e-mail!");
-        try {
-            await auth.sendPasswordResetEmail(email);
-            alert("Link de recuperação enviado com sucesso!\n\nVerifique a sua caixa de e-mail.");
-            hidePasswordRecovery();
-        } catch (error) { alert("Erro: " + error.message); }
-    }
-
-    function handleLogout() { auth.signOut(); }
-
-    function showSection(id, btn) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    function showApp() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-        document.getElementById('nav-login').style.display = 'none';
-        document.getElementById('nav-logout').style.display = 'inline-flex';
-        document.getElementById('nav-artistas').style.display = 'inline-flex';
-        document.getElementById('nav-lancar').style.display = 'inline-flex';
-        document.getElementById('nav-minhas-musicas').style.display = 'inline-flex';
-        document.getElementById('nav-carteira').style.display = 'inline-flex';
-        document.getElementById('nav-perfil').style.display = 'inline-flex';
-        if (userData && (userData.isAdminProMax || currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL)) {
-            document.getElementById('btn-admin-global').style.display = 'inline-flex';
+    auth.onAuthStateChanged(async (user) => {
+        if (user && (user.email === ADMIN_EMAIL || user.emailVerified)) {
+            currentUser = user;
+            const doc = await db.collection('users').doc(user.email).get();
+            userData = doc.data();
+            if (!userData) { 
+                await db.collection('users').doc(user.email).set({ nome: user.displayName || "Utilizador", email: user.email, saldo: 0, plano: "FREE", isAdmin: user.email === ADMIN_EMAIL }); 
+                userData = (await db.collection('users').doc(user.email).get()).data(); 
+            }
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'inline-flex';
+            document.getElementById('nav-artistas').style.display = 'inline-flex';
+            document.getElementById('nav-lancar').style.display = 'inline-flex';
+            document.getElementById('nav-minhas-musicas').style.display = 'inline-flex';
+            document.getElementById('nav-carteira').style.display = 'inline-flex';
+            document.getElementById('nav-perfil').style.display = 'inline-flex';
+            if (userData.isAdmin) document.getElementById('btn-admin-global').style.display = 'inline-flex';
+            loadUserData();
+        } else if (user && !user.emailVerified) {
+            document.getElementById('email-verify-warning').style.display = 'block';
+            await auth.signOut();
+        } else {
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('email-verify-warning').style.display = 'none';
         }
+    });
+
+    async function loadUserData() {
+        document.getElementById('user-welcome').innerHTML = `<h2>Olá, ${userData.nome}!</h2><p>Plano: ${userData.plano} | Saldo: ${(userData.saldo || 0).toLocaleString()} Kz</p>`;
+        document.getElementById('stat-saldo').innerText = (userData.saldo || 0).toLocaleString() + " Kz";
+        document.getElementById('wallet-saldo').innerText = (userData.saldo || 0).toLocaleString() + " Kz";
+        document.getElementById('perfil-nome').value = userData.nome;
+        document.getElementById('perfil-telefone').value = userData.telefone || '';
+        
+        // Update withdrawal minimum info
+        const minWithdraw = MIN_WITHDRAWAL[userData.plano] || 10000;
+        document.getElementById('saque-min-info').innerHTML = `Valor mínimo: ${minWithdraw.toLocaleString()} Kz (Plano ${userData.plano})`;
+        
+        await loadArtistas();
+        await loadMinhasMusicas();
+        await loadDestaques();
+        await loadHistoricoGanhos();
+        await loadLancamentos();
+        if (userData.isAdmin) await loadAdminData();
+        await loadPlanos();
     }
 
-    function showAuth() {
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('main-app').style.display = 'none';
-        document.getElementById('nav-login').style.display = 'inline-flex';
-        document.getElementById('nav-logout').style.display = 'none';
-        document.getElementById('nav-artistas').style.display = 'none';
-        document.getElementById('nav-lancar').style.display = 'none';
-        document.getElementById('nav-minhas-musicas').style.display = 'none';
-        document.getElementById('nav-carteira').style.display = 'none';
-        document.getElementById('nav-perfil').style.display = 'none';
-        document.getElementById('btn-admin-global').style.display = 'none';
-    }
-
-    async function loadUserArtists() {
+    async function loadArtistas() {
+        const snapshot = await db.collection('artistas').where('owner', '==', currentUser.email).get();
+        document.getElementById('stat-artistas-count').innerText = snapshot.size;
         const container = document.getElementById('lista-artistas');
-        const select = document.getElementById('music-artista-select');
-        if (!container) return;
         container.innerHTML = '';
-        select.innerHTML = '<option value="">Selecione um artista...</option>';
-        try {
-            const snapshot = await db.collection('artistas').where('owner', '==', currentUser.email).get();
-            document.getElementById('stat-artistas-count').innerText = snapshot.size;
-            snapshot.forEach(doc => {
-                const a = doc.data();
-                const id = doc.id;
-                container.innerHTML += `
-                    <div class="list-item">
-                        <img src="${a.foto || 'https://via.placeholder.com/60'}" alt="${a.nome}">
-                        <div class="list-info">
-                            <h4>${a.nome}</h4>
-                            <p>${a.estilo}</p>
-                        </div>
-                        <div class="list-actions">
-                            <button class="btn btn-small btn-sec" onclick="editArtist('${id}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-small btn-danger" onclick="deleteArtist('${id}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-                select.innerHTML += `<option value="${a.nome}">${a.nome}</option>`;
-            });
-        } catch (error) { console.error("Erro ao carregar artistas:", error); }
+        snapshot.forEach(doc => {
+            const a = doc.data();
+            container.innerHTML += `<div class="artist-card"><img src="${a.foto || 'https://via.placeholder.com/200'}" class="artist-card-img"><div class="artist-card-info"><div class="artist-card-name">${a.nome}</div><div class="artist-card-style">${a.estilo}</div><button class="btn btn-small btn-danger" onclick="deleteArtist('${doc.id}')">Remover</button></div></div>`;
+        });
+        const select = document.getElementById('music-artista-select');
+        select.innerHTML = '<option value="">Selecione um artista</option>';
+        snapshot.forEach(doc => { const a = doc.data(); select.innerHTML += `<option value="${a.nome}">${a.nome}</option>`; });
     }
 
     async function handleSaveArtist() {
-        const id = document.getElementById('edit-artista-id').value;
         const nome = document.getElementById('artista-nome').value.trim();
         const estilo = document.getElementById('artista-estilo').value;
         const fotoFile = document.getElementById('artista-foto-input').files[0];
-        const youtube = document.getElementById('artista-youtube').value;
-        const facebook = document.getElementById('artista-facebook').value;
-        const tiktok = document.getElementById('artista-tiktok').value;
-        const spotify = document.getElementById('artista-spotify').value;
-        const apple = document.getElementById('artista-apple').value;
-        const instagram = document.getElementById('artista-instagram').value;
-        if (!nome || !estilo) return alert("Por favor, preencha o nome e estilo do artista.");
-        showLoading(true, "A salvar artista...");
-        try {
-            let fotoUrl = document.getElementById('artista-foto-preview').src;
-            if (fotoFile) { fotoUrl = await uploadFile(fotoFile, 'image'); }
-            const artistData = { nome, estilo, foto: fotoUrl, youtube, facebook, tiktok, spotify, apple, instagram, owner: currentUser.email, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
-            if (id) { await db.collection('artistas').doc(id).update(artistData); }
-            else { artistData.createdAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection('artistas').add(artistData); }
-            closeModal('modal-artista');
-            document.getElementById('artista-nome').value = '';
-            document.getElementById('artista-foto-input').value = '';
-            document.getElementById('artista-foto-preview').src = 'https://via.placeholder.com/120';
-            await loadUserArtists();
-            showLoading(false);
-            alert("Artista salvo com sucesso!");
-        } catch (error) { showLoading(false); alert("Erro ao salvar artista: " + error.message); }
+        if (!nome || !estilo) return alert("Preencha nome e estilo!");
+        showLoading(true);
+        let fotoUrl = '';
+        if (fotoFile) fotoUrl = await uploadFile(fotoFile, 'image');
+        await db.collection('artistas').add({ nome, estilo, foto: fotoUrl, owner: currentUser.email, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        closeModal('modal-artista');
+        document.getElementById('artista-nome').value = '';
+        document.getElementById('artista-foto-input').value = '';
+        document.getElementById('artista-foto-preview').src = 'https://via.placeholder.com/120';
+        await loadArtistas();
+        showLoading(false);
+        alert("Artista criado!");
     }
 
-    async function editArtist(id) {
-        try {
-            const doc = await db.collection('artistas').doc(id).get();
-            const a = doc.data();
-            document.getElementById('edit-artista-id').value = id;
-            document.getElementById('artista-nome').value = a.nome;
-            document.getElementById('artista-estilo').value = a.estilo;
-            document.getElementById('artista-foto-preview').src = a.foto || 'https://via.placeholder.com/120';
-            document.getElementById('artista-youtube').value = a.youtube || '';
-            document.getElementById('artista-facebook').value = a.facebook || '';
-            document.getElementById('artista-tiktok').value = a.tiktok || '';
-            document.getElementById('artista-spotify').value = a.spotify || '';
-            document.getElementById('artista-apple').value = a.apple || '';
-            document.getElementById('artista-instagram').value = a.instagram || '';
-            document.getElementById('modal-artista-title').innerText = "Editar Artista";
-            openModal('modal-artista');
-        } catch (error) { alert("Erro ao carregar artista: " + error.message); }
-    }
-
-    async function deleteArtist(id) {
-        if (confirm("Deseja remover este artista? Esta ação não pode ser desfeita.")) {
-            try { await db.collection('artistas').doc(id).delete(); loadUserArtists(); alert("Artista removido com sucesso!"); }
-            catch (error) { alert("Erro ao remover artista: " + error.message); }
-        }
-    }
-
-    function carregarRascunho() {
-        try {
-            const rascunho = localStorage.getItem('rascunho_mam');
-            if (rascunho) {
-                const dados = JSON.parse(rascunho);
-                if (dados.titulo) document.getElementById('music-titulo').value = dados.titulo;
-                if (dados.artista) document.getElementById('music-artista-select').value = dados.artista;
-                if (dados.estilo) document.getElementById('music-estilo').value = dados.estilo;
-                if (dados.genero) document.getElementById('music-genero').value = dados.genero;
-                if (dados.isrc) document.getElementById('music-isrc').value = dados.isrc;
-                if (dados.upc) document.getElementById('music-upc').value = dados.upc;
-            }
-        } catch (e) { console.warn('Erro ao carregar rascunho:', e); }
-    }
-
-    function guardarRascunho() {
-        const rascunho = {
-            titulo: document.getElementById('music-titulo').value,
-            artista: document.getElementById('music-artista-select').value,
-            estilo: document.getElementById('music-estilo').value,
-            genero: document.getElementById('music-genero').value,
-            isrc: document.getElementById('music-isrc').value,
-            upc: document.getElementById('music-upc').value
-        };
-        localStorage.setItem('rascunho_mam', JSON.stringify(rascunho));
-        alert("Rascunho guardado com sucesso!");
-    }
+    async function deleteArtist(id) { if (confirm("Remover artista?")) { await db.collection('artistas').doc(id).delete(); loadArtistas(); } }
 
     async function enviarLancamento() {
         const titulo = document.getElementById('music-titulo').value.trim();
         const artista = document.getElementById('music-artista-select').value;
-        const estilo = document.getElementById('music-estilo').value;
         const genero = document.getElementById('music-genero').value;
-        const colaboradores = document.getElementById('music-colaboradores').value.trim();
-        const produtores = document.getElementById('music-produtores').value.trim();
         const isrc = document.getElementById('music-isrc').value.trim();
         const upc = document.getElementById('music-upc').value.trim();
         const capaFile = document.getElementById('music-capa').files[0];
         const audioFile = document.getElementById('music-audio').files[0];
-        const dataLanc = document.getElementById('music-data').value;
-
-        if (!titulo || !artista || !genero || !capaFile || !audioFile || !isrc || !upc) {
-            return alert("Preencha todos os campos obrigatórios: Título, Artista, Gênero, Capa, Áudio, ISRC e UPC.");
-        }
-
-        showLoading(true, "A processar envio...");
+        if (!titulo || !artista || !genero || !isrc || !upc || !capaFile || !audioFile) return alert("Preencha todos os campos obrigatórios!");
+        showLoading(true);
         try {
             const capaUrl = await uploadFile(capaFile, 'image');
             const audioUrl = await uploadFile(audioFile, 'audio');
             
-            const musicData = {
-                titulo, artista, estilo, genero, colaboradores, produtores, isrc, upc,
-                capa: capaUrl, audio: audioUrl, dataLanc: dataLanc || new Date().toISOString().split('T')[0],
-                owner: currentUser.email, ownerName: userData.nome, status: "Em Revisão",
-                tipoLancamento: tipoLancamentoSelecionado || 'Solo', downloads: 0, streams: 0,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
+            await db.collection('musicas').add({ 
+                titulo, artista, genero, isrc, upc, capa: capaUrl, audio: audioUrl, 
+                owner: currentUser.email, status: "Em Revisão", streams: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+            });
             
-            await db.collection('musicas').add(musicData);
+            // Send email via EmailJS
+            try {
+                await emailjs.send("service_default", "template_default", {
+                    to_email: currentUser.email,
+                    to_name: userData.nome,
+                    music_title: titulo,
+                    artist_name: artista,
+                    subject: "Música Enviada para Revisão - MAM Distribuidora",
+                    message: `Olá ${userData.nome},\n\nSua música "${titulo}" foi enviada para revisão e será analisada pela nossa equipa.\n\nVocê receberá uma notificação quando for aprovada.\n\nAtenciosamente,\nEquipa MAM Distribuidora`
+                });
+                console.log("Email enviado com sucesso");
+            } catch (emailError) {
+                console.warn("Erro ao enviar email:", emailError);
+            }
             
-            showLoading(false);
-            alert("Música enviada com sucesso! Aguarde revisão.");
-            
-            // Limpar formulário
+            alert("Música enviada para revisão!");
             document.getElementById('music-titulo').value = '';
-            document.getElementById('music-artista-select').value = '';
-            document.getElementById('music-estilo').value = '';
-            document.getElementById('music-genero').value = '';
-            document.getElementById('music-colaboradores').value = '';
-            document.getElementById('music-produtores').value = '';
             document.getElementById('music-isrc').value = '';
             document.getElementById('music-upc').value = '';
             document.getElementById('music-capa').value = '';
             document.getElementById('music-audio').value = '';
-            document.getElementById('music-data').value = '';
-            document.getElementById('audios-adicionais-container').innerHTML = '';
-            audioCount = 0;
-            document.getElementById('tipo-solo').checked = false;
-            document.getElementById('tipo-album').checked = false;
-            tipoLancamentoSelecionado = '';
             localStorage.removeItem('rascunho_mam');
-            
-            loadUserMusic();
-            loadFeed();
-            loadLancamentos();
-            
-        } catch (error) {
-            showLoading(false);
-            alert("Erro no processamento: " + (error.message || 'Erro desconhecido.'));
-        }
+            await loadMinhasMusicas();
+            await loadLancamentos();
+        } catch (error) { alert("Erro: " + error.message); }
+        showLoading(false);
     }
 
-    async function loadUserMusic() {
-        try {
-            const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
-            document.getElementById('stat-musicas-count').innerText = snapshot.size;
-            const container = document.getElementById('minhas-musicas-container');
-            if (container) {
-                container.innerHTML = '';
-                if (snapshot.empty) { container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhuma música enviada ainda.</p>'; return; }
-                snapshot.forEach(doc => {
-                    const m = doc.data();
-                    const statusClass = m.status === 'Aprovado' ? 'status-active' : (m.status === 'Em Revisão' ? 'status-pending' : 'status-error');
-                    container.innerHTML += `
-                        <div class="list-item">
-                            <img src="${m.capa || 'https://via.placeholder.com/60'}" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
-                            <div class="list-info">
-                                <h4>${m.titulo}</h4>
-                                <p>${m.artista} - ${m.genero}</p>
-                                <span class="status-pill ${statusClass}">${m.status}</span>
-                            </div>
-                            <div class="list-actions">
-                                <button class="btn btn-small btn-danger" onclick="deleteMusic('${doc.id}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-        } catch (error) { console.error("Erro ao carregar músicas:", error); }
+    function guardarRascunho() {
+        const rascunho = { titulo: document.getElementById('music-titulo').value, artista: document.getElementById('music-artista-select').value, genero: document.getElementById('music-genero').value, isrc: document.getElementById('music-isrc').value, upc: document.getElementById('music-upc').value };
+        localStorage.setItem('rascunho_mam', JSON.stringify(rascunho));
+        alert("Rascunho guardado!");
+    }
+    function carregarRascunho() { const r = localStorage.getItem('rascunho_mam'); if (r) { const d = JSON.parse(r); document.getElementById('music-titulo').value = d.titulo || ''; document.getElementById('music-artista-select').value = d.artista || ''; document.getElementById('music-genero').value = d.genero || ''; document.getElementById('music-isrc').value = d.isrc || ''; document.getElementById('music-upc').value = d.upc || ''; } }
+
+    async function loadMinhasMusicas() {
+        const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
+        document.getElementById('stat-musicas-count').innerText = snapshot.size;
+        const container = document.getElementById('minhas-musicas-container');
+        container.innerHTML = '';
+        snapshot.forEach(doc => {
+            const m = doc.data();
+            container.innerHTML += `<div class="music-card"><img src="${m.capa}" class="music-card-img"><div class="music-card-info"><div class="music-card-title">${m.titulo}</div><div class="music-card-artist">${m.artista}</div><span class="status-pill ${m.status === 'Aprovado' ? 'status-active' : 'status-pending'}">${m.status}</span><button class="btn btn-small btn-danger" onclick="deleteMusic('${doc.id}')">Remover</button></div></div>`;
+        });
     }
 
-    async function deleteMusic(id) {
-        if (confirm("Deseja remover este lançamento?")) {
-            try { await db.collection('musicas').doc(id).delete(); loadUserMusic(); loadFeed(); loadLancamentos(); alert("Lançamento removido!"); }
-            catch (error) { alert("Erro: " + error.message); }
-        }
-    }
+    async function deleteMusic(id) { if (confirm("Remover música?")) { await db.collection('musicas').doc(id).delete(); loadMinhasMusicas(); loadLancamentos(); } }
 
     async function loadDestaques() {
+        const snapshot = await db.collection('musicas').where('status', '==', 'Aprovado').limit(6).get();
         const container = document.getElementById('destaques-container');
-        if (!container) return;
         container.innerHTML = '';
-        try {
-            const snapshot = await db.collection('musicas').where('status', '==', 'Aprovado').limit(5).get();
-            if (snapshot.empty) { container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">Nenhum destaque disponível.</p>'; return; }
-            snapshot.forEach(doc => {
-                const m = doc.data();
-                container.innerHTML += `
-                    <div class="disco-item">
-                        <img src="${m.capa || 'https://via.placeholder.com/120'}" class="disco-cover">
-                        <div class="disco-title">${m.titulo}</div>
-                        <div class="disco-artist">${m.artista}</div>
-                        <audio class="audio-player" controls><source src="${m.audio}" type="audio/mpeg">Seu navegador não suporta.</audio>
-                    </div>
-                `;
-            });
-        } catch (error) { console.error("Erro ao carregar destaques:", error); }
-    }
-
-    async function loadFeed() {
-        const container = document.getElementById('feed-container');
-        if (!container) return;
-        container.innerHTML = '';
-        try {
-            const snapshot = await db.collection('musicas').where('status', '==', 'Aprovado').orderBy('createdAt', 'desc').get();
-            if (snapshot.empty) { container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">Nenhuma música disponível.</p>'; return; }
-            snapshot.forEach(doc => {
-                const m = doc.data();
-                container.innerHTML += `
-                    <div class="disco-item">
-                        <img src="${m.capa}" class="disco-cover">
-                        <div class="disco-title">${m.titulo}</div>
-                        <div class="disco-artist">${m.artista}</div>
-                        <audio class="audio-player" controls><source src="${m.audio}" type="audio/mpeg"></audio>
-                    </div>
-                `;
-            });
-        } catch (error) { console.error("Erro ao carregar feed:", error); }
+        snapshot.forEach(doc => {
+            const m = doc.data();
+            container.innerHTML += `<div class="music-card"><img src="${m.capa}" class="music-card-img"><div class="music-card-info"><div class="music-card-title">${m.titulo}</div><div class="music-card-artist">${m.artista}</div><audio controls style="width:100%; margin-top:10px;"><source src="${m.audio}" type="audio/mpeg"></audio></div></div>`;
+        });
     }
 
     async function loadLancamentos() {
+        const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
         const container = document.getElementById('lista-lancamentos');
-        if (!container) return;
         container.innerHTML = '';
-        try {
-            const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
-            if (snapshot.empty) { container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum lançamento ainda.</p>'; return; }
-            snapshot.forEach(doc => {
-                const m = doc.data();
-                const statusColor = m.status === 'Aprovado' ? 'var(--success)' : (m.status === 'Rejeitado' ? 'var(--danger)' : 'var(--warning)');
-                container.innerHTML += `
-                    <div class="list-item">
-                        <img src="${m.capa}" style="width: 60px; height: 60px; border-radius: 8px;">
-                        <div class="list-info">
-                            <h4>${m.titulo}</h4>
-                            <p>${m.artista} | ISRC: ${m.isrc} | UPC: ${m.upc}</p>
-                            <p style="color: ${statusColor}; font-size: 0.85rem; font-weight: bold;">Status: ${m.status}</p>
-                        </div>
-                    </div>
-                `;
-            });
-        } catch (error) { console.error("Erro ao carregar lançamentos:", error); }
+        snapshot.forEach(doc => {
+            const m = doc.data();
+            container.innerHTML += `<div class="music-card"><img src="${m.capa}" class="music-card-img"><div class="music-card-info"><div class="music-card-title">${m.titulo}</div><div class="music-card-artist">${m.artista}</div><span class="status-pill ${m.status === 'Aprovado' ? 'status-active' : 'status-pending'}">${m.status}</span></div></div>`;
+        });
     }
 
-    async function loadEarningsHistory() {
+    async function loadHistoricoGanhos() {
+        const snapshot = await db.collection('royalties').where('email', '==', currentUser.email).orderBy('data', 'desc').limit(20).get();
         const container = document.getElementById('historico-ganhos');
-        if (!container) return;
         container.innerHTML = '';
-        try {
-            const snapshot = await db.collection('ganhos').where('email', '==', currentUser.email).orderBy('data', 'desc').limit(20).get();
-            if (snapshot.empty) { container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 20px;">Nenhum ganho registado ainda.</p>'; return; }
-            snapshot.forEach(doc => {
-                const g = doc.data();
-                const dataStr = g.data ? g.data.toDate().toLocaleDateString() : '...';
-                container.innerHTML += `<div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222;"><div><p style="font-size: 0.9rem;">${g.tipo}</p><p style="font-size: 0.7rem; color: var(--gray);">${dataStr} ${g.motivo ? ' - ' + g.motivo : ''}</p></div><b style="color: var(--gold);">+ ${g.valor.toLocaleString()} Kz</b></div>`;
-            });
-        } catch (error) { console.error("Erro ao carregar ganhos:", error); }
+        if (snapshot.empty) { container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum royalty registado ainda.</p>'; return; }
+        snapshot.forEach(doc => {
+            const g = doc.data();
+            container.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:8px;"><span>${g.tipo} - ${g.musica || ''}</span><span>+ ${g.valor.toLocaleString()} Kz (${g.percentual}%)</span></div>`;
+        });
     }
 
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
-        const metodo = document.getElementById('saque-metodo').value;
-        const dados = document.getElementById('saque-dados').value;
-        if (!valor || valor < 5000) return alert("Valor mínimo de 5.000 Kz");
-        if (valor > userData.saldo) return alert("Saldo insuficiente!");
-        if (!metodo || !dados) return alert("Selecione o método e insira os dados!");
-        if (!confirm(`Confirma o levantamento de ${valor.toLocaleString()} Kz para ${metodo}?`)) return;
-        showLoading(true, "A processar pedido...");
-        try {
-            await db.collection('saques').add({ email: currentUser.email, nome: userData.nome, valor, metodo, dados, status: "Pendente", data: firebase.firestore.FieldValue.serverTimestamp() });
-            await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
-            alert("Pedido de levantamento enviado! Será processado em breve.");
-            closeModal('modal-saque');
-            loadUserData();
-        } catch (error) { alert("Erro: " + error.message); }
-        showLoading(false);
+        const minWithdraw = MIN_WITHDRAWAL[userData.plano] || 10000;
+        if (!valor || valor < minWithdraw) return alert(`Valor mínimo de ${minWithdraw.toLocaleString()} Kz para o plano ${userData.plano}`);
+        if (valor > (userData.saldo || 0)) return alert("Saldo insuficiente!");
+        await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
+        await db.collection('saques').add({ email: currentUser.email, valor, status: "Pendente", data: firebase.firestore.FieldValue.serverTimestamp() });
+        alert("Solicitação enviada!");
+        closeModal('modal-saque');
+        loadUserData();
     }
 
     async function handleUpdateProfile() {
         const nome = document.getElementById('perfil-nome').value.trim();
         const telefone = document.getElementById('perfil-telefone').value.trim();
-        const pais = document.getElementById('perfil-pais').value || userData.pais;
-        const fotoInput = document.getElementById('perfil-foto-input');
-        const fotoFile = fotoInput?.files?.[0];
-        if (!nome || nome.length < 2) return alert("O nome deve ter pelo menos 2 caracteres!");
-        showLoading(true, "A atualizar perfil...");
-        try {
-            let fotoUrl = userData.foto || '';
-            if (fotoFile) fotoUrl = await uploadFile(fotoFile, 'image');
-            await db.collection('users').doc(currentUser.email).update({ nome, telefone, pais, foto: fotoUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-            if (fotoInput) fotoInput.value = '';
-            userData.foto = fotoUrl;
-            document.getElementById('perfil-foto-preview').src = fotoUrl;
-            document.getElementById('home-user-photo').src = fotoUrl;
-            showLoading(false);
-            alert("Perfil atualizado com sucesso!");
-        } catch (error) { showLoading(false); alert("Erro ao atualizar perfil: " + error.message); }
-    }
-
-    function openPlanPayment(plan, amount) {
-        currentPlanPayment = { plan, amount, method: '' };
-        document.getElementById('plan-name-display').innerText = plan;
-        document.getElementById('plan-price-display').innerText = amount.toLocaleString();
-        openModal('modal-plan-payment');
-    }
-
-    function selectPaymentMethod(method) {
-        currentPlanPayment.method = method;
-        closeModal('modal-plan-payment');
-        if (method === 'mam') {
-            document.getElementById('pay-plan-name').innerText = `Plano ${currentPlanPayment.plan}`;
-            document.getElementById('pay-amount').innerText = currentPlanPayment.amount.toLocaleString();
-            openModal('modal-pagamento-mam');
-        } else if (method === 'banco') {
-            document.getElementById('pay-plan-name-banco').innerText = `Plano ${currentPlanPayment.plan}`;
-            document.getElementById('pay-amount-banco').innerText = currentPlanPayment.amount.toLocaleString();
-            openModal('modal-pagamento-banco');
-        }
-    }
-
-    async function processPlanPaymentMAM() {
-        const { plan, amount } = currentPlanPayment;
-        if (userData.saldo < amount) { alert("Saldo insuficiente na carteira MAM!"); return; }
-        showLoading(true, "A processar pagamento...");
-        try {
-            await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-amount), plano: plan });
-            await db.collection('users').doc(ADMIN_CONFIG.ADMIN_EMAIL).update({ saldo: firebase.firestore.FieldValue.increment(amount) });
-            await db.collection('ganhos').add({ email: ADMIN_CONFIG.ADMIN_EMAIL, valor: amount, tipo: "Compra de Plano", motivo: `${currentUser.email} comprou Plano ${plan}`, data: firebase.firestore.FieldValue.serverTimestamp() });
-            alert(`Plano ${plan} comprado com sucesso!`);
-            closeModal('modal-pagamento-mam');
-            loadUserData();
-        } catch (error) { alert("Erro: " + error.message); }
+        const fotoFile = document.getElementById('perfil-foto-input').files[0];
+        if (!nome) return alert("Nome obrigatório!");
+        showLoading(true);
+        let fotoUrl = userData.foto || '';
+        if (fotoFile) fotoUrl = await uploadFile(fotoFile, 'image');
+        await db.collection('users').doc(currentUser.email).update({ nome, telefone, foto: fotoUrl });
+        userData.nome = nome; userData.foto = fotoUrl;
+        loadUserData();
         showLoading(false);
+        alert("Perfil atualizado!");
     }
 
-    function sendProofWhatsApp() {
-        const { plan, amount } = currentPlanPayment;
-        const message = `Olá! Realizei a transferência de ${amount.toLocaleString()} Kz para o Plano ${plan}. Segue em anexo o comprovativo.`;
-        window.open(`https://wa.me/${ADMIN_CONFIG.ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`, '_blank');
-        closeModal('modal-pagamento-banco');
-    }
-
-    // ========== ADMIN FUNCTIONS ==========
     async function loadAdminData() {
         if (!userData?.isAdmin) return;
-        try {
-            const usersSnap = await db.collection('users').get();
-            document.getElementById('admin-total-users').innerText = usersSnap.size;
-            const artistsSnap = await db.collection('artistas').get();
-            document.getElementById('admin-total-artists').innerText = artistsSnap.size;
-            const musicSnap = await db.collection('musicas').where('status', '==', 'Em Revisão').get();
-            document.getElementById('admin-pending-music').innerText = musicSnap.size;
-            document.getElementById('admin-total-earnings').innerText = `${(userData.saldo || 0).toLocaleString()} Kz`;
-            renderAdminUsers(usersSnap);
-            renderAdminMusicReview(musicSnap);
-        } catch (error) { console.error("Erro ao carregar dados do admin:", error); }
-    }
-
-    function renderAdminUsers(snapshot) {
-        const container = document.getElementById('admin-users-list');
-        if (!container) return;
-        container.innerHTML = '';
-        snapshot.forEach(doc => {
-            const u = doc.data();
-            if (u.email === ADMIN_CONFIG.ADMIN_EMAIL) return;
-            container.innerHTML += `
-                <div class="list-item">
-                    <div class="list-info">
-                        <h4>${u.nome} ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}</h4>
-                        <p>${u.email} | Plano: <b>${u.plano}</b> | Saldo: ${(u.saldo || 0).toLocaleString()} Kz</p>
-                    </div>
-                    <div class="list-actions">
-                        <select onchange="adminChangePlan('${u.email}', this.value)" style="width: 120px; margin-bottom: 0; padding: 5px;">
-                            <option value="">Mudar Plano</option>
-                            <option value="FREE">FREE</option>
-                            <option value="BÁSICO">BÁSICO</option>
-                            <option value="MÉDIO">MÉDIO</option>
-                            <option value="PRO">PRO</option>
-                        </select>
-                        <button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')"><i class="fas fa-user-slash"></i></button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    function renderAdminMusicReview(snapshot) {
-        const container = document.getElementById('admin-music-review');
-        if (!container) return;
-        container.innerHTML = '';
-        if (snapshot.empty) container.innerHTML = '<p style="text-align: center; color: var(--gray);">Nenhum lançamento pendente.</p>';
-        snapshot.forEach(doc => {
+        const users = await db.collection('users').get();
+        document.getElementById('admin-total-users').innerText = users.size;
+        const pending = await db.collection('musicas').where('status', '==', 'Em Revisão').get();
+        document.getElementById('admin-pending-music').innerText = pending.size;
+        const reviewContainer = document.getElementById('admin-music-review');
+        reviewContainer.innerHTML = '';
+        pending.forEach(doc => {
             const m = doc.data();
-            const id = doc.id;
-            container.innerHTML += `
-                <div class="list-item">
-                    <img src="${m.capa}" style="width: 60px; height: 60px; border-radius: 8px;">
-                    <div class="list-info">
-                        <h4>${m.titulo}</h4>
-                        <p>Artista: ${m.artista} | Estilo: ${m.estilo}</p>
-                        <p>Utilizador: ${m.owner}</p>
-                        <a href="${m.audio}" target="_blank" style="color: var(--gold); font-size: 0.7rem;">Ouvir Áudio <i class="fas fa-play"></i></a>
-                    </div>
-                    <div class="list-actions">
-                        <button class="btn btn-small" style="background: var(--success);" onclick="adminReviewMusic('${id}', 'Aprovado')">Aprovar</button>
-                        <button class="btn btn-small btn-danger" onclick="adminReviewMusic('${id}', 'Rejeitado')">Rejeitar</button>
-                    </div>
-                </div>
-            `;
+            reviewContainer.innerHTML += `<div class="music-card"><img src="${m.capa}" class="music-card-img"><div class="music-card-info"><div class="music-card-title">${m.titulo}</div><div class="music-card-artist">${m.artista}</div><button class="btn btn-small" style="background:var(--success);" onclick="adminApprove('${doc.id}')">Aprovar</button><button class="btn btn-small btn-danger" onclick="adminReject('${doc.id}')">Rejeitar</button></div></div>`;
         });
-    }
-
-    async function adminChangePlan(email, newPlan) {
-        if (!userData?.isAdmin) return alert("Acesso negado!");
-        if (!newPlan) return;
-        try {
-            await db.collection('users').doc(email).update({ plano: newPlan });
-            alert(`Plano de ${email} alterado para ${newPlan}`);
-            loadAdminData();
-        } catch (error) { alert("Erro: " + error.message); }
-    }
-
-    async function adminReviewMusic(id, status) {
-        if (!userData?.isAdmin) return alert("Acesso negado!");
-        try {
-            await db.collection('musicas').doc(id).update({ status, reviewedAt: firebase.firestore.FieldValue.serverTimestamp(), reviewedBy: currentUser.email });
-            if (status === 'Aprovado') {
-                const music = (await db.collection('musicas').doc(id).get()).data();
-                await db.collection('users').doc(music.owner).update({ saldo: firebase.firestore.FieldValue.increment(100) });
-                await db.collection('ganhos').add({ email: music.owner, valor: 100, tipo: "Royalties", data: firebase.firestore.FieldValue.serverTimestamp() });
-            }
-            alert(`Música ${status}!`);
-            loadAdminData();
-            loadFeed();
-            loadDestaques();
-        } catch (error) { alert("Erro: " + error.message); }
-    }
-
-    async function adminDeleteUser(email) {
-        if (!userData?.isAdmin) return alert("Acesso negado!");
-        if (confirm(`Tem certeza que deseja eliminar o utilizador ${email}?`)) {
-            try { await db.collection('users').doc(email).delete(); alert("Utilizador eliminado!"); loadAdminData(); }
-            catch (error) { alert("Erro: " + error.message); }
-        }
-    }
-
-    async function searchUsers() {
-        if (!userData?.isAdmin) return;
-        const term = document.getElementById('admin-user-search').value.toLowerCase();
-        const snapshot = await db.collection('users').get();
-        const container = document.getElementById('admin-users-list');
-        container.innerHTML = '';
-        snapshot.forEach(doc => {
+        const usersContainer = document.getElementById('admin-users-list');
+        usersContainer.innerHTML = '';
+        users.forEach(doc => {
             const u = doc.data();
-            if (u.email === ADMIN_CONFIG.ADMIN_EMAIL) return;
-            if (u.nome.toLowerCase().includes(term) || u.email.toLowerCase().includes(term)) {
-                container.innerHTML += `
-                    <div class="list-item">
-                        <div class="list-info">
-                            <h4>${u.nome}</h4>
-                            <p>${u.email} | Plano: ${u.plano} | Saldo: ${(u.saldo || 0).toLocaleString()} Kz</p>
-                        </div>
-                        <div class="list-actions">
-                            <select onchange="adminChangePlan('${u.email}', this.value)" style="width: 120px; margin-bottom: 0; padding: 5px;">
-                                <option value="">Mudar Plano</option>
-                                <option value="FREE">FREE</option>
-                                <option value="BÁSICO">BÁSICO</option>
-                                <option value="MÉDIO">MÉDIO</option>
-                                <option value="PRO">PRO</option>
-                            </select>
-                            <button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')"><i class="fas fa-user-slash"></i></button>
-                        </div>
-                    </div>
-                `;
-            }
+            if (u.email !== ADMIN_EMAIL) usersContainer.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333;"><b>${u.nome}</b> (${u.email}) - Plano: ${u.plano} | Saldo: ${(u.saldo || 0).toLocaleString()} Kz<button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')">Excluir</button></div>`;
         });
     }
 
-    async function viewSecurityLogs() {
-        if (!userData?.isAdmin) return;
-        try {
-            const logs = await db.collection('security_logs').orderBy('timestamp', 'desc').limit(50).get();
-            let logText = "=== LOGS DE SEGURANÇA ===\n\n";
-            logs.forEach(doc => {
-                const log = doc.data();
-                const timestamp = log.timestamp ? log.timestamp.toDate().toLocaleString() : 'N/A';
-                logText += `[${timestamp}] ${log.eventType}: ${JSON.stringify(log.details)}\n`;
-            });
-            alert(logText);
-        } catch (error) { alert("Erro ao carregar logs: " + error.message); }
-    }
+    window.adminApprove = async (id) => {
+        if (!userData?.isAdmin) return alert("Acesso negado!");
+        await db.collection('musicas').doc(id).update({ status: "Aprovado" });
+        loadAdminData(); loadDestaques();
+    };
+    window.adminReject = async (id) => { if (!userData?.isAdmin) return alert("Acesso negado!"); await db.collection('musicas').doc(id).update({ status: "Rejeitado" }); loadAdminData(); };
+    window.adminDeleteUser = async (email) => { if (!userData?.isAdmin) return alert("Acesso negado!"); if (confirm("Excluir utilizador?")) { await db.collection('users').doc(email).delete(); loadAdminData(); } };
 
-    // ========== UTILITY FUNCTIONS ==========
-    function showLoading(show, text = "Processando...") {
-        document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
-        document.getElementById('loading-text').innerText = text;
-    }
-
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function previewImage(input, previewId) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (e) => document.getElementById(previewId).src = e.target.result;
-            reader.readAsDataURL(input.files[0]);
+    async function loadPlanos() {
+        const plans = [
+            { name: "FREE", price: 0, percent: 70, desc: "1 Artista", minWithdraw: 10000 },
+            { name: "BÁSICO", price: 10000, percent: 80, desc: "10 Artistas", minWithdraw: 10000 },
+            { name: "MÉDIO", price: 20000, percent: 85, desc: "30 Artistas", minWithdraw: 10000 },
+            { name: "PRO", price: 30000, percent: 90, desc: "Artistas Ilimitados", minWithdraw: 5000 },
+            { name: "VIP", price: 50000, percent: 100, desc: "Prioridade Máxima", minWithdraw: 5000 }
+        ];
+        const container = document.getElementById('plans-container');
+        container.innerHTML = '';
+        for (let p of plans) {
+            const isCurrent = userData?.plano === p.name;
+            container.innerHTML += `<div class="plan-card ${p.name === 'VIP' ? 'featured' : ''}"><div class="plan-name">Plano ${p.name}</div><div class="plan-price">${p.price === 0 ? 'Grátis' : p.price.toLocaleString() + ' Kz/mês'}</div><div class="royalty-percent">🎵 ${p.percent}% dos Royalties</div><p>${p.desc}</p><p style="font-size:0.7rem; color:var(--gray);">Saque mínimo: ${p.minWithdraw.toLocaleString()} Kz</p>${isCurrent ? '<div class="current-plan-badge">✅ Plano Atual</div>' : (p.price > 0 ? `<button class="btn" onclick="comprarPlano('${p.name}', ${p.price})">Comprar</button>` : '')}</div>`;
         }
+    }
+
+    async function comprarPlano(plano, valor) {
+        if ((userData.saldo || 0) < valor) return alert("Saldo insuficiente!");
+        await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor), plano });
+        await db.collection('royalties').add({ email: ADMIN_EMAIL, valor, tipo: `Compra Plano ${plano}`, data: firebase.firestore.FieldValue.serverTimestamp(), percentual: 100 });
+        loadUserData();
+        alert(`Plano ${plano} ativado! Você agora recebe ${ROYALTY_PERCENTAGES[plano]}% dos royalties.`);
+    }
+
+    // Função para processar royalties (chamada quando uma música recebe streams)
+    async function processRoyalties(musicId, streamValue) {
+        const musicDoc = await db.collection('musicas').doc(musicId).get();
+        const music = musicDoc.data();
+        const userDoc = await db.collection('users').doc(music.owner).get();
+        const userPlan = userDoc.data().plano;
+        const royaltyPercent = ROYALTY_PERCENTAGES[userPlan] || 70;
+        const royaltyAmount = (streamValue * royaltyPercent) / 100;
+        
+        await db.collection('users').doc(music.owner).update({
+            saldo: firebase.firestore.FieldValue.increment(royaltyAmount)
+        });
+        
+        await db.collection('royalties').add({
+            email: music.owner,
+            valor: royaltyAmount,
+            percentual: royaltyPercent,
+            tipo: "Royalty de Streaming",
+            musica: music.titulo,
+            data: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        await db.collection('musicas').doc(musicId).update({
+            streams: firebase.firestore.FieldValue.increment(1)
+        });
     }
 
     function showSectionGlobal(sectionId, btn) {
-        if (!currentUser && !['home', 'planos'].includes(sectionId)) { alert('Por favor, inicie sessão para aceder a esta secção.'); showAuthScreen(); return; }
-        if (currentUser) { showSection(sectionId, btn); return; }
-        document.querySelectorAll('#global-nav .nav-btn').forEach(b => b.classList.remove('active'));
+        if (!currentUser && !['home', 'planos'].includes(sectionId)) return alert("Faça login para aceder.");
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
-        if (sectionId === 'planos') {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            showSection('planos', btn);
-        } else { showAuthScreen(); }
+        if (sectionId === 'lancar') carregarRascunho();
     }
+    function showAuthScreen() { document.getElementById('auth-screen').style.display = 'flex'; document.getElementById('main-app').style.display = 'none'; }
+    function openArtistModal() { document.getElementById('modal-artista').style.display = 'flex'; }
+    function handleLogout() { auth.signOut(); location.reload(); }
 
-    function showAuthScreen() {
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('main-app').style.display = 'none';
-    }
-
-    // ========== MOEDA ==========
-    const CurrencySystem = {
-        rates: { AOA: 1, USD: 0.0012, EUR: 0.0011 },
-        symbols: { AOA: 'Kz', USD: '$', EUR: '€' },
-        convert(amountInAOA, toCurrency) { return amountInAOA * (this.rates[toCurrency] || 1); },
-        format(amount, currency) { return `${this.symbols[currency]} ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`; }
-    };
-    let selectedCurrency = localStorage.getItem('mam_currency') || 'AOA';
-    function changeCurrency(currency) { selectedCurrency = currency; localStorage.setItem('mam_currency', currency); updateWalletDisplay(); }
-    function updateWalletDisplay() {
-        if (!userData) return;
-        const saldoAOA = userData.saldo || 0;
-        const walletSaldoEl = document.getElementById('wallet-saldo');
-        const statSaldoEl = document.getElementById('stat-saldo');
-        const convertedEl = document.getElementById('wallet-saldo-converted');
-        if (walletSaldoEl) walletSaldoEl.innerText = `${saldoAOA.toLocaleString()} Kz`;
-        if (statSaldoEl) statSaldoEl.innerText = `${saldoAOA.toLocaleString()} Kz`;
-        if (selectedCurrency !== 'AOA' && convertedEl) {
-            convertedEl.innerText = `≈ ${CurrencySystem.format(CurrencySystem.convert(saldoAOA, selectedCurrency), selectedCurrency)}`;
-            convertedEl.style.display = 'block';
-        } else if (convertedEl) convertedEl.style.display = 'none';
-    }
-
-    // ========== PESQUISA GLOBAL ==========
-    async function handleGlobalSearch(event) { if (event.key === 'Enter') performGlobalSearch(); }
-    async function performGlobalSearch() {
-        const searchTerm = document.getElementById('global-search').value.trim().toLowerCase();
-        if (!searchTerm || searchTerm.length < 2) { alert('Digite pelo menos 2 caracteres para pesquisar.'); return; }
-        showLoading(true, 'A pesquisar...');
-        try {
-            const resultsContainer = document.getElementById('search-results');
-            resultsContainer.innerHTML = '';
-            const musicasSnapshot = await db.collection('musicas').where('status', '==', 'Aprovado').get();
-            const artistasSnapshot = await db.collection('artistas').get();
-            const musicas = [], artistas = [];
-            musicasSnapshot.forEach(doc => { const m = doc.data(); if ((m.titulo || '').toLowerCase().includes(searchTerm) || (m.artista || '').toLowerCase().includes(searchTerm)) musicas.push({ id: doc.id, ...m, type: 'musica' }); });
-            artistasSnapshot.forEach(doc => { const a = doc.data(); if ((a.nome || '').toLowerCase().includes(searchTerm)) artistas.push({ id: doc.id, ...a, type: 'artista' }); });
-            if (musicas.length === 0 && artistas.length === 0) resultsContainer.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">Nenhum resultado encontrado.</p>';
-            else {
-                if (artistas.length > 0) {
-                    resultsContainer.innerHTML += '<h4 style="color: var(--gold); margin: 15px 0 10px;">Artistas (' + artistas.length + ')</h4>';
-                    artistas.forEach(a => { resultsContainer.innerHTML += `<div class="list-item search-result-item" onclick="viewArtistFromSearch('${a.id}')"><img src="${a.foto || 'https://via.placeholder.com/40'}"><div class="list-info"><h4>${a.nome}</h4><p>${a.estilo}</p></div></div>`; });
-                }
-                if (musicas.length > 0) {
-                    resultsContainer.innerHTML += '<h4 style="color: var(--gold); margin: 15px 0 10px;">Músicas (' + musicas.length + ')</h4>';
-                    musicas.forEach(m => { resultsContainer.innerHTML += `<div class="list-item search-result-item" onclick="playMusicFromSearch('${m.id}')"><img src="${m.capa || 'https://via.placeholder.com/40'}"><div class="list-info"><h4>${m.titulo}</h4><p>${m.artista}</p></div></div>`; });
-                }
-            }
-            document.getElementById('search-results-container').style.display = 'block';
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('auth-screen').style.display = 'none';
-            showLoading(false);
-        } catch (error) { showLoading(false); alert("Erro na pesquisa: " + error.message); }
-    }
-    function closeSearchResults() {
-        document.getElementById('search-results-container').style.display = 'none';
-        document.getElementById('global-search').value = '';
-        if (currentUser) document.getElementById('main-app').style.display = 'block';
-        else document.getElementById('auth-screen').style.display = 'flex';
-    }
-    async function viewArtistFromSearch(artistId) {
-        const doc = await db.collection('artistas').doc(artistId).get();
-        if (doc.exists) { const a = doc.data(); alert(`Artista: ${a.nome}\nEstilo: ${a.estilo}`); }
-    }
-    async function playMusicFromSearch(musicId) {
-        const doc = await db.collection('musicas').doc(musicId).get();
-        if (doc.exists) {
-            const m = doc.data();
-            const existingPlayer = document.getElementById('temp-audio-player');
-            if (existingPlayer) existingPlayer.remove();
-            const playerHtml = `<div id="temp-audio-player" style="position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--card); border: 2px solid var(--gold); padding: 15px 20px; border-radius: 12px; z-index: 9999; display: flex; align-items: center; gap: 15px;"><img src="${m.capa}" style="width: 50px; height: 50px; border-radius: 8px;"><div><p style="color: var(--gold); font-weight: bold;">${m.titulo}</p><p style="color: var(--gray);">${m.artista}</p></div><audio controls autoplay><source src="${m.audio}" type="audio/mpeg"></audio><button onclick="document.getElementById('temp-audio-player').remove()" style="background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%;"><i class="fas fa-times"></i></button></div>`;
-            document.body.insertAdjacentHTML('beforeend', playerHtml);
-        }
-    }
+    window.onload = () => { carregarRascunho(); };
 </script>
 </body>
 </html>

@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Firebase SDK - Carregar primeiro -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -434,7 +434,11 @@
     </div>
 
 <script>
-    // Inicialização do EmailJS com chaves reais
+    // ========== CONFIGURAÇÃO DO EMAILJS COM CHAVES REAIS ==========
+    // Chave pública: S51h6RPyNm9N9YjL
+    // Service ID: service_pbe3n1o
+    // Template ID: template_9tewq46
+    
     (function() {
         emailjs.init("S51h6RPyNm9N9YjL");
     })();
@@ -448,7 +452,7 @@
         appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
     };
 
-    // Inicializar Firebase ANTES de qualquer outra coisa
+    // Inicializar Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -491,6 +495,7 @@
             updateUI();
             if (userData.isAdmin) loadAdminData();
         } else {
+            // SALDO ZERO - sem bónus falsos
             const newUser = { nome: currentUser.displayName || "Novo Utilizador", email: currentUser.email, tipo: "Artista", pais: "Angola", plano: "FREE", saldo: 0, isAdmin: false, createdAt: new Date() };
             await db.collection('users').doc(currentUser.email).set(newUser);
             userData = newUser;
@@ -546,10 +551,17 @@
             const newUser = { nome, email, tipo, pais, plano: "FREE", saldo: 0, isAdmin: false, createdAt: new Date() };
             await db.collection('users').doc(email).set(newUser);
             
-            // Email de boas-vindas
+            // Enviar email de boas-vindas com as chaves corretas
             try {
-                await emailjs.send("service_pbe3n1o", "template_9tewq46", { to_email: email, to_name: nome, message: "Bem-vindo à MAM Distribuidora!" });
-            } catch(e) { console.log("Email error:", e); }
+                await emailjs.send("service_pbe3n1o", "template_9tewq46", { 
+                    to_email: email, 
+                    to_name: nome, 
+                    message: "Bem-vindo à MAM Distribuidora! Sua conta foi criada com sucesso." 
+                });
+                console.log("Email de boas-vindas enviado!");
+            } catch(e) { 
+                console.log("Erro ao enviar email:", e); 
+            }
             
             alert("Conta criada! Verifique seu e-mail para ativar a conta.");
             toggleAuth(false);
@@ -687,7 +699,7 @@
         container.innerHTML = '<p>Nenhum ganho registrado.</p>';
     }
 
-    // FUNÇÃO DE SAQUE COM REGRAS
+    // FUNÇÃO DE SAQUE COM REGRAS - Pro Max: 5.000 KZ | Outros: 10.000 KZ
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
         const metodo = document.getElementById('saque-metodo').value;
@@ -805,8 +817,6 @@
         musicas.forEach(doc => { const m = doc.data(); if(m.titulo.toLowerCase().includes(term)) results.push(m); });
         alert(`Encontrados ${results.length} resultados`);
     }
-
-    // Removida função ganharDinheiro completamente
 </script>
 </body>
 </html>

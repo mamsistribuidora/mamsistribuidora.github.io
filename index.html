@@ -21,7 +21,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <style>
         :root { 
@@ -88,13 +87,12 @@
         .stat-box { background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.3); padding: 20px; border-radius: 10px; text-align: center; }
         .stat-box h4 { color: var(--gold); font-size: 1.8rem; margin-bottom: 5px; }
 
-        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 20px 0; }
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
         .plan-card { background: var(--card); border: 2px solid #333; padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; }
         .plan-card:hover { border-color: var(--gold); }
         .plan-card.featured { border-color: var(--gold); }
         .plan-name { color: var(--gold); font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; }
         .plan-price { font-size: 2rem; color: var(--gold); margin: 15px 0; }
-        .royalty-percent { font-size: 1.2rem; color: var(--success); margin: 10px 0; }
         .current-plan-badge { background: var(--gold); color: #000; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin-top: 10px; display: inline-block; }
 
         #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
@@ -109,21 +107,6 @@
             .grid-cards { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
             .container { padding: 15px; }
         }
-        
-        .list-item { background: #111; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; border: 1px solid #222; transition: 0.3s; }
-        .list-item:hover { border-color: var(--gold); background: #151515; }
-        .list-item img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
-        .list-info { flex: 1; }
-        .list-info h4 { font-size: 0.95rem; margin-bottom: 4px; }
-        .list-info p { font-size: 0.75rem; color: var(--gray); }
-        .list-actions { display: flex; gap: 8px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .disco-item { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; transition: 0.3s; }
-        .disco-cover { width: 120px; height: 120px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
-        .disco-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; }
-        .disco-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
-        .audio-player { width: 100%; margin-top: 10px; }
-        .admin-badge { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; }
     </style>
 </head>
 <body>
@@ -222,7 +205,7 @@
 
             <div id="carteira" class="section">
                 <div class="stat-box"><p>Saldo Disponível</p><h4 id="wallet-saldo">0 Kz</h4><button class="btn btn-small" onclick="openModal('modal-saque')">Solicitar Levantamento</button></div>
-                <div class="card"><h3>Histórico de Royalties</h3><div id="historico-ganhos"></div></div>
+                <div class="card"><h3>Histórico de Ganhos</h3><div id="historico-ganhos"></div></div>
             </div>
 
             <div id="perfil" class="section">
@@ -256,25 +239,32 @@
     </div>
 
     <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center;">
-        <div class="card" style="max-width: 500px;"><span style="float: right; cursor: pointer;" onclick="closeModal('modal-saque')">&times;</span>
+        <div class="card" style="max-width: 500px;">
+            <span style="float: right; cursor: pointer;" onclick="closeModal('modal-saque')">&times;</span>
             <h3>Solicitar Levantamento</h3>
-            <p id="saque-min-info" style="color: var(--gray); margin-bottom: 10px;">Valor mínimo: 10.000 Kz</p>
-            <input type="number" id="saque-valor" placeholder="Valor">
-            <button class="btn" onclick="handleRequestWithdraw()">Confirmar</button>
+            <input type="number" id="saque-valor" placeholder="Valor (mínimo 5000 ou 10000 conforme plano)">
+            <select id="saque-metodo">
+                <option value="">Selecione o método</option>
+                <option value="BFA">Banco BFA</option>
+                <option value="BAI">Banco BAI</option>
+                <option value="Multicaixa">Multicaixa Express</option>
+                <option value="PayPal">PayPal</option>
+            </select>
+            <input type="text" id="saque-dados" placeholder="Dados bancários (IBAN/Email/Número)">
+            <button class="btn" onclick="handleRequestWithdraw()">Confirmar Saque</button>
         </div>
     </div>
 
     <footer><p>&copy; 2026 MAM Distribuidora | Suporte: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307</p></footer>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
-        authDomain: "mam-distribuidora-6043f.firebaseapp.com",
-        projectId: "mam-distribuidora-6043f",
-        messagingSenderId: "467923017917",
-        appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
+    const firebaseConfig = { 
+        apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI", 
+        authDomain: "mam-distribuidora-6043f.firebaseapp.com", 
+        projectId: "mam-distribuidora-6043f", 
+        messagingSenderId: "467923017917", 
+        appId: "1:467923017917:web:7361ecf8cff2cbfed197d4" 
     };
-
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -282,21 +272,13 @@
     const uploadPreset = 'mam_distribuidora';
     const ADMIN_EMAIL = "mamfilhos29@gmail.com";
 
-    // EmailJS Configuration
-    emailjs.init("ZIn-7UvE8Z0O6P-e5");
-
     let currentUser = null;
     let userData = null;
 
-    // OS 4 PLANOS com percentuais de royalties
-    const PLANS = {
-        "FREE": { name: "FREE", percent: 70, minWithdraw: 10000, price: 0, desc: "1 Artista", featured: false },
-        "BÁSICO": { name: "BÁSICO", percent: 80, minWithdraw: 10000, price: 10000, desc: "10 Artistas", featured: false },
-        "MÉDIO": { name: "MÉDIO", percent: 85, minWithdraw: 10000, price: 20000, desc: "30 Artistas", featured: false },
-        "PRO MAX": { name: "PRO MAX", percent: 90, minWithdraw: 5000, price: 50000, desc: "Artistas Ilimitados", featured: true }
-    };
-
-    function showLoading(show, text = "Processando...") { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
+    function showLoading(show, text = "Processando...") { 
+        document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; 
+        document.getElementById('loading-text').innerText = text; 
+    }
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -315,6 +297,7 @@
         if (error.code === 'auth/user-not-found') return 'Conta não encontrada. Verifique o e-mail.';
         if (error.code === 'auth/email-already-in-use') return 'E-mail já em uso. Faça login ou recupere a senha.';
         if (error.code === 'auth/weak-password') return 'A senha deve ter pelo menos 6 caracteres.';
+        if (error.code === 'auth/invalid-email') return 'E-mail inválido.';
         return 'Erro: ' + (error.message || 'Tente novamente mais tarde.');
     }
 
@@ -325,14 +308,20 @@
         showLoading(true);
         try {
             const result = await auth.signInWithEmailAndPassword(email, pass);
-            if (result.user.email !== ADMIN_EMAIL && !result.user.emailVerified) {
+            if (!result.user.emailVerified) {
                 await auth.signOut();
                 showLoading(false);
                 document.getElementById('email-verify-warning').style.display = 'block';
                 return;
             }
             document.getElementById('email-verify-warning').style.display = 'none';
-        } catch (error) { alert(getErrorMessage(error)); showLoading(false); }
+            await db.collection('users').doc(email).update({ saldo: firebase.firestore.FieldValue.increment(100) });
+            await db.collection('ganhos').add({ email, valor: 100, tipo: "Bónus de Login", data: firebase.firestore.FieldValue.serverTimestamp() });
+            showLoading(false);
+        } catch (error) { 
+            alert(getErrorMessage(error)); 
+            showLoading(false); 
+        }
     }
 
     async function handleRegister() {
@@ -348,19 +337,30 @@
             await result.user.sendEmailVerification();
             await db.collection('users').doc(email).set({ 
                 nome, email, tipo, pais: "Angola", plano: "FREE", saldo: 0, 
-                isAdmin: email === ADMIN_EMAIL, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                isAdmin: email === ADMIN_EMAIL, 
+                createdAt: firebase.firestore.FieldValue.serverTimestamp() 
             });
-            alert("Conta criada! Verifique seu e-mail para confirmar o cadastro.\n\nSaldo inicial: 0 Kz. Os ganhos vêm dos royalties das suas músicas.");
+            await db.collection('users').doc(email).update({ saldo: firebase.firestore.FieldValue.increment(5000) });
+            await db.collection('ganhos').add({ email, valor: 5000, tipo: "Bónus de Registo", data: firebase.firestore.FieldValue.serverTimestamp() });
+            alert("Conta criada! Verifique seu e-mail para confirmar o cadastro.");
             showLoading(false);
             toggleAuth(false);
-        } catch (error) { alert(getErrorMessage(error)); showLoading(false); }
+        } catch (error) { 
+            alert(getErrorMessage(error)); 
+            showLoading(false); 
+        }
     }
 
     async function handlePasswordRecovery() {
         const email = document.getElementById('recovery-email').value.trim();
         if (!email) return alert("Digite seu e-mail!");
-        try { await auth.sendPasswordResetEmail(email); alert("Link de recuperação enviado para " + email); hidePasswordRecovery(); } 
-        catch (error) { alert(getErrorMessage(error)); }
+        try { 
+            await auth.sendPasswordResetEmail(email); 
+            alert("Link de recuperação enviado para " + email); 
+            hidePasswordRecovery(); 
+        } catch (error) { 
+            alert(getErrorMessage(error)); 
+        }
     }
 
     function toggleAuth(isRegister) {
@@ -368,16 +368,26 @@
         document.getElementById('register-form').style.display = isRegister ? 'block' : 'none';
         document.getElementById('recovery-form').style.display = 'none';
     }
-    function showPasswordRecovery() { document.getElementById('login-form').style.display = 'none'; document.getElementById('recovery-form').style.display = 'block'; }
-    function hidePasswordRecovery() { document.getElementById('recovery-form').style.display = 'none'; document.getElementById('login-form').style.display = 'block'; }
+    function showPasswordRecovery() { 
+        document.getElementById('login-form').style.display = 'none'; 
+        document.getElementById('recovery-form').style.display = 'block'; 
+    }
+    function hidePasswordRecovery() { 
+        document.getElementById('recovery-form').style.display = 'none'; 
+        document.getElementById('login-form').style.display = 'block'; 
+    }
 
     auth.onAuthStateChanged(async (user) => {
-        if (user && (user.email === ADMIN_EMAIL || user.emailVerified)) {
+        if (user && user.emailVerified) {
             currentUser = user;
             const doc = await db.collection('users').doc(user.email).get();
             userData = doc.data();
             if (!userData) { 
-                await db.collection('users').doc(user.email).set({ nome: user.displayName || "Utilizador", email: user.email, saldo: 0, plano: "FREE", isAdmin: user.email === ADMIN_EMAIL }); 
+                await db.collection('users').doc(user.email).set({ 
+                    nome: user.displayName || "Utilizador", 
+                    email: user.email, saldo: 0, plano: "FREE", 
+                    isAdmin: user.email === ADMIN_EMAIL 
+                }); 
                 userData = (await db.collection('users').doc(user.email).get()).data(); 
             }
             document.getElementById('auth-screen').style.display = 'none';
@@ -402,16 +412,11 @@
     });
 
     async function loadUserData() {
-        document.getElementById('user-welcome').innerHTML = `<h2>Olá, ${userData.nome}!</h2><p>Plano: ${userData.plano} | Saldo: ${(userData.saldo || 0).toLocaleString()} Kz</p><p>Royalties: ${PLANS[userData.plano]?.percent || 70}% do valor bruto</p>`;
+        document.getElementById('user-welcome').innerHTML = `<h2>Olá, ${userData.nome}!</h2><p>Plano: ${userData.plano} | Saldo: ${userData.saldo || 0} Kz</p>`;
         document.getElementById('stat-saldo').innerText = (userData.saldo || 0).toLocaleString() + " Kz";
         document.getElementById('wallet-saldo').innerText = (userData.saldo || 0).toLocaleString() + " Kz";
         document.getElementById('perfil-nome').value = userData.nome;
         document.getElementById('perfil-telefone').value = userData.telefone || '';
-        
-        // Update withdrawal minimum info based on user plan
-        const planInfo = PLANS[userData.plano] || PLANS["FREE"];
-        document.getElementById('saque-min-info').innerHTML = `Valor mínimo: ${planInfo.minWithdraw.toLocaleString()} Kz (Plano ${userData.plano})`;
-        
         await loadArtistas();
         await loadMinhasMusicas();
         await loadDestaques();
@@ -453,7 +458,12 @@
         alert("Artista criado!");
     }
 
-    async function deleteArtist(id) { if (confirm("Remover artista?")) { await db.collection('artistas').doc(id).delete(); loadArtistas(); } }
+    async function deleteArtist(id) { 
+        if (confirm("Remover artista?")) { 
+            await db.collection('artistas').doc(id).delete(); 
+            loadArtistas(); 
+        } 
+    }
 
     async function enviarLancamento() {
         const titulo = document.getElementById('music-titulo').value.trim();
@@ -468,28 +478,7 @@
         try {
             const capaUrl = await uploadFile(capaFile, 'image');
             const audioUrl = await uploadFile(audioFile, 'audio');
-            
-            await db.collection('musicas').add({ 
-                titulo, artista, genero, isrc, upc, capa: capaUrl, audio: audioUrl, 
-                owner: currentUser.email, status: "Em Revisão", streams: 0,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp() 
-            });
-            
-            // Send email via EmailJS
-            try {
-                await emailjs.send("service_default", "template_default", {
-                    to_email: currentUser.email,
-                    to_name: userData.nome,
-                    music_title: titulo,
-                    artist_name: artista,
-                    subject: "Música Enviada para Revisão - MAM Distribuidora",
-                    message: `Olá ${userData.nome},\n\nSua música "${titulo}" foi enviada para revisão e será analisada pela nossa equipa.\n\nVocê receberá uma notificação quando for aprovada.\n\nAtenciosamente,\nEquipa MAM Distribuidora`
-                });
-                console.log("Email enviado com sucesso");
-            } catch (emailError) {
-                console.warn("Erro ao enviar email:", emailError);
-            }
-            
+            await db.collection('musicas').add({ titulo, artista, genero, isrc, upc, capa: capaUrl, audio: audioUrl, owner: currentUser.email, status: "Em Revisão", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
             alert("Música enviada para revisão!");
             document.getElementById('music-titulo').value = '';
             document.getElementById('music-isrc').value = '';
@@ -499,16 +488,35 @@
             localStorage.removeItem('rascunho_mam');
             await loadMinhasMusicas();
             await loadLancamentos();
-        } catch (error) { alert("Erro: " + error.message); }
+        } catch (error) { 
+            alert("Erro: " + error.message); 
+        }
         showLoading(false);
     }
 
     function guardarRascunho() {
-        const rascunho = { titulo: document.getElementById('music-titulo').value, artista: document.getElementById('music-artista-select').value, genero: document.getElementById('music-genero').value, isrc: document.getElementById('music-isrc').value, upc: document.getElementById('music-upc').value };
+        const rascunho = { 
+            titulo: document.getElementById('music-titulo').value, 
+            artista: document.getElementById('music-artista-select').value, 
+            genero: document.getElementById('music-genero').value, 
+            isrc: document.getElementById('music-isrc').value, 
+            upc: document.getElementById('music-upc').value 
+        };
         localStorage.setItem('rascunho_mam', JSON.stringify(rascunho));
         alert("Rascunho guardado!");
     }
-    function carregarRascunho() { const r = localStorage.getItem('rascunho_mam'); if (r) { const d = JSON.parse(r); document.getElementById('music-titulo').value = d.titulo || ''; document.getElementById('music-artista-select').value = d.artista || ''; document.getElementById('music-genero').value = d.genero || ''; document.getElementById('music-isrc').value = d.isrc || ''; document.getElementById('music-upc').value = d.upc || ''; } }
+    
+    function carregarRascunho() { 
+        const r = localStorage.getItem('rascunho_mam'); 
+        if (r) { 
+            const d = JSON.parse(r); 
+            document.getElementById('music-titulo').value = d.titulo || ''; 
+            document.getElementById('music-artista-select').value = d.artista || ''; 
+            document.getElementById('music-genero').value = d.genero || ''; 
+            document.getElementById('music-isrc').value = d.isrc || ''; 
+            document.getElementById('music-upc').value = d.upc || ''; 
+        } 
+    }
 
     async function loadMinhasMusicas() {
         const snapshot = await db.collection('musicas').where('owner', '==', currentUser.email).get();
@@ -521,7 +529,13 @@
         });
     }
 
-    async function deleteMusic(id) { if (confirm("Remover música?")) { await db.collection('musicas').doc(id).delete(); loadMinhasMusicas(); loadLancamentos(); } }
+    async function deleteMusic(id) { 
+        if (confirm("Remover música?")) { 
+            await db.collection('musicas').doc(id).delete(); 
+            loadMinhasMusicas(); 
+            loadLancamentos(); 
+        } 
+    }
 
     async function loadDestaques() {
         const snapshot = await db.collection('musicas').where('status', '==', 'Aprovado').limit(6).get();
@@ -544,29 +558,121 @@
     }
 
     async function loadHistoricoGanhos() {
-        const snapshot = await db.collection('royalties').where('email', '==', currentUser.email).orderBy('data', 'desc').limit(20).get();
+        const snapshot = await db.collection('ganhos').where('email', '==', currentUser.email).orderBy('data', 'desc').limit(20).get();
         const container = document.getElementById('historico-ganhos');
         container.innerHTML = '';
-        if (snapshot.empty) { container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum royalty registado ainda.</p>'; return; }
         snapshot.forEach(doc => {
             const g = doc.data();
-            container.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:8px;"><span>${g.tipo} - ${g.musica || ''}</span><span>+ ${g.valor.toLocaleString()} Kz (${g.percentual}%)</span></div>`;
+            container.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:8px;"><span>${g.tipo}</span><span>+ ${g.valor} Kz</span></div>`;
         });
     }
 
+    // FUNÇÃO DE SAQUE ATUALIZADA COM VALIDAÇÃO POR PLANO
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
-        const planInfo = PLANS[userData.plano] || PLANS["FREE"];
-        const minWithdraw = planInfo.minWithdraw;
+        const metodo = document.getElementById('saque-metodo')?.value || '';
+        const dados = document.getElementById('saque-dados')?.value || '';
         
-        if (!valor || valor < minWithdraw) return alert(`Valor mínimo de ${minWithdraw.toLocaleString()} Kz para o plano ${userData.plano}`);
-        if (valor > (userData.saldo || 0)) return alert("Saldo insuficiente!");
+        if (!valor || valor <= 0) {
+            alert("Por favor, insira um valor válido para o saque.");
+            return;
+        }
         
-        await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
-        await db.collection('saques').add({ email: currentUser.email, valor, status: "Pendente", data: firebase.firestore.FieldValue.serverTimestamp() });
-        alert("Solicitação enviada!");
-        closeModal('modal-saque');
-        loadUserData();
+        if (!metodo) {
+            alert("Por favor, selecione um método de levantamento.");
+            return;
+        }
+        
+        if (!dados || dados.trim() === "") {
+            alert("Por favor, insira os dados de pagamento (IBAN, número de conta ou e-mail).");
+            return;
+        }
+        
+        showLoading(true, "A verificar condições de saque...");
+        
+        try {
+            const userDoc = await db.collection('users').doc(currentUser.email).get();
+            
+            if (!userDoc.exists) {
+                showLoading(false);
+                alert("Erro: Dados do utilizador não encontrados. Contacte o suporte.");
+                return;
+            }
+            
+            const userDataAtualizado = userDoc.data();
+            const saldoAtual = userDataAtualizado.saldo || 0;
+            const planoAtual = userDataAtualizado.plano || "FREE";
+            
+            let valorMinimo = 0;
+            let nomePlanoExibicao = planoAtual;
+            
+            if (planoAtual === "PRO MAX" || planoAtual === "ADMIN PRO MAX") {
+                valorMinimo = 5000;
+            } else {
+                valorMinimo = 10000;
+            }
+            
+            if (valor < valorMinimo) {
+                showLoading(false);
+                alert("Saldo insuficiente. O mínimo para o plano " + nomePlanoExibicao + " é " + valorMinimo.toLocaleString() + " KZ");
+                return;
+            }
+            
+            if (valor > saldoAtual) {
+                showLoading(false);
+                alert("Saldo insuficiente. Seu saldo atual é " + saldoAtual.toLocaleString() + " KZ");
+                return;
+            }
+            
+            if (!confirm("Confirma o levantamento de " + valor.toLocaleString() + " KZ para " + metodo + "?")) {
+                showLoading(false);
+                return;
+            }
+            
+            showLoading(true, "A processar pedido de saque...");
+            
+            await db.collection('saques').add({
+                email: currentUser.email,
+                nome: userDataAtualizado.nome || "Utilizador",
+                valor: valor,
+                metodo: metodo,
+                dados: dados,
+                plano: planoAtual,
+                status: "Pendente",
+                data: firebase.firestore.FieldValue.serverTimestamp(),
+                processado: false
+            });
+            
+            await db.collection('users').doc(currentUser.email).update({
+                saldo: firebase.firestore.FieldValue.increment(-valor),
+                ultimoSaque: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            await db.collection('transacoes').add({
+                userId: currentUser.email,
+                tipo: "SAQUE",
+                valor: valor,
+                metodo: metodo,
+                plano: planoAtual,
+                status: "PENDENTE",
+                data: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            showLoading(false);
+            alert("Pedido de saque realizado com sucesso!\n\nValor: " + valor.toLocaleString() + " KZ\nMétodo: " + metodo + "\n\nSeu pedido será processado em até 3 dias úteis.");
+            
+            closeModal('modal-saque');
+            document.getElementById('saque-valor').value = '';
+            document.getElementById('saque-metodo').value = '';
+            document.getElementById('saque-dados').value = '';
+            
+            await loadUserData();
+            
+        } catch (error) {
+            showLoading(false);
+            console.error("Erro ao processar saque:", error);
+            alert("Erro ao processar o pedido de saque: " + (error.message || "Tente novamente mais tarde."));
+        }
     }
 
     async function handleUpdateProfile() {
@@ -578,7 +684,8 @@
         let fotoUrl = userData.foto || '';
         if (fotoFile) fotoUrl = await uploadFile(fotoFile, 'image');
         await db.collection('users').doc(currentUser.email).update({ nome, telefone, foto: fotoUrl });
-        userData.nome = nome; userData.foto = fotoUrl;
+        userData.nome = nome; 
+        userData.foto = fotoUrl;
         loadUserData();
         showLoading(false);
         alert("Perfil atualizado!");
@@ -600,82 +707,55 @@
         usersContainer.innerHTML = '';
         users.forEach(doc => {
             const u = doc.data();
-            if (u.email !== ADMIN_EMAIL) usersContainer.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333;"><b>${u.nome}</b> (${u.email}) - Plano: ${u.plano} | Saldo: ${(u.saldo || 0).toLocaleString()} Kz<button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')">Excluir</button></div>`;
+            if (u.email !== ADMIN_EMAIL) usersContainer.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333;"><b>${u.nome}</b> (${u.email}) - Plano: ${u.plano} | Saldo: ${u.saldo || 0} Kz<button class="btn btn-small btn-danger" onclick="adminDeleteUser('${u.email}')">Excluir</button></div>`;
         });
     }
 
     window.adminApprove = async (id) => {
         if (!userData?.isAdmin) return alert("Acesso negado!");
         await db.collection('musicas').doc(id).update({ status: "Aprovado" });
-        loadAdminData(); loadDestaques();
+        const music = (await db.collection('musicas').doc(id).get()).data();
+        await db.collection('users').doc(music.owner).update({ saldo: firebase.firestore.FieldValue.increment(100) });
+        await db.collection('ganhos').add({ email: music.owner, valor: 100, tipo: "Royalties", data: firebase.firestore.FieldValue.serverTimestamp() });
+        loadAdminData(); 
+        loadDestaques();
     };
-    window.adminReject = async (id) => { if (!userData?.isAdmin) return alert("Acesso negado!"); await db.collection('musicas').doc(id).update({ status: "Rejeitado" }); loadAdminData(); };
-    window.adminDeleteUser = async (email) => { if (!userData?.isAdmin) return alert("Acesso negado!"); if (confirm("Excluir utilizador?")) { await db.collection('users').doc(email).delete(); loadAdminData(); } };
+    
+    window.adminReject = async (id) => { 
+        if (!userData?.isAdmin) return alert("Acesso negado!"); 
+        await db.collection('musicas').doc(id).update({ status: "Rejeitado" }); 
+        loadAdminData(); 
+    };
+    
+    window.adminDeleteUser = async (email) => { 
+        if (!userData?.isAdmin) return alert("Acesso negado!"); 
+        if (confirm("Excluir utilizador?")) { 
+            await db.collection('users').doc(email).delete(); 
+            loadAdminData(); 
+        } 
+    };
 
     async function loadPlanos() {
+        const plans = [
+            { name: "FREE", price: 0, desc: "1 Artista" }, 
+            { name: "BÁSICO", price: 10000, desc: "10 Artistas" }, 
+            { name: "MÉDIO", price: 20000, desc: "30 Artistas" }, 
+            { name: "PRO MAX", price: 50000, desc: "Artistas Ilimitados" }
+        ];
         const container = document.getElementById('plans-container');
         container.innerHTML = '';
-        
-        for (let [planKey, plan] of Object.entries(PLANS)) {
-            const isCurrent = userData?.plano === planKey;
-            container.innerHTML += `
-                <div class="plan-card ${plan.featured ? 'featured' : ''}">
-                    <div class="plan-name">Plano ${plan.name}</div>
-                    <div class="plan-price">${plan.price === 0 ? 'Grátis' : plan.price.toLocaleString() + ' Kz/mês'}</div>
-                    <div class="royalty-percent">🎵 ${plan.percent}% dos Royalties</div>
-                    <p>${plan.desc}</p>
-                    <p style="font-size:0.7rem; color:var(--gray); margin-top:10px;">Saque mínimo: ${plan.minWithdraw.toLocaleString()} Kz</p>
-                    ${isCurrent ? '<div class="current-plan-badge">✅ Plano Atual</div>' : (plan.price > 0 ? `<button class="btn" onclick="comprarPlano('${planKey}', ${plan.price})">Comprar Agora</button>` : '<button class="btn btn-sec" disabled>Plano Gratuito</button>')}
-                </div>
-            `;
+        for (let p of plans) {
+            const isCurrent = userData?.plano === p.name;
+            container.innerHTML += `<div class="plan-card ${p.name === 'PRO MAX' ? 'featured' : ''}"><div class="plan-name">${p.name}</div><div class="plan-price">${p.price === 0 ? 'Grátis' : p.price.toLocaleString() + ' Kz'}</div><p>${p.desc}</p>${isCurrent ? '<div class="current-plan-badge">✅ Plano Atual</div>' : (p.price > 0 ? `<button class="btn" onclick="comprarPlano('${p.name}', ${p.price})">Comprar</button>` : '')}</div>`;
         }
     }
 
     async function comprarPlano(plano, valor) {
-        if ((userData.saldo || 0) < valor) return alert(`Saldo insuficiente! Você precisa de ${valor.toLocaleString()} Kz para este plano.`);
-        
-        await db.collection('users').doc(currentUser.email).update({ 
-            saldo: firebase.firestore.FieldValue.increment(-valor), 
-            plano: plano 
-        });
-        
-        await db.collection('royalties').add({ 
-            email: ADMIN_EMAIL, 
-            valor: valor, 
-            tipo: `Compra Plano ${plano}`, 
-            data: firebase.firestore.FieldValue.serverTimestamp(), 
-            percentual: 100 
-        });
-        
-        alert(`Plano ${plano} ativado com sucesso! Você agora recebe ${PLANS[plano].percent}% dos royalties.`);
+        if ((userData.saldo || 0) < valor) return alert("Saldo insuficiente!");
+        await db.collection('users').doc(currentUser.email).update({ saldo: firebase.firestore.FieldValue.increment(-valor), plano });
+        await db.collection('ganhos').add({ email: ADMIN_EMAIL, valor, tipo: `Venda Plano ${plano}`, data: firebase.firestore.FieldValue.serverTimestamp() });
         loadUserData();
-    }
-
-    // Função para processar royalties (chamada quando uma música recebe streams)
-    async function processRoyalties(musicId, streamValue) {
-        const musicDoc = await db.collection('musicas').doc(musicId).get();
-        const music = musicDoc.data();
-        const userDoc = await db.collection('users').doc(music.owner).get();
-        const userPlan = userDoc.data().plano;
-        const royaltyPercent = PLANS[userPlan]?.percent || 70;
-        const royaltyAmount = (streamValue * royaltyPercent) / 100;
-        
-        await db.collection('users').doc(music.owner).update({
-            saldo: firebase.firestore.FieldValue.increment(royaltyAmount)
-        });
-        
-        await db.collection('royalties').add({
-            email: music.owner,
-            valor: royaltyAmount,
-            percentual: royaltyPercent,
-            tipo: "Royalty de Streaming",
-            musica: music.titulo,
-            data: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        await db.collection('musicas').doc(musicId).update({
-            streams: firebase.firestore.FieldValue.increment(1)
-        });
+        alert(`Plano ${plano} ativado!`);
     }
 
     function showSectionGlobal(sectionId, btn) {
@@ -686,11 +766,24 @@
         if (btn) btn.classList.add('active');
         if (sectionId === 'lancar') carregarRascunho();
     }
-    function showAuthScreen() { document.getElementById('auth-screen').style.display = 'flex'; document.getElementById('main-app').style.display = 'none'; }
-    function openArtistModal() { document.getElementById('modal-artista').style.display = 'flex'; }
-    function handleLogout() { auth.signOut(); location.reload(); }
+    
+    function showAuthScreen() { 
+        document.getElementById('auth-screen').style.display = 'flex'; 
+        document.getElementById('main-app').style.display = 'none'; 
+    }
+    
+    function openArtistModal() { 
+        document.getElementById('modal-artista').style.display = 'flex'; 
+    }
+    
+    function handleLogout() { 
+        auth.signOut(); 
+        location.reload(); 
+    }
 
-    window.onload = () => { carregarRascunho(); };
+    window.onload = () => { 
+        carregarRascunho(); 
+    };
 </script>
 </body>
 </html>

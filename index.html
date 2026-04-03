@@ -9,22 +9,24 @@
     <meta name="author" content="Matias Arsénio Manuel">
     <meta name="robots" content="index, follow">
     
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data: blob:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebaseapp.com wss://*.firebaseio.com https://api.cloudinary.com; media-src https://res.cloudinary.com;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
     <title>MAM Distribuidora - O Império da Música</title>
     <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            emailjs.init("5S1h6RPrYmD9N9YjL");
-        })();
-    </script>
     
     <style>
         :root { 
@@ -49,6 +51,7 @@
             flex-direction: column;
         }
         
+        /* Header & Nav */
         header { background: rgba(0,0,0,0.98); border-bottom: 2px solid var(--gold); padding: 15px; position: sticky; top: 0; z-index: 1000; text-align: center; }
         .logo { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); }
@@ -59,11 +62,13 @@
         .nav-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
         .nav-btn:hover { background: #222; color: #fff; }
 
+        /* Layout */
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; flex: 1; }
         .section { display: none; animation: fadeIn 0.5s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Components */
         .card { background: var(--card); border: 1px solid #222; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .card h3 { color: var(--gold); font-size: 1.1rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
         
@@ -83,11 +88,13 @@
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         
+        /* Stats */
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.3); padding: 20px; border-radius: 10px; text-align: center; }
         .stat-box h4 { color: var(--gold); font-size: 1.8rem; margin-bottom: 5px; }
         .stat-box p { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; }
 
+        /* Lists */
         .item-list { display: flex; flex-direction: column; gap: 12px; }
         .list-item { background: #111; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; border: 1px solid #222; transition: 0.3s; }
         .list-item:hover { border-color: var(--gold); background: #151515; }
@@ -97,10 +104,12 @@
         .list-info p { font-size: 0.75rem; color: var(--gray); }
         .list-actions { display: flex; gap: 8px; }
 
+        /* Profile Photo */
         .profile-upload { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
         .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
         .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #000; }
 
+        /* Admin Specific */
         .admin-badge { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; vertical-align: middle; }
         .admin-pro-max-badge { background: linear-gradient(135deg, var(--gold), #ff6b35); color: #000; padding: 4px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; vertical-align: middle; box-shadow: 0 0 10px rgba(212,175,55,0.5); animation: glow 2s ease-in-out infinite alternate; }
         @keyframes glow { from { box-shadow: 0 0 5px rgba(212,175,55,0.5); } to { box-shadow: 0 0 20px rgba(212,175,55,0.8); } }
@@ -109,10 +118,12 @@
         .status-pending { background: rgba(255,193,7,0.2); color: #ffc107; }
         .status-error { background: rgba(220,53,69,0.2); color: #dc3545; }
 
+        /* Loading Overlay */
         #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Disco/Vinyl Style */
         .disco-item { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
         .disco-item:hover { border-color: var(--gold); background: #151515; }
         .disco-cover { width: 120px; height: 120px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(212,175,55,0.3); }
@@ -120,6 +131,7 @@
         .disco-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
         .audio-player { width: 100%; margin-top: 10px; }
 
+        /* Plans Grid */
         .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
         .plan-card { background: var(--card); border: 2px solid #333; padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; }
         .plan-card:hover { border-color: var(--gold); box-shadow: 0 0 20px rgba(212,175,55,0.2); }
@@ -129,6 +141,7 @@
         .plan-features { text-align: left; margin: 20px 0; font-size: 0.9rem; list-style: none; }
         .plan-features li { margin: 8px 0; color: var(--gray); }
 
+        /* Footer - Global */
         footer { background: #050505; border-top: 1px solid #222; padding: 40px 20px; text-align: center; color: var(--gray); font-size: 0.8rem; margin-top: auto; }
         .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
         .footer-links a { color: var(--gray); text-decoration: none; transition: 0.3s; }
@@ -137,8 +150,10 @@
         .footer-security { margin-top: 15px; font-size: 0.7rem; color: #555; }
         .footer-security i { color: var(--gold); margin-right: 5px; }
 
+        /* Security Badge */
         .security-badge { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.9); border: 1px solid var(--gold); padding: 8px 12px; border-radius: 20px; font-size: 0.7rem; color: var(--gold); z-index: 1000; display: flex; align-items: center; gap: 5px; }
 
+        /* Search Bar */
         .search-container { padding: 10px 20px; background: rgba(0,0,0,0.95); border-bottom: 1px solid #222; display: flex; justify-content: center; }
         .search-box { display: flex; max-width: 500px; width: 100%; gap: 10px; }
         .search-box input { flex: 1; padding: 12px 20px; background: #111; border: 1px solid #333; color: var(--text); border-radius: 25px; font-size: 0.9rem; transition: 0.3s; margin-bottom: 0; }
@@ -153,6 +168,7 @@
         .search-result-item .result-info h4 { font-size: 0.9rem; color: var(--text); }
         .search-result-item .result-info p { font-size: 0.75rem; color: var(--gray); }
 
+        /* CEO Honor Board */
         .ceo-honor-board { background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04)); border: 1.5px solid var(--gold); border-radius: 10px; padding: 10px; margin: 5px auto; max-width: 380px; text-align: center; box-shadow: 0 0 12px rgba(212,175,55,0.15); position: relative; overflow: hidden; }
         .ceo-honor-board::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(212,175,55,0.03) 2px, rgba(212,175,55,0.03) 4px); pointer-events: none; }
         .ceo-content { position: relative; z-index: 1; }
@@ -169,138 +185,21 @@
         .social-btn { width: 28px; height: 28px; border-radius: 50%; background: rgba(212,175,55,0.15); border: 1px solid var(--gold); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; cursor: pointer; transition: 0.3s; text-decoration: none; }
         .social-btn:hover { background: var(--gold); color: #000; transform: scale(1.1); }
 
+        /* Responsive */
         @media (max-width: 600px) {
             .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
             .logo-text { font-size: 1.1rem; }
             .container { padding: 15px; }
             .footer-links { flex-direction: column; gap: 10px; }
+            .grid { grid-template-columns: 1fr; }
         }
-    
-        @media (max-width: 1024px) {
-            .container { max-width: 90%; padding: 15px; }
-            .grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-            .stat-grid { grid-template-columns: repeat(2, 1fr); }
-            nav { gap: 3px; }
-            .nav-btn { padding: 8px 12px; font-size: 0.7rem; }
-            .card { padding: 20px; }
-            .plans-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
         @media (max-width: 768px) {
-            header { padding: 12px; }
-            .logo { flex-direction: column; gap: 5px; }
-            .logo img { width: 40px; height: 40px; }
-            .logo-text { font-size: 1.1rem; }
-            nav { top: 100px; gap: 2px; flex-wrap: wrap; }
-            .nav-btn { padding: 6px 10px; font-size: 0.65rem; }
-            .container { max-width: 95%; padding: 10px; }
-            .grid { grid-template-columns: 1fr; gap: 12px; }
-            .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .stat-box { padding: 15px; }
-            .stat-box h4 { font-size: 1.4rem; }
-            .card { padding: 15px; margin-bottom: 15px; }
-            .card h3 { font-size: 0.95rem; margin-bottom: 15px; }
-            input, select, textarea { padding: 12px; font-size: 0.9rem; }
-            .btn { padding: 12px; font-size: 0.85rem; }
-            .plans-grid { grid-template-columns: 1fr; }
-            .plan-card { padding: 20px; }
-            .plan-price { font-size: 1.5rem; }
-            .list-item { flex-direction: column; text-align: center; }
-            .list-item img { width: 80px; height: 80px; }
-            .list-actions { justify-content: center; width: 100%; }
-            .profile-upload { width: 100px; height: 100px; margin: 0 auto 15px; }
-            .profile-img { width: 100px; height: 100px; }
-            .disco-item { padding: 15px; }
-            .disco-cover { width: 100px; height: 100px; }
-            .disco-title { font-size: 0.85rem; }
-            .disco-artist { font-size: 0.75rem; }
-            .ceo-honor-board { padding: 20px; margin: 15px auto; max-width: 90%; }
-            .ceo-photo { width: 120px; height: 120px; }
-            .ceo-title { font-size: 1rem; }
-            footer { padding: 30px 15px; font-size: 0.75rem; }
-            .footer-links { gap: 10px; }
+            .grid { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: 1fr; }
         }
-
         @media (max-width: 480px) {
-            * { margin: 0; padding: 0; }
-            header { padding: 10px; border-bottom: 1px solid var(--gold); }
-            .logo { flex-direction: column; gap: 3px; }
-            .logo img { width: 35px; height: 35px; }
-            .logo-text { font-size: 0.9rem; letter-spacing: 1px; }
-            nav { top: 90px; gap: 2px; padding: 8px; }
-            .nav-btn { padding: 5px 8px; font-size: 0.6rem; }
-            .container { max-width: 100%; padding: 8px; }
-            .grid { grid-template-columns: 1fr; gap: 10px; }
-            .stat-grid { grid-template-columns: 1fr; gap: 8px; }
-            .stat-box { padding: 12px; }
-            .stat-box h4 { font-size: 1.2rem; }
-            .stat-box p { font-size: 0.65rem; }
-            .card { padding: 12px; margin-bottom: 12px; border-radius: 8px; }
-            .card h3 { font-size: 0.85rem; margin-bottom: 12px; }
-            input, select, textarea { padding: 10px; font-size: 16px; margin-bottom: 10px; border-radius: 6px; }
-            .btn { padding: 10px; font-size: 0.8rem; width: 100%; border-radius: 6px; }
-            .btn-small { padding: 6px 10px; font-size: 0.65rem; }
-            .password-container input { padding-right: 40px; }
-            .toggle-password { right: 10px; font-size: 1rem; }
-            .plans-grid { grid-template-columns: 1fr; }
-            .plan-card { padding: 15px; }
-            .plan-name { font-size: 1.1rem; }
-            .plan-price { font-size: 1.3rem; }
-            .plan-features { font-size: 0.8rem; }
-            .list-item { flex-direction: column; text-align: center; padding: 12px; gap: 10px; }
-            .list-item img { width: 70px; height: 70px; }
-            .list-info h4 { font-size: 0.9rem; }
-            .list-info p { font-size: 0.7rem; }
-            .list-actions { justify-content: center; width: 100%; gap: 5px; flex-wrap: wrap; }
-            .profile-upload { width: 90px; height: 90px; }
-            .profile-img { width: 90px; height: 90px; }
-            .upload-overlay { width: 30px; height: 30px; }
-            .disco-item { padding: 12px; }
-            .disco-cover { width: 80px; height: 80px; }
-            .disco-title { font-size: 0.8rem; }
-            .disco-artist { font-size: 0.7rem; }
-            .audio-player { font-size: 0.8rem; }
-            .admin-badge { padding: 1px 6px; font-size: 0.55rem; }
-            .admin-pro-max-badge { padding: 2px 8px; font-size: 0.6rem; }
-            .status-pill { padding: 2px 8px; font-size: 0.6rem; }
-            .ceo-honor-board { padding: 15px; margin: 12px auto; max-width: 95%; border-radius: 10px; }
-            .ceo-photo { width: 100px; height: 100px; }
-            .ceo-title { font-size: 0.9rem; gap: 5px; }
-            .ceo-title i { font-size: 1.2rem; }
-            .ceo-info { font-size: 0.75rem; }
-            .security-badge { bottom: 10px; right: 10px; padding: 6px 10px; font-size: 0.65rem; }
-            footer { padding: 20px 10px; font-size: 0.7rem; }
-            .footer-links { gap: 8px; flex-direction: column; }
-            .footer-links a { font-size: 0.7rem; }
-        }
-
-        @media (max-width: 320px) {
-            .logo-text { font-size: 0.8rem; }
-            .nav-btn { padding: 4px 6px; font-size: 0.55rem; }
-            .card h3 { font-size: 0.75rem; }
-            .stat-box h4 { font-size: 1rem; }
-            .btn { font-size: 0.75rem; padding: 8px; }
-            input, select, textarea { font-size: 14px; padding: 8px; }
-        }
-
-        @media (max-height: 500px) and (orientation: landscape) {
-            header { padding: 8px; }
-            nav { top: 70px; gap: 1px; }
-            .nav-btn { padding: 4px 6px; font-size: 0.55rem; }
-            .container { padding: 5px; }
-            .card { padding: 10px; margin-bottom: 10px; }
-            .stat-box { padding: 10px; }
-        }
-
-        @media print {
-            header, nav, footer { display: none; }
-            .container { max-width: 100%; }
-            .card { page-break-inside: avoid; }
-            .btn { display: none; }
-        }
-
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            body { -webkit-font-smoothing: antialiased; }
+            .grid { grid-template-columns: 1fr; }
+            .list-item { flex-direction: column; text-align: center; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
@@ -312,6 +211,7 @@
         <p id="loading-text">Processando...</p>
     </div>
 
+    <!-- HEADER GLOBAL -->
     <header id="global-header">
         <div class="logo">
             <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" alt="MAM Logo">
@@ -320,6 +220,7 @@
         <p style="color: var(--gold); font-size: 0.75rem; margin-top: 5px; letter-spacing: 1px;">O Império da Música em Angola</p>
     </header>
 
+    <!-- BARRA DE PESQUISA GLOBAL -->
     <div class="search-container">
         <div class="search-box">
             <input type="text" id="global-search" placeholder="Pesquisar músicas, artistas..." onkeyup="handleGlobalSearch(event)">
@@ -334,6 +235,7 @@
         </div>
     </div>
 
+    <!-- NAV GLOBAL -->
     <nav id="global-nav">
         <button class="nav-btn active" onclick="showSectionGlobal('home', this)"><i class="fas fa-home"></i> Início</button>
         <button class="nav-btn" onclick="showSectionGlobal('planos', this)"><i class="fas fa-tags"></i> Planos</button>
@@ -343,11 +245,11 @@
         <button class="nav-btn" id="nav-carteira" style="display: none;" onclick="showSectionGlobal('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
         <button class="nav-btn" id="nav-perfil" style="display: none;" onclick="showSectionGlobal('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
         <button class="nav-btn" id="btn-admin-global" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSectionGlobal('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</button>
-        <button class="nav-btn" id="nav-login" onclick="showAuthScreen()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+        <button class="nav-btn" id="nav-login" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Entrar</button>
         <button class="nav-btn" id="nav-logout" style="display: none; color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
     </nav>
 
-    <!-- AUTH SCREEN - Toda a área de autenticação fica visível quando não está logado -->
+    <!-- AUTH SCREEN -->
     <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 250px); padding: 20px; flex: 1;">
         <div style="max-width: 450px; width: 100%;">
             <div style="text-align: center; margin-bottom: 40px;">
@@ -356,12 +258,11 @@
                 <p style="color: var(--gray); font-size: 0.9rem; margin-top: 5px;">A sua música no topo do mundo</p>
             </div>
             
-            <!-- FORMULÁRIO DE LOGIN -->
             <div class="card" id="login-form">
                 <h3><i class="fas fa-lock"></i> Acesso Restrito</h3>
-                <input type="email" id="login-email" placeholder="E-mail" autocomplete="email" value="mamfilhos29@gmail.com">
+                <input type="email" id="login-email" placeholder="E-mail" autocomplete="email">
                 <div class="password-container">
-                    <input type="password" id="login-pass" placeholder="Palavra-passe" autocomplete="current-password" value="Angell28">
+                    <input type="password" id="login-pass" placeholder="Palavra-passe" autocomplete="current-password">
                     <button class="toggle-password" type="button" onclick="togglePasswordVisibility('login-pass')">
                         <i class="fas fa-eye"></i>
                     </button>
@@ -370,10 +271,9 @@
                 <p style="text-align: center; font-size: 0.85rem; margin-top: 15px; color: var(--gray);">
                     <span style="color: var(--gold); cursor: pointer;" onclick="showPasswordRecovery()">Esqueceu a palavra-passe?</span>
                 </p>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 10px; color: var(--gray);">Não tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(true)">Criar Conta Grátis</span></p>
+                <p style="text-align: center; font-size: 0.85rem; margin-top: 10px; color: var(--gray);">Não tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="openModal('modal-registro')">Criar Conta Grátis</span></p>
             </div>
 
-            <!-- FORMULÁRIO DE RECUPERAÇÃO DE SENHA -->
             <div class="card" id="recovery-form" style="display: none;">
                 <h3><i class="fas fa-key"></i> Recuperar Palavra-passe</h3>
                 <p style="color: var(--gray); font-size: 0.85rem; margin-bottom: 15px;">Introduza o seu e-mail e enviaremos um link para redefinir a sua palavra-passe.</p>
@@ -384,7 +284,6 @@
                 </p>
             </div>
 
-            <!-- FORMULÁRIO DE REGISTO -->
             <div class="card" id="register-form" style="display: none;">
                 <h3><i class="fas fa-user-plus"></i> Novo Registo</h3>
                 <input type="text" id="reg-nome" placeholder="Nome Completo" autocomplete="name">
@@ -413,12 +312,12 @@
                     </button>
                 </div>
                 <button class="btn" onclick="handleRegister()">Criar Conta <i class="fas fa-user-plus"></i></button>
-                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="toggleAuth(false)">Entrar Aqui</span></p>
+                <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="hidePasswordRecovery()">Entrar Aqui</span></p>
             </div>
         </div>
     </div>
 
-    <!-- MAIN APP - Só fica visível quando o utilizador está logado -->
+    <!-- MAIN APP -->
     <div id="main-app" style="display: none; flex: 1;">
         <div class="container">
             <!-- HOME -->
@@ -438,152 +337,516 @@
                 </div>
 
                 <div class="stat-grid">
-                    <div class="stat-box"><p>Saldo Atual</p><h4 id="stat-saldo">0 Kz</h4></div>
-                    <div class="stat-box"><p>Artistas</p><h4 id="stat-artistas-count">0</h4></div>
-                    <div class="stat-box"><p>Lançamentos</p><h4 id="stat-musicas-count">0</h4></div>
+                    <div class="stat-box">
+                        <p>Saldo Atual</p>
+                        <h4 id="stat-saldo">0 Kz</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Artistas</p>
+                        <h4 id="stat-artistas-count">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Lançamentos</p>
+                        <h4 id="stat-musicas-count">0</h4>
+                    </div>
                 </div>
 
-                <div class="card"><h3><i class="fas fa-star"></i> Destaques</h3><div id="destaques-container" class="grid"></div></div>
-                <div class="card"><h3><i class="fas fa-compact-disc"></i> Feed</h3><div id="feed-container" class="grid"></div></div>
-                <div class="card"><h3><i class="fas fa-bullhorn"></i> Novidades</h3><p style="font-size: 0.9rem; color: var(--gray);">Bem-vindo à MAM Distribuidora. Distribua sua música para mais de 150 plataformas digitais.</p></div>
+                <div class="card">
+                    <h3><i class="fas fa-star"></i> Destaques - Top 5 Músicas Mais Ouvidas</h3>
+                    <div id="destaques-container" class="grid">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-compact-disc"></i> Feed - Todas as Músicas Lançadas</h3>
+                    <div id="feed-container" class="grid">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-bullhorn"></i> Novidades</h3>
+                    <p style="font-size: 0.9rem; color: var(--gray); line-height: 1.6;">
+                        Bem-vindo à nova era da MAM Distribuidora. Agora com pagamentos automáticos e gestão em tempo real. 
+                        Lançamos a sua música em mais de 150 plataformas digitais incluindo Spotify, Apple Music e Deezer.
+                    </p>
+                </div>
             </div>
 
+            <!-- ARTISTAS -->
             <div id="artistas" class="section">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><h2 style="color: var(--gold);">Meus Artistas</h2><button class="btn btn-small" onclick="openModal('modal-artista')"><i class="fas fa-plus"></i> Novo Artista</button></div>
-                <div id="lista-artistas" class="grid"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="color: var(--gold);">Meus Artistas</h2>
+                    <button class="btn btn-small" onclick="openModal('modal-artista')"><i class="fas fa-plus"></i> Novo Artista</button>
+                </div>
+                <div id="lista-artistas" class="grid">
+                </div>
             </div>
 
+            <!-- LANÇAR -->
             <div id="lancar" class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="color: var(--gold);">Gerenciar Lançamentos</h2>
+                </div>
+                <div id="lista-lancamentos" class="grid" style="margin-bottom: 30px;">
+                </div>
+
                 <div class="card">
                     <h3><i class="fas fa-rocket"></i> Novo Lançamento</h3>
-                    <div class="grid">
-                        <div>
-                            <label>Título</label><input type="text" id="music-titulo">
-                            <label>Artista</label><select id="music-artista-select"></select>
-                            <label>Estilo</label><select id="music-estilo"></select>
-                            <label>ISRC</label><input type="text" id="music-isrc">
-                            <label>UPC</label><input type="text" id="music-upc">
+                    
+                    <label style="font-weight: bold; color: var(--gold); margin-bottom: 15px; display: block;">Tipo de Lançamento</label>
+                    <div style="display: flex; gap: 30px; margin-bottom: 25px; padding: 15px; background: #111; border-radius: 8px; border: 1px solid #333;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="tipo-solo" name="tipo-lancamento" value="Solo" style="width: 20px; height: 20px; cursor: pointer;" onchange="handleTipoLancamento('solo')">
+                            <label for="tipo-solo" style="margin: 0; cursor: pointer; color: var(--text);">Solo</label>
                         </div>
-                        <div>
-                            <label>Gênero</label><select id="music-genero"><option value="Pop">Pop</option><option value="Kizomba">Kizomba</option></select>
-                            <label>Capa</label><input type="file" id="music-capa" accept="image/*">
-                            <label>Áudio</label><input type="file" id="music-audio" accept="audio/*">
-                            <label>Data</label><input type="date" id="music-data">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="tipo-album" name="tipo-lancamento" value="Album" style="width: 20px; height: 20px; cursor: pointer;" onchange="handleTipoLancamento('album')">
+                            <label for="tipo-album" style="margin: 0; cursor: pointer; color: var(--text);">Album</label>
                         </div>
                     </div>
-                    <button class="btn" onclick="enviarLancamento()">Enviar para Revisão</button>
+                    
+                    <div class="grid">
+                        <div>
+                            <label>Título da Música/Álbum</label>
+                            <input type="text" id="music-titulo" placeholder="Ex: O Meu Sucesso">
+                            
+                            <label>Artista Principal</label>
+                            <select id="music-artista-select">
+                                <option value="">Selecione um artista...</option>
+                            </select>
+                            
+                            <label>Estilo Musical</label>
+                            <select id="music-estilo">
+                                <option value="">Selecione o estilo...</option>
+                            </select>
+
+                            <label>Colaboradores (separados por vírgula)</label>
+                            <input type="text" id="music-colaboradores" placeholder="Ex: Artista 1, Artista 2, Artista 3">
+
+                            <label>Produtores/Produtora</label>
+                            <input type="text" id="music-produtores" placeholder="Ex: Produtor 1, Produtor 2">
+
+                            <label>ISRC <button type="button" class="btn btn-small btn-sec" style="display: inline-flex; width: auto; padding: 4px 8px; margin-left: 10px;" onclick="generateISRC()">Gerar ISRC</button></label>
+                            <input type="text" id="music-isrc" placeholder="Ex: USRC17607839" maxlength="12">
+
+                            <label>UPC <button type="button" class="btn btn-small btn-sec" style="display: inline-flex; width: auto; padding: 4px 8px; margin-left: 10px;" onclick="generateUPC()">Gerar UPC</button></label>
+                            <input type="text" id="music-upc" placeholder="Ex: 5901234123457" maxlength="13">
+                        </div>
+                        <div>
+                            <label>Gênero Musical</label>
+                            <select id="music-genero">
+                                <option value="">Selecione o gênero...</option>
+                                <option value="Pop">Pop</option>
+                                <option value="Rock">Rock</option>
+                                <option value="Hip Hop">Hip Hop</option>
+                                <option value="R&B">R&B</option>
+                                <option value="Jazz">Jazz</option>
+                                <option value="Eletrônico">Eletrônico</option>
+                                <option value="Afro House">Afro House</option>
+                                <option value="Kizomba">Kizomba</option>
+                                <option value="Gospel">Gospel</option>
+                            </select>
+
+                            <label>Capa do Lançamento (3000x3000px - PNG/JPG)</label>
+                            <input type="file" id="music-capa" accept="image/*">
+                            <small style="color: var(--gray);">Dimensão obrigatória: 3000x3000 pixels</small>
+                            
+                            <label>Ficheiro de Áudio (WAV)</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                                <input type="file" id="music-audio" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3" style="flex: 1; margin-bottom: 0;">
+                                <button type="button" class="btn btn-small btn-sec" style="width: auto; padding: 10px 15px;" onclick="adicionarAudio()" title="Adicionar mais áudios para álbum"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <div id="audios-adicionais-container"></div>
+                            <small style="color: var(--gray);">Formato obrigatório: WAV</small>
+                            
+                            <label>Data de Lançamento</label>
+                            <input type="date" id="music-data">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="enviarLancamento()">Enviar para Revisão <i class="fas fa-paper-plane"></i></button>
                 </div>
-                <div id="lista-lancamentos" class="grid"></div>
             </div>
 
-            <div id="minhas-musicas" class="section"><h2 style="color: var(--gold);">Minhas Músicas</h2><div id="minhas-musicas-container" class="grid"></div></div>
+            <!-- MINHAS MÚSICAS -->
+            <div id="minhas-musicas" class="section">
+                <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fas fa-music"></i> Minhas Músicas</h2>
+                <div id="minhas-musicas-container" class="grid" style="margin-bottom: 30px;">
+                </div>
+            </div>
 
+            <!-- PLANOS -->
             <div id="planos" class="section">
-                <h2 style="color: var(--gold);">Planos</h2>
-                <div class="plans-grid">
-                    <div class="plan-card"><div class="plan-name">Free</div><div class="plan-price">Grátis</div><ul class="plan-features"><li>70% Royalties</li><li>1 Artista</li></ul><button class="btn btn-sec" id="plan-free-btn">Atual</button></div>
-                    <div class="plan-card"><div class="plan-name">Básico</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>90% Royalties</li><li>10 Artistas</li></ul><button class="btn" onclick="openPlanPayment('BÁSICO', 10000)">Comprar</button></div>
-                    <div class="plan-card"><div class="plan-name">Médio</div><div class="plan-price">20.000 Kz</div><ul class="plan-features"><li>90% Royalties</li><li>30 Artistas</li></ul><button class="btn" onclick="openPlanPayment('MÉDIO', 20000)">Comprar</button></div>
-                    <div class="plan-card featured"><div class="plan-name">Pro Max</div><div class="plan-price">50.000 Kz</div><ul class="plan-features"><li>100% Royalties</li><li>Artistas Ilimitados</li></ul><button class="btn" onclick="openPlanPayment('PRO', 50000)">Comprar</button></div>
+                <h2 style="color: var(--gold); margin-bottom: 20px;">Escolha o Seu Plano</h2>
+                <div class="plans-grid" id="plans-container">
+                    <div class="plan-card">
+                        <div class="plan-name">Plano Free</div>
+                        <p style="color: var(--gray); font-size: 0.9rem;">Gratuito</p>
+                        <div class="plan-price">Grátis</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 1 Artista</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Acesso Básico</li>
+                        </ul>
+                        <button class="btn btn-sec" id="plan-free-btn" onclick="alert('Você já está no Plano Free')">Seu Plano Atual</button>
+                    </div>
+
+                    <div class="plan-card">
+                        <div class="plan-name">Plano Básico</div>
+                        <p style="color: var(--gray); font-size: 0.9rem;">10.000 Kz/mês</p>
+                        <div class="plan-price">10.000 Kz</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 10 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Suporte Prioritário</li>
+                        </ul>
+                        <button class="btn" id="plan-basico-btn" onclick="openPlanPayment('BÁSICO', 10000)">Comprar Agora</button>
+                    </div>
+
+                    <div class="plan-card">
+                        <div class="plan-name">Plano Médio</div>
+                        <p style="color: var(--gray); font-size: 0.9rem;">20.000 Kz/mês</p>
+                        <div class="plan-price">20.000 Kz</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Direito a 30 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Lançamentos Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--success);"></i> Análise Avançada</li>
+                        </ul>
+                        <button class="btn" id="plan-medio-btn" onclick="openPlanPayment('MÉDIO', 20000)">Comprar Agora</button>
+                    </div>
+
+                    <div class="plan-card featured">
+                        <div class="plan-name">Plano Pro MAX</div>
+                        <p style="color: var(--gold); font-size: 0.9rem;">50.000 Kz/mês</p>
+                        <div class="plan-price">50.000 Kz</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Artistas Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte 24/7 VIP</li>
+                        </ul>
+                        <button class="btn" id="plan-promax-btn" onclick="openPlanPayment('PRO', 50000)">Comprar Agora</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- CARTEIRA -->
             <div id="carteira" class="section">
-                <div class="stat-box"><p>Saldo Disponível</p><h4 id="wallet-saldo">0 Kz</h4><button class="btn btn-small" onclick="openModal('modal-saque')">Solicitar Saque</button></div>
-                <div class="card"><h3>Histórico</h3><div id="historico-ganhos"></div></div>
+                <div class="stat-box" style="margin-bottom: 20px; padding: 40px;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <label style="color: var(--gold); font-size: 0.85rem;">Moeda:</label>
+                        <select id="currency-selector" onchange="changeCurrency(this.value)" style="width: auto; padding: 8px 15px; margin-bottom: 0; font-size: 0.85rem; min-width: 200px;">
+                            <option value="AOA">🇦🇴 AOA - Kwanza Angolano</option>
+                            <option value="USD">🇺🇸 USD - Dólar Americano</option>
+                            <option value="EUR">🇪🇺 EUR - Euro</option>
+                        </select>
+                    </div>
+                    <p>Saldo Disponível para Saque</p>
+                    <h4 style="font-size: 3rem;" id="wallet-saldo">0 Kz</h4>
+                    <p id="wallet-saldo-converted" style="color: var(--gray); font-size: 1rem; margin-top: 5px;"></p>
+                    <button class="btn btn-small" style="margin: 20px auto 0;" onclick="openModal('modal-saque')">Solicitar Levantamento</button>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-history"></i> Histórico de Ganhos (Valores Reais)</h3>
+                    <p style="color: var(--gray); font-size: 0.75rem; margin-bottom: 15px;"><i class="fas fa-info-circle"></i> Todos os valores apresentados são reais e provêm das plataformas de streaming.</p>
+                    <div id="historico-ganhos">
+                    </div>
+                </div>
             </div>
 
+            <!-- PERFIL -->
             <div id="perfil" class="section">
                 <div class="card">
-                    <h3>Editar Perfil</h3>
-                    <div class="profile-upload"><img id="perfil-foto-preview" class="profile-img"><label for="perfil-foto-input" class="upload-overlay"><i class="fas fa-camera"></i></label><input type="file" id="perfil-foto-input" style="display:none" accept="image/*"></div>
-                    <input type="text" id="perfil-nome" placeholder="Nome">
-                    <input type="email" id="perfil-email" disabled>
-                    <input type="text" id="perfil-telefone" placeholder="Telefone">
-                    <select id="perfil-pais"></select>
-                    <button class="btn" onclick="handleUpdateProfile()">Salvar</button>
+                    <h3><i class="fas fa-user-edit"></i> Editar Perfil</h3>
+                    <div class="profile-upload">
+                        <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img" alt="Foto de Perfil">
+                        <label for="perfil-foto-input" class="upload-overlay">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="perfil-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'perfil-foto-preview')">
+                    </div>
+                    
+                    <div class="grid">
+                        <div>
+                            <label>Nome Completo</label>
+                            <input type="text" id="perfil-nome">
+                            <label>E-mail (Não alterável)</label>
+                            <input type="email" id="perfil-email" disabled>
+                        </div>
+                        <div>
+                            <label>Telefone / WhatsApp</label>
+                            <input type="text" id="perfil-telefone" placeholder="+244 ...">
+                            <label>País</label>
+                            <select id="perfil-pais"></select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="handleUpdateProfile()">Salvar Alterações em Tempo Real <i class="fas fa-save"></i></button>
                 </div>
             </div>
 
+            <!-- ADMIN PRO MAX -->
             <div id="admin" class="section">
-                <h2 style="color: var(--gold);">Admin Pro Max</h2>
+                <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fas fa-shield-alt"></i> Painel Administrativo PRO MAX <span class="admin-pro-max-badge">CONTROLE TOTAL</span></h2>
+                
                 <div class="stat-grid">
-                    <div class="stat-box"><p>Utilizadores</p><h4 id="admin-total-users">0</h4></div>
-                    <div class="stat-box"><p>Artistas</p><h4 id="admin-total-artists">0</h4></div>
-                    <div class="stat-box"><p>Revisão</p><h4 id="admin-pending-music">0</h4></div>
+                    <div class="stat-box">
+                        <p>Total Utilizadores</p>
+                        <h4 id="admin-total-users">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Total Artistas</p>
+                        <h4 id="admin-total-artists">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Músicas em Revisão</p>
+                        <h4 id="admin-pending-music">0</h4>
+                    </div>
+                    <div class="stat-box">
+                        <p>Ganhos MAM</p>
+                        <h4 id="admin-total-earnings">0 Kz</h4>
+                    </div>
                 </div>
-                <div class="card"><h3>Utilizadores</h3><div id="admin-users-list"></div></div>
-                <div class="card"><h3>Revisões</h3><div id="admin-music-review"></div></div>
+
+                <div class="card">
+                    <h3><i class="fas fa-users-cog"></i> Gestão de Utilizadores e Planos</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="admin-user-search" placeholder="Pesquisar por e-mail ou nome..." style="margin-bottom: 0;">
+                        <button class="btn btn-small" onclick="searchUsers()"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div id="admin-users-list" class="item-list">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-tasks"></i> Revisão de Lançamentos</h3>
+                    <div id="admin-music-review" class="grid">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-shield-alt"></i> Segurança do Sistema</h3>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <p>Tentativas de Login</p>
+                            <h4 id="security-login-attempts">0</h4>
+                        </div>
+                        <div class="stat-box">
+                            <p>IPs Bloqueados</p>
+                            <h4 id="security-blocked-ips">0</h4>
+                        </div>
+                        <div class="stat-box">
+                            <p>Sessões Ativas</p>
+                            <h4 id="security-active-sessions">0</h4>
+                        </div>
+                    </div>
+                    <button class="btn btn-sec" onclick="viewSecurityLogs()"><i class="fas fa-file-alt"></i> Ver Logs de Segurança</button>
+                    <p style="color: var(--gray); font-size: 0.75rem; margin-top: 10px;"><i class="fas fa-info-circle"></i> Para eliminar contas, utilize a pesquisa acima e elimine uma a uma para maior segurança.</p>
+                </div>
+
+                <div class="card" style="border-left-color: #ff6b35;">
+                    <h3><i class="fas fa-crown"></i> Informações do Administrador</h3>
+                    <div style="background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--gold);">
+                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">Email Admin:</strong> mamfilhos29@gmail.com</p>
+                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">Email Suporte:</strong> mamfilhos29@gmail.com</p>
+                        <p style="margin-bottom: 10px;"><strong style="color: var(--gold);">WhatsApp:</strong> +244 937 881 307</p>
+                        <p><strong style="color: var(--gold);">Status:</strong> <span class="admin-pro-max-badge">ADMIN PRO MAX - CONTROLE TOTAL DO IMPÉRIO</span></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL TERMOS DE USO -->
+    <div id="modal-termos" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
+        <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-termos')">&times;</span>
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Termos de Uso</h2>
+            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text);">
+                <p><strong>Última atualização:</strong> 18 de Março de 2026</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">1. Aceitação dos Termos</h3>
+                <p>Ao criar uma conta, carregar conteúdo ou utilizar qualquer funcionalidade da plataforma MAM Distribuidora, o utilizador reconhece que leu, compreendeu e aceitou estes Termos de Uso, bem como a nossa Política de Privacidade.</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">2. Contacto</h3>
+                <p><strong>E-mail Suporte:</strong> mamfilhos29@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POLÍTICA DE PRIVACIDADE -->
+    <div id="modal-privacidade" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
+        <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-privacidade')">&times;</span>
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Política de Privacidade</h2>
+            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text);">
+                <p><strong>Última atualização:</strong> 18 de Março de 2026</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">1. Contacto</h3>
+                <p><strong>E-mail de Suporte:</strong> mamfilhos29@gmail.com<br><strong>Contacto:</strong> +244 937 881 307</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL SUPORTE -->
+    <div id="modal-suporte" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
+        <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-suporte')">&times;</span>
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Suporte da MAM Distribuidora</h2>
+            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text);">
+                <h3 style="color: var(--gold); margin-top: 20px;">Contacte-nos</h3>
+                <p><strong>E-mail de Suporte:</strong> mamfilhos29@gmail.com</p>
+                <p><strong>Telefone/WhatsApp:</strong> +244 937 881 307</p>
+                <h3 style="color: var(--gold); margin-top: 20px;">Horário de Atendimento</h3>
+                <p>Segunda a Sexta-feira, das 9h00 às 18h00 (GMT+1)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CEO HONOR BOARD -->
     <div class="ceo-honor-board">
         <div class="ceo-content">
-            <div class="ceo-title"><i class="fas fa-crown"></i> Fundador & C.E.O <i class="fas fa-crown"></i></div>
-            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663449848063/svnyMcLnPxuUgKTg.webp" class="ceo-photo">
+            <div class="ceo-title">
+                <i class="fas fa-crown"></i> Fundador & C.E.O <i class="fas fa-crown"></i>
+            </div>
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663449848063/svnyMcLnPxuUgKTg.webp" alt="Matias Arsénio Manuel" class="ceo-photo">
             <div class="ceo-name">Matias Arsénio Manuel</div>
             <div class="ceo-alias">Play Sean</div>
-            <div class="ceo-info"><p><strong>Nacionalidade:</strong> Angolano 🇦🇴</p><p><strong>Cargo:</strong> Fundador e C.E.O da MAM Distribuidora</p></div>
-            <div class="ceo-socials-title">Redes Sociais</div>
+            <div class="ceo-info">
+                <p><strong>Nacionalidade:</strong> Angolano 🇦🇴</p>
+                <p><strong>Nascimento:</strong> 20 de Maio de 1995 em Luanda</p>
+                <p><strong>Cargo:</strong> Fundador e C.E.O da MAM Distribuidora</p>
+            </div>
+            <div class="ceo-socials-title">Redes Sociais Oficiais</div>
             <div class="ceo-socials">
-                <a href="https://www.facebook.com/profile.php?id=100081814587133" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.instagram.com/playseanarsenio/" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=100081814587133" target="_blank" class="social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.tiktok.com/@playseanarsenio" target="_blank" class="social-btn" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://youtube.com/@playseanarsenio?si=FNKTJ_oTU9pT2IuO" target="_blank" class="social-btn" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/playseanarsenio/" target="_blank" class="social-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://open.spotify.com/artist/5LBC3mNKxLGTMB9n05zdaT?si=fKs2h2EqSvq-697eJqvAnw" target="_blank" class="social-btn" title="Spotify"><i class="fab fa-spotify"></i></a>
+                <a href="https://music.apple.com/ru/artist/play-sean-ars%C3%A9nio/1782531595" target="_blank" class="social-btn" title="Apple Music"><i class="fab fa-apple"></i></a>
             </div>
         </div>
     </div>
 
-    <footer>
-        <div class="footer-links"><a href="#" onclick="openModal('modal-termos')">Termos</a><a href="#" onclick="openModal('modal-privacidade')">Privacidade</a><a href="#" onclick="openModal('modal-suporte')">Suporte</a></div>
-        <p>&copy; 2026 MAM Distribuidora</p>
+    <!-- FOOTER GLOBAL -->
+    <footer id="global-footer">
+        <div class="footer-links">
+            <a href="#" onclick="openModal('modal-termos'); return false;">Termos de Uso</a>
+            <a href="#" onclick="openModal('modal-privacidade'); return false;">Política de Privacidade</a>
+            <a href="#" onclick="openModal('modal-suporte'); return false;">Suporte</a>
+        </div>
+        <p>&copy; 2026 MAM Distribuidora. Todos os direitos reservados.</p>
         <p class="footer-founder">Fundador: Matias Arsénio Manuel</p>
-        <p class="footer-security"><i class="fas fa-shield-alt"></i> Conexão Segura</p>
+        <p style="color: var(--gray); font-size: 0.75rem; margin-top: 8px;"><i class="fas fa-envelope" style="color: var(--gold);"></i> Suporte: mamfilhos29@gmail.com | <i class="fab fa-whatsapp" style="color: var(--gold);"></i> +244 937 881 307</p>
+        <p class="footer-security"><i class="fas fa-shield-alt"></i> Protegido por criptografia de ponta-a-ponta | Sistema Anti-Invasão Ativo</p>
     </footer>
 
-    <div class="security-badge"><i class="fas fa-lock"></i> Conexão Segura</div>
+    <!-- Security Badge -->
+    <div class="security-badge" id="security-badge">
+        <i class="fas fa-lock"></i> Conexão Segura
+    </div>
 
-    <!-- MODAIS -->
-    <div id="modal-artista" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-        <div class="card" style="max-width:500px;"><span style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:1.5rem; color:var(--gold);" onclick="closeModal('modal-artista')">&times;</span>
-            <h3>Novo Artista</h3>
-            <input type="text" id="artista-nome" placeholder="Nome do Artista">
+    <!-- MODALS -->
+    <div id="modal-artista" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-artista')">&times;</span>
+            <h3 id="modal-artista-title">Novo Artista</h3>
+            <div class="profile-upload">
+                <img id="artista-foto-preview" src="https://via.placeholder.com/120" class="profile-img" alt="Foto do Artista">
+                <label for="artista-foto-input" class="upload-overlay">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="artista-foto-input" style="display: none;" accept="image/*" onchange="previewImage(this, 'artista-foto-preview')">
+            </div>
+            <input type="hidden" id="edit-artista-id">
+            <label>Nome do Artista</label>
+            <input type="text" id="artista-nome" placeholder="Nome artístico">
+            <label>Estilo Principal</label>
             <select id="artista-estilo"></select>
-            <button class="btn" onclick="handleSaveArtist()">Salvar</button>
+            
+            <label>Links de Redes Sociais</label>
+            <input type="url" id="artista-youtube" placeholder="Link YouTube">
+            <input type="url" id="artista-facebook" placeholder="Link Facebook">
+            <input type="url" id="artista-tiktok" placeholder="Link TikTok">
+            <input type="url" id="artista-spotify" placeholder="Link Spotify">
+            <input type="url" id="artista-apple" placeholder="Link Apple Music">
+            <input type="url" id="artista-instagram" placeholder="Link Instagram">
+            
+            <button class="btn" id="btn-save-artista" onclick="handleSaveArtist()">Salvar Artista</button>
         </div>
     </div>
 
-    <div id="modal-saque" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-        <div class="card" style="max-width:500px;"><span style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:1.5rem; color:var(--gold);" onclick="closeModal('modal-saque')">&times;</span>
-            <h3>Solicitar Saque</h3>
-            <label>Valor (Kz)</label><input type="number" id="saque-valor" min="0">
-            <label>Método</label><select id="saque-metodo"><option value="BFA">BFA</option><option value="BAI">BAI</option><option value="Multicaixa">Multicaixa</option></select>
-            <label>Dados</label><input type="text" id="saque-dados">
-            <button class="btn" onclick="handleRequestWithdraw()">Confirmar</button>
+    <!-- MODAL SAQUE -->
+    <div id="modal-saque" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-saque')">&times;</span>
+            <h3>Solicitar Levantamento</h3>
+            <label>Valor (Kz) - Mínimo 5.000</label>
+            <input type="number" id="saque-valor" min="5000" placeholder="5000">
+            <label>Selecione o Método de Levantamento</label>
+            <select id="saque-metodo">
+                <option value="">Selecione o método...</option>
+                <option value="BFA">Banco BFA (Angola)</option>
+                <option value="BAI">Banco BAI (Angola)</option>
+                <option value="BIC">Banco BIC (Angola)</option>
+                <option value="Multicaixa">Multicaixa Express (Angola)</option>
+                <option value="Visa">Visa</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Pix">Pix (Brasil)</option>
+            </select>
+            <label>Dados do Pagamento (IBAN / Número / Email)</label>
+            <input type="text" id="saque-dados" placeholder="Insira os dados aqui">
+            <button class="btn" onclick="handleRequestWithdraw()">Confirmar Saque</button>
         </div>
     </div>
 
-    <div id="modal-termos" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-        <div class="card" style="max-width:500px;"><span style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:1.5rem; color:var(--gold);" onclick="closeModal('modal-termos')">&times;</span>
-            <h3>Termos de Uso</h3>
-            <p style="color:var(--gray);">Termos e condições da MAM Distribuidora...</p>
+    <!-- MODAL PAGAMENTO PLANO -->
+    <div id="modal-plan-payment" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-plan-payment')">&times;</span>
+            <h3>Comprar Plano <span id="plan-name-display">...</span></h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Valor: <b id="plan-price-display">0</b> Kz</p>
+            <p style="color: var(--gray); margin-bottom: 20px;">Escolha o método de pagamento:</p>
+            <button class="btn" onclick="selectPaymentMethod('mam')"><i class="fas fa-wallet"></i> Pagar com Carteira MAM</button>
+            <button class="btn btn-sec" style="margin-top: 10px;" onclick="selectPaymentMethod('banco')"><i class="fas fa-university"></i> Transferência Bancária</button>
         </div>
     </div>
 
-    <div id="modal-privacidade" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-        <div class="card" style="max-width:500px;"><span style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:1.5rem; color:var(--gold);" onclick="closeModal('modal-privacidade')">&times;</span>
-            <h3>Política de Privacidade</h3>
-            <p style="color:var(--gray);">Política de privacidade da MAM Distribuidora...</p>
+    <!-- MODAL PAGAMENTO CARTEIRA MAM -->
+    <div id="modal-pagamento-mam" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-mam')">&times;</span>
+            <h3>Confirmar Pagamento</h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name">...</b></p>
+            <p style="color: var(--gold); font-size: 1.5rem; margin-bottom: 20px;">Valor: <b id="pay-amount">0</b> Kz</p>
+            <p style="color: var(--gray); margin-bottom: 20px;">O pagamento será processado automaticamente da sua carteira MAM para a carteira do administrador.</p>
+            <button class="btn" onclick="processPlanPaymentMAM()">Confirmar Pagamento</button>
         </div>
     </div>
 
-    <div id="modal-suporte" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-        <div class="card" style="max-width:500px;"><span style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:1.5rem; color:var(--gold);" onclick="closeModal('modal-suporte')">&times;</span>
-            <h3>Suporte</h3>
-            <p style="color:var(--gray);">Email: mamfilhos29@gmail.com<br>WhatsApp: +244 937 881 307</p>
+    <!-- MODAL TRANSFERÊNCIA BANCÁRIA -->
+    <div id="modal-pagamento-banco" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;">
+            <span style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--gold);" onclick="closeModal('modal-pagamento-banco')">&times;</span>
+            <h3>Informações Bancárias</h3>
+            <p style="color: var(--gray); margin-bottom: 20px;">Plano: <b id="pay-plan-name-banco">...</b> - Valor: <b id="pay-amount-banco">0</b> Kz</p>
+            
+            <div style="background: #111; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333;">
+                <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">Dados para Transferência:</p>
+                <p><b>Titular:</b> Matias Arsénio Manuel</p>
+                <p><b>Conta BFA:</b> 0006 0000 86316866301 52</p>
+                <p><b>IBAN:</b> 0006 0000 86316866301 52</p>
+                <p><b>VISA:</b> 4937242025023852</p>
+                <p><b>Multicaixa Express:</b> 937881307</p>
+            </div>
+
+            <label>Após realizar a transferência, clique no botão abaixo para enviar o comprovativo:</label>
+            <button class="btn" onclick="sendProofWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo via WhatsApp</button>
         </div>
     </div>
 
 <script>
+    // ========== EMAILJS INITIALIZATION ==========
+    (function() {
+        emailjs.init("5S1h6RPrYmD9N9YjL");
+    })();
+
     // ========== FIREBASE CONFIGURATION ==========
     const firebaseConfig = {
         apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
@@ -613,6 +876,7 @@
         return data.secure_url;
     }
 
+    // ========== ADMIN CONFIG ==========
     const ADMIN_CONFIG = {
         ADMIN_EMAIL: "mamfilhos29@gmail.com",
         ADMIN_PASSWORD_HASH: "Angell28",
@@ -632,6 +896,7 @@
     let audioCount = 0;
     let tipoLancamentoSelecionado = '';
 
+    // ========== INITIALIZATION ==========
     window.onload = () => {
         populateSelects();
         checkAuthState();
@@ -739,7 +1004,7 @@
             updateUI();
             if (userData.isAdmin) { document.getElementById('btn-admin-global').style.display = 'block'; document.getElementById('admin-pro-max-indicator').style.display = 'inline-block'; loadAdminData(); }
         } else {
-            // SALDO ZERO - sem bónus
+            // ALTERADO: saldo: 0 (em vez de 5000)
             const newUser = { nome: currentUser.displayName || "Novo Utilizador", email: currentUser.email, tipo: "Artista", pais: "Angola", plano: "FREE", saldo: 0, isAdmin: currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
             await db.collection('users').doc(currentUser.email).set(newUser);
             userData = newUser;
@@ -805,7 +1070,7 @@
                 return alert("Ative a sua conta no seu e-mail para continuar.\n\nVerifique a sua caixa de entrada (incluindo pasta de spam) para o link de confirmação.");
             }
             
-            // Bónus de Login REMOVIDO
+            // ALTERADO: Bónus de Login REMOVIDO (linha removida)
             
             if (email === ADMIN_CONFIG.ADMIN_EMAIL) { await ensureAdminProfile(); }
         } catch (error) {
@@ -855,7 +1120,7 @@
             const result = await auth.createUserWithEmailAndPassword(email, pass);
             await result.user.sendEmailVerification();
             
-            // SALDO ZERO - sem bónus
+            // ALTERADO: saldo: 0 (em vez de 5000)
             const newUser = {
                 nome, email, tipo, pais, plano: "FREE", saldo: 0,
                 isAdmin: email === ADMIN_CONFIG.ADMIN_EMAIL,
@@ -863,6 +1128,20 @@
                 foto: "", telefone: "", createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
             await db.collection('users').doc(email).set(newUser);
+            
+            // Enviar email de boas-vindas via EmailJS
+            const emailParams = {
+                to_email: email,
+                to_name: nome,
+                message: `Bem-vindo à MAM Distribuidora! Sua conta foi criada com sucesso. Agora você pode distribuir sua música para mais de 150 plataformas digitais.`
+            };
+            
+            try {
+                await emailjs.send("service_pbe3n1o", "template_9tewq46", emailParams);
+                console.log("Email de boas-vindas enviado!");
+            } catch(emailError) {
+                console.error("Erro ao enviar email:", emailError);
+            }
             
             const message = "Conta criada com sucesso!\n\nUm e-mail de confirmação foi enviado para " + email + ".\nPor favor, verifique a sua caixa de entrada (incluindo spam).";
             alert(message);
@@ -929,23 +1208,6 @@
         document.getElementById('nav-carteira').style.display = 'none';
         document.getElementById('nav-perfil').style.display = 'none';
         document.getElementById('btn-admin-global').style.display = 'none';
-    }
-
-    function showSectionGlobal(sectionId, btn) {
-        if (!currentUser && !['home', 'planos'].includes(sectionId)) { alert('Por favor, inicie sessão para aceder a esta secção.'); showAuthScreen(); return; }
-        if (currentUser) { showSection(sectionId, btn); return; }
-        document.querySelectorAll('#global-nav .nav-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-        if (sectionId === 'planos') {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            showSection('planos', btn);
-        } else { showAuthScreen(); }
-    }
-
-    function showAuthScreen() {
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('main-app').style.display = 'none';
     }
 
     async function loadUserArtists() {
@@ -1092,6 +1354,24 @@
             };
             
             await db.collection('musicas').add(musicData);
+            
+            // Enviar email de notificação de lançamento via EmailJS
+            const emailParams = {
+                to_email: ADMIN_CONFIG.SUPPORT_EMAIL,
+                to_name: "Administrador MAM",
+                user_name: userData.nome,
+                user_email: currentUser.email,
+                music_title: titulo,
+                music_artist: artista,
+                message: `Um novo lançamento foi submetido para revisão: ${titulo} por ${artista}`
+            };
+            
+            try {
+                await emailjs.send("service_pbe3n1o", "template_9tewq46", emailParams);
+                console.log("Email de notificação enviado!");
+            } catch(emailError) {
+                console.error("Erro ao enviar email de notificação:", emailError);
+            }
             
             showLoading(false);
             alert("Música enviada com sucesso! Aguarde revisão.");
@@ -1241,7 +1521,7 @@
         } catch (error) { console.error("Erro ao carregar ganhos:", error); }
     }
 
-    // FUNÇÃO DE SAQUE COM REGRAS - Pro Max: 5.000 KZ | Outros: 10.000 KZ
+    // ========== FUNÇÃO DE SAQUE ATUALIZADA ==========
     async function handleRequestWithdraw() {
         const valor = parseInt(document.getElementById('saque-valor').value);
         const metodo = document.getElementById('saque-metodo').value;
@@ -1253,6 +1533,7 @@
         showLoading(true, "A verificar dados do utilizador...");
         
         try {
+            // Buscar dados atualizados do Firestore antes da validação
             const userDocRef = db.collection('users').doc(currentUser.email);
             const userDoc = await userDocRef.get();
             
@@ -1265,22 +1546,28 @@
             const planoAtual = userDataAtualizado.plano || 'FREE';
             const saldoAtual = userDataAtualizado.saldo || 0;
             
+            // Definir o valor mínimo por plano
             let valorMinimo = 0;
             let nomePlanoExibido = '';
             
             if (planoAtual === 'PRO' || planoAtual === 'ADMIN PRO MAX') {
                 valorMinimo = 5000;
                 nomePlanoExibido = 'Pro Max';
-            } else {
+            } else if (planoAtual === 'FREE' || planoAtual === 'BÁSICO' || planoAtual === 'MÉDIO') {
                 valorMinimo = 10000;
                 nomePlanoExibido = planoAtual === 'FREE' ? 'Free' : (planoAtual === 'BÁSICO' ? 'Básico' : 'Médio');
+            } else {
+                valorMinimo = 10000;
+                nomePlanoExibido = planoAtual;
             }
             
+            // Validação do valor mínimo do saque baseado no plano
             if (valor < valorMinimo) {
                 showLoading(false);
                 return alert(`Saldo insuficiente. O mínimo para o plano ${nomePlanoExibido} é ${valorMinimo.toLocaleString()} KZ`);
             }
             
+            // Validação do saldo disponível
             if (valor > saldoAtual) {
                 showLoading(false);
                 return alert(`Saldo insuficiente. O seu saldo atual é de ${saldoAtual.toLocaleString()} KZ e o valor solicitado é ${valor.toLocaleString()} KZ.`);
@@ -1293,6 +1580,7 @@
             
             showLoading(true, "A processar pedido de saque...");
             
+            // Processar o saque com os dados mais recentes
             await db.collection('saques').add({ 
                 email: currentUser.email, 
                 nome: userDataAtualizado.nome, 
@@ -1306,6 +1594,7 @@
             
             await userDocRef.update({ saldo: firebase.firestore.FieldValue.increment(-valor) });
             
+            // Registrar no histórico de ganhos como saque
             await db.collection('ganhos').add({ 
                 email: currentUser.email, 
                 valor: -valor, 
@@ -1317,10 +1606,12 @@
             alert("Pedido de levantamento enviado! Será processado em breve.");
             closeModal('modal-saque');
             
+            // Limpar campos do formulário
             document.getElementById('saque-valor').value = '';
             document.getElementById('saque-metodo').value = '';
             document.getElementById('saque-dados').value = '';
             
+            // Recarregar dados do utilizador
             await loadUserData();
             
             showLoading(false);
@@ -1395,7 +1686,7 @@
         closeModal('modal-pagamento-banco');
     }
 
-    // ADMIN FUNCTIONS
+    // ========== ADMIN FUNCTIONS ==========
     async function loadAdminData() {
         if (!userData?.isAdmin) return;
         try {
@@ -1545,14 +1836,22 @@
         } catch (error) { alert("Erro ao carregar logs: " + error.message); }
     }
 
-    // UTILITY FUNCTIONS
+    // ========== UTILITY FUNCTIONS ==========
     function showLoading(show, text = "Processando...") {
         document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
         document.getElementById('loading-text').innerText = text;
     }
 
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    // Funções openModal e closeModal - AGORA FUNCIONAM
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.style.display = 'flex';
+    }
+    
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.style.display = 'none';
+    }
 
     function previewImage(input, previewId) {
         if (input.files && input.files[0]) {
@@ -1562,7 +1861,24 @@
         }
     }
 
-    // MOEDA
+    function showSectionGlobal(sectionId, btn) {
+        if (!currentUser && !['home', 'planos'].includes(sectionId)) { alert('Por favor, inicie sessão para aceder a esta secção.'); showAuthScreen(); return; }
+        if (currentUser) { showSection(sectionId, btn); return; }
+        document.querySelectorAll('#global-nav .nav-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        if (sectionId === 'planos') {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            showSection('planos', btn);
+        } else { showAuthScreen(); }
+    }
+
+    function showAuthScreen() {
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('main-app').style.display = 'none';
+    }
+
+    // ========== MOEDA ==========
     const CurrencySystem = {
         rates: { AOA: 1, USD: 0.0012, EUR: 0.0011 },
         symbols: { AOA: 'Kz', USD: '$', EUR: '€' },
@@ -1585,7 +1901,7 @@
         } else if (convertedEl) convertedEl.style.display = 'none';
     }
 
-    // PESQUISA GLOBAL
+    // ========== PESQUISA GLOBAL ==========
     async function handleGlobalSearch(event) { if (event.key === 'Enter') performGlobalSearch(); }
     async function performGlobalSearch() {
         const searchTerm = document.getElementById('global-search').value.trim().toLowerCase();

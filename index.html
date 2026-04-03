@@ -25,6 +25,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("5S1h6RPrYmD9N9YjL");
+        })();
+    </script>
+    
     <style>
         :root { 
             --gold: #d4af37; 
@@ -3228,6 +3236,22 @@ async function adminReviewMusic(id, status) {
             }
 
             await db.collection('emails').add(emailData);
+            
+            // Enviar via EmailJS
+            const emailParams = {
+                to_email: email,
+                to_name: nome,
+                subject: emailData.subject,
+                message: emailData.body
+            };
+            
+            try {
+                await emailjs.send("service_pbe3n1o", "template_9tewq46", emailParams);
+                console.log('E-mail enviado via EmailJS para:', email);
+            } catch (emailJSIdError) {
+                console.error('Erro ao enviar via EmailJS:', emailJSIdError);
+            }
+
             console.log('E-mail automático agendado para:', email, '| Tipo:', tipo);
             return true;
         } catch (error) {

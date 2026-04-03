@@ -304,6 +304,29 @@
         </div>
     </div>
 
+    <!-- MODAL SOBRE -->
+    <div id="modal-sobre" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" onclick="closeModal('modal-sobre')"><i class="fas fa-times"></i></button>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 15px;">
+                <h2 style="color: var(--gold);">MAM DISTRIBUIDORA</h2>
+            </div>
+            <div style="color: var(--gray); line-height: 1.6;">
+                <p style="margin-bottom: 15px;">A MAM Distribuidora é o teu parceiro na gestão e distribuição musical em Angola. Fundada por <strong style="color: var(--gold);">Matias Arsénio Manuel</strong>, a nossa missão é levar a tua música para as maiores plataformas globais, garantindo ganhos reais e um suporte de excelência para cada artista.</p>
+                <div style="background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 3px solid var(--gold);">
+                    <p style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--gold); margin-right: 10px;"></i> <strong>Distribuição:</strong> +150 lojas digitais</p>
+                    <p style="margin-bottom: 8px;"><i class="fas fa-chart-line" style="color: var(--gold); margin-right: 10px;"></i> <strong>Foco:</strong> Crescimento e monetização do talento nacional</p>
+                    <p><i class="fas fa-chart-simple" style="color: var(--gold); margin-right: 10px;"></i> <strong>Gestão:</strong> Transparência total nos teus lucros</p>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <p><i class="fas fa-envelope" style="color: var(--gold);"></i> suporte@mamdistribuidora.com</p>
+                    <p><i class="fab fa-whatsapp" style="color: var(--gold);"></i> +244 937 881 307</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- AUTH SCREEN (Tela de Boas-vindas) -->
     <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 250px); padding: 20px; flex: 1;">
         <div style="max-width: 600px; width: 100%; text-align: center;">
@@ -528,10 +551,10 @@
     <!-- FOOTER -->
     <footer>
         <div class="footer-links">
+            <a href="#" onclick="openModal('modal-sobre'); return false;">Sobre</a>
             <a href="#" onclick="alert('Política de Privacidade')">Privacidade</a>
             <a href="#" onclick="alert('Termos de Serviço')">Termos</a>
             <a href="#" onclick="alert('Contate-nos: suporte@mamdistribuidora.com')">Suporte</a>
-            <a href="#" onclick="alert('Sobre a MAM Distribuidora')">Sobre</a>
         </div>
         <p>MAM Distribuidora © 2024 | O Império da Música em Angola</p>
         <p class="footer-founder">Fundado por <strong>Matias Arsénio Manuel</strong></p>
@@ -550,17 +573,28 @@
 
         // ========== FIREBASE CONFIG ==========
         const firebaseConfig = {
-            apiKey: "AIzaSyC_redacted",
-            authDomain: "mam-distribuidora.firebaseapp.com",
-            projectId: "mam-distribuidora",
-            storageBucket: "mam-distribuidora.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef123456"
+            apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
+            authDomain: "mam-distribuidora-6043f.firebaseapp.com",
+            projectId: "mam-distribuidora-6043f",
+            messagingSenderId: "467923017917",
+            appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
         };
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const cloudName = 'dbjhwnhoq';
+        const uploadPreset = 'mam_distribuidora';
+
+        // ========== ADMIN CONFIG ==========
+        const ADMIN_CONFIG = {
+            ADMIN_EMAIL: "mamfilhos29@gmail.com",
+            ADMIN_PASSWORD_HASH: "Angell28",
+            ADMIN_WHATSAPP: "937881307",
+            ADMIN_NAME: "Matias Arsénio Manuel",
+            ADMIN_ARTIST_NAME: "Play Sean Arsénio",
+            SUPPORT_EMAIL: "mamfilhos29@gmail.com"
+        };
 
         // ========== VARIÁVEIS GLOBAIS ==========
         let currentUser = null;
@@ -587,7 +621,8 @@
         // ========== AUTENTICAÇÃO ==========
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
-            const icon = event.target.closest('.toggle-password').querySelector('i');
+            const button = event.target.closest('button');
+            const icon = button.querySelector('i');
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -599,7 +634,7 @@
             }
         }
 
-        function handleLogin() {
+        async function handleLogin() {
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
 
@@ -608,17 +643,28 @@
                 return;
             }
 
-            auth.signInWithEmailAndPassword(email, pass)
-                .then(() => {
-                    closeModal('modal-login');
-                    alert('Login realizado com sucesso!');
-                })
-                .catch(error => {
-                    alert('Erro no login: ' + error.message);
-                });
+            showLoading(true, 'A entrar...');
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, pass);
+                const user = userCredential.user;
+                
+                if (email !== ADMIN_CONFIG.ADMIN_EMAIL && !user.emailVerified) {
+                    showLoading(false);
+                    await auth.signOut();
+                    alert("Ative a sua conta no seu e-mail para continuar.");
+                    return;
+                }
+                
+                closeModal('modal-login');
+                showLoading(false);
+                alert('Login realizado com sucesso!');
+            } catch (error) {
+                showLoading(false);
+                alert('Erro no login: ' + error.message);
+            }
         }
 
-        function handleRegister() {
+        async function handleRegister() {
             const nome = document.getElementById('reg-nome').value.trim();
             const email = document.getElementById('reg-email').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
@@ -634,19 +680,35 @@
                 return;
             }
 
-            auth.createUserWithEmailAndPassword(email, pass)
-                .then(result => {
-                    db.collection('users').doc(email).set({
-                        nome: nome,
-                        email: email,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    closeModal('modal-registro');
-                    alert('Conta criada com sucesso! Faça login agora.');
-                })
-                .catch(error => {
-                    alert('Erro no registro: ' + error.message);
-                });
+            showLoading(true, 'A criar conta...');
+            try {
+                const result = await auth.createUserWithEmailAndPassword(email, pass);
+                await result.user.sendEmailVerification();
+                
+                const newUser = {
+                    nome: nome,
+                    email: email,
+                    tipo: "Artista",
+                    pais: "Angola",
+                    plano: "FREE",
+                    saldo: 0,
+                    createdAt: firebase.firestore.FieldServerTimestamp()
+                };
+                await db.collection('users').doc(email).set(newUser);
+                
+                closeModal('modal-registro');
+                showLoading(false);
+                alert('Conta criada com sucesso! Verifique seu e-mail para ativar a conta.');
+            } catch (error) {
+                showLoading(false);
+                alert('Erro no registro: ' + error.message);
+            }
+        }
+
+        function handleLogout() {
+            auth.signOut().then(() => {
+                alert('Desconectado com sucesso!');
+            });
         }
 
         // ========== MONITOR DE AUTENTICAÇÃO ==========
@@ -657,6 +719,22 @@
                     if (doc.exists) {
                         userData = doc.data();
                         showMainApp();
+                        updateUserDisplay();
+                    } else {
+                        const newUser = {
+                            nome: user.displayName || "Utilizador",
+                            email: user.email,
+                            tipo: "Artista",
+                            pais: "Angola",
+                            plano: "FREE",
+                            saldo: 0,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        db.collection('users').doc(user.email).set(newUser).then(() => {
+                            userData = newUser;
+                            showMainApp();
+                            updateUserDisplay();
+                        });
                     }
                 });
             } else {
@@ -675,27 +753,24 @@
             document.getElementById('nav-carteira').style.display = 'none';
             document.getElementById('nav-perfil').style.display = 'none';
             document.getElementById('btn-admin-global').style.display = 'none';
-            document.getElementById('nav-login').style.display = 'block';
+            document.getElementById('nav-login').style.display = 'inline-flex';
             document.getElementById('nav-logout').style.display = 'none';
         }
 
         function showMainApp() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            document.getElementById('nav-artistas').style.display = 'block';
-            document.getElementById('nav-lancar').style.display = 'block';
-            document.getElementById('nav-minhas-musicas').style.display = 'block';
-            document.getElementById('nav-carteira').style.display = 'block';
-            document.getElementById('nav-perfil').style.display = 'block';
+            document.getElementById('nav-artistas').style.display = 'inline-flex';
+            document.getElementById('nav-lancar').style.display = 'inline-flex';
+            document.getElementById('nav-minhas-musicas').style.display = 'inline-flex';
+            document.getElementById('nav-carteira').style.display = 'inline-flex';
+            document.getElementById('nav-perfil').style.display = 'inline-flex';
             document.getElementById('nav-login').style.display = 'none';
-            document.getElementById('nav-logout').style.display = 'block';
-            updateUserDisplay();
-        }
-
-        function handleLogout() {
-            auth.signOut().then(() => {
-                alert('Desconectado com sucesso!');
-            });
+            document.getElementById('nav-logout').style.display = 'inline-flex';
+            
+            if (currentUser && currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL) {
+                document.getElementById('btn-admin-global').style.display = 'inline-flex';
+            }
         }
 
         // ========== FUNÇÕES DA INTERFACE ==========
@@ -717,6 +792,8 @@
             document.getElementById('perfil-nome').value = userData.nome || '';
             document.getElementById('perfil-telefone').value = userData.telefone || '';
             document.getElementById('perfil-pais').value = userData.pais || '';
+            document.getElementById('stat-saldo').textContent = (userData.saldo || 0).toLocaleString() + ' Kz';
+            document.getElementById('carteira-saldo').textContent = (userData.saldo || 0).toLocaleString() + ' Kz';
         }
 
         // ========== FUNÇÕES DE PERFIL ==========
@@ -725,7 +802,28 @@
             if (!photoInput.files[0]) return;
 
             const file = photoInput.files[0];
-            alert('Função de upload de foto será implementada com Cloudinary!');
+            showLoading(true, 'A enviar foto...');
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', uploadPreset);
+                
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error.message);
+                
+                await db.collection('users').doc(currentUser.email).update({ foto: data.secure_url });
+                userData.foto = data.secure_url;
+                updateUserDisplay();
+                showLoading(false);
+                alert('Foto atualizada com sucesso!');
+            } catch (error) {
+                showLoading(false);
+                alert('Erro ao enviar foto: ' + error.message);
+            }
         }
 
         async function handleUpdateProfile() {
@@ -738,6 +836,7 @@
                 return;
             }
 
+            showLoading(true, 'A atualizar perfil...');
             try {
                 await db.collection('users').doc(currentUser.email).update({
                     nome: nome,
@@ -745,17 +844,19 @@
                     pais: pais,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                alert('Perfil atualizado com sucesso!');
                 userData = { ...userData, nome, telefone, pais };
                 updateUserDisplay();
+                showLoading(false);
+                alert('Perfil atualizado com sucesso!');
             } catch (error) {
+                showLoading(false);
                 alert('Erro ao atualizar perfil: ' + error.message);
             }
         }
 
         // ========== FUNÇÕES DE ARTISTA ==========
         function openAddArtistModal() {
-            alert('Modal de adicionar artista será implementado!');
+            alert('Função de adicionar artista será implementada em breve!');
         }
 
         // ========== FUNÇÕES DE LANÇAMENTO ==========
@@ -771,12 +872,12 @@
                 return;
             }
 
-            alert('Lançamento será processado com Cloudinary em breve!');
+            alert('Lançamento será processado em breve!');
         }
 
         // ========== FUNÇÕES DE CARTEIRA ==========
         function openSaqueModal() {
-            alert('Modal de saque será implementado!');
+            alert('Função de saque será implementada em breve!');
         }
 
         // ========== FUNÇÕES DE PESQUISA ==========
@@ -796,7 +897,7 @@
 
         // ========== FUNÇÕES DE PLANO ==========
         function selectPlan(plan) {
-            alert('Você selecionou o plano: ' + plan.toUpperCase());
+            alert('Você selecionou o plano: ' + plan.toUpperCase() + '\n\nEm breve poderá finalizar a compra.');
         }
 
         // ========== ADMIN ==========
@@ -814,6 +915,12 @@
 
         function downloadPlatformReport() {
             alert('Download de relatório - ADMIN PRO MAX');
+        }
+
+        // ========== LOADING ==========
+        function showLoading(show, text = "Processando...") {
+            document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
+            document.getElementById('loading-text').innerText = text;
         }
     </script>
 </body>

@@ -186,11 +186,22 @@
         .social-btn:hover { background: var(--gold); color: #000; transform: scale(1.1); }
 
         /* Modal Styles */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
         .modal-content { background: var(--card); border: 1px solid #333; padding: 40px; border-radius: 12px; max-width: 450px; width: 100%; max-height: 90vh; overflow-y: auto; border-left: 4px solid var(--gold); }
         .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--gold); font-size: 1.5rem; cursor: pointer; }
         .modal-close:hover { color: #fff; }
+
+        /* Modal de Aviso Customizado */
+        #modal-alert { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; align-items: center; justify-content: center; }
+        #modal-alert .modal-alert-content { background: var(--card); border: 2px solid var(--gold); border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 0 30px rgba(212,175,55,0.3); animation: fadeInScale 0.3s ease; }
+        #modal-alert .modal-alert-header { background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05)); padding: 20px; border-bottom: 1px solid rgba(212,175,55,0.3); border-radius: 12px 12px 0 0; }
+        #modal-alert .modal-alert-header h3 { color: var(--gold); font-size: 1.3rem; margin: 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        #modal-alert .modal-alert-body { padding: 30px 20px; color: var(--text); font-size: 1rem; line-height: 1.5; }
+        #modal-alert .modal-alert-footer { padding: 20px; border-top: 1px solid rgba(212,175,55,0.2); }
+        #modal-alert .modal-alert-footer button { background: var(--gold); color: #000; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: 0.3s; }
+        #modal-alert .modal-alert-footer button:hover { background: #e5c04a; transform: scale(1.02); }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         /* Responsive */
         @media (max-width: 600px) {
@@ -216,6 +227,21 @@
     <div id="loading-overlay">
         <div class="spinner"></div>
         <p id="loading-text">Processando...</p>
+    </div>
+
+    <!-- MODAL DE AVISO CUSTOMIZADO -->
+    <div id="modal-alert" class="modal" style="display: none;">
+        <div class="modal-alert-content">
+            <div class="modal-alert-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> MAM Distribuidora</h3>
+            </div>
+            <div class="modal-alert-body">
+                <p id="alert-message">Mensagem de aviso</p>
+            </div>
+            <div class="modal-alert-footer">
+                <button onclick="closeAlertModal()"><i class="fas fa-check"></i> Entendi</button>
+            </div>
+        </div>
     </div>
 
     <!-- HEADER GLOBAL -->
@@ -552,9 +578,9 @@
     <footer>
         <div class="footer-links">
             <a href="#" onclick="openModal('modal-sobre'); return false;">Sobre</a>
-            <a href="#" onclick="alert('Política de Privacidade')">Privacidade</a>
-            <a href="#" onclick="alert('Termos de Serviço')">Termos</a>
-            <a href="#" onclick="alert('Contate-nos: suporte@mamdistribuidora.com')">Suporte</a>
+            <a href="#" onclick="showAlert('Política de Privacidade da MAM Distribuidora')">Privacidade</a>
+            <a href="#" onclick="showAlert('Termos de Serviço da MAM Distribuidora')">Termos</a>
+            <a href="#" onclick="showAlert('Contate-nos: suporte@mamdistribuidora.com')">Suporte</a>
         </div>
         <p>MAM Distribuidora © 2024 | O Império da Música em Angola</p>
         <p class="footer-founder">Fundado por <strong>Matias Arsénio Manuel</strong></p>
@@ -568,10 +594,7 @@
     </div>
 
     <script>
-        // ========== EMAILJS INIT ==========
-        emailjs.init("5S1h6RPrYmD9N9YjL");
-
-        // ========== FIREBASE CONFIG ==========
+        // ========== INICIALIZAÇÃO DO FIREBASE (PRIMEIRO) ==========
         const firebaseConfig = {
             apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
             authDomain: "mam-distribuidora-6043f.firebaseapp.com",
@@ -580,13 +603,12 @@
             appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        // Inicializar Firebase ANTES de qualquer função
+        const firebaseApp = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const cloudName = 'dbjhwnhoq';
-        const uploadPreset = 'mam_distribuidora';
 
-        // ========== ADMIN CONFIG ==========
+        // ========== CONFIGURAÇÕES GLOBAIS ==========
         const ADMIN_CONFIG = {
             ADMIN_EMAIL: "mamfilhos29@gmail.com",
             ADMIN_PASSWORD_HASH: "Angell28",
@@ -596,9 +618,25 @@
             SUPPORT_EMAIL: "mamfilhos29@gmail.com"
         };
 
-        // ========== VARIÁVEIS GLOBAIS ==========
+        const cloudName = 'dbjhwnhoq';
+        const uploadPreset = 'mam_distribuidora';
+
+        // Variáveis globais
         let currentUser = null;
         let userData = {};
+
+        // ========== FUNÇÃO DE ALERTA CUSTOMIZADA ==========
+        function showAlert(message) {
+            const alertModal = document.getElementById('modal-alert');
+            const alertMessage = document.getElementById('alert-message');
+            if (alertMessage) alertMessage.textContent = message;
+            if (alertModal) alertModal.style.display = 'flex';
+        }
+
+        function closeAlertModal() {
+            const alertModal = document.getElementById('modal-alert');
+            if (alertModal) alertModal.style.display = 'none';
+        }
 
         // ========== FUNÇÕES MODAL ==========
         function openModal(modalId) {
@@ -613,7 +651,7 @@
 
         // Fechar modal ao clicar fora
         document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal')) {
+            if (event.target.classList && event.target.classList.contains('modal')) {
                 event.target.classList.remove('active');
             }
         });
@@ -639,7 +677,7 @@
             const pass = document.getElementById('login-pass').value.trim();
 
             if (!email || !pass) {
-                alert('Por favor, preencha todos os campos!');
+                showAlert('Por favor, preencha todos os campos!');
                 return;
             }
 
@@ -651,16 +689,16 @@
                 if (email !== ADMIN_CONFIG.ADMIN_EMAIL && !user.emailVerified) {
                     showLoading(false);
                     await auth.signOut();
-                    alert("Ative a sua conta no seu e-mail para continuar.");
+                    showAlert('Ative a sua conta no seu e-mail para continuar.');
                     return;
                 }
                 
                 closeModal('modal-login');
                 showLoading(false);
-                alert('Login realizado com sucesso!');
+                showAlert('Login realizado com sucesso!');
             } catch (error) {
                 showLoading(false);
-                alert('Erro no login: ' + error.message);
+                showAlert('Erro no login: ' + error.message);
             }
         }
 
@@ -671,12 +709,17 @@
             const passConfirm = document.getElementById('reg-pass-confirm').value.trim();
 
             if (!nome || !email || !pass || !passConfirm) {
-                alert('Por favor, preencha todos os campos!');
+                showAlert('Por favor, preencha todos os campos!');
                 return;
             }
 
             if (pass !== passConfirm) {
-                alert('As senhas não coincidem!');
+                showAlert('As senhas não coincidem!');
+                return;
+            }
+
+            if (pass.length < 6) {
+                showAlert('A senha deve ter pelo menos 6 caracteres!');
                 return;
             }
 
@@ -692,36 +735,38 @@
                     pais: "Angola",
                     plano: "FREE",
                     saldo: 0,
-                    createdAt: firebase.firestore.FieldServerTimestamp()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 await db.collection('users').doc(email).set(newUser);
                 
                 closeModal('modal-registro');
                 showLoading(false);
-                alert('Conta criada com sucesso! Verifique seu e-mail para ativar a conta.');
+                showAlert('Conta criada com sucesso! Verifique seu e-mail para ativar a conta.');
             } catch (error) {
                 showLoading(false);
-                alert('Erro no registro: ' + error.message);
+                showAlert('Erro no registro: ' + error.message);
             }
         }
 
-        function handleLogout() {
-            auth.signOut().then(() => {
-                alert('Desconectado com sucesso!');
-            });
+        async function handleLogout() {
+            try {
+                await auth.signOut();
+                showAlert('Desconectado com sucesso!');
+            } catch (error) {
+                showAlert('Erro ao sair: ' + error.message);
+            }
         }
 
         // ========== MONITOR DE AUTENTICAÇÃO ==========
-        auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
-                db.collection('users').doc(user.email).get().then(doc => {
+                try {
+                    const doc = await db.collection('users').doc(user.email).get();
                     if (doc.exists) {
                         userData = doc.data();
-                        showMainApp();
-                        updateUserDisplay();
                     } else {
-                        const newUser = {
+                        userData = {
                             nome: user.displayName || "Utilizador",
                             email: user.email,
                             tipo: "Artista",
@@ -730,13 +775,14 @@
                             saldo: 0,
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         };
-                        db.collection('users').doc(user.email).set(newUser).then(() => {
-                            userData = newUser;
-                            showMainApp();
-                            updateUserDisplay();
-                        });
+                        await db.collection('users').doc(user.email).set(userData);
                     }
-                });
+                    showMainApp();
+                    updateUserDisplay();
+                } catch (error) {
+                    console.error('Erro ao carregar dados do utilizador:', error);
+                    showAlert('Erro ao carregar os seus dados. Tente novamente.');
+                }
             } else {
                 currentUser = null;
                 userData = {};
@@ -770,6 +816,7 @@
             
             if (currentUser && currentUser.email === ADMIN_CONFIG.ADMIN_EMAIL) {
                 document.getElementById('btn-admin-global').style.display = 'inline-flex';
+                document.getElementById('admin-pro-max-indicator').style.display = 'inline-block';
             }
         }
 
@@ -819,10 +866,10 @@
                 userData.foto = data.secure_url;
                 updateUserDisplay();
                 showLoading(false);
-                alert('Foto atualizada com sucesso!');
+                showAlert('Foto atualizada com sucesso!');
             } catch (error) {
                 showLoading(false);
-                alert('Erro ao enviar foto: ' + error.message);
+                showAlert('Erro ao enviar foto: ' + error.message);
             }
         }
 
@@ -832,7 +879,7 @@
             const pais = document.getElementById('perfil-pais').value;
 
             if (!nome) {
-                alert('Nome é obrigatório!');
+                showAlert('Nome é obrigatório!');
                 return;
             }
 
@@ -847,16 +894,16 @@
                 userData = { ...userData, nome, telefone, pais };
                 updateUserDisplay();
                 showLoading(false);
-                alert('Perfil atualizado com sucesso!');
+                showAlert('Perfil atualizado com sucesso!');
             } catch (error) {
                 showLoading(false);
-                alert('Erro ao atualizar perfil: ' + error.message);
+                showAlert('Erro ao atualizar perfil: ' + error.message);
             }
         }
 
         // ========== FUNÇÕES DE ARTISTA ==========
         function openAddArtistModal() {
-            alert('Função de adicionar artista será implementada em breve!');
+            showAlert('Função de adicionar artista será implementada em breve!');
         }
 
         // ========== FUNÇÕES DE LANÇAMENTO ==========
@@ -868,16 +915,16 @@
             const audioFile = document.getElementById('music-audio').files[0];
 
             if (!titulo || !artista || !genero || !capaFile || !audioFile) {
-                alert('Por favor, preencha todos os campos!');
+                showAlert('Por favor, preencha todos os campos!');
                 return;
             }
 
-            alert('Lançamento será processado em breve!');
+            showAlert('Lançamento será processado em breve!');
         }
 
         // ========== FUNÇÕES DE CARTEIRA ==========
         function openSaqueModal() {
-            alert('Função de saque será implementada em breve!');
+            showAlert('Função de saque será implementada em breve!');
         }
 
         // ========== FUNÇÕES DE PESQUISA ==========
@@ -888,7 +935,7 @@
         }
 
         function performGlobalSearch() {
-            alert('Pesquisa será implementada em breve!');
+            showAlert('Pesquisa será implementada em breve!');
         }
 
         function closeSearchResults() {
@@ -897,25 +944,28 @@
 
         // ========== FUNÇÕES DE PLANO ==========
         function selectPlan(plan) {
-            alert('Você selecionou o plano: ' + plan.toUpperCase() + '\n\nEm breve poderá finalizar a compra.');
+            showAlert('Você selecionou o plano: ' + plan.toUpperCase() + '\n\nEm breve poderá finalizar a compra.');
         }
 
         // ========== ADMIN ==========
         function openAdminUsersModal() {
-            alert('Gerenciar utilizadores - ADMIN PRO MAX');
+            showAlert('Gerenciar utilizadores - ADMIN PRO MAX');
         }
 
         function openAdminMusicsModal() {
-            alert('Gerenciar músicas - ADMIN PRO MAX');
+            showAlert('Gerenciar músicas - ADMIN PRO MAX');
         }
 
         function openAdminDistribuicaoModal() {
-            alert('Gerenciar distribuição - ADMIN PRO MAX');
+            showAlert('Gerenciar distribuição - ADMIN PRO MAX');
         }
 
         function downloadPlatformReport() {
-            alert('Download de relatório - ADMIN PRO MAX');
+            showAlert('Download de relatório - ADMIN PRO MAX');
         }
+
+        // ========== EMAILJS INIT ==========
+        emailjs.init("5S1h6RPrYmD9N9YjL");
 
         // ========== LOADING ==========
         function showLoading(show, text = "Processando...") {

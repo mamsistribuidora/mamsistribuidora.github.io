@@ -174,6 +174,10 @@
         .info-card h3 { color: var(--gold); font-size: 0.9rem; margin-bottom: 5px; }
         .info-card p { color: var(--gray); font-size: 0.75rem; }
 
+        .platform-checkbox { display: flex; align-items: center; gap: 10px; padding: 10px; background: #0a0a0a; margin-bottom: 8px; border-radius: 6px; }
+        .platform-checkbox input { width: auto; margin: 0; }
+        .platform-checkbox label { margin: 0; cursor: pointer; color: var(--gray); }
+
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .grid { grid-template-columns: 1fr; }
@@ -656,6 +660,26 @@
         </div>
     </div>
 
+    <div id="adminMusicsModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <button class="modal-close" onclick="closeModal('adminMusicsModal')"><i class="fas fa-times"></i></button>
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Gerenciar Músicas</h2>
+            <div id="admin-musics-list" class="item-list"></div>
+        </div>
+    </div>
+
+    <div id="adminDistribuicaoModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('adminDistribuicaoModal')"><i class="fas fa-times"></i></button>
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Distribuição de Música</h2>
+            <select id="dist-music-select" style="margin-bottom: 20px;">
+                <option value="">Selecione uma música</option>
+            </select>
+            <div id="platforms-list"></div>
+            <button class="btn" onclick="updateDistribution()"><i class="fas fa-save"></i> Atualizar Distribuição</button>
+        </div>
+    </div>
+
     <div id="addArtistModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
@@ -667,15 +691,27 @@
                     <input type="file" id="artist-photo-input" accept="image/*" style="display: none;" onchange="previewArtistPhoto()">
                 </div>
             </div>
-            <input type="text" id="artist-name" placeholder="Nome do Artista" required>
+            <input type="text" id="artist-name" placeholder="Nome Artístico" required>
+            <select id="artist-style">
+                <option value="">Estilo Musical</option>
+                <option value="Afrobeat">Afrobeat</option>
+                <option value="Kizomba">Kizomba</option>
+                <option value="Semba">Semba</option>
+                <option value="Hip Hop">Hip Hop</option>
+                <option value="Pop">Pop</option>
+                <option value="R&B">R&B</option>
+                <option value="Rock">Rock</option>
+                <option value="Eletrônica">Eletrônica</option>
+                <option value="Jazz">Jazz</option>
+                <option value="Gospel">Gospel</option>
+            </select>
             <textarea id="artist-bio" placeholder="Biografia do Artista" rows="3" style="resize: vertical;"></textarea>
-            <label style="color: var(--gold); margin-top: 10px;">Redes Sociais</label>
-            <input type="url" id="artist-youtube" placeholder="YouTube">
-            <input type="url" id="artist-spotify" placeholder="Spotify">
-            <input type="url" id="artist-apple" placeholder="Apple Music">
-            <input type="url" id="artist-tiktok" placeholder="TikTok">
-            <input type="url" id="artist-facebook" placeholder="Facebook">
+            <label style="color: var(--gold); margin-top: 10px;">Redes Sociais (Links para evitar silenciamento de direitos autorais)</label>
             <input type="url" id="artist-instagram" placeholder="Instagram">
+            <input type="url" id="artist-facebook" placeholder="Facebook">
+            <input type="url" id="artist-youtube" placeholder="YouTube">
+            <input type="url" id="artist-tiktok" placeholder="TikTok">
+            <input type="url" id="artist-spotify" placeholder="Spotify">
             <button class="btn" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
         </div>
     </div>
@@ -699,7 +735,7 @@
         // ========== CONFIGURAÇÕES ==========
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
         const ADMIN_WHATSAPP = "937881307";
-        const VALOR_POR_STREAM = 3; // Kz por stream
+        const VALOR_POR_STREAM = 3;
 
         let currentUser = null;
         let userData = null;
@@ -970,12 +1006,13 @@
                         <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" onerror="this.src='https://via.placeholder.com/70'">
                         <div class="artist-info">
                             <h4>${artist.nome}</h4>
-                            <p>${artist.bio || 'Sem biografia'}</p>
+                            <p>${artist.bio || 'Sem biografia'} | ${artist.estilo || ''}</p>
                             <div class="social-links">
                                 ${artist.youtube ? `<a href="${artist.youtube}" target="_blank" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
                                 ${artist.spotify ? `<a href="${artist.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
                                 ${artist.instagram ? `<a href="${artist.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>` : ''}
                                 ${artist.tiktok ? `<a href="${artist.tiktok}" target="_blank" class="social-link"><i class="fab fa-tiktok"></i> TikTok</a>` : ''}
+                                ${artist.facebook ? `<a href="${artist.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>` : ''}
                             </div>
                         </div>
                     `;
@@ -991,13 +1028,13 @@
             }
             
             document.getElementById('artist-name').value = '';
+            document.getElementById('artist-style').value = '';
             document.getElementById('artist-bio').value = '';
-            document.getElementById('artist-youtube').value = '';
-            document.getElementById('artist-spotify').value = '';
-            document.getElementById('artist-apple').value = '';
-            document.getElementById('artist-tiktok').value = '';
-            document.getElementById('artist-facebook').value = '';
             document.getElementById('artist-instagram').value = '';
+            document.getElementById('artist-facebook').value = '';
+            document.getElementById('artist-youtube').value = '';
+            document.getElementById('artist-tiktok').value = '';
+            document.getElementById('artist-spotify').value = '';
             document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
             
             openModal('addArtistModal');
@@ -1017,7 +1054,7 @@
         async function saveArtist() {
             const nome = document.getElementById('artist-name').value.trim();
             if (!nome) {
-                showAlert('Nome do artista é obrigatório!');
+                showAlert('Nome artístico é obrigatório!');
                 return;
             }
             
@@ -1036,13 +1073,13 @@
                 const artistData = {
                     id: artistId,
                     nome: nome,
+                    estilo: document.getElementById('artist-style').value,
                     bio: document.getElementById('artist-bio').value,
-                    youtube: document.getElementById('artist-youtube').value,
-                    spotify: document.getElementById('artist-spotify').value,
-                    apple: document.getElementById('artist-apple').value,
-                    tiktok: document.getElementById('artist-tiktok').value,
-                    facebook: document.getElementById('artist-facebook').value,
                     instagram: document.getElementById('artist-instagram').value,
+                    facebook: document.getElementById('artist-facebook').value,
+                    youtube: document.getElementById('artist-youtube').value,
+                    tiktok: document.getElementById('artist-tiktok').value,
+                    spotify: document.getElementById('artist-spotify').value,
                     foto: photoURL,
                     ownerEmail: currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1058,7 +1095,7 @@
                 loadArtists();
                 updateUserDisplay();
                 showLoading(false);
-                showAlert('Artista adicionado!');
+                showAlert('Artista adicionado com sucesso!');
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
@@ -1158,9 +1195,10 @@
                     dataLancamento: releaseDate,
                     tipo: releaseType,
                     ownerEmail: currentUser.email,
+                    status: 'pending',
                     streams: 0,
                     totalGanhos: 0,
-                    spotifyUrl: null,
+                    distributedTo: {},
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
@@ -1205,14 +1243,14 @@
                 if (releaseType === 'album') addTrackField();
                 
                 showLoading(false);
-                showAlert('Lançamento enviado! Será distribuído para Spotify, Apple Music e +150 plataformas.');
+                showAlert('Lançamento enviado! Aguardando aprovação do ADMIN.');
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
         }
 
-        // ========== REPRODUÇÃO COM SPOTIFY ==========
+        // ========== REPRODUÇÃO ==========
         async function playMusic(release) {
             try {
                 await db.collection('releases').doc(release.id).update({
@@ -1228,16 +1266,12 @@
                 userData.saldo = (userData.saldo || 0) + VALOR_POR_STREAM;
                 updateUserDisplay();
                 
-                // Abrir Spotify se disponível, senão tocar local
-                if (release.spotifyUrl) {
-                    window.open(release.spotifyUrl, '_blank');
-                    showAlert(`🎵 ${release.titulo} - Abrindo no Spotify! +${VALOR_POR_STREAM} Kz`);
-                } else if (release.audioURL) {
+                if (release.audioURL) {
                     const audio = new Audio(release.audioURL);
                     audio.play();
                     showAlert(`🎵 Tocando: ${release.titulo} | +${VALOR_POR_STREAM} Kz`);
                 } else {
-                    showAlert(`🎵 ${release.titulo} - Disponível em breve no Spotify! Stream registrado.`);
+                    showAlert(`🎵 ${release.titulo} - Stream registrado! +${VALOR_POR_STREAM} Kz`);
                 }
                 
                 loadWallet();
@@ -1255,6 +1289,7 @@
                 destaquesContainer.innerHTML = '<p style="color: var(--gray);">Carregando...</p>';
                 
                 const releasesSnapshot = await db.collection('releases')
+                    .where('status', '==', 'approved')
                     .orderBy('streams', 'desc')
                     .limit(5)
                     .get();
@@ -1300,6 +1335,7 @@
                 feedContainer.innerHTML = '<p style="color: var(--gray);">Carregando lançamentos...</p>';
                 
                 const feedSnapshot = await db.collection('releases')
+                    .where('status', '==', 'approved')
                     .orderBy('createdAt', 'desc')
                     .limit(30)
                     .get();
@@ -1349,6 +1385,9 @@
                     const artistDoc = await db.collection('artists').doc(release.artistaId).get();
                     const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
                     
+                    const statusText = release.status === 'approved' ? 'Aprovado' : (release.status === 'rejected' ? 'Reprovado' : 'Pendente');
+                    const statusClass = release.status === 'approved' ? 'status-active' : (release.status === 'rejected' ? 'status-error' : 'status-pending');
+                    
                     const discoDiv = document.createElement('div');
                     discoDiv.className = 'disco-item';
                     discoDiv.onclick = () => playMusic(release);
@@ -1357,7 +1396,8 @@
                         <div class="disco-title">${release.titulo}</div>
                         <div class="disco-artist">${artistName}</div>
                         <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                        <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
+                        <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
+                        <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
                     `;
                     container.appendChild(discoDiv);
                 }
@@ -1543,7 +1583,7 @@
                 updateUserDisplay();
                 loadWallet();
                 showLoading(false);
-                showAlert(`Plano ${planName} ativado!`);
+                showAlert(`Plano ${planName} ativado com sucesso!`);
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
@@ -1552,15 +1592,244 @@
 
         function sendToWhatsApp() {
             window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(`Olá, realizei o pagamento do plano ${selectedPlan?.toUpperCase()} da MAM Distribuidora.`)}`, '_blank');
-            showAlert('Envie o comprovativo pelo WhatsApp.');
+            showAlert('Envie o comprovativo pelo WhatsApp para ativação.');
         }
 
-        // ========== ADMIN ==========
-        function openAdminUsersModal() { openModal('adminUsersModal'); }
-        function openAdminMusicsModal() { showAlert('Gestão de músicas - Em desenvolvimento.'); }
-        function openAdminDistribuicaoModal() { showAlert('Distribuição - Em desenvolvimento.'); }
-        function downloadPlatformReport() { showAlert('Relatório - Em desenvolvimento.'); }
-
+        // ========== ADMIN FUNCTIONS ==========
+        function openAdminUsersModal() { 
+            openModal('adminUsersModal'); 
+        }
+        
+        async function openAdminMusicsModal() {
+            showLoading(true, 'Carregando músicas...');
+            try {
+                const snapshot = await db.collection('releases').get();
+                const container = document.getElementById('admin-musics-list');
+                container.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhuma música encontrada.</p>';
+                    showLoading(false);
+                    openModal('adminMusicsModal');
+                    return;
+                }
+                
+                for (const doc of snapshot.docs) {
+                    const music = doc.data();
+                    const artistDoc = await db.collection('artists').doc(music.artistaId).get();
+                    const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista Desconhecido';
+                    
+                    const statusText = music.status === 'approved' ? 'Aprovado' : (music.status === 'rejected' ? 'Reprovado' : 'Pendente');
+                    const statusClass = music.status === 'approved' ? 'status-active' : (music.status === 'rejected' ? 'status-error' : 'status-pending');
+                    
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'list-item';
+                    itemDiv.innerHTML = `
+                        <img src="${music.capaURL}" onerror="this.src='https://via.placeholder.com/60'">
+                        <div class="list-info">
+                            <h4>${music.titulo}</h4>
+                            <p>Artista: ${artistName}</p>
+                            <p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
+                            ${music.audioURL ? `<audio controls src="${music.audioURL}" style="height: 35px; margin-top: 5px;"></audio>` : '<p style="color: var(--gray);">Álbum (múltiplas faixas)</p>'}
+                        </div>
+                        <div class="list-actions">
+                            ${music.status !== 'approved' ? `<button class="btn-small btn-success" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
+                            ${music.status !== 'rejected' ? `<button class="btn-small btn-danger" onclick="rejectMusic('${doc.id}')"><i class="fas fa-times"></i> Reprovar</button>` : ''}
+                        </div>
+                    `;
+                    container.appendChild(itemDiv);
+                }
+                showLoading(false);
+                openModal('adminMusicsModal');
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao carregar músicas: ' + error.message);
+            }
+        }
+        
+        async function approveMusic(musicId) {
+            showLoading(true, 'A aprovar música...');
+            try {
+                await db.collection('releases').doc(musicId).update({
+                    status: 'approved',
+                    approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showLoading(false);
+                showAlert('✅ Música aprovada com sucesso! Agora está disponível no feed.');
+                openAdminMusicsModal();
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao aprovar: ' + error.message);
+            }
+        }
+        
+        async function rejectMusic(musicId) {
+            showLoading(true, 'A reprovar música...');
+            try {
+                await db.collection('releases').doc(musicId).update({
+                    status: 'rejected',
+                    rejectedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showLoading(false);
+                showAlert('❌ Música reprovada. O artista será notificado.');
+                openAdminMusicsModal();
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao reprovar: ' + error.message);
+            }
+        }
+        
+        async function openAdminDistribuicaoModal() {
+            showLoading(true, 'Carregando músicas aprovadas...');
+            try {
+                const snapshot = await db.collection('releases').where('status', '==', 'approved').get();
+                const select = document.getElementById('dist-music-select');
+                select.innerHTML = '<option value="">Selecione uma música</option>';
+                
+                if (snapshot.empty) {
+                    showLoading(false);
+                    showAlert('Nenhuma música aprovada para distribuição.');
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const music = doc.data();
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    option.textContent = music.titulo;
+                    select.appendChild(option);
+                });
+                
+                select.onchange = () => loadDistributionForm(select.value);
+                showLoading(false);
+                openModal('adminDistribuicaoModal');
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro: ' + error.message);
+            }
+        }
+        
+        async function loadDistributionForm(musicId) {
+            if (!musicId) {
+                document.getElementById('platforms-list').innerHTML = '';
+                return;
+            }
+            
+            showLoading(true, 'Carregando informações...');
+            try {
+                const doc = await db.collection('releases').doc(musicId).get();
+                const music = doc.data();
+                const distributedTo = music.distributedTo || {};
+                
+                const platforms = ['Spotify', 'Apple Music', 'Deezer', 'YouTube Music', 'Tidal', 'Amazon Music'];
+                let html = '';
+                platforms.forEach(platform => {
+                    const isChecked = distributedTo[platform] === true;
+                    html += `
+                        <div class="platform-checkbox">
+                            <input type="checkbox" id="dist-${platform.replace(/ /g, '')}" ${isChecked ? 'checked' : ''}>
+                            <label for="dist-${platform.replace(/ /g, '')}"><i class="fab fa-${platform.toLowerCase().replace(' ', '')}"></i> ${platform}</label>
+                        </div>
+                    `;
+                });
+                document.getElementById('platforms-list').innerHTML = html;
+                window.currentDistMusicId = musicId;
+                showLoading(false);
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro: ' + error.message);
+            }
+        }
+        
+        async function updateDistribution() {
+            const musicId = window.currentDistMusicId;
+            if (!musicId) {
+                showAlert('Selecione uma música primeiro!');
+                return;
+            }
+            
+            showLoading(true, 'Atualizando distribuição...');
+            try {
+                const platforms = ['Spotify', 'Apple Music', 'Deezer', 'YouTube Music', 'Tidal', 'Amazon Music'];
+                const distributedTo = {};
+                platforms.forEach(platform => {
+                    const checkbox = document.getElementById(`dist-${platform.replace(/ /g, '')}`);
+                    distributedTo[platform] = checkbox ? checkbox.checked : false;
+                });
+                
+                await db.collection('releases').doc(musicId).update({
+                    distributedTo: distributedTo,
+                    distributionUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showLoading(false);
+                showAlert('✅ Distribuição atualizada com sucesso! As plataformas selecionadas foram registradas.');
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao atualizar: ' + error.message);
+            }
+        }
+        
+        async function downloadPlatformReport() {
+            showLoading(true, 'Gerando relatório...');
+            try {
+                const usersSnapshot = await db.collection('users').get();
+                let report = 'RELATÓRIO MAM DISTRIBUIDORA\n';
+                report += '=' .repeat(60) + '\n';
+                report += `Data: ${new Date().toLocaleString()}\n`;
+                report += '=' .repeat(60) + '\n\n';
+                
+                for (const userDoc of usersSnapshot.docs) {
+                    const user = userDoc.data();
+                    report += `📌 UTILIZADOR: ${user.nome}\n`;
+                    report += `   Email: ${user.email}\n`;
+                    report += `   Plano: ${user.plano}\n`;
+                    report += `   Saldo: ${(user.saldo || 0).toLocaleString()} Kz\n`;
+                    report += `   Total Ganhos: ${(user.totalGanhos || 0).toLocaleString()} Kz\n`;
+                    report += `   Artistas: ${user.artists?.length || 0}\n`;
+                    report += `   Lançamentos: ${user.releases?.length || 0}\n\n`;
+                    
+                    if (user.releases && user.releases.length > 0) {
+                        report += `   📀 MÚSICAS:\n`;
+                        for (const releaseId of user.releases) {
+                            const releaseDoc = await db.collection('releases').doc(releaseId).get();
+                            if (releaseDoc.exists) {
+                                const music = releaseDoc.data();
+                                report += `      - ${music.titulo}\n`;
+                                report += `        Streams: ${music.streams || 0}\n`;
+                                report += `        Ganhos: ${(music.totalGanhos || 0).toLocaleString()} Kz\n`;
+                                report += `        Status: ${music.status || 'pending'}\n`;
+                                if (music.distributedTo) {
+                                    const distributedPlatforms = Object.keys(music.distributedTo).filter(p => music.distributedTo[p]);
+                                    if (distributedPlatforms.length > 0) {
+                                        report += `        Distribuído para: ${distributedPlatforms.join(', ')}\n`;
+                                    }
+                                }
+                            }
+                        }
+                        report += '\n';
+                    }
+                    report += '-'.repeat(40) + '\n\n';
+                }
+                
+                const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.download = `relatorio_mam_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showLoading(false);
+                showAlert('📊 Relatório gerado e baixado com sucesso!');
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao gerar relatório: ' + error.message);
+            }
+        }
+        
         async function searchUser() {
             const email = document.getElementById('admin-search-email').value.trim();
             if (!email) { showAlert('Digite um e-mail!'); return; }
@@ -1583,16 +1852,18 @@
                         <div><strong>Email:</strong> ${email}</div>
                         <div><strong>Plano:</strong> ${user.plano || 'FREE'}</div>
                         <div><strong>Saldo:</strong> ${(user.saldo || 0).toLocaleString()} Kz</div>
+                        <div><strong>Artistas:</strong> ${user.artists?.length || 0}</div>
+                        <div><strong>Músicas:</strong> ${user.releases?.length || 0}</div>
                         <select id="admin-plan-select" style="width: auto;">
-                            <option value="FREE">FREE</option>
-                            <option value="BÁSICO">BÁSICO</option>
-                            <option value="MÉDIO">MÉDIO</option>
-                            <option value="PRO MAX">PRO MAX</option>
+                            <option value="FREE" ${user.plano === 'FREE' ? 'selected' : ''}>FREE</option>
+                            <option value="BÁSICO" ${user.plano === 'BÁSICO' ? 'selected' : ''}>BÁSICO</option>
+                            <option value="MÉDIO" ${user.plano === 'MÉDIO' ? 'selected' : ''}>MÉDIO</option>
+                            <option value="PRO MAX" ${user.plano === 'PRO MAX' ? 'selected' : ''}>PRO MAX</option>
                         </select>
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                             <button class="btn-small" onclick="changeUserPlan('${email}')">Mudar Plano</button>
                             <button class="btn-small btn-danger" onclick="suspendUser('${email}')">Suspender</button>
-                            <button class="btn-small btn-danger" onclick="deleteUser('${email}')">Eliminar</button>
+                            <button class="btn-small btn-danger" onclick="deleteUserAccount('${email}')">Eliminar</button>
                         </div>
                     </div>
                 `;
@@ -1602,7 +1873,7 @@
                 showAlert('Erro: ' + error.message);
             }
         }
-
+        
         async function changeUserPlan(email) {
             const newPlan = document.getElementById('admin-plan-select').value;
             let artistsLimit = newPlan === 'BÁSICO' ? 10 : (newPlan === 'MÉDIO' ? 30 : (newPlan === 'PRO MAX' ? 999999 : 1));
@@ -1610,34 +1881,35 @@
             try {
                 await db.collection('users').doc(email).update({ plano: newPlan, artistasLimit: artistsLimit });
                 showLoading(false);
-                showAlert(`Plano alterado para ${newPlan}!`);
+                showAlert(`✅ Plano alterado para ${newPlan}!`);
                 searchUser();
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
         }
-
+        
         async function suspendUser(email) {
             showLoading(true, 'A suspender...');
             try {
                 await db.collection('users').doc(email).update({ suspended: true, suspendedAt: new Date() });
                 showLoading(false);
-                showAlert('Utilizador suspenso!');
+                showAlert('⚠️ Utilizador suspenso com sucesso!');
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
         }
-
-        async function deleteUser(email) {
-            if (!confirm('⚠️ Eliminar permanentemente?')) return;
-            showLoading(true, 'A eliminar...');
+        
+        async function deleteUserAccount(email) {
+            if (!confirm('⚠️ ATENÇÃO: Esta ação é irreversível! Tem certeza que deseja ELIMINAR este utilizador permanentemente?')) return;
+            showLoading(true, 'A eliminar utilizador...');
             try {
                 await db.collection('users').doc(email).delete();
                 showLoading(false);
-                showAlert('Utilizador eliminado!');
+                showAlert('🗑️ Utilizador eliminado permanentemente!');
                 document.getElementById('user-manage-results').innerHTML = '';
+                document.getElementById('admin-search-email').value = '';
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro: ' + error.message);

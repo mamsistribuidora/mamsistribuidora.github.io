@@ -66,6 +66,11 @@
         input, select, textarea { width: 100%; padding: 14px; background: #000; border: 1px solid #333; color: var(--text); border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
         
+        /* Phone input with country code */
+        .phone-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .phone-input-group select { width: 30%; margin-bottom: 0; }
+        .phone-input-group input { width: 70%; margin-bottom: 0; }
+        
         .password-container { position: relative; margin-bottom: 15px; }
         .password-container input { margin-bottom: 0; padding-right: 45px; }
         .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gold); cursor: pointer; font-size: 1.1rem; }
@@ -76,6 +81,7 @@
         .btn-sec { background: #222; color: var(--gold); border: 1px solid var(--gold); }
         .btn-danger { background: var(--danger); color: #fff; }
         .btn-small { padding: 8px 12px; font-size: 0.7rem; width: auto; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
         
@@ -188,8 +194,8 @@
         .doc-upload-box { border: 2px dashed #333; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; }
         .doc-upload-box input { width: auto; margin: 10px 0 0 0; }
         
-        .blocked-feature { opacity: 0.6; pointer-events: none; position: relative; }
-        .blocked-feature::after { content: "🔒 Verifique sua identidade primeiro"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); color: var(--gold); padding: 10px 20px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; z-index: 10; }
+        .mam-cash-btn { background: linear-gradient(135deg, #00b4d8, #0077b6); color: #fff; border: none; margin-top: 15px; }
+        .mam-cash-btn:hover { background: linear-gradient(135deg, #00c8e8, #0096c7); }
         
         @media (max-width: 768px) {
             .container { padding: 15px; }
@@ -197,6 +203,8 @@
             .stat-grid { grid-template-columns: 1fr; }
             .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
             .info-grid { grid-template-columns: 1fr; gap: 10px; }
+            .phone-input-group { flex-direction: column; }
+            .phone-input-group select, .phone-input-group input { width: 100%; }
         }
     </style>
 </head>
@@ -287,6 +295,22 @@
                 <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass-confirm')">
                     <i class="fas fa-eye"></i>
                 </button>
+            </div>
+            <!-- Telefone com código de país no registro -->
+            <div class="phone-input-group">
+                <select id="reg-phone-code">
+                    <option value="+244">🇦🇴 +244 (Angola)</option>
+                    <option value="+55">🇧🇷 +55 (Brasil)</option>
+                    <option value="+351">🇵🇹 +351 (Portugal)</option>
+                    <option value="+1">🇺🇸 +1 (EUA)</option>
+                    <option value="+238">🇨🇻 +238 (Cabo Verde)</option>
+                    <option value="+245">🇬🇼 +245 (Guiné-Bissau)</option>
+                    <option value="+239">🇸🇹 +239 (São Tomé)</option>
+                    <option value="+258">🇲🇿 +258 (Moçambique)</option>
+                    <option value="+44">🇬🇧 +44 (Reino Unido)</option>
+                    <option value="+33">🇫🇷 +33 (França)</option>
+                </select>
+                <input type="tel" id="reg-telefone" placeholder="Número de telefone" maxlength="15">
             </div>
             <button class="btn" onclick="handleRegister()">Criar Conta <i class="fas fa-user-plus"></i></button>
             <p style="text-align: center; font-size: 0.85rem; margin-top: 15px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="closeModal('modal-registro'); openModal('modal-login')">Entrar Aqui</span></p>
@@ -443,7 +467,7 @@
                 </div>
             </div>
 
-            <!-- KYC VERIFICATION SECTION - ADICIONADA -->
+            <!-- KYC VERIFICATION SECTION -->
             <div id="kyc" class="section">
                 <div class="card">
                     <h3><i class="fas fa-id-card"></i> Verificação de Identidade (KYC)</h3>
@@ -468,10 +492,24 @@
                             <p style="font-size: 0.7rem; margin-top: 5px;">Envie foto do VERSO do seu BI</p>
                         </div>
                         
-                        <label>Número de Telefone</label>
-                        <input type="tel" id="kyc-telefone" placeholder="Ex: 923456789">
+                        <!-- Telefone com código de país no KYC -->
+                        <div class="phone-input-group">
+                            <select id="kyc-phone-code">
+                                <option value="+244">🇦🇴 +244 (Angola)</option>
+                                <option value="+55">🇧🇷 +55 (Brasil)</option>
+                                <option value="+351">🇵🇹 +351 (Portugal)</option>
+                                <option value="+1">🇺🇸 +1 (EUA)</option>
+                                <option value="+238">🇨🇻 +238 (Cabo Verde)</option>
+                                <option value="+245">🇬🇼 +245 (Guiné-Bissau)</option>
+                                <option value="+239">🇸🇹 +239 (São Tomé)</option>
+                                <option value="+258">🇲🇿 +258 (Moçambique)</option>
+                                <option value="+44">🇬🇧 +44 (Reino Unido)</option>
+                                <option value="+33">🇫🇷 +33 (França)</option>
+                            </select>
+                            <input type="tel" id="kyc-telefone" placeholder="Número de telefone" maxlength="15">
+                        </div>
                         
-                        <button class="btn" onclick="enviarKYC()"><i class="fas fa-paper-plane"></i> Enviar para Verificação</button>
+                        <button class="btn" id="kyc-submit-btn" onclick="enviarKYC()"><i class="fas fa-paper-plane"></i> Enviar para Verificação</button>
                     </div>
                     
                     <div id="kyc-approved-area" style="display: none; margin-top: 20px;">
@@ -480,6 +518,11 @@
                             <strong style="color: #28a745;">Conta Verificada!</strong>
                             <p style="margin-top: 10px;">✓ Upload de músicas desbloqueado<br>✓ Saques disponíveis<br>✓ Gestão de artistas liberada</p>
                         </div>
+                        
+                        <!-- BOTÃO MAM CASH - SÓ APARECE QUANDO VERIFIED -->
+                        <button id="mam-cash-activate-btn" class="btn mam-cash-btn" style="display: none; margin-top: 20px;" onclick="ativarMAMCash()">
+                            <i class="fas fa-wallet"></i> Ativar Carteira MAM Cash
+                        </button>
                         
                         <label style="margin-top: 15px;">Dados Bancários para Recebimento</label>
                         <input type="text" id="kyc-iban" placeholder="IBAN / Número da Conta">
@@ -492,7 +535,7 @@
             <div id="artistas" class="section">
                 <div class="card">
                     <h3><i class="fas fa-users"></i> Meus Artistas</h3>
-                    <button id="add-artist-btn" class="btn" onclick="openAddArtistModal()" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
+                    <button id="add-artist-btn" class="btn" onclick="openAddArtistModal()" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Criar Novo Artista/Grupo</button>
                     <div id="artistas-container" class="item-list"></div>
                 </div>
             </div>
@@ -629,7 +672,22 @@
                     </div>
                     <input type="file" id="perfil-foto-input" accept="image/*" style="display: none;" onchange="updateProfilePhoto()">
                     <input type="text" id="perfil-nome" placeholder="Nome Completo">
-                    <input type="tel" id="perfil-telefone" placeholder="Telefone (Opcional)">
+                    <!-- Telefone com código de país no perfil -->
+                    <div class="phone-input-group">
+                        <select id="perfil-phone-code">
+                            <option value="+244">🇦🇴 +244 (Angola)</option>
+                            <option value="+55">🇧🇷 +55 (Brasil)</option>
+                            <option value="+351">🇵🇹 +351 (Portugal)</option>
+                            <option value="+1">🇺🇸 +1 (EUA)</option>
+                            <option value="+238">🇨🇻 +238 (Cabo Verde)</option>
+                            <option value="+245">🇬🇼 +245 (Guiné-Bissau)</option>
+                            <option value="+239">🇸🇹 +239 (São Tomé)</option>
+                            <option value="+258">🇲🇿 +258 (Moçambique)</option>
+                            <option value="+44">🇬🇧 +44 (Reino Unido)</option>
+                            <option value="+33">🇫🇷 +33 (França)</option>
+                        </select>
+                        <input type="tel" id="perfil-telefone" placeholder="Número de telefone" maxlength="15">
+                    </div>
                     <select id="perfil-pais">
                         <option value="">Selecione seu País</option>
                     </select>
@@ -757,10 +815,11 @@
         </div>
     </div>
 
+    <!-- MODAL DE ARTISTA COMPLETO (NOVO FORMULÁRIO) -->
     <div id="addArtistModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">Adicionar Artista</h2>
+            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">Criar Novo Artista/Grupo</h2>
             <div style="text-align: center; margin-bottom: 20px;">
                 <img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover;">
                 <div style="margin-top: 10px;">
@@ -768,7 +827,7 @@
                     <input type="file" id="artist-photo-input" accept="image/*" style="display: none;" onchange="previewArtistPhoto()">
                 </div>
             </div>
-            <input type="text" id="artist-name" placeholder="Nome Artístico" required>
+            <input type="text" id="artist-name" placeholder="Nome do Artista/Grupo" required>
             <select id="artist-style">
                 <option value="">Estilo Musical</option>
                 <option value="Afrobeat">Afrobeat</option>
@@ -781,14 +840,18 @@
                 <option value="Eletrônica">Eletrônica</option>
                 <option value="Jazz">Jazz</option>
                 <option value="Gospel">Gospel</option>
+                <option value="Reggae">Reggae</option>
+                <option value="Funk">Funk</option>
+                <option value="Sertanejo">Sertanejo</option>
+                <option value="Pagode">Pagode</option>
             </select>
             <textarea id="artist-bio" placeholder="Biografia do Artista" rows="3" style="resize: vertical;"></textarea>
             <label style="color: var(--gold); margin-top: 10px;">Redes Sociais (Links para evitar silenciamento de direitos autorais)</label>
-            <input type="url" id="artist-instagram" placeholder="Instagram">
-            <input type="url" id="artist-facebook" placeholder="Facebook">
-            <input type="url" id="artist-youtube" placeholder="YouTube">
-            <input type="url" id="artist-tiktok" placeholder="TikTok">
-            <input type="url" id="artist-spotify" placeholder="Spotify">
+            <input type="url" id="artist-instagram" placeholder="Instagram (URL)">
+            <input type="url" id="artist-facebook" placeholder="Facebook (URL)">
+            <input type="url" id="artist-youtube" placeholder="YouTube (URL)">
+            <input type="url" id="artist-tiktok" placeholder="TikTok (URL)">
+            <input type="url" id="artist-spotify" placeholder="Spotify (URL)">
             <button class="btn" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
         </div>
     </div>
@@ -813,6 +876,9 @@
         emailjs.init("vuAVZ5U4IRBZcsIon");
         const EMAILJS_SERVICE_ID = "service_2g2cscg"; // ⚠️ COLOQUE AQUI O SEU SERVICE ID REAL DO EMAILJS
         const EMAILJS_TEMPLATE_ID = "template_kyc"; // ⚠️ COLOQUE AQUI O SEU TEMPLATE ID DO EMAILJS
+
+        // ========== MAM CASH URL ==========
+        const MAM_CASH_URL = "https://mam-cash.com/ativar"; // ⚠️ COLOQUE A URL REAL DO SITE MAM CASH
 
         // ========== CONFIGURAÇÕES ==========
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
@@ -889,22 +955,46 @@
             showAlert(contents[type]);
         }
 
+        // ========== MAM CASH INTEGRATION ==========
+        function ativarMAMCash() {
+            if (!currentUser || !userData) return;
+            
+            // Redirecionar para o site da MAM Cash com os parâmetros
+            const email = encodeURIComponent(currentUser.email);
+            const verified = userData.kycStatus === 'verified' ? 'true' : 'false';
+            const nome = encodeURIComponent(userData.nome || '');
+            
+            const redirectUrl = `${MAM_CASH_URL}?email=${email}&verified=${verified}&nome=${nome}&origem=mam_distribuidora`;
+            
+            // Abrir em nova aba
+            window.open(redirectUrl, '_blank');
+            
+            showAlert('🔗 Redirecionando para MAM Cash... Após ativar sua carteira, os saldos serão sincronizados automaticamente.');
+        }
+
         // ========== KYC FUNCTIONS ==========
         async function enviarKYC() {
             if (!currentUser) return;
             
             const biFrente = document.getElementById('kyc-bi-frente').files[0];
             const biVerso = document.getElementById('kyc-bi-verso').files[0];
-            const telefone = document.getElementById('kyc-telefone').value.trim();
+            const phoneCode = document.getElementById('kyc-phone-code').value;
+            const telefoneNumero = document.getElementById('kyc-telefone').value.trim();
+            const telefoneCompleto = phoneCode + telefoneNumero;
             
             if (!biFrente || !biVerso) {
                 showAlert('Por favor, envie a FRENTE e o VERSO do seu Bilhete de Identidade!');
                 return;
             }
-            if (!telefone) {
+            if (!telefoneNumero) {
                 showAlert('Digite o seu número de telefone!');
                 return;
             }
+            
+            // Desabilitar o botão para evitar duplo envio
+            const submitBtn = document.getElementById('kyc-submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A enviar...';
             
             showLoading(true, 'A enviar documentos para verificação...');
             
@@ -921,10 +1011,11 @@
                 
                 await db.collection('users').doc(currentUser.email).update({
                     kycStatus: 'pending_review',
+                    telefone: telefoneCompleto,
                     kycDocuments: {
                         biFrente: frenteURL,
                         biVerso: versoURL,
-                        telefone: telefone,
+                        telefone: telefoneCompleto,
                         submittedAt: new Date()
                     }
                 });
@@ -934,7 +1025,7 @@
                     to_email: ADMIN_EMAIL,
                     user_name: userData?.nome || currentUser.email,
                     user_email: currentUser.email,
-                    user_phone: telefone,
+                    user_phone: telefoneCompleto,
                     bi_frente_url: frenteURL,
                     bi_verso_url: versoURL,
                     subject: `🔐 KYC - ${userData?.nome || currentUser.email} aguarda verificação`
@@ -945,7 +1036,6 @@
                     console.log('Email enviado com sucesso');
                 } catch(emailError) {
                     console.error('Erro ao enviar email:', emailError);
-                    // Continua mesmo se o email falhar
                 }
                 
                 showLoading(false);
@@ -955,6 +1045,9 @@
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro ao enviar documentos: ' + error.message);
+                // Reativar botão em caso de erro
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar para Verificação';
             }
         }
         
@@ -973,6 +1066,7 @@
             const headerBadge = document.getElementById('kyc-status-header');
             const kycFormArea = document.getElementById('kyc-form-area');
             const kycApprovedArea = document.getElementById('kyc-approved-area');
+            const mamCashBtn = document.getElementById('mam-cash-activate-btn');
             const lancarBlockedWarning = document.getElementById('lancar-blocked-warning');
             const lancarFormArea = document.getElementById('lancar-form-area');
             const addArtistBtn = document.getElementById('add-artist-btn');
@@ -989,6 +1083,7 @@
             
             if (kycFormArea) kycFormArea.style.display = (status === 'pending' || status === 'rejected') ? 'block' : 'none';
             if (kycApprovedArea) kycApprovedArea.style.display = isVerified ? 'block' : 'none';
+            if (mamCashBtn) mamCashBtn.style.display = isVerified ? 'flex' : 'none';
             
             // Bloquear/Desbloquear funcionalidades baseado no KYC
             if (lancarBlockedWarning) lancarBlockedWarning.style.display = isVerified ? 'none' : 'block';
@@ -999,6 +1094,25 @@
             if (isVerified && userData.iban) {
                 document.getElementById('kyc-iban').value = userData.iban || '';
                 document.getElementById('kyc-titular').value = userData.titular || '';
+            }
+            
+            // Carregar telefone no perfil se existir
+            if (userData.telefone) {
+                const phoneParts = userData.telefone.match(/^(\+\d+)(.*)$/);
+                if (phoneParts) {
+                    const phoneCode = phoneParts[1];
+                    const phoneNumber = phoneParts[2];
+                    const codeSelect = document.getElementById('perfil-phone-code');
+                    if (codeSelect) {
+                        for(let i = 0; i < codeSelect.options.length; i++) {
+                            if(codeSelect.options[i].value === phoneCode) {
+                                codeSelect.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    document.getElementById('perfil-telefone').value = phoneNumber;
+                }
             }
         }
         
@@ -1057,7 +1171,7 @@
                         itemDiv.innerHTML = `
                             <div><strong>${user.nome || user.email}</strong></div>
                             <div>Email: ${doc.id}</div>
-                            <div>Telefone: ${kycDocs.telefone || 'N/A'}</div>
+                            <div>Telefone: ${kycDocs.telefone || user.telefone || 'N/A'}</div>
                             <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                                 <a href="${kycDocs.biFrente || '#'}" target="_blank" class="btn-small" style="background: #333; color: var(--gold);"><i class="fas fa-id-card"></i> Ver Frente</a>
                                 <a href="${kycDocs.biVerso || '#'}" target="_blank" class="btn-small" style="background: #333; color: var(--gold);"><i class="fas fa-id-card"></i> Ver Verso</a>
@@ -1087,6 +1201,10 @@
                 showLoading(false);
                 showAlert('✅ KYC aprovado! O artista agora pode fazer upload de músicas.');
                 openAdminKYCModal();
+                if (currentUser && currentUser.email === email) {
+                    userData.kycStatus = 'verified';
+                    updateKYCDisplay();
+                }
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
@@ -1154,6 +1272,9 @@
             const email = document.getElementById('reg-email').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
             const passConfirm = document.getElementById('reg-pass-confirm').value.trim();
+            const phoneCode = document.getElementById('reg-phone-code').value;
+            const phoneNumber = document.getElementById('reg-telefone').value.trim();
+            const telefoneCompleto = phoneCode + phoneNumber;
 
             if (!nome || !email || !pass || !passConfirm) {
                 showAlert('Preencha todos os campos!');
@@ -1184,6 +1305,7 @@
                     totalGanhos: 0,
                     artists: [],
                     releases: [],
+                    telefone: telefoneCompleto,
                     kycStatus: "pending",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
@@ -1264,7 +1386,9 @@
 
         async function handleUpdateProfile() {
             const nome = document.getElementById('perfil-nome').value.trim();
-            const telefone = document.getElementById('perfil-telefone').value.trim();
+            const phoneCode = document.getElementById('perfil-phone-code').value;
+            const phoneNumber = document.getElementById('perfil-telefone').value.trim();
+            const telefoneCompleto = phoneCode + phoneNumber;
             const pais = document.getElementById('perfil-pais').value;
 
             if (!nome) {
@@ -1276,11 +1400,11 @@
             try {
                 await db.collection('users').doc(currentUser.email).update({
                     nome: nome,
-                    telefone: telefone,
+                    telefone: telefoneCompleto,
                     pais: pais,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                userData = { ...userData, nome, telefone, pais };
+                userData = { ...userData, nome, telefone: telefoneCompleto, pais };
                 updateUserDisplay();
                 showLoading(false);
                 showAlert('Perfil atualizado!');
@@ -1290,7 +1414,7 @@
             }
         }
 
-        // ========== ARTISTAS (CORRIGIDO) ==========
+        // ========== ARTISTAS (COMPLETO) ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
                 document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
@@ -1326,7 +1450,6 @@
         }
 
         function openAddArtistModal() {
-            // Verificar se o usuário é admin OU se o KYC está verificado
             const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
             const isKYCVerified = userData && userData.kycStatus === 'verified';
             
@@ -1468,7 +1591,6 @@
         }
 
         async function enviarLancamento() {
-            // Verificar se o KYC está verificado
             if (userData && userData.kycStatus !== 'verified') {
                 showAlert('🔒 Complete a verificação de identidade (KYC) para fazer upload de músicas! Acesse o menu "Verificação".');
                 return;
@@ -2113,7 +2235,8 @@
                     report += `   Total Ganhos: ${(user.totalGanhos || 0).toLocaleString()} Kz\n`;
                     report += `   Artistas: ${user.artists?.length || 0}\n`;
                     report += `   Lançamentos: ${user.releases?.length || 0}\n`;
-                    report += `   KYC Status: ${user.kycStatus || 'pending'}\n\n`;
+                    report += `   KYC Status: ${user.kycStatus || 'pending'}\n`;
+                    report += `   Telefone: ${user.telefone || 'N/A'}\n\n`;
                     
                     if (user.releases && user.releases.length > 0) {
                         report += `   📀 MÚSICAS:\n`;
@@ -2181,6 +2304,7 @@
                         <div><strong>Artistas:</strong> ${user.artists?.length || 0}</div>
                         <div><strong>Músicas:</strong> ${user.releases?.length || 0}</div>
                         <div><strong>KYC Status:</strong> ${user.kycStatus || 'pending'}</div>
+                        <div><strong>Telefone:</strong> ${user.telefone || 'N/A'}</div>
                         <select id="admin-plan-select" style="width: auto;">
                             <option value="FREE" ${user.plano === 'FREE' ? 'selected' : ''}>FREE</option>
                             <option value="BÁSICO" ${user.plano === 'BÁSICO' ? 'selected' : ''}>BÁSICO</option>
@@ -2253,7 +2377,28 @@
             document.getElementById('home-user-photo').src = userData.foto || 'https://via.placeholder.com/80';
             document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
             document.getElementById('perfil-nome').value = userData.nome || '';
-            document.getElementById('perfil-telefone').value = userData.telefone || '';
+            
+            // Carregar telefone no perfil com código de país
+            if (userData.telefone) {
+                const phoneParts = userData.telefone.match(/^(\+\d+)(.*)$/);
+                if (phoneParts) {
+                    const phoneCode = phoneParts[1];
+                    const phoneNumber = phoneParts[2];
+                    const codeSelect = document.getElementById('perfil-phone-code');
+                    if (codeSelect) {
+                        for(let i = 0; i < codeSelect.options.length; i++) {
+                            if(codeSelect.options[i].value === phoneCode) {
+                                codeSelect.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    document.getElementById('perfil-telefone').value = phoneNumber;
+                } else {
+                    document.getElementById('perfil-telefone').value = userData.telefone;
+                }
+            }
+            
             document.getElementById('perfil-pais').value = userData.pais || '';
             document.getElementById('stat-saldo').textContent = (userData.saldo || 0).toLocaleString() + ' Kz';
             document.getElementById('stat-artistas-count').textContent = (userData.artists?.length || 0);

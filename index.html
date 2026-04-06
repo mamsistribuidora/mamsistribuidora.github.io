@@ -66,10 +66,10 @@
         input, select, textarea { width: 100%; padding: 14px; background: #000; border: 1px solid #333; color: var(--text); border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
         
-        /* Phone input with country code */
+        /* Phone input group */
         .phone-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        .phone-input-group select { width: 30%; margin-bottom: 0; }
-        .phone-input-group input { width: 70%; margin-bottom: 0; }
+        .phone-input-group select { width: 35%; margin-bottom: 0; }
+        .phone-input-group input { width: 65%; margin-bottom: 0; }
         
         .password-container { position: relative; margin-bottom: 15px; }
         .password-container input { margin-bottom: 0; padding-right: 45px; }
@@ -296,7 +296,7 @@
                     <i class="fas fa-eye"></i>
                 </button>
             </div>
-            <!-- Telefone com código de país no registro -->
+            <!-- Telefone com código de país -->
             <div class="phone-input-group">
                 <select id="reg-phone-code">
                     <option value="+244">🇦🇴 +244 (Angola)</option>
@@ -309,6 +309,9 @@
                     <option value="+258">🇲🇿 +258 (Moçambique)</option>
                     <option value="+44">🇬🇧 +44 (Reino Unido)</option>
                     <option value="+33">🇫🇷 +33 (França)</option>
+                    <option value="+34">🇪🇸 +34 (Espanha)</option>
+                    <option value="+39">🇮🇹 +39 (Itália)</option>
+                    <option value="+49">🇩🇪 +49 (Alemanha)</option>
                 </select>
                 <input type="tel" id="reg-telefone" placeholder="Número de telefone" maxlength="15">
             </div>
@@ -815,7 +818,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE ARTISTA COMPLETO (NOVO FORMULÁRIO) -->
+    <!-- MODAL DE ARTISTA COMPLETO -->
     <div id="addArtistModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
@@ -874,11 +877,11 @@
 
         // ========== EMAILJS CONFIG ==========
         emailjs.init("vuAVZ5U4IRBZcsIon");
-        const EMAILJS_SERVICE_ID = "service_2g2cscg"; // ⚠️ COLOQUE AQUI O SEU SERVICE ID REAL DO EMAILJS
-        const EMAILJS_TEMPLATE_ID = "template_kyc"; // ⚠️ COLOQUE AQUI O SEU TEMPLATE ID DO EMAILJS
+        const EMAILJS_SERVICE_ID = "service_2g2cscg";
+        const EMAILJS_TEMPLATE_ID = "template_kyc";
 
         // ========== MAM CASH URL ==========
-        const MAM_CASH_URL = "https://mam-cash.com/ativar"; // ⚠️ COLOQUE A URL REAL DO SITE MAM CASH
+        const MAM_CASH_URL = "https://mamcash.ao/";
 
         // ========== CONFIGURAÇÕES ==========
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
@@ -955,24 +958,19 @@
             showAlert(contents[type]);
         }
 
-        // ========== MAM CASH INTEGRATION ==========
+        // ========== MAM CASH INTEGRATION (SEM EMAIL, APENAS REDIRECIONAMENTO) ==========
         function ativarMAMCash() {
             if (!currentUser || !userData) return;
             
-            // Redirecionar para o site da MAM Cash com os parâmetros
-            const email = encodeURIComponent(currentUser.email);
-            const verified = userData.kycStatus === 'verified' ? 'true' : 'false';
-            const nome = encodeURIComponent(userData.nome || '');
+            const userEmail = encodeURIComponent(currentUser.email);
+            const redirectUrl = `${MAM_CASH_URL}?email=${userEmail}`;
             
-            const redirectUrl = `${MAM_CASH_URL}?email=${email}&verified=${verified}&nome=${nome}&origem=mam_distribuidora`;
-            
-            // Abrir em nova aba
             window.open(redirectUrl, '_blank');
             
-            showAlert('🔗 Redirecionando para MAM Cash... Após ativar sua carteira, os saldos serão sincronizados automaticamente.');
+            showAlert('🔗 Redirecionando para MAM Cash... Escolha "Entrar" ou "Registar" para ativar sua carteira digital.');
         }
 
-        // ========== KYC FUNCTIONS ==========
+        // ========== KYC FUNCTIONS COM TRAVA DE SEGURANÇA ==========
         async function enviarKYC() {
             if (!currentUser) return;
             
@@ -991,7 +989,7 @@
                 return;
             }
             
-            // Desabilitar o botão para evitar duplo envio
+            // TRAVA DE SEGURANÇA - Desabilitar botão para evitar duplo envio
             const submitBtn = document.getElementById('kyc-submit-btn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A enviar...';
@@ -1020,7 +1018,6 @@
                     }
                 });
                 
-                // Enviar email real via EmailJS
                 const templateParams = {
                     to_email: ADMIN_EMAIL,
                     user_name: userData?.nome || currentUser.email,
@@ -1033,7 +1030,6 @@
                 
                 try {
                     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
-                    console.log('Email enviado com sucesso');
                 } catch(emailError) {
                     console.error('Erro ao enviar email:', emailError);
                 }
@@ -1079,24 +1075,20 @@
             }
             
             const isVerified = (status === 'verified');
-            const isPendingReview = (status === 'pending_review');
             
             if (kycFormArea) kycFormArea.style.display = (status === 'pending' || status === 'rejected') ? 'block' : 'none';
             if (kycApprovedArea) kycApprovedArea.style.display = isVerified ? 'block' : 'none';
             if (mamCashBtn) mamCashBtn.style.display = isVerified ? 'flex' : 'none';
             
-            // Bloquear/Desbloquear funcionalidades baseado no KYC
             if (lancarBlockedWarning) lancarBlockedWarning.style.display = isVerified ? 'none' : 'block';
             if (lancarFormArea) lancarFormArea.style.display = isVerified ? 'block' : 'none';
             if (addArtistBtn) addArtistBtn.style.display = isVerified ? 'flex' : 'none';
             
-            // Se for verificado, carregar dados bancários se existirem
             if (isVerified && userData.iban) {
                 document.getElementById('kyc-iban').value = userData.iban || '';
                 document.getElementById('kyc-titular').value = userData.titular || '';
             }
             
-            // Carregar telefone no perfil se existir
             if (userData.telefone) {
                 const phoneParts = userData.telefone.match(/^(\+\d+)(.*)$/);
                 if (phoneParts) {
@@ -1142,9 +1134,7 @@
         }
         
         function checkKYCAndBlockUpload() {
-            if (userData && userData.kycStatus !== 'verified') {
-                // Já está bloqueado pelo CSS/JS
-            }
+            // Função mantida para compatibilidade
         }
         
         // ========== ADMIN KYC FUNCTIONS ==========
@@ -1414,7 +1404,7 @@
             }
         }
 
-        // ========== ARTISTAS (COMPLETO) ==========
+        // ========== ARTISTAS COMPLETO ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
                 document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
@@ -2378,7 +2368,6 @@
             document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
             document.getElementById('perfil-nome').value = userData.nome || '';
             
-            // Carregar telefone no perfil com código de país
             if (userData.telefone) {
                 const phoneParts = userData.telefone.match(/^(\+\d+)(.*)$/);
                 if (phoneParts) {

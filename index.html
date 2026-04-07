@@ -76,6 +76,7 @@
         .btn-sec { background: #222; color: var(--gold); border: 1px solid var(--gold); }
         .btn-danger { background: var(--danger); color: #fff; }
         .btn-small { padding: 8px 12px; font-size: 0.7rem; width: auto; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
         
@@ -431,7 +432,7 @@
             <div id="artistas" class="section">
                 <div class="card">
                     <h3><i class="fas fa-users"></i> Meus Artistas</h3>
-                    <button class="btn" id="add-artist-btn" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
+                    <button class="btn" onclick="openAddArtistModal()" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
                     <div id="artistas-container" class="item-list"></div>
                 </div>
             </div>
@@ -680,7 +681,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE ADICIONAR ARTISTA -->
     <div id="addArtistModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
@@ -688,34 +688,32 @@
             <div style="text-align: center; margin-bottom: 20px;">
                 <img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover;">
                 <div style="margin-top: 10px;">
-                    <button type="button" class="btn-small" onclick="document.getElementById('artist-photo-input').click()"><i class="fas fa-camera"></i> Escolher Foto</button>
+                    <button class="btn-small" onclick="document.getElementById('artist-photo-input').click()"><i class="fas fa-camera"></i> Escolher Foto</button>
                     <input type="file" id="artist-photo-input" accept="image/*" style="display: none;" onchange="previewArtistPhoto()">
                 </div>
             </div>
-            <input type="text" id="artist-name" placeholder="Nome do Artista/Grupo" required>
+            <input type="text" id="artist-name" placeholder="Nome Artístico" required>
             <select id="artist-style">
                 <option value="">Estilo Musical</option>
+                <option value="Afrobeat">Afrobeat</option>
                 <option value="Kizomba">Kizomba</option>
                 <option value="Semba">Semba</option>
-                <option value="Kuduro">Kuduro</option>
                 <option value="Hip Hop">Hip Hop</option>
-                <option value="Afrobeat">Afrobeat</option>
                 <option value="Pop">Pop</option>
                 <option value="R&B">R&B</option>
                 <option value="Rock">Rock</option>
+                <option value="Eletrônica">Eletrônica</option>
+                <option value="Jazz">Jazz</option>
                 <option value="Gospel">Gospel</option>
-                <option value="Reggae">Reggae</option>
-                <option value="Funk">Funk</option>
-                <option value="Sertanejo">Sertanejo</option>
             </select>
             <textarea id="artist-bio" placeholder="Biografia do Artista" rows="3" style="resize: vertical;"></textarea>
-            <label style="color: var(--gold); margin-top: 10px;">Redes Sociais</label>
-            <input type="url" id="artist-instagram" placeholder="Instagram (URL)">
-            <input type="url" id="artist-facebook" placeholder="Facebook (URL)">
-            <input type="url" id="artist-youtube" placeholder="YouTube (URL)">
-            <input type="url" id="artist-tiktok" placeholder="TikTok (URL)">
-            <input type="url" id="artist-spotify" placeholder="Spotify (URL)">
-            <button class="btn" id="save-artist-btn" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
+            <label style="color: var(--gold); margin-top: 10px;">Redes Sociais (Links para evitar silenciamento de direitos autorais)</label>
+            <input type="url" id="artist-instagram" placeholder="Instagram">
+            <input type="url" id="artist-facebook" placeholder="Facebook">
+            <input type="url" id="artist-youtube" placeholder="YouTube">
+            <input type="url" id="artist-tiktok" placeholder="TikTok">
+            <input type="url" id="artist-spotify" placeholder="Spotify">
+            <button class="btn" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
         </div>
     </div>
 
@@ -734,9 +732,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         const storage = firebase.storage();
-
-        // ========== EMAILJS ==========
-        emailjs.init("vuAVZ5U4IRBZcsIon");
 
         // ========== CONFIGURAÇÕES ==========
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
@@ -804,10 +799,10 @@
 
         function showFooterContent(type) {
             const contents = {
-                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global.',
-                privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados.',
-                termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais.',
-                suporte: 'Central de Apoio Estratégico\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
+                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global. Operamos com tecnologia de ponta para garantir que a sua obra alcance mais de 150 lojas digitais, assegurando a máxima performance e visibilidade internacional.',
+                privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados. Informações sensíveis e ativos digitais (masters e artes) são encriptados e armazenados em servidores seguros. Garantimos que nenhum dado de utilizador ou metadado de obra seja partilhado com terceiros sem autorização expressa.',
+                termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais. A MAM Distribuidora reserva-se o direito de auditar royalties para prevenir fraudes de streaming. O descumprimento das normas de originalidade resultará na suspensão imediata da conta e retenção de fundos para análise jurídica.',
+                suporte: 'Central de Apoio Estratégico\n\nPara questões financeiras, suporte técnico ou gestão de catálogos, contacte a nossa equipa de administração:\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
             };
             showAlert(contents[type]);
         }
@@ -992,20 +987,18 @@
             }
         }
 
-        // ========== ARTISTAS (FUNCIONANDO) ==========
+        // ========== ARTISTAS CORRIGIDO ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
-                document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado. Clique em "Adicionar Artista" para começar.</p>';
+                document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
                 return;
             }
             
             const container = document.getElementById('artistas-container');
-            container.innerHTML = '<p style="color: var(--gray); text-align: center;">Carregando artistas...</p>';
+            container.innerHTML = '';
             
-            try {
-                container.innerHTML = '';
-                
-                for (const artistId of userData.artists) {
+            for (const artistId of userData.artists) {
+                try {
                     const doc = await db.collection('artists').doc(artistId).get();
                     if (doc.exists) {
                         const artist = doc.data();
@@ -1014,8 +1007,8 @@
                         itemDiv.innerHTML = `
                             <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" onerror="this.src='https://via.placeholder.com/70'">
                             <div class="artist-info">
-                                <h4>${escapeHtml(artist.nome)}</h4>
-                                <p>${escapeHtml(artist.bio || 'Sem biografia')} | ${artist.estilo || 'Estilo não definido'}</p>
+                                <h4>${artist.nome}</h4>
+                                <p>${artist.bio || 'Sem biografia'} | ${artist.estilo || ''}</p>
                                 <div class="social-links">
                                     ${artist.youtube ? `<a href="${artist.youtube}" target="_blank" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
                                     ${artist.spotify ? `<a href="${artist.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
@@ -1027,15 +1020,33 @@
                         `;
                         container.appendChild(itemDiv);
                     }
+                } catch (err) {
+                    console.error('Erro ao carregar artista:', err);
                 }
-                
-                if (container.children.length === 0) {
-                    container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado. Clique em "Adicionar Artista" para começar.</p>';
-                }
-            } catch (error) {
-                console.error('Erro ao carregar artistas:', error);
-                container.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro ao carregar artistas. Tente novamente.</p>';
             }
+        }
+
+        function openAddArtistModal() {
+            if (!userData) {
+                showAlert('Faça login primeiro!');
+                return;
+            }
+            if (userData.artists.length >= userData.artistasLimit) {
+                showAlert(`Seu plano ${userData.plano} permite apenas ${userData.artistasLimit} artista(s). Faça upgrade!`);
+                return;
+            }
+            
+            document.getElementById('artist-name').value = '';
+            document.getElementById('artist-style').value = '';
+            document.getElementById('artist-bio').value = '';
+            document.getElementById('artist-instagram').value = '';
+            document.getElementById('artist-facebook').value = '';
+            document.getElementById('artist-youtube').value = '';
+            document.getElementById('artist-tiktok').value = '';
+            document.getElementById('artist-spotify').value = '';
+            document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
+            
+            openModal('addArtistModal');
         }
 
         function previewArtistPhoto() {
@@ -1051,34 +1062,39 @@
 
         async function saveArtist() {
             const nome = document.getElementById('artist-name').value.trim();
-            
             if (!nome) {
-                showAlert('Por favor, digite o nome do artista!');
+                showAlert('Nome artístico é obrigatório!');
                 return;
             }
             
-            // Verificar limite de artistas do plano
-            if (userData && userData.artists && userData.artists.length >= userData.artistasLimit) {
-                showAlert(`Seu plano ${userData.plano} permite apenas ${userData.artistasLimit} artista(s). Faça upgrade!`);
-                closeModal('addArtistModal');
-                return;
-            }
+            const submitBtn = document.querySelector('#addArtistModal .btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
             
-            showLoading(true, 'Salvando artista...');
+            showLoading(true, 'A salvar artista...');
             
             try {
                 const artistId = Date.now().toString();
                 let photoURL = null;
                 
-                // Upload da foto se existir
                 const photoFile = document.getElementById('artist-photo-input').files[0];
                 if (photoFile) {
-                    const storageRef = storage.ref(`artists/${artistId}`);
-                    await storageRef.put(photoFile);
-                    photoURL = await storageRef.getDownloadURL();
+                    try {
+                        const storageRef = storage.ref(`artists/${artistId}_${Date.now()}`);
+                        const uploadResult = await storageRef.put(photoFile);
+                        photoURL = await uploadResult.ref.getDownloadURL();
+                        console.log('Foto uploaded com sucesso:', photoURL);
+                    } catch (uploadError) {
+                        console.error('Erro no upload da foto:', uploadError);
+                        showAlert('Erro ao enviar foto: ' + uploadError.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                        showLoading(false);
+                        return;
+                    }
                 }
                 
-                // Dados do artista
                 const artistData = {
                     id: artistId,
                     nome: nome,
@@ -1094,19 +1110,16 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                // Salvar no Firestore
+                console.log('Salvando artista no Firestore:', artistData);
                 await db.collection('artists').doc(artistId).set(artistData);
                 
-                // Adicionar ao array do usuário
                 await db.collection('users').doc(currentUser.email).update({
                     artists: firebase.firestore.FieldValue.arrayUnion(artistId)
                 });
                 
-                // Atualizar dados locais
                 if (!userData.artists) userData.artists = [];
                 userData.artists.push(artistId);
                 
-                // Limpar o formulário
                 document.getElementById('artist-name').value = '';
                 document.getElementById('artist-style').value = '';
                 document.getElementById('artist-bio').value = '';
@@ -1115,37 +1128,27 @@
                 document.getElementById('artist-youtube').value = '';
                 document.getElementById('artist-tiktok').value = '';
                 document.getElementById('artist-spotify').value = '';
-                document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
                 document.getElementById('artist-photo-input').value = '';
+                document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
                 
-                // Fechar modal
                 closeModal('addArtistModal');
-                
-                // Recarregar lista de artistas
                 await loadArtists();
-                
-                // Atualizar contador na home
                 updateUserDisplay();
                 
                 showLoading(false);
-                showAlert(`Artista "${nome}" adicionado com sucesso!`);
+                showAlert('✅ Artista adicionado com sucesso!');
                 
             } catch (error) {
+                console.error('Erro completo ao salvar artista:', error);
                 showLoading(false);
                 showAlert('Erro ao salvar artista: ' + error.message);
-                console.error('Erro:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
         }
 
-        // Função auxiliar para escapar HTML
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ========== LANÇAMENTOS ==========
+        // ========== LANÇAMENTOS CORRIGIDO ==========
         function toggleReleaseType() {
             const type = document.getElementById('release-type').value;
             if (type === 'album') {
@@ -1164,7 +1167,7 @@
             trackDiv.innerHTML = `
                 <input type="text" placeholder="Título da faixa" class="track-title-input" style="flex:2; margin-bottom:10px;">
                 <input type="file" accept="audio/*" class="track-audio-input" style="flex:1; margin-bottom:10px;">
-                <button type="button" class="btn-small" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i> Remover</button>
+                <button type="button" class="remove-track btn-small" onclick="this.parentElement.remove()" style="background:#dc3545; color:#fff;"><i class="fas fa-trash"></i> Remover</button>
                 <hr style="margin: 10px 0;">
             `;
             container.appendChild(trackDiv);
@@ -1184,14 +1187,18 @@
             const select = document.getElementById('music-artista-select');
             select.innerHTML = '<option value="">Selecione um Artista</option>';
             
-            if (userData?.artists) {
+            if (userData?.artists && userData.artists.length > 0) {
                 for (const artistId of userData.artists) {
-                    const doc = await db.collection('artists').doc(artistId).get();
-                    if (doc.exists) {
-                        const option = document.createElement('option');
-                        option.value = artistId;
-                        option.textContent = doc.data().nome;
-                        select.appendChild(option);
+                    try {
+                        const doc = await db.collection('artists').doc(artistId).get();
+                        if (doc.exists) {
+                            const option = document.createElement('option');
+                            option.value = artistId;
+                            option.textContent = doc.data().nome;
+                            select.appendChild(option);
+                        }
+                    } catch (err) {
+                        console.error('Erro ao carregar artista para select:', err);
                     }
                 }
             }
@@ -1217,12 +1224,19 @@
                 }
             }
             
+            const submitBtn = document.querySelector('#lancar .btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            
             showLoading(true, 'A processar lançamento...');
+            
             try {
                 const coverExt = capaFile.name.split('.').pop();
                 const coverRef = storage.ref(`releases/${Date.now()}_cover.${coverExt}`);
                 await coverRef.put(capaFile);
                 const coverURL = await coverRef.getDownloadURL();
+                console.log('Capa uploaded:', coverURL);
                 
                 const releaseId = Date.now().toString();
                 
@@ -1252,6 +1266,7 @@
                     const audioRef = storage.ref(`releases/${releaseId}_audio.${audioExt}`);
                     await audioRef.put(audioFile);
                     releaseData.audioURL = await audioRef.getDownloadURL();
+                    console.log('Audio uploaded:', releaseData.audioURL);
                 } else {
                     const tracks = [];
                     const trackDivs = document.querySelectorAll('.dynamic-track');
@@ -1273,7 +1288,9 @@
                     releaseData.tracks = tracks;
                 }
                 
+                console.log('Salvando lançamento no Firestore:', releaseData);
                 await db.collection('releases').doc(releaseId).set(releaseData);
+                
                 await db.collection('users').doc(currentUser.email).update({
                     releases: firebase.firestore.FieldValue.arrayUnion(releaseId)
                 });
@@ -1284,14 +1301,25 @@
                 document.getElementById('music-titulo').value = '';
                 document.getElementById('music-capa').value = '';
                 document.getElementById('music-audio').value = '';
+                document.getElementById('music-isrc').value = '';
+                document.getElementById('music-upc').value = '';
+                document.getElementById('music-data').value = '';
+                document.getElementById('music-colaboradores').value = '';
+                document.getElementById('music-produtores').value = '';
+                document.getElementById('music-estilo').value = '';
                 document.getElementById('tracks-container').innerHTML = '';
                 if (releaseType === 'album') addTrackField();
                 
                 showLoading(false);
-                showAlert('Lançamento enviado! Aguardando aprovação do ADMIN.');
+                showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
+                
             } catch (error) {
+                console.error('Erro completo ao enviar lançamento:', error);
                 showLoading(false);
-                showAlert('Erro: ' + error.message);
+                showAlert('Erro ao enviar lançamento: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
         }
 
@@ -1322,7 +1350,7 @@
                 loadWallet();
                 if (document.getElementById('minhas-musicas').classList.contains('active')) loadUserMusic();
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao registrar stream:', error);
                 showAlert(`🎵 ${release.titulo} - Stream registrado!`);
             }
         }
@@ -1348,29 +1376,36 @@
                 
                 for (const doc of releasesSnapshot.docs) {
                     const release = doc.data();
-                    const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                    const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
-                    
-                    const discoDiv = document.createElement('div');
-                    discoDiv.className = 'disco-item';
-                    discoDiv.onclick = () => playMusic(release);
-                    discoDiv.innerHTML = `
-                        <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="disco-title">${escapeHtml(release.titulo)}</div>
-                        <div class="disco-artist">${escapeHtml(artistName)}</div>
-                        <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                        <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
-                    `;
-                    destaquesContainer.appendChild(discoDiv);
+                    try {
+                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                        const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
+                        
+                        const discoDiv = document.createElement('div');
+                        discoDiv.className = 'disco-item';
+                        discoDiv.onclick = () => playMusic(release);
+                        discoDiv.innerHTML = `
+                            <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <div class="disco-title">${release.titulo}</div>
+                            <div class="disco-artist">${artistName}</div>
+                            <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
+                            <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
+                        `;
+                        destaquesContainer.appendChild(discoDiv);
+                    } catch (err) {
+                        console.error('Erro ao carregar artista do destaque:', err);
+                    }
                 }
                 
-                const totalStreams = await db.collection('releases').where('ownerEmail', '==', currentUser?.email).get();
-                let streamCount = 0;
-                totalStreams.forEach(doc => { streamCount += doc.data().streams || 0; });
-                document.getElementById('stat-streams').textContent = streamCount.toLocaleString();
+                if (currentUser) {
+                    const totalStreams = await db.collection('releases').where('ownerEmail', '==', currentUser.email).get();
+                    let streamCount = 0;
+                    totalStreams.forEach(doc => { streamCount += doc.data().streams || 0; });
+                    document.getElementById('stat-streams').textContent = streamCount.toLocaleString();
+                }
                 
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar home:', error);
+                document.getElementById('destaques-container').innerHTML = '<p style="color: var(--gray);">Erro ao carregar dados.</p>';
             }
         }
 
@@ -1394,22 +1429,27 @@
                 
                 for (const doc of feedSnapshot.docs) {
                     const release = doc.data();
-                    const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                    const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
-                    
-                    const discoDiv = document.createElement('div');
-                    discoDiv.className = 'disco-item';
-                    discoDiv.onclick = () => playMusic(release);
-                    discoDiv.innerHTML = `
-                        <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="disco-title">${escapeHtml(release.titulo)}</div>
-                        <div class="disco-artist">${escapeHtml(artistName)}</div>
-                        <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                    `;
-                    feedContainer.appendChild(discoDiv);
+                    try {
+                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                        const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
+                        
+                        const discoDiv = document.createElement('div');
+                        discoDiv.className = 'disco-item';
+                        discoDiv.onclick = () => playMusic(release);
+                        discoDiv.innerHTML = `
+                            <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <div class="disco-title">${release.titulo}</div>
+                            <div class="disco-artist">${artistName}</div>
+                            <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
+                        `;
+                        feedContainer.appendChild(discoDiv);
+                    } catch (err) {
+                        console.error('Erro ao carregar artista do feed:', err);
+                    }
                 }
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar feed:', error);
+                document.getElementById('feed-container').innerHTML = '<p style="color: var(--gray);">Erro ao carregar lançamentos.</p>';
             }
         }
 
@@ -1424,27 +1464,31 @@
             container.innerHTML = '';
             
             for (const releaseId of userData.releases) {
-                const doc = await db.collection('releases').doc(releaseId).get();
-                if (doc.exists) {
-                    const release = doc.data();
-                    const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                    const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
-                    
-                    const statusText = release.status === 'approved' ? 'Aprovado' : (release.status === 'rejected' ? 'Reprovado' : 'Pendente');
-                    const statusClass = release.status === 'approved' ? 'status-active' : (release.status === 'rejected' ? 'status-error' : 'status-pending');
-                    
-                    const discoDiv = document.createElement('div');
-                    discoDiv.className = 'disco-item';
-                    discoDiv.onclick = () => playMusic(release);
-                    discoDiv.innerHTML = `
-                        <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="disco-title">${escapeHtml(release.titulo)}</div>
-                        <div class="disco-artist">${escapeHtml(artistName)}</div>
-                        <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                        <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
-                        <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
-                    `;
-                    container.appendChild(discoDiv);
+                try {
+                    const doc = await db.collection('releases').doc(releaseId).get();
+                    if (doc.exists) {
+                        const release = doc.data();
+                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                        const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
+                        
+                        const statusText = release.status === 'approved' ? 'Aprovado' : (release.status === 'rejected' ? 'Reprovado' : 'Pendente');
+                        const statusClass = release.status === 'approved' ? 'status-active' : (release.status === 'rejected' ? 'status-error' : 'status-pending');
+                        
+                        const discoDiv = document.createElement('div');
+                        discoDiv.className = 'disco-item';
+                        discoDiv.onclick = () => playMusic(release);
+                        discoDiv.innerHTML = `
+                            <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <div class="disco-title">${release.titulo}</div>
+                            <div class="disco-artist">${artistName}</div>
+                            <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
+                            <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
+                            <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
+                        `;
+                        container.appendChild(discoDiv);
+                    }
+                } catch (err) {
+                    console.error('Erro ao carregar música do usuário:', err);
                 }
             }
         }
@@ -1460,40 +1504,48 @@
             let monthlyEarnings = 0;
             if (userData.releases) {
                 for (const releaseId of userData.releases) {
-                    const doc = await db.collection('releases').doc(releaseId).get();
-                    if (doc.exists) {
-                        monthlyEarnings += (doc.data().streams || 0) * VALOR_POR_STREAM;
+                    try {
+                        const doc = await db.collection('releases').doc(releaseId).get();
+                        if (doc.exists) {
+                            monthlyEarnings += (doc.data().streams || 0) * VALOR_POR_STREAM;
+                        }
+                    } catch (err) {
+                        console.error('Erro ao calcular ganhos mensais:', err);
                     }
                 }
             }
             document.getElementById('carteira-ganhos-mes').textContent = (monthlyEarnings * rate).toLocaleString() + ' ' + currentCurrency;
             
-            const saquesSnapshot = await db.collection('withdrawals')
-                .where('userId', '==', currentUser.email)
-                .orderBy('requestedAt', 'desc')
-                .get();
-            
-            const historicoContainer = document.getElementById('historico-saques');
-            if (saquesSnapshot.empty) {
-                historicoContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum saque solicitado.</p>';
-            } else {
-                historicoContainer.innerHTML = '';
-                saquesSnapshot.forEach(doc => {
-                    const saque = doc.data();
-                    const statusClass = saque.status === 'approved' ? 'status-active' : (saque.status === 'pending' ? 'status-pending' : 'status-error');
-                    const statusText = saque.status === 'approved' ? 'Aprovado' : (saque.status === 'pending' ? 'Pendente' : 'Recusado');
-                    
-                    const div = document.createElement('div');
-                    div.className = 'list-item';
-                    div.innerHTML = `
-                        <div class="list-info">
-                            <h4>${(saque.amount * rate).toLocaleString()} ${currentCurrency}</h4>
-                            <p>Método: ${saque.method?.toUpperCase() || 'N/A'}</p>
-                        </div>
-                        <span class="status-pill ${statusClass}">${statusText}</span>
-                    `;
-                    historicoContainer.appendChild(div);
-                });
+            try {
+                const saquesSnapshot = await db.collection('withdrawals')
+                    .where('userId', '==', currentUser.email)
+                    .orderBy('requestedAt', 'desc')
+                    .get();
+                
+                const historicoContainer = document.getElementById('historico-saques');
+                if (saquesSnapshot.empty) {
+                    historicoContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum saque solicitado.</p>';
+                } else {
+                    historicoContainer.innerHTML = '';
+                    saquesSnapshot.forEach(doc => {
+                        const saque = doc.data();
+                        const statusClass = saque.status === 'approved' ? 'status-active' : (saque.status === 'pending' ? 'status-pending' : 'status-error');
+                        const statusText = saque.status === 'approved' ? 'Aprovado' : (saque.status === 'pending' ? 'Pendente' : 'Recusado');
+                        
+                        const div = document.createElement('div');
+                        div.className = 'list-item';
+                        div.innerHTML = `
+                            <div class="list-info">
+                                <h4>${(saque.amount * rate).toLocaleString()} ${currentCurrency}</h4>
+                                <p>Método: ${saque.method?.toUpperCase() || 'N/A'}</p>
+                            </div>
+                            <span class="status-pill ${statusClass}">${statusText}</span>
+                        `;
+                        historicoContainer.appendChild(div);
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao carregar histórico de saques:', err);
             }
         }
 
@@ -1553,6 +1605,7 @@
                 showLoading(false);
                 showAlert('Saque solicitado! Aguarde aprovação.');
             } catch (error) {
+                console.error('Erro ao solicitar saque:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -1630,6 +1683,7 @@
                 showLoading(false);
                 showAlert(`Plano ${planName} ativado com sucesso!`);
             } catch (error) {
+                console.error('Erro ao pagar com carteira:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -1661,32 +1715,37 @@
                 
                 for (const doc of snapshot.docs) {
                     const music = doc.data();
-                    const artistDoc = await db.collection('artists').doc(music.artistaId).get();
-                    const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista Desconhecido';
-                    
-                    const statusText = music.status === 'approved' ? 'Aprovado' : (music.status === 'rejected' ? 'Reprovado' : 'Pendente');
-                    const statusClass = music.status === 'approved' ? 'status-active' : (music.status === 'rejected' ? 'status-error' : 'status-pending');
-                    
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'list-item';
-                    itemDiv.innerHTML = `
-                        <img src="${music.capaURL}" onerror="this.src='https://via.placeholder.com/60'">
-                        <div class="list-info">
-                            <h4>${escapeHtml(music.titulo)}</h4>
-                            <p>Artista: ${escapeHtml(artistName)}</p>
-                            <p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
-                            ${music.audioURL ? `<audio controls src="${music.audioURL}" style="height: 35px; margin-top: 5px;"></audio>` : '<p style="color: var(--gray);">Álbum (múltiplas faixas)</p>'}
-                        </div>
-                        <div class="list-actions">
-                            ${music.status !== 'approved' ? `<button class="btn-small" style="background:#28a745; color:#fff;" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
-                            ${music.status !== 'rejected' ? `<button class="btn-small btn-danger" onclick="rejectMusic('${doc.id}')"><i class="fas fa-times"></i> Reprovar</button>` : ''}
-                        </div>
-                    `;
-                    container.appendChild(itemDiv);
+                    try {
+                        const artistDoc = await db.collection('artists').doc(music.artistaId).get();
+                        const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista Desconhecido';
+                        
+                        const statusText = music.status === 'approved' ? 'Aprovado' : (music.status === 'rejected' ? 'Reprovado' : 'Pendente');
+                        const statusClass = music.status === 'approved' ? 'status-active' : (music.status === 'rejected' ? 'status-error' : 'status-pending');
+                        
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'list-item';
+                        itemDiv.innerHTML = `
+                            <img src="${music.capaURL}" onerror="this.src='https://via.placeholder.com/60'">
+                            <div class="list-info">
+                                <h4>${music.titulo}</h4>
+                                <p>Artista: ${artistName}</p>
+                                <p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
+                                ${music.audioURL ? `<audio controls src="${music.audioURL}" style="height: 35px; margin-top: 5px;"></audio>` : '<p style="color: var(--gray);">Álbum (múltiplas faixas)</p>'}
+                            </div>
+                            <div class="list-actions">
+                                ${music.status !== 'approved' ? `<button class="btn-small" style="background:#28a745; color:#fff;" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
+                                ${music.status !== 'rejected' ? `<button class="btn-small" style="background:#dc3545; color:#fff;" onclick="rejectMusic('${doc.id}')"><i class="fas fa-times"></i> Reprovar</button>` : ''}
+                            </div>
+                        `;
+                        container.appendChild(itemDiv);
+                    } catch (err) {
+                        console.error('Erro ao carregar música para admin:', err);
+                    }
                 }
                 showLoading(false);
                 openModal('adminMusicsModal');
             } catch (error) {
+                console.error('Erro ao carregar músicas para admin:', error);
                 showLoading(false);
                 showAlert('Erro ao carregar músicas: ' + error.message);
             }
@@ -1703,6 +1762,7 @@
                 showAlert('✅ Música aprovada com sucesso! Agora está disponível no feed.');
                 openAdminMusicsModal();
             } catch (error) {
+                console.error('Erro ao aprovar música:', error);
                 showLoading(false);
                 showAlert('Erro ao aprovar: ' + error.message);
             }
@@ -1719,6 +1779,7 @@
                 showAlert('❌ Música reprovada. O artista será notificado.');
                 openAdminMusicsModal();
             } catch (error) {
+                console.error('Erro ao reprovar música:', error);
                 showLoading(false);
                 showAlert('Erro ao reprovar: ' + error.message);
             }
@@ -1749,6 +1810,7 @@
                 showLoading(false);
                 openModal('adminDistribuicaoModal');
             } catch (error) {
+                console.error('Erro ao carregar distribuição:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -1781,6 +1843,7 @@
                 window.currentDistMusicId = musicId;
                 showLoading(false);
             } catch (error) {
+                console.error('Erro ao carregar formulário de distribuição:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -1810,6 +1873,7 @@
                 showLoading(false);
                 showAlert('✅ Distribuição atualizada com sucesso! As plataformas selecionadas foram registradas.');
             } catch (error) {
+                console.error('Erro ao atualizar distribuição:', error);
                 showLoading(false);
                 showAlert('Erro ao atualizar: ' + error.message);
             }
@@ -1820,9 +1884,9 @@
             try {
                 const usersSnapshot = await db.collection('users').get();
                 let report = 'RELATÓRIO MAM DISTRIBUIDORA\n';
-                report += '='.repeat(60) + '\n';
+                report += '=' .repeat(60) + '\n';
                 report += `Data: ${new Date().toLocaleString()}\n`;
-                report += '='.repeat(60) + '\n\n';
+                report += '=' .repeat(60) + '\n\n';
                 
                 for (const userDoc of usersSnapshot.docs) {
                     const user = userDoc.data();
@@ -1837,19 +1901,23 @@
                     if (user.releases && user.releases.length > 0) {
                         report += `   📀 MÚSICAS:\n`;
                         for (const releaseId of user.releases) {
-                            const releaseDoc = await db.collection('releases').doc(releaseId).get();
-                            if (releaseDoc.exists) {
-                                const music = releaseDoc.data();
-                                report += `      - ${music.titulo}\n`;
-                                report += `        Streams: ${music.streams || 0}\n`;
-                                report += `        Ganhos: ${(music.totalGanhos || 0).toLocaleString()} Kz\n`;
-                                report += `        Status: ${music.status || 'pending'}\n`;
-                                if (music.distributedTo) {
-                                    const distributedPlatforms = Object.keys(music.distributedTo).filter(p => music.distributedTo[p]);
-                                    if (distributedPlatforms.length > 0) {
-                                        report += `        Distribuído para: ${distributedPlatforms.join(', ')}\n`;
+                            try {
+                                const releaseDoc = await db.collection('releases').doc(releaseId).get();
+                                if (releaseDoc.exists) {
+                                    const music = releaseDoc.data();
+                                    report += `      - ${music.titulo}\n`;
+                                    report += `        Streams: ${music.streams || 0}\n`;
+                                    report += `        Ganhos: ${(music.totalGanhos || 0).toLocaleString()} Kz\n`;
+                                    report += `        Status: ${music.status || 'pending'}\n`;
+                                    if (music.distributedTo) {
+                                        const distributedPlatforms = Object.keys(music.distributedTo).filter(p => music.distributedTo[p]);
+                                        if (distributedPlatforms.length > 0) {
+                                            report += `        Distribuído para: ${distributedPlatforms.join(', ')}\n`;
+                                        }
                                     }
                                 }
+                            } catch (err) {
+                                console.error('Erro ao carregar música para relatório:', err);
                             }
                         }
                         report += '\n';
@@ -1870,6 +1938,7 @@
                 showLoading(false);
                 showAlert('📊 Relatório gerado e baixado com sucesso!');
             } catch (error) {
+                console.error('Erro ao gerar relatório:', error);
                 showLoading(false);
                 showAlert('Erro ao gerar relatório: ' + error.message);
             }
@@ -1892,14 +1961,14 @@
                 
                 const user = doc.data();
                 resultsDiv.innerHTML = `
-                    <div class="list-item" style="flex-direction: column; align-items: flex-start;">
+                    <div class="list-item" style="flex-direction: column;">
                         <div><strong>Nome:</strong> ${user.nome || 'N/A'}</div>
                         <div><strong>Email:</strong> ${email}</div>
                         <div><strong>Plano:</strong> ${user.plano || 'FREE'}</div>
                         <div><strong>Saldo:</strong> ${(user.saldo || 0).toLocaleString()} Kz</div>
                         <div><strong>Artistas:</strong> ${user.artists?.length || 0}</div>
                         <div><strong>Músicas:</strong> ${user.releases?.length || 0}</div>
-                        <select id="admin-plan-select" style="width: auto; margin-top: 10px;">
+                        <select id="admin-plan-select" style="width: auto;">
                             <option value="FREE" ${user.plano === 'FREE' ? 'selected' : ''}>FREE</option>
                             <option value="BÁSICO" ${user.plano === 'BÁSICO' ? 'selected' : ''}>BÁSICO</option>
                             <option value="MÉDIO" ${user.plano === 'MÉDIO' ? 'selected' : ''}>MÉDIO</option>
@@ -1914,6 +1983,7 @@
                 `;
                 showLoading(false);
             } catch (error) {
+                console.error('Erro ao buscar usuário:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -1929,6 +1999,7 @@
                 showAlert(`✅ Plano alterado para ${newPlan}!`);
                 searchUser();
             } catch (error) {
+                console.error('Erro ao mudar plano:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -1941,6 +2012,7 @@
                 showLoading(false);
                 showAlert('⚠️ Utilizador suspenso com sucesso!');
             } catch (error) {
+                console.error('Erro ao suspender usuário:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -1956,6 +2028,7 @@
                 document.getElementById('user-manage-results').innerHTML = '';
                 document.getElementById('admin-search-email').value = '';
             } catch (error) {
+                console.error('Erro ao eliminar usuário:', error);
                 showLoading(false);
                 showAlert('Erro: ' + error.message);
             }
@@ -2020,8 +2093,9 @@
                     updateUserDisplay();
                     loadHomeData();
                     loadFeed();
+                    loadArtistSelect();
                 } catch (error) {
-                    console.error('Erro:', error);
+                    console.error('Erro ao carregar dados do usuário:', error);
                     showAlert('Erro ao carregar dados.');
                 }
             } else {
@@ -2032,21 +2106,8 @@
         });
 
         // Inicialização
-        setTimeout(() => {
-            addTrackField();
-            // Garantir que o botão de adicionar artista está funcionando
-            const addBtn = document.getElementById('add-artist-btn');
-            if (addBtn) {
-                addBtn.onclick = function() {
-                    if (!currentUser) {
-                        showAlert('Faça login para adicionar artistas!');
-                        return;
-                    }
-                    openModal('addArtistModal');
-                };
-            }
-        }, 100);
-        
+        emailjs.init("vuAVZ5U4IRBZcsIon");
+        setTimeout(() => addTrackField(), 100);
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
         });

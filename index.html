@@ -431,7 +431,7 @@
             <div id="artistas" class="section">
                 <div class="card">
                     <h3><i class="fas fa-users"></i> Meus Artistas</h3>
-                    <button class="btn" onclick="openAddArtistModal()" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
+                    <button class="btn" id="add-artist-btn" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
                     <div id="artistas-container" class="item-list"></div>
                 </div>
             </div>
@@ -680,6 +680,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE ADICIONAR ARTISTA -->
     <div id="addArtistModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
@@ -687,32 +688,34 @@
             <div style="text-align: center; margin-bottom: 20px;">
                 <img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover;">
                 <div style="margin-top: 10px;">
-                    <button class="btn-small" onclick="document.getElementById('artist-photo-input').click()"><i class="fas fa-camera"></i> Escolher Foto</button>
+                    <button type="button" class="btn-small" onclick="document.getElementById('artist-photo-input').click()"><i class="fas fa-camera"></i> Escolher Foto</button>
                     <input type="file" id="artist-photo-input" accept="image/*" style="display: none;" onchange="previewArtistPhoto()">
                 </div>
             </div>
-            <input type="text" id="artist-name" placeholder="Nome Artístico" required>
+            <input type="text" id="artist-name" placeholder="Nome do Artista/Grupo" required>
             <select id="artist-style">
                 <option value="">Estilo Musical</option>
-                <option value="Afrobeat">Afrobeat</option>
                 <option value="Kizomba">Kizomba</option>
                 <option value="Semba">Semba</option>
+                <option value="Kuduro">Kuduro</option>
                 <option value="Hip Hop">Hip Hop</option>
+                <option value="Afrobeat">Afrobeat</option>
                 <option value="Pop">Pop</option>
                 <option value="R&B">R&B</option>
                 <option value="Rock">Rock</option>
-                <option value="Eletrônica">Eletrônica</option>
-                <option value="Jazz">Jazz</option>
                 <option value="Gospel">Gospel</option>
+                <option value="Reggae">Reggae</option>
+                <option value="Funk">Funk</option>
+                <option value="Sertanejo">Sertanejo</option>
             </select>
             <textarea id="artist-bio" placeholder="Biografia do Artista" rows="3" style="resize: vertical;"></textarea>
-            <label style="color: var(--gold); margin-top: 10px;">Redes Sociais (Links para evitar silenciamento de direitos autorais)</label>
-            <input type="url" id="artist-instagram" placeholder="Instagram">
-            <input type="url" id="artist-facebook" placeholder="Facebook">
-            <input type="url" id="artist-youtube" placeholder="YouTube">
-            <input type="url" id="artist-tiktok" placeholder="TikTok">
-            <input type="url" id="artist-spotify" placeholder="Spotify">
-            <button class="btn" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
+            <label style="color: var(--gold); margin-top: 10px;">Redes Sociais</label>
+            <input type="url" id="artist-instagram" placeholder="Instagram (URL)">
+            <input type="url" id="artist-facebook" placeholder="Facebook (URL)">
+            <input type="url" id="artist-youtube" placeholder="YouTube (URL)">
+            <input type="url" id="artist-tiktok" placeholder="TikTok (URL)">
+            <input type="url" id="artist-spotify" placeholder="Spotify (URL)">
+            <button class="btn" id="save-artist-btn" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
         </div>
     </div>
 
@@ -731,6 +734,9 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         const storage = firebase.storage();
+
+        // ========== EMAILJS ==========
+        emailjs.init("vuAVZ5U4IRBZcsIon");
 
         // ========== CONFIGURAÇÕES ==========
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
@@ -798,10 +804,10 @@
 
         function showFooterContent(type) {
             const contents = {
-                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global. Operamos com tecnologia de ponta para garantir que a sua obra alcance mais de 150 lojas digitais, assegurando a máxima performance e visibilidade internacional.',
-                privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados. Informações sensíveis e ativos digitais (masters e artes) são encriptados e armazenados em servidores seguros. Garantimos que nenhum dado de utilizador ou metadado de obra seja partilhado com terceiros sem autorização expressa.',
-                termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais. A MAM Distribuidora reserva-se o direito de auditar royalties para prevenir fraudes de streaming. O descumprimento das normas de originalidade resultará na suspensão imediata da conta e retenção de fundos para análise jurídica.',
-                suporte: 'Central de Apoio Estratégico\n\nPara questões financeiras, suporte técnico ou gestão de catálogos, contacte a nossa equipa de administração:\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
+                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global.',
+                privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados.',
+                termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais.',
+                suporte: 'Central de Apoio Estratégico\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
             };
             showAlert(contents[type]);
         }
@@ -986,58 +992,50 @@
             }
         }
 
-        // ========== ARTISTAS ==========
+        // ========== ARTISTAS (FUNCIONANDO) ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
-                document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
+                document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado. Clique em "Adicionar Artista" para começar.</p>';
                 return;
             }
             
             const container = document.getElementById('artistas-container');
-            container.innerHTML = '';
+            container.innerHTML = '<p style="color: var(--gray); text-align: center;">Carregando artistas...</p>';
             
-            for (const artistId of userData.artists) {
-                const doc = await db.collection('artists').doc(artistId).get();
-                if (doc.exists) {
-                    const artist = doc.data();
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'artist-item';
-                    itemDiv.innerHTML = `
-                        <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" onerror="this.src='https://via.placeholder.com/70'">
-                        <div class="artist-info">
-                            <h4>${artist.nome}</h4>
-                            <p>${artist.bio || 'Sem biografia'} | ${artist.estilo || ''}</p>
-                            <div class="social-links">
-                                ${artist.youtube ? `<a href="${artist.youtube}" target="_blank" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
-                                ${artist.spotify ? `<a href="${artist.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
-                                ${artist.instagram ? `<a href="${artist.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>` : ''}
-                                ${artist.tiktok ? `<a href="${artist.tiktok}" target="_blank" class="social-link"><i class="fab fa-tiktok"></i> TikTok</a>` : ''}
-                                ${artist.facebook ? `<a href="${artist.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>` : ''}
+            try {
+                container.innerHTML = '';
+                
+                for (const artistId of userData.artists) {
+                    const doc = await db.collection('artists').doc(artistId).get();
+                    if (doc.exists) {
+                        const artist = doc.data();
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'artist-item';
+                        itemDiv.innerHTML = `
+                            <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" onerror="this.src='https://via.placeholder.com/70'">
+                            <div class="artist-info">
+                                <h4>${escapeHtml(artist.nome)}</h4>
+                                <p>${escapeHtml(artist.bio || 'Sem biografia')} | ${artist.estilo || 'Estilo não definido'}</p>
+                                <div class="social-links">
+                                    ${artist.youtube ? `<a href="${artist.youtube}" target="_blank" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
+                                    ${artist.spotify ? `<a href="${artist.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
+                                    ${artist.instagram ? `<a href="${artist.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>` : ''}
+                                    ${artist.tiktok ? `<a href="${artist.tiktok}" target="_blank" class="social-link"><i class="fab fa-tiktok"></i> TikTok</a>` : ''}
+                                    ${artist.facebook ? `<a href="${artist.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>` : ''}
+                                </div>
                             </div>
-                        </div>
-                    `;
-                    container.appendChild(itemDiv);
+                        `;
+                        container.appendChild(itemDiv);
+                    }
                 }
+                
+                if (container.children.length === 0) {
+                    container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado. Clique em "Adicionar Artista" para começar.</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar artistas:', error);
+                container.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro ao carregar artistas. Tente novamente.</p>';
             }
-        }
-
-        function openAddArtistModal() {
-            if (userData.artists.length >= userData.artistasLimit) {
-                showAlert(`Seu plano ${userData.plano} permite apenas ${userData.artistasLimit} artista(s). Faça upgrade!`);
-                return;
-            }
-            
-            document.getElementById('artist-name').value = '';
-            document.getElementById('artist-style').value = '';
-            document.getElementById('artist-bio').value = '';
-            document.getElementById('artist-instagram').value = '';
-            document.getElementById('artist-facebook').value = '';
-            document.getElementById('artist-youtube').value = '';
-            document.getElementById('artist-tiktok').value = '';
-            document.getElementById('artist-spotify').value = '';
-            document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
-            
-            openModal('addArtistModal');
         }
 
         function previewArtistPhoto() {
@@ -1053,16 +1051,26 @@
 
         async function saveArtist() {
             const nome = document.getElementById('artist-name').value.trim();
+            
             if (!nome) {
-                showAlert('Nome artístico é obrigatório!');
+                showAlert('Por favor, digite o nome do artista!');
                 return;
             }
             
-            showLoading(true, 'A salvar artista...');
+            // Verificar limite de artistas do plano
+            if (userData && userData.artists && userData.artists.length >= userData.artistasLimit) {
+                showAlert(`Seu plano ${userData.plano} permite apenas ${userData.artistasLimit} artista(s). Faça upgrade!`);
+                closeModal('addArtistModal');
+                return;
+            }
+            
+            showLoading(true, 'Salvando artista...');
+            
             try {
                 const artistId = Date.now().toString();
                 let photoURL = null;
                 
+                // Upload da foto se existir
                 const photoFile = document.getElementById('artist-photo-input').files[0];
                 if (photoFile) {
                     const storageRef = storage.ref(`artists/${artistId}`);
@@ -1070,6 +1078,7 @@
                     photoURL = await storageRef.getDownloadURL();
                 }
                 
+                // Dados do artista
                 const artistData = {
                     id: artistId,
                     nome: nome,
@@ -1085,21 +1094,55 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
+                // Salvar no Firestore
                 await db.collection('artists').doc(artistId).set(artistData);
+                
+                // Adicionar ao array do usuário
                 await db.collection('users').doc(currentUser.email).update({
                     artists: firebase.firestore.FieldValue.arrayUnion(artistId)
                 });
                 
+                // Atualizar dados locais
+                if (!userData.artists) userData.artists = [];
                 userData.artists.push(artistId);
+                
+                // Limpar o formulário
+                document.getElementById('artist-name').value = '';
+                document.getElementById('artist-style').value = '';
+                document.getElementById('artist-bio').value = '';
+                document.getElementById('artist-instagram').value = '';
+                document.getElementById('artist-facebook').value = '';
+                document.getElementById('artist-youtube').value = '';
+                document.getElementById('artist-tiktok').value = '';
+                document.getElementById('artist-spotify').value = '';
+                document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
+                document.getElementById('artist-photo-input').value = '';
+                
+                // Fechar modal
                 closeModal('addArtistModal');
-                loadArtists();
+                
+                // Recarregar lista de artistas
+                await loadArtists();
+                
+                // Atualizar contador na home
                 updateUserDisplay();
+                
                 showLoading(false);
-                showAlert('Artista adicionado com sucesso!');
+                showAlert(`Artista "${nome}" adicionado com sucesso!`);
+                
             } catch (error) {
                 showLoading(false);
-                showAlert('Erro: ' + error.message);
+                showAlert('Erro ao salvar artista: ' + error.message);
+                console.error('Erro:', error);
             }
+        }
+
+        // Função auxiliar para escapar HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // ========== LANÇAMENTOS ==========
@@ -1119,9 +1162,10 @@
             const trackDiv = document.createElement('div');
             trackDiv.className = 'dynamic-track';
             trackDiv.innerHTML = `
-                <input type="text" placeholder="Título da faixa" class="track-title-input" style="flex:2;">
-                <input type="file" accept="audio/*" class="track-audio-input" style="flex:1;">
-                <button type="button" class="remove-track" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>
+                <input type="text" placeholder="Título da faixa" class="track-title-input" style="flex:2; margin-bottom:10px;">
+                <input type="file" accept="audio/*" class="track-audio-input" style="flex:1; margin-bottom:10px;">
+                <button type="button" class="btn-small" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i> Remover</button>
+                <hr style="margin: 10px 0;">
             `;
             container.appendChild(trackDiv);
         }
@@ -1234,6 +1278,7 @@
                     releases: firebase.firestore.FieldValue.arrayUnion(releaseId)
                 });
                 
+                if (!userData.releases) userData.releases = [];
                 userData.releases.push(releaseId);
                 
                 document.getElementById('music-titulo').value = '';
@@ -1311,8 +1356,8 @@
                     discoDiv.onclick = () => playMusic(release);
                     discoDiv.innerHTML = `
                         <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="disco-title">${release.titulo}</div>
-                        <div class="disco-artist">${artistName}</div>
+                        <div class="disco-title">${escapeHtml(release.titulo)}</div>
+                        <div class="disco-artist">${escapeHtml(artistName)}</div>
                         <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
                         <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
                     `;
@@ -1357,8 +1402,8 @@
                     discoDiv.onclick = () => playMusic(release);
                     discoDiv.innerHTML = `
                         <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="disco-title">${release.titulo}</div>
-                        <div class="disco-artist">${artistName}</div>
+                        <div class="disco-title">${escapeHtml(release.titulo)}</div>
+                        <div class="disco-artist">${escapeHtml(artistName)}</div>
                         <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
                     `;
                     feedContainer.appendChild(discoDiv);
@@ -1393,8 +1438,8 @@
                     discoDiv.onclick = () => playMusic(release);
                     discoDiv.innerHTML = `
                         <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="disco-title">${release.titulo}</div>
-                        <div class="disco-artist">${artistName}</div>
+                        <div class="disco-title">${escapeHtml(release.titulo)}</div>
+                        <div class="disco-artist">${escapeHtml(artistName)}</div>
                         <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
                         <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
                         <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
@@ -1627,13 +1672,13 @@
                     itemDiv.innerHTML = `
                         <img src="${music.capaURL}" onerror="this.src='https://via.placeholder.com/60'">
                         <div class="list-info">
-                            <h4>${music.titulo}</h4>
-                            <p>Artista: ${artistName}</p>
+                            <h4>${escapeHtml(music.titulo)}</h4>
+                            <p>Artista: ${escapeHtml(artistName)}</p>
                             <p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
                             ${music.audioURL ? `<audio controls src="${music.audioURL}" style="height: 35px; margin-top: 5px;"></audio>` : '<p style="color: var(--gray);">Álbum (múltiplas faixas)</p>'}
                         </div>
                         <div class="list-actions">
-                            ${music.status !== 'approved' ? `<button class="btn-small btn-success" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
+                            ${music.status !== 'approved' ? `<button class="btn-small" style="background:#28a745; color:#fff;" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
                             ${music.status !== 'rejected' ? `<button class="btn-small btn-danger" onclick="rejectMusic('${doc.id}')"><i class="fas fa-times"></i> Reprovar</button>` : ''}
                         </div>
                     `;
@@ -1775,9 +1820,9 @@
             try {
                 const usersSnapshot = await db.collection('users').get();
                 let report = 'RELATÓRIO MAM DISTRIBUIDORA\n';
-                report += '=' .repeat(60) + '\n';
+                report += '='.repeat(60) + '\n';
                 report += `Data: ${new Date().toLocaleString()}\n`;
-                report += '=' .repeat(60) + '\n\n';
+                report += '='.repeat(60) + '\n\n';
                 
                 for (const userDoc of usersSnapshot.docs) {
                     const user = userDoc.data();
@@ -1847,14 +1892,14 @@
                 
                 const user = doc.data();
                 resultsDiv.innerHTML = `
-                    <div class="list-item" style="flex-direction: column;">
+                    <div class="list-item" style="flex-direction: column; align-items: flex-start;">
                         <div><strong>Nome:</strong> ${user.nome || 'N/A'}</div>
                         <div><strong>Email:</strong> ${email}</div>
                         <div><strong>Plano:</strong> ${user.plano || 'FREE'}</div>
                         <div><strong>Saldo:</strong> ${(user.saldo || 0).toLocaleString()} Kz</div>
                         <div><strong>Artistas:</strong> ${user.artists?.length || 0}</div>
                         <div><strong>Músicas:</strong> ${user.releases?.length || 0}</div>
-                        <select id="admin-plan-select" style="width: auto;">
+                        <select id="admin-plan-select" style="width: auto; margin-top: 10px;">
                             <option value="FREE" ${user.plano === 'FREE' ? 'selected' : ''}>FREE</option>
                             <option value="BÁSICO" ${user.plano === 'BÁSICO' ? 'selected' : ''}>BÁSICO</option>
                             <option value="MÉDIO" ${user.plano === 'MÉDIO' ? 'selected' : ''}>MÉDIO</option>
@@ -1987,8 +2032,21 @@
         });
 
         // Inicialização
-        emailjs.init("vuAVZ5U4IRBZcsIon");
-        setTimeout(() => addTrackField(), 100);
+        setTimeout(() => {
+            addTrackField();
+            // Garantir que o botão de adicionar artista está funcionando
+            const addBtn = document.getElementById('add-artist-btn');
+            if (addBtn) {
+                addBtn.onclick = function() {
+                    if (!currentUser) {
+                        showAlert('Faça login para adicionar artistas!');
+                        return;
+                    }
+                    openModal('addArtistModal');
+                };
+            }
+        }, 100);
+        
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
         });

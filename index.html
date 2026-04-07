@@ -432,7 +432,7 @@
             <div id="artistas" class="section">
                 <div class="card">
                     <h3><i class="fas fa-users"></i> Meus Artistas</h3>
-                    <button class="btn" onclick="openAddArtistModal()" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
+                    <button class="btn" id="btnAddArtist" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
                     <div id="artistas-container" class="item-list"></div>
                 </div>
             </div>
@@ -440,7 +440,7 @@
             <div id="lancar" class="section">
                 <div class="card">
                     <h3><i class="fas fa-cloud-upload-alt"></i> Lançar Música/Álbum</h3>
-                    <form onsubmit="return false;">
+                    <form id="lancamentoForm" onsubmit="return false;">
                         <label>Tipo de Lançamento</label>
                         <select id="release-type" onchange="toggleReleaseType()">
                             <option value="single">Faixa/Single</option>
@@ -508,7 +508,7 @@
                         <label>Data de Lançamento</label>
                         <input type="date" id="music-data" required>
                         
-                        <button type="button" class="btn" onclick="enviarLancamento()"><i class="fas fa-check"></i> Enviar Lançamento</button>
+                        <button type="submit" id="btnEnviarLancamento" class="btn"><i class="fas fa-check"></i> Enviar Lançamento</button>
                     </form>
                 </div>
             </div>
@@ -567,7 +567,7 @@
                     <select id="perfil-pais">
                         <option value="">Selecione seu País</option>
                     </select>
-                    <button class="btn" onclick="handleUpdateProfile()"><i class="fas fa-save"></i> Guardar Perfil</button>
+                    <button class="btn" id="btnUpdateProfile"><i class="fas fa-save"></i> Guardar Perfil</button>
                 </div>
             </div>
 
@@ -713,7 +713,7 @@
             <input type="url" id="artist-youtube" placeholder="YouTube">
             <input type="url" id="artist-tiktok" placeholder="TikTok">
             <input type="url" id="artist-spotify" placeholder="Spotify">
-            <button class="btn" onclick="saveArtist()"><i class="fas fa-save"></i> Salvar Artista</button>
+            <button class="btn" id="btnSaveArtist"><i class="fas fa-save"></i> Salvar Artista</button>
         </div>
     </div>
 
@@ -772,7 +772,8 @@
 
         function togglePasswordVisibility(inputId) {
             const input = document.getElementById(inputId);
-            const icon = event.target.closest('button').querySelector('i');
+            const button = event.target.closest('button');
+            const icon = button.querySelector('i');
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -882,6 +883,7 @@
                     totalGanhos: 0,
                     artists: [],
                     releases: [],
+                    ownerUID: result.user.uid,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 await db.collection('users').doc(email).set(newUser);
@@ -945,7 +947,7 @@
 
             showLoading(true, 'A enviar foto...');
             try {
-                const storageRef = storage.ref(`profile_photos/${currentUser.email}`);
+                const storageRef = storage.ref(`profile_photos/${currentUser.uid}`);
                 await storageRef.put(file);
                 const photoURL = await storageRef.getDownloadURL();
                 await db.collection('users').doc(currentUser.email).update({ foto: photoURL });
@@ -987,7 +989,7 @@
             }
         }
 
-        // ========== ARTISTAS CORRIGIDO ==========
+        // ========== ARTISTAS ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
                 document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
@@ -1045,6 +1047,7 @@
             document.getElementById('artist-tiktok').value = '';
             document.getElementById('artist-spotify').value = '';
             document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
+            document.getElementById('artist-photo-input').value = '';
             
             openModal('addArtistModal');
         }
@@ -1067,7 +1070,7 @@
                 return;
             }
             
-            const submitBtn = document.querySelector('#addArtistModal .btn');
+            const submitBtn = document.getElementById('btnSaveArtist');
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
@@ -1081,16 +1084,14 @@
                 const photoFile = document.getElementById('artist-photo-input').files[0];
                 if (photoFile) {
                     try {
-                        const storageRef = storage.ref(`artists/${artistId}_${Date.now()}`);
-                        const uploadResult = await storageRef.put(photoFile);
-                        photoURL = await uploadResult.ref.getDownloadURL();
-                        console.log('Foto uploaded com sucesso:', photoURL);
+                        const storageRef = storage.ref(`artists/${currentUser.uid}/${artistId}_photo`);
+                        await storageRef.put(photoFile);
+                        photoURL = await storageRef.getDownloadURL();
                     } catch (uploadError) {
-                        console.error('Erro no upload da foto:', uploadError);
+                        showLoading(false);
                         showAlert('Erro ao enviar foto: ' + uploadError.message);
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = originalText;
-                        showLoading(false);
                         return;
                     }
                 }
@@ -1106,30 +1107,18 @@
                     tiktok: document.getElementById('artist-tiktok').value,
                     spotify: document.getElementById('artist-spotify').value,
                     foto: photoURL,
+                    ownerUID: currentUser.uid,
                     ownerEmail: currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                console.log('Salvando artista no Firestore:', artistData);
                 await db.collection('artists').doc(artistId).set(artistData);
-                
                 await db.collection('users').doc(currentUser.email).update({
                     artists: firebase.firestore.FieldValue.arrayUnion(artistId)
                 });
                 
                 if (!userData.artists) userData.artists = [];
                 userData.artists.push(artistId);
-                
-                document.getElementById('artist-name').value = '';
-                document.getElementById('artist-style').value = '';
-                document.getElementById('artist-bio').value = '';
-                document.getElementById('artist-instagram').value = '';
-                document.getElementById('artist-facebook').value = '';
-                document.getElementById('artist-youtube').value = '';
-                document.getElementById('artist-tiktok').value = '';
-                document.getElementById('artist-spotify').value = '';
-                document.getElementById('artist-photo-input').value = '';
-                document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
                 
                 closeModal('addArtistModal');
                 await loadArtists();
@@ -1139,7 +1128,7 @@
                 showAlert('✅ Artista adicionado com sucesso!');
                 
             } catch (error) {
-                console.error('Erro completo ao salvar artista:', error);
+                console.error('Erro ao salvar artista:', error);
                 showLoading(false);
                 showAlert('Erro ao salvar artista: ' + error.message);
             } finally {
@@ -1148,7 +1137,7 @@
             }
         }
 
-        // ========== LANÇAMENTOS CORRIGIDO ==========
+        // ========== LANÇAMENTOS ==========
         function toggleReleaseType() {
             const type = document.getElementById('release-type').value;
             if (type === 'album') {
@@ -1224,7 +1213,7 @@
                 }
             }
             
-            const submitBtn = document.querySelector('#lancar .btn');
+            const submitBtn = document.getElementById('btnEnviarLancamento');
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
@@ -1232,11 +1221,19 @@
             showLoading(true, 'A processar lançamento...');
             
             try {
-                const coverExt = capaFile.name.split('.').pop();
-                const coverRef = storage.ref(`releases/${Date.now()}_cover.${coverExt}`);
-                await coverRef.put(capaFile);
-                const coverURL = await coverRef.getDownloadURL();
-                console.log('Capa uploaded:', coverURL);
+                let coverURL = null;
+                try {
+                    const coverExt = capaFile.name.split('.').pop();
+                    const coverRef = storage.ref(`releases/${currentUser.uid}/${Date.now()}_cover.${coverExt}`);
+                    await coverRef.put(capaFile);
+                    coverURL = await coverRef.getDownloadURL();
+                } catch (uploadError) {
+                    showLoading(false);
+                    showAlert('Erro ao enviar capa: ' + uploadError.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                    return;
+                }
                 
                 const releaseId = Date.now().toString();
                 
@@ -1252,6 +1249,7 @@
                     capaURL: coverURL,
                     dataLancamento: releaseDate,
                     tipo: releaseType,
+                    ownerUID: currentUser.uid,
                     ownerEmail: currentUser.email,
                     status: 'pending',
                     streams: 0,
@@ -1263,10 +1261,9 @@
                 if (releaseType === 'single') {
                     const audioFile = document.getElementById('music-audio').files[0];
                     const audioExt = audioFile.name.split('.').pop();
-                    const audioRef = storage.ref(`releases/${releaseId}_audio.${audioExt}`);
+                    const audioRef = storage.ref(`releases/${currentUser.uid}/${releaseId}_audio.${audioExt}`);
                     await audioRef.put(audioFile);
                     releaseData.audioURL = await audioRef.getDownloadURL();
-                    console.log('Audio uploaded:', releaseData.audioURL);
                 } else {
                     const tracks = [];
                     const trackDivs = document.querySelectorAll('.dynamic-track');
@@ -1276,7 +1273,7 @@
                         const trackFile = div.querySelector('.track-audio-input')?.files[0];
                         if (trackTitle && trackFile) {
                             const trackExt = trackFile.name.split('.').pop();
-                            const trackRef = storage.ref(`releases/${releaseId}_track_${i}.${trackExt}`);
+                            const trackRef = storage.ref(`releases/${currentUser.uid}/${releaseId}_track_${i}.${trackExt}`);
                             await trackRef.put(trackFile);
                             tracks.push({
                                 title: trackTitle,
@@ -1288,9 +1285,7 @@
                     releaseData.tracks = tracks;
                 }
                 
-                console.log('Salvando lançamento no Firestore:', releaseData);
                 await db.collection('releases').doc(releaseId).set(releaseData);
-                
                 await db.collection('users').doc(currentUser.email).update({
                     releases: firebase.firestore.FieldValue.arrayUnion(releaseId)
                 });
@@ -1309,12 +1304,13 @@
                 document.getElementById('music-estilo').value = '';
                 document.getElementById('tracks-container').innerHTML = '';
                 if (releaseType === 'album') addTrackField();
+                document.getElementById('music-artista-select').value = '';
                 
                 showLoading(false);
                 showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
                 
             } catch (error) {
-                console.error('Erro completo ao enviar lançamento:', error);
+                console.error('Erro ao enviar lançamento:', error);
                 showLoading(false);
                 showAlert('Erro ao enviar lançamento: ' + error.message);
             } finally {
@@ -1397,7 +1393,7 @@
                 }
                 
                 if (currentUser) {
-                    const totalStreams = await db.collection('releases').where('ownerEmail', '==', currentUser.email).get();
+                    const totalStreams = await db.collection('releases').where('ownerUID', '==', currentUser.uid).get();
                     let streamCount = 0;
                     totalStreams.forEach(doc => { streamCount += doc.data().streams || 0; });
                     document.getElementById('stat-streams').textContent = streamCount.toLocaleString();
@@ -1884,9 +1880,9 @@
             try {
                 const usersSnapshot = await db.collection('users').get();
                 let report = 'RELATÓRIO MAM DISTRIBUIDORA\n';
-                report += '=' .repeat(60) + '\n';
+                report += '='.repeat(60) + '\n';
                 report += `Data: ${new Date().toLocaleString()}\n`;
-                report += '=' .repeat(60) + '\n\n';
+                report += '='.repeat(60) + '\n\n';
                 
                 for (const userDoc of usersSnapshot.docs) {
                     const user = userDoc.data();
@@ -2072,6 +2068,29 @@
             loadPaises();
         }
 
+        // ========== EVENT LISTENERS ==========
+        function setupEventListeners() {
+            const btnAddArtist = document.getElementById('btnAddArtist');
+            if (btnAddArtist) {
+                btnAddArtist.addEventListener('click', openAddArtistModal);
+            }
+            
+            const btnSaveArtist = document.getElementById('btnSaveArtist');
+            if (btnSaveArtist) {
+                btnSaveArtist.addEventListener('click', saveArtist);
+            }
+            
+            const btnEnviarLancamento = document.getElementById('btnEnviarLancamento');
+            if (btnEnviarLancamento) {
+                btnEnviarLancamento.addEventListener('click', enviarLancamento);
+            }
+            
+            const btnUpdateProfile = document.getElementById('btnUpdateProfile');
+            if (btnUpdateProfile) {
+                btnUpdateProfile.addEventListener('click', handleUpdateProfile);
+            }
+        }
+
         // ========== AUTH STATE ==========
         auth.onAuthStateChanged(async (user) => {
             if (user) {
@@ -2086,7 +2105,20 @@
                     if (doc.exists) {
                         userData = doc.data();
                     } else {
-                        userData = { nome: user.displayName || "Utilizador", email: user.email, tipo: "Artista", pais: "Angola", plano: "FREE", artistasLimit: 1, saldo: 0, totalGanhos: 0, artists: [], releases: [], createdAt: new Date() };
+                        userData = { 
+                            nome: user.displayName || "Utilizador", 
+                            email: user.email, 
+                            tipo: "Artista", 
+                            pais: "Angola", 
+                            plano: "FREE", 
+                            artistasLimit: 1, 
+                            saldo: 0, 
+                            totalGanhos: 0, 
+                            artists: [], 
+                            releases: [],
+                            ownerUID: user.uid,
+                            createdAt: new Date() 
+                        };
                         await db.collection('users').doc(user.email).set(userData);
                     }
                     showMainApp();
@@ -2094,6 +2126,7 @@
                     loadHomeData();
                     loadFeed();
                     loadArtistSelect();
+                    setupEventListeners();
                 } catch (error) {
                     console.error('Erro ao carregar dados do usuário:', error);
                     showAlert('Erro ao carregar dados.');

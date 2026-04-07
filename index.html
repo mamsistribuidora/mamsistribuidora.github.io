@@ -458,17 +458,6 @@
                         <label>Estilo Musical</label>
                         <select id="music-estilo">
                             <option value="">Selecione</option>
-                            <option value="afrobeat">Afrobeat</option>
-                            <option value="kizomba">Kizomba</option>
-                            <option value="semba">Semba</option>
-                            <option value="hip-hop">Hip Hop</option>
-                            <option value="pop">Pop</option>
-                            <option value="rock">Rock</option>
-                            <option value="rnb">R&B</option>
-                            <option value="electronic">Eletrônica</option>
-                            <option value="jazz">Jazz</option>
-                            <option value="reggae">Reggae</option>
-                            <option value="gospel">Gospel</option>
                         </select>
                         
                         <label>Colaboradores (separados por vírgula)</label>
@@ -700,16 +689,6 @@
             <input type="text" id="artist-name" placeholder="Nome Artístico" required>
             <select id="artist-style">
                 <option value="">Estilo Musical</option>
-                <option value="Afrobeat">Afrobeat</option>
-                <option value="Kizomba">Kizomba</option>
-                <option value="Semba">Semba</option>
-                <option value="Hip Hop">Hip Hop</option>
-                <option value="Pop">Pop</option>
-                <option value="R&B">R&B</option>
-                <option value="Rock">Rock</option>
-                <option value="Eletrônica">Eletrônica</option>
-                <option value="Jazz">Jazz</option>
-                <option value="Gospel">Gospel</option>
             </select>
             <textarea id="artist-bio" placeholder="Biografia do Artista" rows="3" style="resize: vertical;"></textarea>
             <label style="color: var(--gold); margin-top: 10px;">Redes Sociais (Links para evitar silenciamento de direitos autorais)</label>
@@ -718,11 +697,47 @@
             <input type="url" id="artist-youtube" placeholder="YouTube">
             <input type="url" id="artist-tiktok" placeholder="TikTok">
             <input type="url" id="artist-spotify" placeholder="Spotify">
+            <input type="url" id="artist-apple" placeholder="Apple Music">
+            <input type="url" id="artist-twitter" placeholder="Twitter/X">
+            <input type="url" id="artist-soundcloud" placeholder="SoundCloud">
             <button class="btn" id="btnSaveArtist"><i class="fas fa-save"></i> Salvar Artista</button>
         </div>
     </div>
 
     <script>
+        // ========== TODOS OS PAÍSES DO MUNDO ==========
+        const todosPaises = [
+            "Afeganistão", "África do Sul", "Albânia", "Alemanha", "Andorra", "Angola", "Arábia Saudita", "Argélia", "Argentina", "Armênia",
+            "Austrália", "Áustria", "Azerbaijão", "Bahamas", "Bangladesh", "Barbados", "Bélgica", "Belize", "Benim", "Bielorrússia",
+            "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brasil", "Brunei", "Bulgária", "Burkina Faso", "Burundi", "Butão", "Cabo Verde",
+            "Camarões", "Camboja", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo",
+            "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibouti", "Dominica",
+            "Egito", "El Salvador", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovênia", "Espanha", "Essuatíni",
+            "Estados Unidos", "Estônia", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia",
+            "Granada", "Grécia", "Guatemala", "Guiana", "Guiné", "Guiné-Bissau", "Guiné Equatorial", "Haiti", "Holanda", "Honduras",
+            "Hungria", "Iêmen", "Índia", "Indonésia", "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão",
+            "Jordânia", "Kuwait", "Laos", "Lesoto", "Letônia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo",
+            "Madagáscar", "Malásia", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Marshall", "Maurícia", "Mauritânia", "México",
+            "Micronésia", "Moçambique", "Moldávia", "Mônaco", "Mongólia", "Montenegro", "Myanmar", "Namíbia", "Nauru", "Nepal", "Nicarágua",
+            "Níger", "Nigéria", "Noruega", "Nova Zelândia", "Omã", "Países Baixos", "Palau", "Panamá", "Papua-Nova Guiné", "Paquistão",
+            "Paraguai", "Peru", "Polônia", "Portugal", "Quênia", "Quirguistão", "Quiribati", "Reino Unido", "República Centro-Africana",
+            "República Checa", "República Dominicana", "Romênia", "Ruanda", "Rússia", "Salomão", "Samoa", "San Marino", "Santa Lúcia",
+            "São Cristóvão e Neves", "São Tomé e Príncipe", "São Vicente e Granadinas", "Senegal", "Serra Leoa", "Sérvia", "Seychelles",
+            "Singapura", "Síria", "Somália", "Sri Lanka", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Tailândia", "Taiwan",
+            "Tajiquistão", "Tanzânia", "Timor-Leste", "Togo", "Tonga", "Trinidad e Tobago", "Tunísia", "Turcomenistão", "Turquia",
+            "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Uzbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietnã", "Zâmbia", "Zimbábue"
+        ];
+
+        // ========== TODOS OS ESTILOS MUSICAIS DO MUNDO ==========
+        const todosEstilos = [
+            "Afrobeat", "Afro House", "Afro Pop", "Alternative Rock", "Ambient", "Blues", "Bossa Nova", "Breakbeat", "Classical", "Country",
+            "Dancehall", "Disco", "Downtempo", "Drum and Bass", "Dubstep", "Electronic", "Fado", "Flamenco", "Folk", "Funk", "Funk Carioca",
+            "Gospel", "Gothic", "Grime", "Grindcore", "Hard Rock", "Hardcore", "Heavy Metal", "Hip Hop", "House", "Indie Pop", "Indie Rock",
+            "Industrial", "Jazz", "Jungle", "Kizomba", "Kuduro", "Latin", "Lo-fi", "MPB", "Metal", "Neoclassical", "New Age", "Opera", "Orchestral",
+            "Pagode", "Pop", "Post Rock", "Progressive Rock", "Psychedelic", "Punk Rock", "R&B", "Rap", "Reggae", "Reggaeton", "Rock", "Rock and Roll",
+            "Salsa", "Samba", "Sertanejo", "Soul", "Soundtrack", "Synthwave", "Soca", "Techno", "Trance", "Trap", "Trip Hop", "World Music", "Zouk"
+        ];
+
         // ========== FIREBASE CONFIG ==========
         const firebaseConfig = {
             apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
@@ -811,6 +826,45 @@
                 suporte: 'Central de Apoio Estratégico\n\nPara questões financeiras, suporte técnico ou gestão de catálogos, contacte a nossa equipa de administração:\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
             };
             showAlert(contents[type]);
+        }
+
+        // ========== CARREGAR PAÍSES E ESTILOS ==========
+        function carregarPaisesEEstilos() {
+            // Carregar países no perfil
+            const selectPais = document.getElementById('perfil-pais');
+            if (selectPais) {
+                selectPais.innerHTML = '<option value="">Selecione seu País</option>';
+                todosPaises.sort().forEach(pais => {
+                    const option = document.createElement('option');
+                    option.value = pais;
+                    option.textContent = pais;
+                    selectPais.appendChild(option);
+                });
+            }
+            
+            // Carregar estilos no select de estilo musical (lançamento)
+            const selectEstilo = document.getElementById('music-estilo');
+            if (selectEstilo) {
+                selectEstilo.innerHTML = '<option value="">Selecione</option>';
+                todosEstilos.sort().forEach(estilo => {
+                    const option = document.createElement('option');
+                    option.value = estilo;
+                    option.textContent = estilo;
+                    selectEstilo.appendChild(option);
+                });
+            }
+            
+            // Carregar estilos no select de estilo do artista
+            const selectArtistStyle = document.getElementById('artist-style');
+            if (selectArtistStyle) {
+                selectArtistStyle.innerHTML = '<option value="">Estilo Musical</option>';
+                todosEstilos.sort().forEach(estilo => {
+                    const option = document.createElement('option');
+                    option.value = estilo;
+                    option.textContent = estilo;
+                    selectArtistStyle.appendChild(option);
+                });
+            }
         }
 
         // ========== AUTENTICAÇÃO ==========
@@ -911,40 +965,6 @@
             }
         }
 
-        // ========== PAÍSES ==========
-        const paises = [
-            "Afeganistão", "África do Sul", "Albânia", "Alemanha", "Andorra", "Angola", "Arábia Saudita", "Argélia", "Argentina", "Armênia",
-            "Austrália", "Áustria", "Azerbaijão", "Bahamas", "Bangladesh", "Barbados", "Bélgica", "Belize", "Benim", "Bielorrússia",
-            "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brasil", "Brunei", "Bulgária", "Burkina Faso", "Burundi", "Butão", "Cabo Verde",
-            "Camarões", "Camboja", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo",
-            "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibouti", "Dominica",
-            "Egito", "El Salvador", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovênia", "Espanha", "Essuatíni",
-            "Estados Unidos", "Estônia", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia",
-            "Granada", "Grécia", "Guatemala", "Guiana", "Guiné", "Guiné-Bissau", "Guiné Equatorial", "Haiti", "Holanda", "Honduras",
-            "Hungria", "Iêmen", "Índia", "Indonésia", "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão",
-            "Jordânia", "Kuwait", "Laos", "Lesoto", "Letônia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo",
-            "Madagáscar", "Malásia", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Marshall", "Maurícia", "Mauritânia", "México",
-            "Micronésia", "Moçambique", "Moldávia", "Mônaco", "Mongólia", "Montenegro", "Myanmar", "Namíbia", "Nauru", "Nepal", "Nicarágua",
-            "Níger", "Nigéria", "Noruega", "Nova Zelândia", "Omã", "Países Baixos", "Palau", "Panamá", "Papua-Nova Guiné", "Paquistão",
-            "Paraguai", "Peru", "Polônia", "Portugal", "Quênia", "Quirguistão", "Quiribati", "Reino Unido", "República Centro-Africana",
-            "República Checa", "República Dominicana", "Romênia", "Ruanda", "Rússia", "Salomão", "Samoa", "San Marino", "Santa Lúcia",
-            "São Cristóvão e Neves", "São Tomé e Príncipe", "São Vicente e Granadinas", "Senegal", "Serra Leoa", "Sérvia", "Seychelles",
-            "Singapura", "Síria", "Somália", "Sri Lanka", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Tailândia", "Taiwan",
-            "Tajiquistão", "Tanzânia", "Timor-Leste", "Togo", "Tonga", "Trinidad e Tobago", "Tunísia", "Turcomenistão", "Turquia",
-            "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Uzbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietnã", "Zâmbia", "Zimbábue"
-        ];
-
-        function loadPaises() {
-            const select = document.getElementById('perfil-pais');
-            select.innerHTML = '<option value="">Selecione seu País</option>';
-            paises.sort().forEach(pais => {
-                const option = document.createElement('option');
-                option.value = pais;
-                option.textContent = pais;
-                select.appendChild(option);
-            });
-        }
-
         // ========== PERFIL ==========
         async function updateProfilePhoto() {
             const file = document.getElementById('perfil-foto-input').files[0];
@@ -1011,17 +1031,23 @@
                         const artist = doc.data();
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'artist-item';
+                        let socialLinks = '';
+                        if (artist.instagram) socialLinks += `<a href="${artist.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>`;
+                        if (artist.facebook) socialLinks += `<a href="${artist.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>`;
+                        if (artist.youtube) socialLinks += `<a href="${artist.youtube}" target="_blank" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>`;
+                        if (artist.tiktok) socialLinks += `<a href="${artist.tiktok}" target="_blank" class="social-link"><i class="fab fa-tiktok"></i> TikTok</a>`;
+                        if (artist.spotify) socialLinks += `<a href="${artist.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>`;
+                        if (artist.apple) socialLinks += `<a href="${artist.apple}" target="_blank" class="social-link"><i class="fab fa-apple"></i> Apple Music</a>`;
+                        if (artist.twitter) socialLinks += `<a href="${artist.twitter}" target="_blank" class="social-link"><i class="fab fa-twitter"></i> Twitter</a>`;
+                        if (artist.soundcloud) socialLinks += `<a href="${artist.soundcloud}" target="_blank" class="social-link"><i class="fab fa-soundcloud"></i> SoundCloud</a>`;
+                        
                         itemDiv.innerHTML = `
                             <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" onerror="this.src='https://via.placeholder.com/70'">
                             <div class="artist-info">
                                 <h4>${artist.nome}</h4>
                                 <p>${artist.bio || 'Sem biografia'} | ${artist.estilo || ''}</p>
                                 <div class="social-links">
-                                    ${artist.youtube ? `<a href="${artist.youtube}" target="_blank" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>` : ''}
-                                    ${artist.spotify ? `<a href="${artist.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>` : ''}
-                                    ${artist.instagram ? `<a href="${artist.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>` : ''}
-                                    ${artist.tiktok ? `<a href="${artist.tiktok}" target="_blank" class="social-link"><i class="fab fa-tiktok"></i> TikTok</a>` : ''}
-                                    ${artist.facebook ? `<a href="${artist.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>` : ''}
+                                    ${socialLinks}
                                 </div>
                             </div>
                         `;
@@ -1051,6 +1077,9 @@
             document.getElementById('artist-youtube').value = '';
             document.getElementById('artist-tiktok').value = '';
             document.getElementById('artist-spotify').value = '';
+            document.getElementById('artist-apple').value = '';
+            document.getElementById('artist-twitter').value = '';
+            document.getElementById('artist-soundcloud').value = '';
             document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
             document.getElementById('artist-photo-input').value = '';
             
@@ -1068,9 +1097,10 @@
             }
         }
 
+        // CORREÇÃO: Função salvar artista com preventDefault e salvamento correto
         async function saveArtist(e) {
             if (e && typeof e.preventDefault === 'function') e.preventDefault();
-            console.log('Iniciando...');
+            
             const nome = document.getElementById('artist-name').value.trim();
             if (!nome) {
                 showAlert('Nome artístico é obrigatório!');
@@ -1113,31 +1143,29 @@
                     youtube: document.getElementById('artist-youtube').value,
                     tiktok: document.getElementById('artist-tiktok').value,
                     spotify: document.getElementById('artist-spotify').value,
+                    apple: document.getElementById('artist-apple').value,
+                    twitter: document.getElementById('artist-twitter').value,
+                    soundcloud: document.getElementById('artist-soundcloud').value,
                     foto: photoURL,
                     ownerUID: auth.currentUser.uid,
                     ownerEmail: currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                await db.collection('artists').doc(artistId).set(artistData).then(async () => {
-                    await db.collection('users').doc(currentUser.email).update({
-                        artists: firebase.firestore.FieldValue.arrayUnion(artistId)
-                    });
-                    
-                    if (!userData.artists) userData.artists = [];
-                    userData.artists.push(artistId);
-                    
-                    console.log('Sucesso!');
-                    const modal = document.getElementById('addArtistModal');
-                    if (modal) modal.classList.remove('active');
-                    
-                    await loadArtists();
-                    updateUserDisplay();
-                    
-                    showLoading(false);
-                    showAlert('✅ Artista adicionado com sucesso!');
+                await db.collection('artists').doc(artistId).set(artistData);
+                await db.collection('users').doc(currentUser.email).update({
+                    artists: firebase.firestore.FieldValue.arrayUnion(artistId)
                 });
                 
+                if (!userData.artists) userData.artists = [];
+                userData.artists.push(artistId);
+                
+                closeModal('addArtistModal');
+                await loadArtists();
+                updateUserDisplay();
+                
+                showLoading(false);
+                showAlert('✅ Artista adicionado com sucesso!');
             } catch (error) {
                 console.error('Erro ao salvar artista:', error);
                 showLoading(false);
@@ -1206,7 +1234,7 @@
 
         async function enviarLancamento(e) {
             if (e && typeof e.preventDefault === 'function') e.preventDefault();
-            console.log('Iniciando...');
+            
             const titulo = document.getElementById('music-titulo').value.trim();
             const artistaId = document.getElementById('music-artista-select').value;
             const releaseDate = document.getElementById('music-data').value;
@@ -1298,35 +1326,29 @@
                     releaseData.tracks = tracks;
                 }
                 
-                await db.collection('releases').doc(releaseId).set(releaseData).then(async () => {
-                    await db.collection('users').doc(currentUser.email).update({
-                        releases: firebase.firestore.FieldValue.arrayUnion(releaseId)
-                    });
-                    
-                    if (!userData.releases) userData.releases = [];
-                    userData.releases.push(releaseId);
-                    
-                    console.log('Sucesso!');
-                    const modal = document.getElementById('addMusicModal');
-                    if (modal) modal.classList.remove('active');
-                    
-                    document.getElementById('music-titulo').value = '';
-                    document.getElementById('music-capa').value = '';
-                    document.getElementById('music-audio').value = '';
-                    document.getElementById('music-isrc').value = '';
-                    document.getElementById('music-upc').value = '';
-                    document.getElementById('music-data').value = '';
-                    document.getElementById('music-colaboradores').value = '';
-                    document.getElementById('music-produtores').value = '';
-                    document.getElementById('music-estilo').value = '';
-                    document.getElementById('tracks-container').innerHTML = '';
-                    if (releaseType === 'album') addTrackField();
-                    document.getElementById('music-artista-select').value = '';
-                    
-                    showLoading(false);
-                    showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
+                await db.collection('releases').doc(releaseId).set(releaseData);
+                await db.collection('users').doc(currentUser.email).update({
+                    releases: firebase.firestore.FieldValue.arrayUnion(releaseId)
                 });
                 
+                if (!userData.releases) userData.releases = [];
+                userData.releases.push(releaseId);
+                
+                document.getElementById('music-titulo').value = '';
+                document.getElementById('music-capa').value = '';
+                document.getElementById('music-audio').value = '';
+                document.getElementById('music-isrc').value = '';
+                document.getElementById('music-upc').value = '';
+                document.getElementById('music-data').value = '';
+                document.getElementById('music-colaboradores').value = '';
+                document.getElementById('music-produtores').value = '';
+                document.getElementById('music-estilo').value = '';
+                document.getElementById('tracks-container').innerHTML = '';
+                if (releaseType === 'album') addTrackField();
+                document.getElementById('music-artista-select').value = '';
+                
+                showLoading(false);
+                showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
             } catch (error) {
                 console.error('Erro ao enviar lançamento:', error);
                 showLoading(false);
@@ -1508,7 +1530,7 @@
         }
 
         // ========== CARTEIRA ==========
-async function loadWallet() {
+        async function loadWallet() {
             if (!userData) return;
             
             // Persistência do Cartão Visa MAM
@@ -1527,7 +1549,7 @@ async function loadWallet() {
             document.getElementById('visa-holder').textContent = userData.nome || 'ARTISTA MAM';
             document.getElementById('visa-expiry').textContent = 'VAL: ' + userData.cartao.validade;
 
-            const rate = 1; // Fim da simulação, apenas Kwanzas (Kz)
+            const rate = 1;
             document.getElementById('carteira-saldo').textContent = (userData.saldo * rate).toLocaleString() + ' Kz';
             document.getElementById('carteira-total-ganhos').textContent = (userData.totalGanhos * rate).toLocaleString() + ' Kz';
             
@@ -1579,8 +1601,6 @@ async function loadWallet() {
             }
         }
 
-        
-
         function openSaqueModal() {
             openModal('saqueModal');
         }
@@ -1609,7 +1629,6 @@ async function loadWallet() {
             
             showLoading(true, 'A processar levantamento...');
             try {
-                // Envio de Email via EmailJS para o Admin
                 await emailjs.send("default_service", "template_id_aqui", {
                     user_email: currentUser.email,
                     user_name: userData.nome,
@@ -2105,31 +2124,44 @@ async function loadWallet() {
                 document.getElementById('btn-admin-global').style.display = 'inline-flex';
                 document.getElementById('admin-pro-max-indicator').style.display = 'inline-block';
             }
-            loadPaises();
+            carregarPaisesEEstilos();
         }
 
-        // ========== EVENT LISTENERS ==========
-        function setupEventListeners() {
-            const btnAddArtist = document.getElementById('btnAddArtist');
-            if (btnAddArtist) {
-                btnAddArtist.onclick = openAddArtistModal;
+        // ========== CORREÇÃO DO BOTÃO ARTISTA ==========
+        // Garantir que o botão no HTML tenha id='btnAddArtist'
+        // Adiciona o evento diretamente
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnArtist = document.getElementById('btnAddArtist');
+            if (btnArtist) {
+                btnArtist.onclick = () => { openModal('addArtistModal'); };
             }
             
-            const btnSaveArtist = document.getElementById('btnSaveArtist');
-            if (btnSaveArtist) {
-                btnSaveArtist.onclick = saveArtist;
+            // Botão salvar artista com preventDefault garantido
+            const saveArtistBtn = document.getElementById('btnSaveArtist');
+            if (saveArtistBtn) {
+                saveArtistBtn.onclick = saveArtist;
             }
             
-            const btnEnviarLancamento = document.getElementById('btnEnviarLancamento');
-            if (btnEnviarLancamento) {
-                btnEnviarLancamento.onclick = enviarLancamento;
+            // Botão enviar lançamento
+            const enviarBtn = document.getElementById('btnEnviarLancamento');
+            if (enviarBtn) {
+                enviarBtn.onclick = enviarLancamento;
             }
             
-            const btnUpdateProfile = document.getElementById('btnUpdateProfile');
-            if (btnUpdateProfile) {
-                btnUpdateProfile.onclick = handleUpdateProfile;
+            // Botão atualizar perfil
+            const updateProfileBtn = document.getElementById('btnUpdateProfile');
+            if (updateProfileBtn) {
+                updateProfileBtn.onclick = handleUpdateProfile;
             }
-        }
+            
+            // Carregar países e estilos
+            carregarPaisesEEstilos();
+            
+            // Adicionar track inicial se necessário
+            if (typeof addTrackField === 'function') {
+                setTimeout(() => addTrackField(), 100);
+            }
+        });
 
         // ========== AUTH STATE ==========
         auth.onAuthStateChanged(async (user) => {
@@ -2166,7 +2198,6 @@ async function loadWallet() {
                     loadHomeData();
                     loadFeed();
                     loadArtistSelect();
-                    setupEventListeners();
                 } catch (error) {
                     console.error('Erro ao carregar dados do usuário:', error);
                     showAlert('Erro ao carregar dados.');
@@ -2180,7 +2211,6 @@ async function loadWallet() {
 
         // Inicialização
         emailjs.init("vuAVZ5U4lRBZcsIon");
-        setTimeout(() => addTrackField(), 100);
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
         });

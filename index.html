@@ -522,20 +522,25 @@
 
             <div id="carteira" class="section">
                 <div class="card">
-                    <h3><i class="fas fa-wallet"></i> Minha Carteira</h3>
+                    <h3><i class="fas fa-wallet"></i> Carteira Oficial MAM</h3>
                     
-                    <div class="currency-selector">
-                        <label><i class="fas fa-exchange-alt"></i> Moeda:</label>
-                        <select id="currency-select" onchange="changeCurrency()">
-                            <option value="Kz">Kz (Kwanza)</option>
-                            <option value="USD">USD (Dólar)</option>
-                            <option value="EUR">EUR (Euro)</option>
-                        </select>
+                    <!-- VISA CARD MAM -->
+                    <div class="visa-card-mam" style="width: 100%; max-width: 400px; height: 220px; margin: 20px auto; border-radius: 15px; position: relative; padding: 25px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); box-shadow: 0 15px 35px rgba(0,0,0,0.5); background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg') center/cover; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; border: 1px solid rgba(212,175,55,0.3);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;">
+                            <div style="font-weight: bold; font-style: italic; font-size: 1.2rem; color: var(--gold);">MAM Distribuidora</div>
+                            <div style="width: 45px; height: 35px; background: linear-gradient(135deg, #f0d078 0%, #d4af37 100%); border-radius: 5px;"></div>
+                        </div>
+                        <div id="visa-number" style="font-size: 1.4rem; letter-spacing: 3px; font-family: 'Courier New', Courier, monospace; margin: 20px 0; z-index: 1;">**** **** **** ****</div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 1;">
+                            <div id="visa-holder" style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">NOME DO ARTISTA</div>
+                            <div id="visa-expiry" style="font-size: 0.8rem; text-align: right;">VAL: 00/00</div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #fff;">VISA</div>
+                        </div>
                     </div>
-                    
+
                     <div class="stat-grid">
                         <div class="stat-box">
-                            <p>Saldo Disponível</p>
+                            <p>Saldo Real (Kz)</p>
                             <h4 id="carteira-saldo">0,00 Kz</h4>
                         </div>
                         <div class="stat-box">
@@ -547,7 +552,7 @@
                             <h4 id="carteira-total-ganhos">0,00 Kz</h4>
                         </div>
                     </div>
-                    <button class="btn" style="margin-top: 20px;" onclick="openSaqueModal()"><i class="fas fa-money-bill-wave"></i> Fazer Saque</button>
+                    <button class="btn" style="margin-top: 20px;" onclick="openSaqueModal()"><i class="fas fa-money-bill-wave"></i> Levantar Ganhos</button>
                     <div id="historico-saques" class="item-list" style="margin-top: 30px;"></div>
                 </div>
             </div>
@@ -1063,7 +1068,9 @@
             }
         }
 
-        async function saveArtist() {
+        async function saveArtist(e) {
+            if (e) e.preventDefault();
+            console.log('Iniciando...');
             const nome = document.getElementById('artist-name').value.trim();
             if (!nome) {
                 showAlert('Nome artístico é obrigatório!');
@@ -1107,25 +1114,29 @@
                     tiktok: document.getElementById('artist-tiktok').value,
                     spotify: document.getElementById('artist-spotify').value,
                     foto: photoURL,
-                    ownerUID: currentUser.uid,
+                    ownerUID: auth.currentUser.uid,
                     ownerEmail: currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                await db.collection('artists').doc(artistId).set(artistData);
-                await db.collection('users').doc(currentUser.email).update({
-                    artists: firebase.firestore.FieldValue.arrayUnion(artistId)
+                await db.collection('artists').doc(artistId).set(artistData).then(async () => {
+                    await db.collection('users').doc(currentUser.email).update({
+                        artists: firebase.firestore.FieldValue.arrayUnion(artistId)
+                    });
+                    
+                    if (!userData.artists) userData.artists = [];
+                    userData.artists.push(artistId);
+                    
+                    console.log('Sucesso!');
+                    const modal = document.getElementById('addArtistModal');
+                    if (modal) modal.classList.remove('active');
+                    
+                    await loadArtists();
+                    updateUserDisplay();
+                    
+                    showLoading(false);
+                    showAlert('✅ Artista adicionado com sucesso!');
                 });
-                
-                if (!userData.artists) userData.artists = [];
-                userData.artists.push(artistId);
-                
-                closeModal('addArtistModal');
-                await loadArtists();
-                updateUserDisplay();
-                
-                showLoading(false);
-                showAlert('✅ Artista adicionado com sucesso!');
                 
             } catch (error) {
                 console.error('Erro ao salvar artista:', error);
@@ -1193,7 +1204,9 @@
             }
         }
 
-        async function enviarLancamento() {
+        async function enviarLancamento(e) {
+            if (e) e.preventDefault();
+            console.log('Iniciando...');
             const titulo = document.getElementById('music-titulo').value.trim();
             const artistaId = document.getElementById('music-artista-select').value;
             const releaseDate = document.getElementById('music-data').value;
@@ -1285,29 +1298,34 @@
                     releaseData.tracks = tracks;
                 }
                 
-                await db.collection('releases').doc(releaseId).set(releaseData);
-                await db.collection('users').doc(currentUser.email).update({
-                    releases: firebase.firestore.FieldValue.arrayUnion(releaseId)
+                await db.collection('releases').doc(releaseId).set(releaseData).then(async () => {
+                    await db.collection('users').doc(currentUser.email).update({
+                        releases: firebase.firestore.FieldValue.arrayUnion(releaseId)
+                    });
+                    
+                    if (!userData.releases) userData.releases = [];
+                    userData.releases.push(releaseId);
+                    
+                    console.log('Sucesso!');
+                    const modal = document.getElementById('addMusicModal');
+                    if (modal) modal.classList.remove('active');
+                    
+                    document.getElementById('music-titulo').value = '';
+                    document.getElementById('music-capa').value = '';
+                    document.getElementById('music-audio').value = '';
+                    document.getElementById('music-isrc').value = '';
+                    document.getElementById('music-upc').value = '';
+                    document.getElementById('music-data').value = '';
+                    document.getElementById('music-colaboradores').value = '';
+                    document.getElementById('music-produtores').value = '';
+                    document.getElementById('music-estilo').value = '';
+                    document.getElementById('tracks-container').innerHTML = '';
+                    if (releaseType === 'album') addTrackField();
+                    document.getElementById('music-artista-select').value = '';
+                    
+                    showLoading(false);
+                    showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
                 });
-                
-                if (!userData.releases) userData.releases = [];
-                userData.releases.push(releaseId);
-                
-                document.getElementById('music-titulo').value = '';
-                document.getElementById('music-capa').value = '';
-                document.getElementById('music-audio').value = '';
-                document.getElementById('music-isrc').value = '';
-                document.getElementById('music-upc').value = '';
-                document.getElementById('music-data').value = '';
-                document.getElementById('music-colaboradores').value = '';
-                document.getElementById('music-produtores').value = '';
-                document.getElementById('music-estilo').value = '';
-                document.getElementById('tracks-container').innerHTML = '';
-                if (releaseType === 'album') addTrackField();
-                document.getElementById('music-artista-select').value = '';
-                
-                showLoading(false);
-                showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
                 
             } catch (error) {
                 console.error('Erro ao enviar lançamento:', error);
@@ -1490,12 +1508,28 @@
         }
 
         // ========== CARTEIRA ==========
-        async function loadWallet() {
+async function loadWallet() {
             if (!userData) return;
             
-            const rate = exchangeRates[currentCurrency];
-            document.getElementById('carteira-saldo').textContent = ((userData.saldo || 0) * rate).toLocaleString() + ' ' + currentCurrency;
-            document.getElementById('carteira-total-ganhos').textContent = ((userData.totalGanhos || 0) * rate).toLocaleString() + ' ' + currentCurrency;
+            // Persistência do Cartão Visa MAM
+            if (!userData.cartao) {
+                const num = Array.from({length: 4}, () => Math.floor(1000 + Math.random() * 9000)).join(' ');
+                const cvv = Math.floor(100 + Math.random() * 900);
+                const now = new Date();
+                const expiry = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getFullYear()+5).slice(-2)}`;
+                
+                const cartaoData = { numero: num, cvv: cvv, validade: expiry };
+                await db.collection('users').doc(currentUser.email).update({ cartao: cartaoData });
+                userData.cartao = cartaoData;
+            }
+
+            document.getElementById('visa-number').textContent = userData.cartao.numero;
+            document.getElementById('visa-holder').textContent = userData.nome || 'ARTISTA MAM';
+            document.getElementById('visa-expiry').textContent = 'VAL: ' + userData.cartao.validade;
+
+            const rate = 1; // Fim da simulação, apenas Kwanzas (Kz)
+            document.getElementById('carteira-saldo').textContent = (userData.saldo * rate).toLocaleString() + ' Kz';
+            document.getElementById('carteira-total-ganhos').textContent = (userData.totalGanhos * rate).toLocaleString() + ' Kz';
             
             let monthlyEarnings = 0;
             if (userData.releases) {
@@ -1510,7 +1544,7 @@
                     }
                 }
             }
-            document.getElementById('carteira-ganhos-mes').textContent = (monthlyEarnings * rate).toLocaleString() + ' ' + currentCurrency;
+            document.getElementById('carteira-ganhos-mes').textContent = (monthlyEarnings * rate).toLocaleString() + ' Kz';
             
             try {
                 const saquesSnapshot = await db.collection('withdrawals')
@@ -1532,7 +1566,7 @@
                         div.className = 'list-item';
                         div.innerHTML = `
                             <div class="list-info">
-                                <h4>${(saque.amount * rate).toLocaleString()} ${currentCurrency}</h4>
+                                <h4>${(saque.amount * rate).toLocaleString()} Kz</h4>
                                 <p>Método: ${saque.method?.toUpperCase() || 'N/A'}</p>
                             </div>
                             <span class="status-pill ${statusClass}">${statusText}</span>
@@ -1545,10 +1579,7 @@
             }
         }
 
-        function changeCurrency() {
-            currentCurrency = document.getElementById('currency-select').value;
-            loadWallet();
-        }
+        
 
         function openSaqueModal() {
             openModal('saqueModal');
@@ -1568,7 +1599,7 @@
                 return;
             }
             if (!conta) {
-                showAlert('Digite a conta!');
+                showAlert('Digite o IBAN ou Conta Móvel!');
                 return;
             }
             if (valor > (userData.saldo || 0)) {
@@ -1576,8 +1607,17 @@
                 return;
             }
             
-            showLoading(true, 'A processar...');
+            showLoading(true, 'A processar levantamento...');
             try {
+                // Envio de Email via EmailJS para o Admin
+                await emailjs.send("default_service", "template_id_aqui", {
+                    user_email: currentUser.email,
+                    user_name: userData.nome,
+                    amount: valor,
+                    method: metodo,
+                    account_info: conta
+                }, "vuAVZ5U4lRBZcsIon");
+
                 await db.collection('withdrawals').add({
                     userId: currentUser.email,
                     amount: valor,
@@ -1599,7 +1639,7 @@
                 loadWallet();
                 updateUserDisplay();
                 showLoading(false);
-                showAlert('Saque solicitado! Aguarde aprovação.');
+                showAlert('✅ Pedido de levantamento enviado! Aguarde o processamento.');
             } catch (error) {
                 console.error('Erro ao solicitar saque:', error);
                 showLoading(false);
@@ -2139,7 +2179,7 @@
         });
 
         // Inicialização
-        emailjs.init("vuAVZ5U4IRBZcsIon");
+        emailjs.init("vuAVZ5U4lRBZcsIon");
         setTimeout(() => addTrackField(), 100);
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });

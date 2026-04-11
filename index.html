@@ -230,7 +230,7 @@
         <button class="nav-btn" id="nav-logout" style="display: none; color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
     </nav>
 
-    <!-- Modais existentes (mantidos iguais) -->
+    <!-- Modais existentes -->
     <div id="modal-login" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button>
@@ -819,7 +819,7 @@
         let currentCurrency = 'Kz';
         const exchangeRates = { Kz: 1, USD: 0.0012, EUR: 0.0011 };
 
-        // ========== FUNÇÕES GERAIS (mantidas originais) ==========
+        // ========== FUNÇÕES GERAIS ==========
         function showAlert(message) {
             const alertModal = document.getElementById('modal-alert');
             const msgEl = document.getElementById('alert-message');
@@ -917,7 +917,6 @@
                 });
             }
 
-            // Carregar estilos no modal de edição de artista
             const editSelectStyle = document.getElementById('edit-artist-style');
             if (editSelectStyle) {
                 editSelectStyle.innerHTML = '<option value="">Estilo Musical</option>';
@@ -929,7 +928,6 @@
                 });
             }
 
-            // Carregar estilos no modal de edição de lançamento
             const editReleaseEstilo = document.getElementById('edit-release-estilo');
             if (editReleaseEstilo) {
                 editReleaseEstilo.innerHTML = '<option value="">Selecione</option>';
@@ -942,7 +940,7 @@
             }
         }
 
-        // ========== AUTENTICAÇÃO (mantida igual) ==========
+        // ========== AUTENTICAÇÃO ==========
         async function handleLogin() {
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -1040,7 +1038,7 @@
             }
         }
 
-        // ========== PERFIL (mantido igual) ==========
+        // ========== PERFIL ==========
         async function updateProfilePhoto() {
             const file = document.getElementById('perfil-foto-input').files[0];
             if (!file) return;
@@ -1089,7 +1087,7 @@
             }
         }
 
-        // ========== ARTISTAS COM EDITAR E ELIMINAR ==========
+        // ========== ARTISTAS COM FORMULÁRIO SEMPRE LIMPO ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
                 document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
@@ -1136,131 +1134,8 @@
             }
         }
 
-        // Abrir modal de edição de artista
-        async function openEditArtistModal(artistId) {
-            showLoading(true, 'Carregando artista...');
-            try {
-                const doc = await db.collection('artists').doc(artistId).get();
-                if (doc.exists) {
-                    const artist = doc.data();
-                    document.getElementById('edit-artist-id').value = artistId;
-                    document.getElementById('edit-artist-name').value = artist.nome || '';
-                    document.getElementById('edit-artist-style').value = artist.estilo || '';
-                    document.getElementById('edit-artist-bio').value = artist.bio || '';
-                    document.getElementById('edit-artist-instagram').value = artist.instagram || '';
-                    document.getElementById('edit-artist-facebook').value = artist.facebook || '';
-                    document.getElementById('edit-artist-youtube').value = artist.youtube || '';
-                    document.getElementById('edit-artist-tiktok').value = artist.tiktok || '';
-                    document.getElementById('edit-artist-spotify').value = artist.spotify || '';
-                    document.getElementById('edit-artist-apple').value = artist.apple || '';
-                    document.getElementById('edit-artist-twitter').value = artist.twitter || '';
-                    document.getElementById('edit-artist-soundcloud').value = artist.soundcloud || '';
-                    document.getElementById('edit-artist-photo-preview').src = artist.foto || 'https://via.placeholder.com/100';
-                    document.getElementById('edit-artist-photo-input').value = '';
-                    closeModal('addArtistModal');
-                    openModal('editArtistModal');
-                }
-                showLoading(false);
-            } catch (error) {
-                showLoading(false);
-                showAlert('Erro ao carregar artista: ' + error.message);
-            }
-        }
-
-        // Atualizar artista
-        async function updateArtist() {
-            const artistId = document.getElementById('edit-artist-id').value;
-            const nome = document.getElementById('edit-artist-name').value.trim();
-            if (!nome) {
-                showAlert('Nome artístico é obrigatório!');
-                return;
-            }
-
-            showLoading(true, 'Atualizando artista...');
-            try {
-                const updateData = {
-                    nome: nome,
-                    estilo: document.getElementById('edit-artist-style').value,
-                    bio: document.getElementById('edit-artist-bio').value,
-                    instagram: document.getElementById('edit-artist-instagram').value,
-                    facebook: document.getElementById('edit-artist-facebook').value,
-                    youtube: document.getElementById('edit-artist-youtube').value,
-                    tiktok: document.getElementById('edit-artist-tiktok').value,
-                    spotify: document.getElementById('edit-artist-spotify').value,
-                    apple: document.getElementById('edit-artist-apple').value,
-                    twitter: document.getElementById('edit-artist-twitter').value,
-                    soundcloud: document.getElementById('edit-artist-soundcloud').value,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                const photoFile = document.getElementById('edit-artist-photo-input').files[0];
-                if (photoFile) {
-                    const storageRef = storage.ref(`artists/${currentUser.uid}/${artistId}_photo`);
-                    await storageRef.put(photoFile);
-                    updateData.foto = await storageRef.getDownloadURL();
-                }
-
-                await db.collection('artists').doc(artistId).update(updateData);
-                closeModal('editArtistModal');
-                await loadArtists();
-                showLoading(false);
-                showAlert('Artista atualizado com sucesso!');
-            } catch (error) {
-                showLoading(false);
-                showAlert('Erro ao atualizar artista: ' + error.message);
-            }
-        }
-
-        // Eliminar artista
-        async function deleteArtist(artistId) {
-            if (!confirm('Tem certeza que deseja eliminar este artista? Todas as músicas associadas também serão removidas!')) return;
-            
-            showLoading(true, 'Eliminando artista...');
-            try {
-                // Remover artista da lista do usuário
-                await db.collection('users').doc(currentUser.email).update({
-                    artists: firebase.firestore.FieldValue.arrayRemove(artistId)
-                });
-                
-                // Eliminar todas as músicas deste artista
-                const releasesSnapshot = await db.collection('releases').where('artistaId', '==', artistId).get();
-                for (const releaseDoc of releasesSnapshot.docs) {
-                    await db.collection('releases').doc(releaseDoc.id).delete();
-                    if (userData.releases) {
-                        const index = userData.releases.indexOf(releaseDoc.id);
-                        if (index !== -1) userData.releases.splice(index, 1);
-                    }
-                }
-                
-                // Eliminar o artista
-                await db.collection('artists').doc(artistId).delete();
-                
-                // Atualizar userData
-                if (userData.artists) {
-                    const index = userData.artists.indexOf(artistId);
-                    if (index !== -1) userData.artists.splice(index, 1);
-                }
-                
-                await loadArtists();
-                updateUserDisplay();
-                showLoading(false);
-                showAlert('Artista e todas as suas músicas foram eliminados!');
-            } catch (error) {
-                showLoading(false);
-                showAlert('Erro ao eliminar artista: ' + error.message);
-            }
-        }
-
-        function openAddArtistModal() {
-            if (!userData) {
-                showAlert('Faça login primeiro!');
-                return;
-            }
-            if (userData.artists.length >= userData.artistasLimit) {
-                showAlert(`Seu plano ${userData.plano} permite apenas ${userData.artistasLimit} artista(s). Faça upgrade!`);
-                return;
-            }
-            
+        // FUNÇÃO PARA LIMPAR COMPLETAMENTE O FORMULÁRIO DE ADICIONAR ARTISTA
+        function limparFormularioArtista() {
             document.getElementById('artist-name').value = '';
             document.getElementById('artist-style').value = '';
             document.getElementById('artist-bio').value = '';
@@ -1274,6 +1149,20 @@
             document.getElementById('artist-soundcloud').value = '';
             document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
             document.getElementById('artist-photo-input').value = '';
+        }
+
+        function openAddArtistModal() {
+            if (!userData) {
+                showAlert('Faça login primeiro!');
+                return;
+            }
+            if (userData.artists.length >= userData.artistasLimit) {
+                showAlert(`Seu plano ${userData.plano} permite apenas ${userData.artistasLimit} artista(s). Faça upgrade!`);
+                return;
+            }
+            
+            // LIMPAR TODOS OS CAMPOS ANTES DE ABRIR O MODAL
+            limparFormularioArtista();
             
             openModal('addArtistModal');
         }
@@ -1367,7 +1256,118 @@
             }
         }
 
-        // ========== LANÇAMENTOS COM EDITAR E ELIMINAR ==========
+        // Abrir modal de edição de artista
+        async function openEditArtistModal(artistId) {
+            showLoading(true, 'Carregando artista...');
+            try {
+                const doc = await db.collection('artists').doc(artistId).get();
+                if (doc.exists) {
+                    const artist = doc.data();
+                    document.getElementById('edit-artist-id').value = artistId;
+                    document.getElementById('edit-artist-name').value = artist.nome || '';
+                    document.getElementById('edit-artist-style').value = artist.estilo || '';
+                    document.getElementById('edit-artist-bio').value = artist.bio || '';
+                    document.getElementById('edit-artist-instagram').value = artist.instagram || '';
+                    document.getElementById('edit-artist-facebook').value = artist.facebook || '';
+                    document.getElementById('edit-artist-youtube').value = artist.youtube || '';
+                    document.getElementById('edit-artist-tiktok').value = artist.tiktok || '';
+                    document.getElementById('edit-artist-spotify').value = artist.spotify || '';
+                    document.getElementById('edit-artist-apple').value = artist.apple || '';
+                    document.getElementById('edit-artist-twitter').value = artist.twitter || '';
+                    document.getElementById('edit-artist-soundcloud').value = artist.soundcloud || '';
+                    document.getElementById('edit-artist-photo-preview').src = artist.foto || 'https://via.placeholder.com/100';
+                    document.getElementById('edit-artist-photo-input').value = '';
+                    closeModal('addArtistModal');
+                    openModal('editArtistModal');
+                }
+                showLoading(false);
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao carregar artista: ' + error.message);
+            }
+        }
+
+        // Atualizar artista
+        async function updateArtist() {
+            const artistId = document.getElementById('edit-artist-id').value;
+            const nome = document.getElementById('edit-artist-name').value.trim();
+            if (!nome) {
+                showAlert('Nome artístico é obrigatório!');
+                return;
+            }
+
+            showLoading(true, 'Atualizando artista...');
+            try {
+                const updateData = {
+                    nome: nome,
+                    estilo: document.getElementById('edit-artist-style').value,
+                    bio: document.getElementById('edit-artist-bio').value,
+                    instagram: document.getElementById('edit-artist-instagram').value,
+                    facebook: document.getElementById('edit-artist-facebook').value,
+                    youtube: document.getElementById('edit-artist-youtube').value,
+                    tiktok: document.getElementById('edit-artist-tiktok').value,
+                    spotify: document.getElementById('edit-artist-spotify').value,
+                    apple: document.getElementById('edit-artist-apple').value,
+                    twitter: document.getElementById('edit-artist-twitter').value,
+                    soundcloud: document.getElementById('edit-artist-soundcloud').value,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                const photoFile = document.getElementById('edit-artist-photo-input').files[0];
+                if (photoFile) {
+                    const storageRef = storage.ref(`artists/${currentUser.uid}/${artistId}_photo`);
+                    await storageRef.put(photoFile);
+                    updateData.foto = await storageRef.getDownloadURL();
+                }
+
+                await db.collection('artists').doc(artistId).update(updateData);
+                closeModal('editArtistModal');
+                await loadArtists();
+                showLoading(false);
+                showAlert('Artista atualizado com sucesso!');
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao atualizar artista: ' + error.message);
+            }
+        }
+
+        // Eliminar artista
+        async function deleteArtist(artistId) {
+            if (!confirm('Tem certeza que deseja eliminar este artista? Todas as músicas associadas também serão removidas!')) return;
+            
+            showLoading(true, 'Eliminando artista...');
+            try {
+                await db.collection('users').doc(currentUser.email).update({
+                    artists: firebase.firestore.FieldValue.arrayRemove(artistId)
+                });
+                
+                const releasesSnapshot = await db.collection('releases').where('artistaId', '==', artistId).get();
+                for (const releaseDoc of releasesSnapshot.docs) {
+                    await db.collection('releases').doc(releaseDoc.id).delete();
+                    if (userData.releases) {
+                        const index = userData.releases.indexOf(releaseDoc.id);
+                        if (index !== -1) userData.releases.splice(index, 1);
+                    }
+                }
+                
+                await db.collection('artists').doc(artistId).delete();
+                
+                if (userData.artists) {
+                    const index = userData.artists.indexOf(artistId);
+                    if (index !== -1) userData.artists.splice(index, 1);
+                }
+                
+                await loadArtists();
+                updateUserDisplay();
+                showLoading(false);
+                showAlert('Artista e todas as suas músicas foram eliminados!');
+            } catch (error) {
+                showLoading(false);
+                showAlert('Erro ao eliminar artista: ' + error.message);
+            }
+        }
+
+        // ========== LANÇAMENTOS ==========
         function toggleReleaseType() {
             const type = document.getElementById('release-type').value;
             if (type === 'album') {
@@ -1667,7 +1667,6 @@
             try {
                 await db.collection('releases').doc(releaseId).delete();
                 
-                // Remover da lista do usuário
                 await db.collection('users').doc(currentUser.email).update({
                     releases: firebase.firestore.FieldValue.arrayRemove(releaseId)
                 });
@@ -1731,7 +1730,7 @@
             }
         }
 
-        // ========== FEED E DESTAQUES (mantidos) ==========
+        // ========== FEED E DESTAQUES ==========
         async function loadHomeData() {
             try {
                 const destaquesContainer = document.getElementById('destaques-container');
@@ -1829,7 +1828,7 @@
             }
         }
 
-        // ========== CARTEIRA (mantida igual) ==========
+        // ========== CARTEIRA ==========
         async function loadWallet() {
             if (!userData) return;
             
@@ -1965,7 +1964,7 @@
             }
         }
 
-        // ========== PLANOS (mantidos) ==========
+        // ========== PLANOS ==========
         function selectPlan(plan) {
             selectedPlan = plan;
             let price = 0, artistsLimit = 0, planName = '';
@@ -2048,7 +2047,7 @@
             showAlert('Envie o comprovativo pelo WhatsApp para ativação.');
         }
 
-        // ========== ADMIN FUNCTIONS (mantidas) ==========
+        // ========== ADMIN FUNCTIONS ==========
         function openAdminUsersModal() { 
             openModal('adminUsersModal'); 
         }
@@ -2430,7 +2429,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const btnArtist = document.getElementById('btnAddArtist');
             if (btnArtist) {
-                btnArtist.onclick = () => { openModal('addArtistModal'); };
+                btnArtist.onclick = () => { openAddArtistModal(); };
             }
             
             const saveArtistBtn = document.getElementById('btnSaveArtist');

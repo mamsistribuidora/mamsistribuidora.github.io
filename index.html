@@ -22,6 +22,9 @@
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    
     <style>
         :root { 
             --gold: #d4af37; 
@@ -94,8 +97,8 @@
         .list-info p { font-size: 0.75rem; color: var(--gray); }
         .list-actions { display: flex; gap: 8px; }
         
-        .profile-upload { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
-        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
+        .profile-upload { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; cursor: pointer; }
+        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; cursor: pointer; }
         .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--gold); color: #000; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #000; }
         
         .admin-pro-max-badge { background: linear-gradient(135deg, var(--gold), #ff6b35); color: #000; padding: 4px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; vertical-align: middle; box-shadow: 0 0 10px rgba(212,175,55,0.5); animation: glow 2s ease-in-out infinite alternate; }
@@ -178,6 +181,10 @@
         .platform-checkbox { display: flex; align-items: center; gap: 10px; padding: 10px; background: #0a0a0a; margin-bottom: 8px; border-radius: 6px; }
         .platform-checkbox input { width: auto; margin: 0; }
         .platform-checkbox label { margin: 0; cursor: pointer; color: var(--gray); }
+        
+        /* Progress bar */
+        .upload-progress { width: 100%; height: 4px; background: #333; border-radius: 2px; margin-top: 10px; overflow: hidden; display: none; }
+        .upload-progress-bar { width: 0%; height: 100%; background: var(--gold); transition: width 0.3s; }
         
         @media (max-width: 768px) {
             .container { padding: 15px; }
@@ -480,11 +487,24 @@
                         </div>
                         
                         <label>Capa (JPG, PNG - máx 15MB)</label>
-                        <input type="file" id="music-capa" accept="image/*" required>
+                        <div id="capa-upload-container">
+                            <button type="button" id="upload-capa-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Capa</button>
+                            <input type="hidden" id="music-capa-url">
+                            <div id="capa-preview" style="margin-top: 10px; display: none;">
+                                <img id="capa-preview-img" src="" style="max-width: 100px; border-radius: 8px;">
+                                <p style="font-size: 0.7rem; color: var(--gold);">Capa selecionada ✓</p>
+                            </div>
+                        </div>
                         
                         <div id="single-fields">
                             <label>Ficheiro de Áudio (MP3, WAV - máx 200MB)</label>
-                            <input type="file" id="music-audio" accept="audio/*">
+                            <div id="audio-upload-container">
+                                <button type="button" id="upload-audio-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Áudio</button>
+                                <input type="hidden" id="music-audio-url">
+                                <div id="audio-preview" style="margin-top: 10px; display: none;">
+                                    <p style="font-size: 0.7rem; color: var(--gold);"><i class="fas fa-check-circle"></i> Áudio carregado ✓</p>
+                                </div>
+                            </div>
                         </div>
                         
                         <div id="album-fields" style="display: none;">
@@ -497,6 +517,10 @@
                         
                         <label>Data de Lançamento</label>
                         <input type="date" id="music-data" required>
+                        
+                        <div class="upload-progress" id="upload-progress">
+                            <div class="upload-progress-bar" id="upload-progress-bar"></div>
+                        </div>
                         
                         <button type="submit" id="btnEnviarLancamento" class="btn"><i class="fas fa-check"></i> Enviar Lançamento</button>
                     </form>
@@ -549,13 +573,13 @@
             <div id="perfil" class="section">
                 <div class="card">
                     <h3><i class="fas fa-user-cog"></i> Meu Perfil</h3>
-                    <div class="profile-upload">
+                    <div class="profile-upload" id="profile-upload-trigger">
                         <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img">
-                        <div class="upload-overlay" onclick="document.getElementById('perfil-foto-input').click()">
+                        <div class="upload-overlay">
                             <i class="fas fa-camera"></i>
                         </div>
                     </div>
-                    <input type="file" id="perfil-foto-input" accept="image/*" style="display: none;" onchange="updateProfilePhoto()">
+                    <input type="hidden" id="perfil-foto-url">
                     <input type="text" id="perfil-nome" placeholder="Nome Completo">
                     <input type="tel" id="perfil-telefone" placeholder="Telefone (Opcional)">
                     <select id="perfil-pais">
@@ -682,8 +706,8 @@
             <div style="text-align: center; margin-bottom: 20px;">
                 <img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover;">
                 <div style="margin-top: 10px;">
-                    <button class="btn-small" onclick="document.getElementById('artist-photo-input').click()"><i class="fas fa-camera"></i> Escolher Foto</button>
-                    <input type="file" id="artist-photo-input" accept="image/*" style="display: none;" onchange="previewArtistPhoto()">
+                    <button class="btn-small" id="upload-artist-photo-btn"><i class="fas fa-camera"></i> Escolher Foto</button>
+                    <input type="hidden" id="artist-photo-url">
                 </div>
             </div>
             <input type="text" id="artist-name" placeholder="Nome Artístico" required>
@@ -713,8 +737,8 @@
             <div style="text-align: center; margin-bottom: 20px;">
                 <img id="edit-artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover;">
                 <div style="margin-top: 10px;">
-                    <button class="btn-small" onclick="document.getElementById('edit-artist-photo-input').click()"><i class="fas fa-camera"></i> Nova Foto</button>
-                    <input type="file" id="edit-artist-photo-input" accept="image/*" style="display: none;">
+                    <button class="btn-small" id="edit-upload-artist-photo-btn"><i class="fas fa-camera"></i> Nova Foto</button>
+                    <input type="hidden" id="edit-artist-photo-url">
                 </div>
             </div>
             <input type="text" id="edit-artist-name" placeholder="Nome Artístico" required>
@@ -753,7 +777,10 @@
             <label>Data de Lançamento</label>
             <input type="date" id="edit-release-data">
             <label>Nova Capa (opcional)</label>
-            <input type="file" id="edit-release-capa" accept="image/*">
+            <div id="edit-capa-upload-container">
+                <button type="button" id="edit-upload-capa-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Nova Capa</button>
+                <input type="hidden" id="edit-release-capa-url">
+            </div>
             <button class="btn" id="btnUpdateRelease"><i class="fas fa-save"></i> Atualizar Lançamento</button>
         </div>
     </div>
@@ -811,6 +838,10 @@
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
         const ADMIN_WHATSAPP = "937881307";
         const VALOR_POR_STREAM = 3;
+        
+        // Cloudinary Configuration
+        const CLOUDINARY_CLOUD_NAME = "dklamdnpq";
+        const CLOUDINARY_UPLOAD_PRESET = "mam_distribuidora";
 
         let currentUser = null;
         let userData = null;
@@ -818,6 +849,10 @@
         let selectedPaymentMethod = null;
         let currentCurrency = 'Kz';
         const exchangeRates = { Kz: 1, USD: 0.0012, EUR: 0.0011 };
+        
+        // Variáveis para uploads
+        let pendingArtistPhotoUrl = null;
+        let pendingEditArtistPhotoUrl = null;
 
         // ========== FUNÇÕES GERAIS ==========
         function showAlert(message) {
@@ -880,6 +915,149 @@
                 suporte: 'Central de Apoio Estratégico\n\nPara questões financeiras, suporte técnico ou gestão de catálogos, contacte a nossa equipa de administração:\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
             };
             showAlert(contents[type]);
+        }
+
+        // ========== CLOUDINARY UPLOAD WIDGET ==========
+        function openCloudinaryUpload(options, callback) {
+            const widget = cloudinary.createUploadWidget(
+                {
+                    cloudName: CLOUDINARY_CLOUD_NAME,
+                    uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+                    sources: ['local', 'camera', 'url'],
+                    multiple: false,
+                    maxFiles: 1,
+                    resourceType: options.resourceType || 'image',
+                    clientAllowedFormats: options.formats || ['jpg', 'png', 'jpeg', 'mp3', 'wav'],
+                    maxFileSize: options.maxSize || 15000000,
+                    showUploadMoreButton: false,
+                    showCompletedButton: true,
+                    showPoweredBy: false,
+                    cropping: options.cropping || false,
+                    croppingAspectRatio: options.cropAspectRatio || 1,
+                    folder: options.folder || 'mam_distribuidora',
+                    styles: {
+                        palette: {
+                            window: "#000000",
+                            windowBorder: "#d4af37",
+                            tabIcon: "#d4af37",
+                            menuIcons: "#d4af37",
+                            textDark: "#ffffff",
+                            textLight: "#d4af37",
+                            link: "#d4af37",
+                            action: "#d4af37",
+                            inactiveTabIcon: "#888888",
+                            error: "#dc3545",
+                            inProgress: "#d4af37",
+                            complete: "#28a745",
+                            sourceBg: "#111111"
+                        },
+                        fonts: { default: { active: true } }
+                    }
+                },
+                (error, result) => {
+                    if (!error && result && result.event === "success") {
+                        const url = result.info.secure_url;
+                        if (callback) callback(url);
+                    } else if (error) {
+                        console.error("Cloudinary Upload Error:", error);
+                        showAlert("Erro no upload: " + (error.message || "Tente novamente"));
+                    }
+                }
+            );
+            widget.open();
+        }
+
+        // ========== FUNÇÕES DE UPLOAD ESPECÍFICAS ==========
+        function uploadProfilePhoto() {
+            if (!currentUser) {
+                showAlert("Faça login primeiro!");
+                return;
+            }
+            openCloudinaryUpload({
+                resourceType: 'image',
+                formats: ['jpg', 'png', 'jpeg'],
+                maxSize: 5000000,
+                cropping: true,
+                cropAspectRatio: 1,
+                folder: `profiles/${currentUser.uid}`
+            }, async (url) => {
+                showLoading(true, "Atualizando foto do perfil...");
+                try {
+                    await db.collection('users').doc(currentUser.email).update({ foto: url });
+                    userData.foto = url;
+                    updateUserDisplay();
+                    showAlert("✅ Foto de perfil atualizada com sucesso!");
+                } catch (error) {
+                    showAlert("Erro ao salvar foto: " + error.message);
+                } finally {
+                    showLoading(false);
+                }
+            });
+        }
+
+        function uploadArtistPhoto(isEdit = false) {
+            openCloudinaryUpload({
+                resourceType: 'image',
+                formats: ['jpg', 'png', 'jpeg'],
+                maxSize: 5000000,
+                cropping: true,
+                cropAspectRatio: 1,
+                folder: `artists/${currentUser?.uid || 'temp'}`
+            }, async (url) => {
+                if (isEdit) {
+                    pendingEditArtistPhotoUrl = url;
+                    document.getElementById('edit-artist-photo-preview').src = url;
+                    showAlert("📸 Foto carregada! Salve o artista para finalizar.");
+                } else {
+                    pendingArtistPhotoUrl = url;
+                    document.getElementById('artist-photo-preview').src = url;
+                    showAlert("📸 Foto carregada! Salve o artista para finalizar.");
+                }
+            });
+        }
+
+        function uploadReleaseCover() {
+            openCloudinaryUpload({
+                resourceType: 'image',
+                formats: ['jpg', 'png', 'jpeg'],
+                maxSize: 15000000,
+                cropping: true,
+                cropAspectRatio: 1,
+                folder: `releases/${currentUser?.uid || 'temp'}/covers`
+            }, async (url) => {
+                document.getElementById('music-capa-url').value = url;
+                const previewImg = document.getElementById('capa-preview-img');
+                previewImg.src = url;
+                document.getElementById('capa-preview').style.display = 'block';
+                showAlert("✅ Capa carregada com sucesso!");
+            });
+        }
+
+        function uploadReleaseAudio() {
+            openCloudinaryUpload({
+                resourceType: 'auto',
+                formats: ['mp3', 'wav', 'm4a'],
+                maxSize: 200000000,
+                folder: `releases/${currentUser?.uid || 'temp'}/audio`
+            }, async (url) => {
+                document.getElementById('music-audio-url').value = url;
+                document.getElementById('audio-preview').style.display = 'block';
+                showAlert("✅ Áudio carregado com sucesso!");
+            });
+        }
+
+        function uploadEditReleaseCover() {
+            openCloudinaryUpload({
+                resourceType: 'image',
+                formats: ['jpg', 'png', 'jpeg'],
+                maxSize: 15000000,
+                cropping: true,
+                cropAspectRatio: 1,
+                folder: `releases/${currentUser?.uid || 'temp'}/covers`
+            }, async (url) => {
+                document.getElementById('edit-release-capa-url').value = url;
+                showAlert("✅ Nova capa carregada! Salve para atualizar.");
+            });
         }
 
         // ========== CARREGAR PAÍSES E ESTILOS ==========
@@ -1039,26 +1217,6 @@
         }
 
         // ========== PERFIL ==========
-        async function updateProfilePhoto() {
-            const file = document.getElementById('perfil-foto-input').files[0];
-            if (!file) return;
-
-            showLoading(true, 'A enviar foto...');
-            try {
-                const storageRef = storage.ref(`profile_photos/${currentUser.uid}`);
-                await storageRef.put(file);
-                const photoURL = await storageRef.getDownloadURL();
-                await db.collection('users').doc(currentUser.email).update({ foto: photoURL });
-                userData.foto = photoURL;
-                updateUserDisplay();
-                showLoading(false);
-                showAlert('Foto atualizada!');
-            } catch (error) {
-                showLoading(false);
-                showAlert('Erro: ' + error.message);
-            }
-        }
-
         async function handleUpdateProfile() {
             const nome = document.getElementById('perfil-nome').value.trim();
             const telefone = document.getElementById('perfil-telefone').value.trim();
@@ -1087,7 +1245,7 @@
             }
         }
 
-        // ========== ARTISTAS COM FORMULÁRIO SEMPRE LIMPO ==========
+        // ========== ARTISTAS ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
                 document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
@@ -1134,7 +1292,6 @@
             }
         }
 
-        // FUNÇÃO PARA LIMPAR COMPLETAMENTE O FORMULÁRIO DE ADICIONAR ARTISTA
         function limparFormularioArtista() {
             document.getElementById('artist-name').value = '';
             document.getElementById('artist-style').value = '';
@@ -1148,7 +1305,8 @@
             document.getElementById('artist-twitter').value = '';
             document.getElementById('artist-soundcloud').value = '';
             document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
-            document.getElementById('artist-photo-input').value = '';
+            pendingArtistPhotoUrl = null;
+            document.getElementById('artist-photo-url').value = '';
         }
 
         function openAddArtistModal() {
@@ -1161,21 +1319,8 @@
                 return;
             }
             
-            // LIMPAR TODOS OS CAMPOS ANTES DE ABRIR O MODAL
             limparFormularioArtista();
-            
             openModal('addArtistModal');
-        }
-
-        function previewArtistPhoto() {
-            const file = document.getElementById('artist-photo-input').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('artist-photo-preview').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
         }
 
         async function saveArtist(e) {
@@ -1184,6 +1329,11 @@
             const nome = document.getElementById('artist-name').value.trim();
             if (!nome) {
                 showAlert('Nome artístico é obrigatório!');
+                return;
+            }
+            
+            if (!pendingArtistPhotoUrl) {
+                showAlert('Por favor, selecione uma foto para o artista!');
                 return;
             }
             
@@ -1196,22 +1346,6 @@
             
             try {
                 const artistId = Date.now().toString();
-                let photoURL = null;
-                
-                const photoFile = document.getElementById('artist-photo-input').files[0];
-                if (photoFile) {
-                    try {
-                        const storageRef = storage.ref(`artists/${currentUser.uid}/${artistId}_photo`);
-                        await storageRef.put(photoFile);
-                        photoURL = await storageRef.getDownloadURL();
-                    } catch (uploadError) {
-                        showLoading(false);
-                        showAlert('Erro ao enviar foto: ' + uploadError.message);
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalText;
-                        return;
-                    }
-                }
                 
                 const artistData = {
                     id: artistId,
@@ -1226,7 +1360,7 @@
                     apple: document.getElementById('artist-apple').value,
                     twitter: document.getElementById('artist-twitter').value,
                     soundcloud: document.getElementById('artist-soundcloud').value,
-                    foto: photoURL,
+                    foto: pendingArtistPhotoUrl,
                     ownerUID: auth.currentUser.uid,
                     ownerEmail: currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1253,10 +1387,10 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
+                pendingArtistPhotoUrl = null;
             }
         }
 
-        // Abrir modal de edição de artista
         async function openEditArtistModal(artistId) {
             showLoading(true, 'Carregando artista...');
             try {
@@ -1276,7 +1410,7 @@
                     document.getElementById('edit-artist-twitter').value = artist.twitter || '';
                     document.getElementById('edit-artist-soundcloud').value = artist.soundcloud || '';
                     document.getElementById('edit-artist-photo-preview').src = artist.foto || 'https://via.placeholder.com/100';
-                    document.getElementById('edit-artist-photo-input').value = '';
+                    pendingEditArtistPhotoUrl = artist.foto || null;
                     closeModal('addArtistModal');
                     openModal('editArtistModal');
                 }
@@ -1287,7 +1421,6 @@
             }
         }
 
-        // Atualizar artista
         async function updateArtist() {
             const artistId = document.getElementById('edit-artist-id').value;
             const nome = document.getElementById('edit-artist-name').value.trim();
@@ -1313,11 +1446,8 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                const photoFile = document.getElementById('edit-artist-photo-input').files[0];
-                if (photoFile) {
-                    const storageRef = storage.ref(`artists/${currentUser.uid}/${artistId}_photo`);
-                    await storageRef.put(photoFile);
-                    updateData.foto = await storageRef.getDownloadURL();
+                if (pendingEditArtistPhotoUrl) {
+                    updateData.foto = pendingEditArtistPhotoUrl;
                 }
 
                 await db.collection('artists').doc(artistId).update(updateData);
@@ -1325,13 +1455,13 @@
                 await loadArtists();
                 showLoading(false);
                 showAlert('Artista atualizado com sucesso!');
+                pendingEditArtistPhotoUrl = null;
             } catch (error) {
                 showLoading(false);
                 showAlert('Erro ao atualizar artista: ' + error.message);
             }
         }
 
-        // Eliminar artista
         async function deleteArtist(artistId) {
             if (!confirm('Tem certeza que deseja eliminar este artista? Todas as músicas associadas também serão removidas!')) return;
             
@@ -1385,10 +1515,30 @@
             trackDiv.className = 'dynamic-track';
             trackDiv.innerHTML = `
                 <input type="text" placeholder="Título da faixa" class="track-title-input" style="flex:2; margin-bottom:10px;">
-                <input type="file" accept="audio/*" class="track-audio-input" style="flex:1; margin-bottom:10px;">
-                <button type="button" class="remove-track btn-small" onclick="this.parentElement.remove()" style="background:#dc3545; color:#fff;"><i class="fas fa-trash"></i> Remover</button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button type="button" class="upload-track-btn btn-small" style="width: auto;"><i class="fas fa-cloud-upload-alt"></i> Upload Áudio</button>
+                    <input type="hidden" class="track-url-input">
+                    <button type="button" class="remove-track btn-small" onclick="this.closest('.dynamic-track').remove()" style="background:#dc3545; color:#fff;"><i class="fas fa-trash"></i> Remover</button>
+                </div>
+                <div class="track-preview" style="margin-top: 5px; display: none; font-size: 0.7rem; color: var(--gold);">✓ Áudio carregado</div>
                 <hr style="margin: 10px 0;">
             `;
+            
+            const uploadBtn = trackDiv.querySelector('.upload-track-btn');
+            const trackIndex = container.children.length;
+            uploadBtn.onclick = () => {
+                openCloudinaryUpload({
+                    resourceType: 'auto',
+                    formats: ['mp3', 'wav', 'm4a'],
+                    maxSize: 200000000,
+                    folder: `releases/${currentUser?.uid || 'temp'}/tracks`
+                }, (url) => {
+                    trackDiv.querySelector('.track-url-input').value = url;
+                    trackDiv.querySelector('.track-preview').style.display = 'block';
+                    showAlert(`✅ Áudio da faixa ${trackIndex + 1} carregado!`);
+                });
+            };
+            
             container.appendChild(trackDiv);
         }
 
@@ -1429,17 +1579,17 @@
             const titulo = document.getElementById('music-titulo').value.trim();
             const artistaId = document.getElementById('music-artista-select').value;
             const releaseDate = document.getElementById('music-data').value;
-            const capaFile = document.getElementById('music-capa').files[0];
+            const capaUrl = document.getElementById('music-capa-url').value;
             const releaseType = document.getElementById('release-type').value;
             
-            if (!titulo || !artistaId || !releaseDate || !capaFile) {
-                showAlert('Preencha os campos obrigatórios!');
+            if (!titulo || !artistaId || !releaseDate || !capaUrl) {
+                showAlert('Preencha os campos obrigatórios (Título, Artista, Data e Capa)!');
                 return;
             }
             
             if (releaseType === 'single') {
-                const audioFile = document.getElementById('music-audio').files[0];
-                if (!audioFile) {
+                const audioUrl = document.getElementById('music-audio-url').value;
+                if (!audioUrl) {
                     showAlert('Carregue o ficheiro de áudio!');
                     return;
                 }
@@ -1453,20 +1603,6 @@
             showLoading(true, 'A processar lançamento...');
             
             try {
-                let coverURL = null;
-                try {
-                    const coverExt = capaFile.name.split('.').pop();
-                    const coverRef = storage.ref(`releases/${currentUser.uid}/${Date.now()}_cover.${coverExt}`);
-                    await coverRef.put(capaFile);
-                    coverURL = await coverRef.getDownloadURL();
-                } catch (uploadError) {
-                    showLoading(false);
-                    showAlert('Erro ao enviar capa: ' + uploadError.message);
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
-                    return;
-                }
-                
                 const releaseId = Date.now().toString();
                 
                 let releaseData = {
@@ -1478,7 +1614,7 @@
                     produtores: document.getElementById('music-produtores').value,
                     isrc: document.getElementById('music-isrc').value || generateISRC(),
                     upc: document.getElementById('music-upc').value || generateUPC(),
-                    capaURL: coverURL,
+                    capaURL: capaUrl,
                     dataLancamento: releaseDate,
                     tipo: releaseType,
                     ownerUID: currentUser.uid,
@@ -1491,25 +1627,18 @@
                 };
                 
                 if (releaseType === 'single') {
-                    const audioFile = document.getElementById('music-audio').files[0];
-                    const audioExt = audioFile.name.split('.').pop();
-                    const audioRef = storage.ref(`releases/${currentUser.uid}/${releaseId}_audio.${audioExt}`);
-                    await audioRef.put(audioFile);
-                    releaseData.audioURL = await audioRef.getDownloadURL();
+                    releaseData.audioURL = document.getElementById('music-audio-url').value;
                 } else {
                     const tracks = [];
                     const trackDivs = document.querySelectorAll('.dynamic-track');
                     for (let i = 0; i < trackDivs.length; i++) {
                         const div = trackDivs[i];
                         const trackTitle = div.querySelector('.track-title-input')?.value;
-                        const trackFile = div.querySelector('.track-audio-input')?.files[0];
-                        if (trackTitle && trackFile) {
-                            const trackExt = trackFile.name.split('.').pop();
-                            const trackRef = storage.ref(`releases/${currentUser.uid}/${releaseId}_track_${i}.${trackExt}`);
-                            await trackRef.put(trackFile);
+                        const trackUrl = div.querySelector('.track-url-input')?.value;
+                        if (trackTitle && trackUrl) {
                             tracks.push({
                                 title: trackTitle,
-                                url: await trackRef.getDownloadURL(),
+                                url: trackUrl,
                                 streams: 0
                             });
                         }
@@ -1525,15 +1654,18 @@
                 if (!userData.releases) userData.releases = [];
                 userData.releases.push(releaseId);
                 
+                // Reset form
                 document.getElementById('music-titulo').value = '';
-                document.getElementById('music-capa').value = '';
-                document.getElementById('music-audio').value = '';
+                document.getElementById('music-capa-url').value = '';
+                document.getElementById('music-audio-url').value = '';
                 document.getElementById('music-isrc').value = '';
                 document.getElementById('music-upc').value = '';
                 document.getElementById('music-data').value = '';
                 document.getElementById('music-colaboradores').value = '';
                 document.getElementById('music-produtores').value = '';
                 document.getElementById('music-estilo').value = '';
+                document.getElementById('capa-preview').style.display = 'none';
+                document.getElementById('audio-preview').style.display = 'none';
                 document.getElementById('tracks-container').innerHTML = '';
                 if (releaseType === 'album') addTrackField();
                 document.getElementById('music-artista-select').value = '';
@@ -1550,7 +1682,7 @@
             }
         }
 
-        // ========== MÚSICAS DO USUÁRIO COM EDITAR E ELIMINAR ==========
+        // ========== MÚSICAS DO USUÁRIO ==========
         async function loadUserMusic() {
             if (!userData?.releases || userData.releases.length === 0) {
                 document.getElementById('minhas-musicas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhuma música lançada.</p>';
@@ -1593,7 +1725,6 @@
             }
         }
 
-        // Abrir modal de edição de lançamento
         async function openEditReleaseModal(releaseId) {
             showLoading(true, 'Carregando lançamento...');
             try {
@@ -1608,7 +1739,7 @@
                     document.getElementById('edit-release-isrc').value = release.isrc || '';
                     document.getElementById('edit-release-upc').value = release.upc || '';
                     document.getElementById('edit-release-data').value = release.dataLancamento || '';
-                    document.getElementById('edit-release-capa').value = '';
+                    document.getElementById('edit-release-capa-url').value = '';
                     openModal('editReleaseModal');
                 }
                 showLoading(false);
@@ -1618,7 +1749,6 @@
             }
         }
 
-        // Atualizar lançamento
         async function updateRelease() {
             const releaseId = document.getElementById('edit-release-id').value;
             const titulo = document.getElementById('edit-release-titulo').value.trim();
@@ -1640,12 +1770,9 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                const capaFile = document.getElementById('edit-release-capa').files[0];
-                if (capaFile) {
-                    const coverExt = capaFile.name.split('.').pop();
-                    const coverRef = storage.ref(`releases/${currentUser.uid}/${releaseId}_cover.${coverExt}`);
-                    await coverRef.put(capaFile);
-                    updateData.capaURL = await coverRef.getDownloadURL();
+                const newCapaUrl = document.getElementById('edit-release-capa-url').value;
+                if (newCapaUrl) {
+                    updateData.capaURL = newCapaUrl;
                 }
 
                 await db.collection('releases').doc(releaseId).update(updateData);
@@ -1659,7 +1786,6 @@
             }
         }
 
-        // Eliminar lançamento
         async function deleteRelease(releaseId) {
             if (!confirm('Tem certeza que deseja eliminar este lançamento permanentemente?')) return;
             
@@ -2427,6 +2553,7 @@
 
         // ========== EVENT LISTENERS ==========
         document.addEventListener('DOMContentLoaded', function() {
+            // Botão Adicionar Artista
             const btnArtist = document.getElementById('btnAddArtist');
             if (btnArtist) {
                 btnArtist.onclick = (e) => { 
@@ -2435,33 +2562,73 @@
                 };
             }
             
+            // Botão Salvar Artista
             const saveArtistBtn = document.getElementById('btnSaveArtist');
             if (saveArtistBtn) {
                 saveArtistBtn.onclick = saveArtist;
             }
             
-            const enviarBtn = document.getElementById('btnEnviarLancamento');
-            if (enviarBtn) {
-                enviarBtn.onclick = enviarLancamento;
-            }
-            
-            const updateProfileBtn = document.getElementById('btnUpdateProfile');
-            if (updateProfileBtn) {
-                updateProfileBtn.onclick = handleUpdateProfile;
-            }
-            
+            // Botão Atualizar Artista
             const updateArtistBtn = document.getElementById('btnUpdateArtist');
             if (updateArtistBtn) {
                 updateArtistBtn.onclick = updateArtist;
             }
             
+            // Botão Enviar Lançamento
+            const enviarBtn = document.getElementById('btnEnviarLancamento');
+            if (enviarBtn) {
+                enviarBtn.onclick = enviarLancamento;
+            }
+            
+            // Botão Atualizar Perfil
+            const updateProfileBtn = document.getElementById('btnUpdateProfile');
+            if (updateProfileBtn) {
+                updateProfileBtn.onclick = handleUpdateProfile;
+            }
+            
+            // Botão Atualizar Lançamento
             const updateReleaseBtn = document.getElementById('btnUpdateRelease');
             if (updateReleaseBtn) {
                 updateReleaseBtn.onclick = updateRelease;
             }
             
-            carregarPaisesEEstilos();
+            // Upload de foto de perfil
+            const profileUploadTrigger = document.getElementById('profile-upload-trigger');
+            if (profileUploadTrigger) {
+                profileUploadTrigger.onclick = () => uploadProfilePhoto();
+            }
             
+            // Upload de foto do artista
+            const uploadArtistPhotoBtn = document.getElementById('upload-artist-photo-btn');
+            if (uploadArtistPhotoBtn) {
+                uploadArtistPhotoBtn.onclick = () => uploadArtistPhoto(false);
+            }
+            
+            // Upload de foto do artista (edição)
+            const editUploadArtistPhotoBtn = document.getElementById('edit-upload-artist-photo-btn');
+            if (editUploadArtistPhotoBtn) {
+                editUploadArtistPhotoBtn.onclick = () => uploadArtistPhoto(true);
+            }
+            
+            // Upload de capa do lançamento
+            const uploadCapaBtn = document.getElementById('upload-capa-btn');
+            if (uploadCapaBtn) {
+                uploadCapaBtn.onclick = () => uploadReleaseCover();
+            }
+            
+            // Upload de áudio do lançamento
+            const uploadAudioBtn = document.getElementById('upload-audio-btn');
+            if (uploadAudioBtn) {
+                uploadAudioBtn.onclick = () => uploadReleaseAudio();
+            }
+            
+            // Upload de capa de edição
+            const editUploadCapaBtn = document.getElementById('edit-upload-capa-btn');
+            if (editUploadCapaBtn) {
+                editUploadCapaBtn.onclick = () => uploadEditReleaseCover();
+            }
+            
+            carregarPaisesEEstilos();
             setTimeout(() => addTrackField(), 100);
         });
 

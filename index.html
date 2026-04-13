@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Firebase SDK Compat (versão que o seu site usa) -->
+    <!-- Firebase SDK Compat -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -776,7 +776,7 @@
     </div>
 
     <script>
-        // ========== CONFIGURAÇÃO FIREBASE ==========
+        // ========== CONFIGURAÇÃO FIREBASE (JÁ EXISTENTE) ==========
         const firebaseConfig = {
             apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
             authDomain: "mam-distribuidora-6043f.firebaseapp.com",
@@ -786,7 +786,7 @@
             appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
         };
 
-        // Inicializar Firebase apenas se não existir
+        // Inicializar Firebase apenas se não existir (NÃO CRIA NOVO)
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -799,7 +799,7 @@
         const ADMIN_WHATSAPP = "937881307";
         const VALOR_POR_STREAM = 3;
 
-        // ========== DADOS REAIS DO CLOUDINARY ==========
+        // ========== SEUS DADOS REAIS DO CLOUDINARY ==========
         const CLOUDINARY_CLOUD_NAME = "dbjhwnhoq";
         const CLOUDINARY_UPLOAD_PRESET = "mam_distribuidora";
 
@@ -910,7 +910,8 @@
         function openCloudinaryUpload(options, callback) {
             console.log("Abrindo Cloudinary Widget com:", {
                 cloudName: CLOUDINARY_CLOUD_NAME,
-                uploadPreset: CLOUDINARY_UPLOAD_PRESET
+                uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+                folder: options.folder
             });
             
             const widget = cloudinary.createUploadWidget(
@@ -964,6 +965,7 @@
             }, async (url) => {
                 showLoading(true, "Atualizando foto do perfil...");
                 try {
+                    // Atualiza apenas o campo foto no documento existente
                     await db.collection('users').doc(currentUser.email).update({ foto: url });
                     userData.foto = url;
                     updateUserDisplay();
@@ -1100,7 +1102,7 @@
             }
         }
 
-        // ========== AUTENTICAÇÃO ==========
+        // ========== AUTENTICAÇÃO (LÊ DADOS EXISTENTES) ==========
         async function handleLogin() {
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -1198,7 +1200,7 @@
             }
         }
 
-        // ========== PERFIL ==========
+        // ========== PERFIL (ATUALIZA DADOS EXISTENTES) ==========
         async function handleUpdateProfile(e) {
             if (e) e.preventDefault();
             
@@ -1229,7 +1231,7 @@
             }
         }
 
-        // ========== ARTISTAS ==========
+        // ========== ARTISTAS (LÊ E ADICIONA AOS EXISTENTES) ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
                 document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
@@ -2552,6 +2554,7 @@
         // ========== INICIALIZAÇÃO DOS BOTÕES ==========
         window.onload = function() {
             console.log("Site carregado - Inicializando botões");
+            console.log("Cloudinary config:", { cloudName: CLOUDINARY_CLOUD_NAME, preset: CLOUDINARY_UPLOAD_PRESET });
             
             // Botão Adicionar Artista
             const btnArt = document.querySelector('.btn-add-artist');
@@ -2640,7 +2643,7 @@
             setTimeout(function() { addTrackField(); }, 100);
         };
 
-        // ========== AUTH STATE ==========
+        // ========== AUTH STATE (LÊ DADOS EXISTENTES) ==========
         auth.onAuthStateChanged(async function(user) {
             if (user) {
                 currentUser = user;
@@ -2650,10 +2653,13 @@
                     return;
                 }
                 try {
+                    // Lê o documento existente do usuário - NÃO CRIA NOVO
                     const doc = await db.collection('users').doc(user.email).get();
                     if (doc.exists) {
                         userData = doc.data();
+                        console.log("Dados do usuário carregados:", userData.email);
                     } else {
+                        // Só cria se realmente não existir (primeiro login)
                         userData = { 
                             nome: user.displayName || "Utilizador", 
                             email: user.email, 
@@ -2669,6 +2675,7 @@
                             createdAt: new Date() 
                         };
                         await db.collection('users').doc(user.email).set(userData);
+                        console.log("Novo usuário criado:", userData.email);
                     }
                     showMainApp();
                     updateUserDisplay();

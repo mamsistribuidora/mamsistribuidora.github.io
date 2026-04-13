@@ -776,7 +776,7 @@
     </div>
 
     <script>
-        // ========== 1. CONFIGURAÇÃO REAL (MAM Distribuidora) ==========
+        // ========== CONFIGURAÇÃO FIREBASE ==========
         const firebaseConfig = {
             apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
             authDomain: "mam-distribuidora-6043f.firebaseapp.com",
@@ -786,7 +786,7 @@
             appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
         };
 
-        // ========== 2. INICIALIZAÇÃO (Versão Compat que o meu site usa) ==========
+        // Inicializar Firebase apenas se não existir
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -799,8 +799,8 @@
         const ADMIN_WHATSAPP = "937881307";
         const VALOR_POR_STREAM = 3;
 
-        // Cloudinary Configuration
-        const CLOUDINARY_CLOUD_NAME = "dklamdnpq";
+        // ========== DADOS REAIS DO CLOUDINARY ==========
+        const CLOUDINARY_CLOUD_NAME = "dbjhwnhoq";
         const CLOUDINARY_UPLOAD_PRESET = "mam_distribuidora";
 
         let currentUser = null;
@@ -808,11 +808,10 @@
         let selectedPlan = null;
         let selectedPaymentMethod = null;
         
-        // Variáveis para uploads
         let pendingArtistPhotoUrl = null;
         let pendingEditArtistPhotoUrl = null;
 
-        // ========== TODOS OS PAÍSES DO MUNDO ==========
+        // ========== TODOS OS PAÍSES ==========
         const todosPaises = [
             "Afeganistão", "África do Sul", "Albânia", "Alemanha", "Andorra", "Angola", "Arábia Saudita", "Argélia", "Argentina", "Armênia",
             "Austrália", "Áustria", "Azerbaijão", "Bahamas", "Bangladesh", "Barbados", "Bélgica", "Belize", "Benim", "Bielorrússia",
@@ -835,7 +834,6 @@
             "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Uzbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietnã", "Zâmbia", "Zimbábue"
         ];
 
-        // ========== TODOS OS ESTILOS MUSICAIS ==========
         const todosEstilos = [
             "Afrobeat", "Afro House", "Afro Pop", "Alternative Rock", "Ambient", "Blues", "Bossa Nova", "Breakbeat", "Classical", "Country",
             "Dancehall", "Disco", "Downtempo", "Drum and Bass", "Dubstep", "Electronic", "Fado", "Flamenco", "Folk", "Funk", "Funk Carioca",
@@ -908,8 +906,13 @@
             showAlert(contents[type]);
         }
 
-        // ========== CLOUDINARY UPLOAD WIDGET ==========
+        // ========== CLOUDINARY UPLOAD (UNSIGNED - SEM API KEY) ==========
         function openCloudinaryUpload(options, callback) {
+            console.log("Abrindo Cloudinary Widget com:", {
+                cloudName: CLOUDINARY_CLOUD_NAME,
+                uploadPreset: CLOUDINARY_UPLOAD_PRESET
+            });
+            
             const widget = cloudinary.createUploadWidget(
                 {
                     cloudName: CLOUDINARY_CLOUD_NAME,
@@ -925,39 +928,27 @@
                     showPoweredBy: false,
                     cropping: options.cropping || false,
                     croppingAspectRatio: options.cropAspectRatio || 1,
-                    folder: options.folder || 'mam_distribuidora',
-                    styles: {
-                        palette: {
-                            window: "#000000",
-                            windowBorder: "#d4af37",
-                            tabIcon: "#d4af37",
-                            menuIcons: "#d4af37",
-                            textDark: "#ffffff",
-                            textLight: "#d4af37",
-                            link: "#d4af37",
-                            action: "#d4af37",
-                            inactiveTabIcon: "#888888",
-                            error: "#dc3545",
-                            inProgress: "#d4af37",
-                            complete: "#28a745",
-                            sourceBg: "#111111"
-                        }
-                    }
+                    folder: options.folder || 'mam_distribuidora'
                 },
                 (error, result) => {
-                    if (!error && result && result.event === "success") {
+                    if (error) {
+                        console.error("Cloudinary Error:", error);
+                        showAlert("Erro no upload: " + JSON.stringify(error));
+                        return;
+                    }
+                    if (result && result.event === "success") {
+                        console.log("Upload sucesso:", result.info.secure_url);
                         const url = result.info.secure_url;
                         if (callback) callback(url);
-                    } else if (error) {
-                        console.error("Cloudinary Upload Error:", error);
-                        showAlert("Erro no upload: " + (error.message || "Tente novamente"));
+                    } else if (result && result.event === "close") {
+                        console.log("Widget fechado sem upload");
                     }
                 }
             );
             widget.open();
         }
 
-        // ========== FUNÇÕES DE UPLOAD ==========
+        // ========== UPLOADS ESPECÍFICOS ==========
         function uploadProfilePhoto() {
             if (!currentUser) {
                 showAlert("Faça login primeiro!");
@@ -978,6 +969,7 @@
                     updateUserDisplay();
                     showAlert("✅ Foto de perfil atualizada com sucesso!");
                 } catch (error) {
+                    console.error("Erro ao salvar foto:", error);
                     showAlert("Erro ao salvar foto: " + error.message);
                 } finally {
                     showLoading(false);
@@ -1120,7 +1112,7 @@
 
             showLoading(true, 'A entrar...');
             try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, pass);
+                await auth.signInWithEmailAndPassword(email, pass);
                 closeModal('modal-login');
                 showLoading(false);
                 showAlert('Login realizado com sucesso!');
@@ -1208,7 +1200,7 @@
 
         // ========== PERFIL ==========
         async function handleUpdateProfile(e) {
-            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+            if (e) e.preventDefault();
             
             const nome = document.getElementById('perfil-nome').value.trim();
             const telefone = document.getElementById('perfil-telefone').value.trim();
@@ -1267,8 +1259,8 @@
                         itemDiv.innerHTML = `
                             <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" onerror="this.src='https://via.placeholder.com/70'">
                             <div class="artist-info">
-                                <h4>${artist.nome}</h4>
-                                <p>${artist.bio || 'Sem biografia'} | ${artist.estilo || ''}</p>
+                                <h4>${escapeHtml(artist.nome)}</h4>
+                                <p>${escapeHtml(artist.bio || 'Sem biografia')} | ${escapeHtml(artist.estilo || '')}</p>
                                 <div class="social-links">${socialLinks}</div>
                             </div>
                             <div class="list-actions">
@@ -1282,6 +1274,16 @@
                     console.error('Erro ao carregar artista:', err);
                 }
             }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
         }
 
         function limparFormularioArtista() {
@@ -1316,7 +1318,7 @@
         }
 
         async function saveArtist(e) {
-            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+            if (e) e.preventDefault();
             
             const nome = document.getElementById('artist-name').value.trim();
             if (!nome) {
@@ -1414,7 +1416,7 @@
         }
 
         async function updateArtist(e) {
-            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+            if (e) e.preventDefault();
             
             const artistId = document.getElementById('edit-artist-id').value;
             const nome = document.getElementById('edit-artist-name').value.trim();
@@ -1568,7 +1570,7 @@
         }
 
         async function enviarLancamento(e) {
-            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+            if (e) e.preventDefault();
             
             const titulo = document.getElementById('music-titulo').value.trim();
             const artistaId = document.getElementById('music-artista-select').value;
@@ -1701,8 +1703,8 @@
                         discoDiv.className = 'disco-item';
                         discoDiv.innerHTML = `
                             <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                            <div class="disco-title">${release.titulo}</div>
-                            <div class="disco-artist">${artistName}</div>
+                            <div class="disco-title">${escapeHtml(release.titulo)}</div>
+                            <div class="disco-artist">${escapeHtml(artistName)}</div>
                             <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
                             <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
                             <div class="list-actions" style="margin-top: 10px; justify-content: center;">
@@ -1744,7 +1746,7 @@
         }
 
         async function updateRelease(e) {
-            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+            if (e) e.preventDefault();
             
             const releaseId = document.getElementById('edit-release-id').value;
             const titulo = document.getElementById('edit-release-titulo').value.trim();
@@ -1882,8 +1884,8 @@
                         discoDiv.onclick = () => playMusic(release.id);
                         discoDiv.innerHTML = `
                             <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                            <div class="disco-title">${release.titulo}</div>
-                            <div class="disco-artist">${artistName}</div>
+                            <div class="disco-title">${escapeHtml(release.titulo)}</div>
+                            <div class="disco-artist">${escapeHtml(artistName)}</div>
                             <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
                             <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
                         `;
@@ -1935,8 +1937,8 @@
                         discoDiv.onclick = () => playMusic(release.id);
                         discoDiv.innerHTML = `
                             <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                            <div class="disco-title">${release.titulo}</div>
-                            <div class="disco-artist">${artistName}</div>
+                            <div class="disco-title">${escapeHtml(release.titulo)}</div>
+                            <div class="disco-artist">${escapeHtml(artistName)}</div>
                             <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
                         `;
                         feedContainer.appendChild(discoDiv);
@@ -2202,8 +2204,8 @@
                         itemDiv.innerHTML = `
                             <img src="${music.capaURL}" onerror="this.src='https://via.placeholder.com/60'">
                             <div class="list-info">
-                                <h4>${music.titulo}</h4>
-                                <p>Artista: ${artistName}</p>
+                                <h4>${escapeHtml(music.titulo)}</h4>
+                                <p>Artista: ${escapeHtml(artistName)}</p>
                                 <p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
                                 ${music.audioURL ? `<audio controls src="${music.audioURL}" style="height: 35px; margin-top: 5px;"></audio>` : '<p style="color: var(--gray);">Álbum (múltiplas faixas)</p>'}
                             </div>
@@ -2437,8 +2439,8 @@
                 const user = doc.data();
                 resultsDiv.innerHTML = `
                     <div class="list-item" style="flex-direction: column;">
-                        <div><strong>Nome:</strong> ${user.nome || 'N/A'}</div>
-                        <div><strong>Email:</strong> ${email}</div>
+                        <div><strong>Nome:</strong> ${escapeHtml(user.nome || 'N/A')}</div>
+                        <div><strong>Email:</strong> ${escapeHtml(email)}</div>
                         <div><strong>Plano:</strong> ${user.plano || 'FREE'}</div>
                         <div><strong>Saldo:</strong> ${(user.saldo || 0).toLocaleString()} Kz</div>
                         <div><strong>Artistas:</strong> ${user.artists?.length || 0}</div>
@@ -2547,21 +2549,22 @@
             carregarPaisesEEstilos();
         }
 
-        // ========== 3. FIX DOS BOTÕES (O que está a travar o site) ==========
-        window.onload = () => {
-            // Forçar o botão Artista a funcionar
+        // ========== INICIALIZAÇÃO DOS BOTÕES ==========
+        window.onload = function() {
+            console.log("Site carregado - Inicializando botões");
+            
+            // Botão Adicionar Artista
             const btnArt = document.querySelector('.btn-add-artist');
             if (btnArt) {
-                btnArt.onclick = (e) => {
+                btnArt.onclick = function(e) {
                     e.preventDefault();
                     openAddArtistModal();
                 };
             }
             
-            // Botão Adicionar Artista (fallback pelo ID)
             const btnArtistById = document.getElementById('btnAddArtist');
             if (btnArtistById) {
-                btnArtistById.onclick = (e) => {
+                btnArtistById.onclick = function(e) {
                     e.preventDefault();
                     openAddArtistModal();
                 };
@@ -2600,45 +2603,45 @@
             // Upload de foto de perfil
             const profileUploadTrigger = document.getElementById('profile-upload-trigger');
             if (profileUploadTrigger) {
-                profileUploadTrigger.onclick = () => uploadProfilePhoto();
+                profileUploadTrigger.onclick = function() { uploadProfilePhoto(); };
             }
             
             // Upload de foto do artista
             const uploadArtistPhotoBtn = document.getElementById('upload-artist-photo-btn');
             if (uploadArtistPhotoBtn) {
-                uploadArtistPhotoBtn.onclick = () => uploadArtistPhoto(false);
+                uploadArtistPhotoBtn.onclick = function() { uploadArtistPhoto(false); };
             }
             
             // Upload de foto do artista (edição)
             const editUploadArtistPhotoBtn = document.getElementById('edit-upload-artist-photo-btn');
             if (editUploadArtistPhotoBtn) {
-                editUploadArtistPhotoBtn.onclick = () => uploadArtistPhoto(true);
+                editUploadArtistPhotoBtn.onclick = function() { uploadArtistPhoto(true); };
             }
             
             // Upload de capa do lançamento
             const uploadCapaBtn = document.getElementById('upload-capa-btn');
             if (uploadCapaBtn) {
-                uploadCapaBtn.onclick = () => uploadReleaseCover();
+                uploadCapaBtn.onclick = function() { uploadReleaseCover(); };
             }
             
             // Upload de áudio do lançamento
             const uploadAudioBtn = document.getElementById('upload-audio-btn');
             if (uploadAudioBtn) {
-                uploadAudioBtn.onclick = () => uploadReleaseAudio();
+                uploadAudioBtn.onclick = function() { uploadReleaseAudio(); };
             }
             
             // Upload de capa de edição
             const editUploadCapaBtn = document.getElementById('edit-upload-capa-btn');
             if (editUploadCapaBtn) {
-                editUploadCapaBtn.onclick = () => uploadEditReleaseCover();
+                editUploadCapaBtn.onclick = function() { uploadEditReleaseCover(); };
             }
             
             carregarPaisesEEstilos();
-            setTimeout(() => addTrackField(), 100);
+            setTimeout(function() { addTrackField(); }, 100);
         };
 
         // ========== AUTH STATE ==========
-        auth.onAuthStateChanged(async (user) => {
+        auth.onAuthStateChanged(async function(user) {
             if (user) {
                 currentUser = user;
                 if (user.email !== ADMIN_EMAIL && !user.emailVerified) {
@@ -2687,8 +2690,10 @@
         emailjs.init("vuAVZ5U4lRBZcsIon");
         
         // Fechar modais ao clicar fora
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+        document.querySelectorAll('.modal').forEach(function(modal) {
+            modal.addEventListener('click', function(e) { 
+                if (e.target === modal) modal.classList.remove('active'); 
+            });
         });
     </script>
 </body>

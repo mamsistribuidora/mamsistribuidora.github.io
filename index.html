@@ -776,7 +776,7 @@
     </div>
 
     <script>
-        // ========== CONFIGURAÇÃO FIREBASE (JÁ EXISTENTE) ==========
+        // ========== FIREBASE CONFIG ==========
         const firebaseConfig = {
             apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
             authDomain: "mam-distribuidora-6043f.firebaseapp.com",
@@ -786,7 +786,6 @@
             appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
         };
 
-        // Inicializar Firebase apenas se não existir (NÃO CRIA NOVO)
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -799,7 +798,7 @@
         const ADMIN_WHATSAPP = "937881307";
         const VALOR_POR_STREAM = 3;
 
-        // ========== SEUS DADOS REAIS DO CLOUDINARY ==========
+        // Cloudinary Config (UNSIGNED - sem API Key)
         const CLOUDINARY_CLOUD_NAME = "dbjhwnhoq";
         const CLOUDINARY_UPLOAD_PRESET = "mam_distribuidora";
 
@@ -906,12 +905,11 @@
             showAlert(contents[type]);
         }
 
-        // ========== CLOUDINARY UPLOAD (UNSIGNED - SEM API KEY) ==========
+        // ========== CLOUDINARY UPLOAD ==========
         function openCloudinaryUpload(options, callback) {
             console.log("Abrindo Cloudinary Widget com:", {
                 cloudName: CLOUDINARY_CLOUD_NAME,
-                uploadPreset: CLOUDINARY_UPLOAD_PRESET,
-                folder: options.folder
+                uploadPreset: CLOUDINARY_UPLOAD_PRESET
             });
             
             const widget = cloudinary.createUploadWidget(
@@ -965,7 +963,6 @@
             }, async (url) => {
                 showLoading(true, "Atualizando foto do perfil...");
                 try {
-                    // Atualiza apenas o campo foto no documento existente
                     await db.collection('users').doc(currentUser.email).update({ foto: url });
                     userData.foto = url;
                     updateUserDisplay();
@@ -1044,6 +1041,133 @@
             });
         }
 
+        // ========== LOAD HOME DATA (TOP 5 + FEED) ==========
+        async function loadHomeData() {
+            console.log("loadHomeData() iniciada");
+            const destaquesContainer = document.getElementById('destaques-container');
+            if (!destaquesContainer) {
+                console.error("Elemento destaques-container não encontrado");
+                return;
+            }
+            
+            destaquesContainer.innerHTML = '<div style="text-align:center; color:var(--gray);"><i class="fas fa-spinner fa-spin"></i> Carregando Top 5...</div>';
+            
+            try {
+                // Buscar TOP 5 músicas aprovadas por streams (decrescente)
+                const topSnapshot = await db.collection('releases')
+                    .where('status', '==', 'approved')
+                    .orderBy('streams', 'desc')
+                    .limit(5)
+                    .get();
+                
+                console.log("Top 5 snapshot size:", topSnapshot.size);
+                
+                if (topSnapshot.empty) {
+                    destaquesContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhuma música em destaque ainda.</p>';
+                } else {
+                    destaquesContainer.innerHTML = '';
+                    
+                    for (const doc of topSnapshot.docs) {
+                        const release = doc.data();
+                        try {
+                            let artistName = 'Artista';
+                            if (release.artistaId) {
+                                const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                                if (artistDoc.exists) {
+                                    artistName = artistDoc.data().nome;
+                                }
+                            }
+                            
+                            const discoDiv = document.createElement('div');
+                            discoDiv.className = 'disco-item';
+                            discoDiv.onclick = () => playMusic(release.id);
+                            discoDiv.innerHTML = `
+                                <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
+                                <div class="disco-title">${escapeHtml(release.titulo || 'Sem título')}</div>
+                                <div class="disco-artist">${escapeHtml(artistName)}</div>
+                                <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
+                                <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
+                            `;
+                            destaquesContainer.appendChild(discoDiv);
+                        } catch (err) {
+                            console.error("Erro ao processar destaque:", err);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao carregar Top 5:", error);
+                destaquesContainer.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro ao carregar destaques.</p>';
+            }
+        }
+
+        async function loadFeed() {
+            console.log("loadFeed() iniciada");
+            const feedContainer = document.getElementById('feed-container');
+            if (!feedContainer) {
+                console.error("Elemento feed-container não encontrado");
+                return;
+            }
+            
+            feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray);"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
+            
+            try {
+                // Buscar todos os lançamentos aprovados por data decrescente
+                const feedSnapshot = await db.collection('releases')
+                    .where('status', '==', 'approved')
+                    .orderBy('createdAt', 'desc')
+                    .limit(30)
+                    .get();
+                
+                console.log("Feed snapshot size:", feedSnapshot.size);
+                
+                if (feedSnapshot.empty) {
+                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum lançamento disponível.</p>';
+                    return;
+                }
+                
+                feedContainer.innerHTML = '';
+                
+                for (const doc of feedSnapshot.docs) {
+                    const release = doc.data();
+                    try {
+                        let artistName = 'Artista';
+                        if (release.artistaId) {
+                            const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                            if (artistDoc.exists) {
+                                artistName = artistDoc.data().nome;
+                            }
+                        }
+                        
+                        const discoDiv = document.createElement('div');
+                        discoDiv.className = 'disco-item';
+                        discoDiv.onclick = () => playMusic(release.id);
+                        discoDiv.innerHTML = `
+                            <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <div class="disco-title">${escapeHtml(release.titulo || 'Sem título')}</div>
+                            <div class="disco-artist">${escapeHtml(artistName)}</div>
+                            <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
+                        `;
+                        feedContainer.appendChild(discoDiv);
+                    } catch (err) {
+                        console.error("Erro ao processar feed:", err);
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao carregar Feed:", error);
+                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro ao carregar lançamentos.</p>';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
         // ========== CARREGAR PAÍSES E ESTILOS ==========
         function carregarPaisesEEstilos() {
             const selectPais = document.getElementById('perfil-pais');
@@ -1102,7 +1226,7 @@
             }
         }
 
-        // ========== AUTENTICAÇÃO (LÊ DADOS EXISTENTES) ==========
+        // ========== AUTENTICAÇÃO ==========
         async function handleLogin() {
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -1200,7 +1324,7 @@
             }
         }
 
-        // ========== PERFIL (ATUALIZA DADOS EXISTENTES) ==========
+        // ========== PERFIL ==========
         async function handleUpdateProfile(e) {
             if (e) e.preventDefault();
             
@@ -1231,7 +1355,7 @@
             }
         }
 
-        // ========== ARTISTAS (LÊ E ADICIONA AOS EXISTENTES) ==========
+        // ========== ARTISTAS ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
                 document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
@@ -1276,16 +1400,6 @@
                     console.error('Erro ao carregar artista:', err);
                 }
             }
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
         }
 
         function limparFormularioArtista() {
@@ -1853,104 +1967,6 @@
                 console.error('Erro ao registrar stream:', error);
                 showLoading(false);
                 showAlert(`🎵 Stream registrado!`);
-            }
-        }
-
-        // ========== FEED E DESTAQUES ==========
-        async function loadHomeData() {
-            try {
-                const destaquesContainer = document.getElementById('destaques-container');
-                destaquesContainer.innerHTML = '<p style="color: var(--gray);">Carregando...</p>';
-                
-                const releasesSnapshot = await db.collection('releases')
-                    .where('status', '==', 'approved')
-                    .orderBy('streams', 'desc')
-                    .limit(5)
-                    .get();
-                
-                if (releasesSnapshot.empty) {
-                    destaquesContainer.innerHTML = '<p style="color: var(--gray);">Nenhuma música em destaque.</p>';
-                    return;
-                }
-                
-                destaquesContainer.innerHTML = '';
-                
-                for (const doc of releasesSnapshot.docs) {
-                    const release = doc.data();
-                    try {
-                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                        const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
-                        
-                        const discoDiv = document.createElement('div');
-                        discoDiv.className = 'disco-item';
-                        discoDiv.onclick = () => playMusic(release.id);
-                        discoDiv.innerHTML = `
-                            <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                            <div class="disco-title">${escapeHtml(release.titulo)}</div>
-                            <div class="disco-artist">${escapeHtml(artistName)}</div>
-                            <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                            <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
-                        `;
-                        destaquesContainer.appendChild(discoDiv);
-                    } catch (err) {
-                        console.error('Erro ao carregar artista do destaque:', err);
-                    }
-                }
-                
-                if (currentUser) {
-                    const totalStreams = await db.collection('releases').where('ownerUID', '==', currentUser.uid).get();
-                    let streamCount = 0;
-                    totalStreams.forEach(doc => { streamCount += doc.data().streams || 0; });
-                    document.getElementById('stat-streams').textContent = streamCount.toLocaleString();
-                }
-                
-            } catch (error) {
-                console.error('Erro ao carregar home:', error);
-                document.getElementById('destaques-container').innerHTML = '<p style="color: var(--gray);">Erro ao carregar dados.</p>';
-            }
-        }
-
-        async function loadFeed() {
-            try {
-                const feedContainer = document.getElementById('feed-container');
-                feedContainer.innerHTML = '<p style="color: var(--gray);">Carregando lançamentos...</p>';
-                
-                const feedSnapshot = await db.collection('releases')
-                    .where('status', '==', 'approved')
-                    .orderBy('createdAt', 'desc')
-                    .limit(30)
-                    .get();
-                
-                if (feedSnapshot.empty) {
-                    feedContainer.innerHTML = '<p style="color: var(--gray);">Nenhum lançamento ainda.</p>';
-                    return;
-                }
-                
-                feedContainer.innerHTML = '';
-                
-                for (const doc of feedSnapshot.docs) {
-                    const release = doc.data();
-                    try {
-                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                        const artistName = artistDoc.exists ? artistDoc.data().nome : 'Artista';
-                        
-                        const discoDiv = document.createElement('div');
-                        discoDiv.className = 'disco-item';
-                        discoDiv.onclick = () => playMusic(release.id);
-                        discoDiv.innerHTML = `
-                            <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                            <div class="disco-title">${escapeHtml(release.titulo)}</div>
-                            <div class="disco-artist">${escapeHtml(artistName)}</div>
-                            <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                        `;
-                        feedContainer.appendChild(discoDiv);
-                    } catch (err) {
-                        console.error('Erro ao carregar artista do feed:', err);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar feed:', error);
-                document.getElementById('feed-container').innerHTML = '<p style="color: var(--gray);">Erro ao carregar lançamentos.</p>';
             }
         }
 
@@ -2554,7 +2570,6 @@
         // ========== INICIALIZAÇÃO DOS BOTÕES ==========
         window.onload = function() {
             console.log("Site carregado - Inicializando botões");
-            console.log("Cloudinary config:", { cloudName: CLOUDINARY_CLOUD_NAME, preset: CLOUDINARY_UPLOAD_PRESET });
             
             // Botão Adicionar Artista
             const btnArt = document.querySelector('.btn-add-artist');
@@ -2643,7 +2658,7 @@
             setTimeout(function() { addTrackField(); }, 100);
         };
 
-        // ========== AUTH STATE (LÊ DADOS EXISTENTES) ==========
+        // ========== AUTH STATE ==========
         auth.onAuthStateChanged(async function(user) {
             if (user) {
                 currentUser = user;
@@ -2653,13 +2668,10 @@
                     return;
                 }
                 try {
-                    // Lê o documento existente do usuário - NÃO CRIA NOVO
                     const doc = await db.collection('users').doc(user.email).get();
                     if (doc.exists) {
                         userData = doc.data();
-                        console.log("Dados do usuário carregados:", userData.email);
                     } else {
-                        // Só cria se realmente não existir (primeiro login)
                         userData = { 
                             nome: user.displayName || "Utilizador", 
                             email: user.email, 
@@ -2675,7 +2687,6 @@
                             createdAt: new Date() 
                         };
                         await db.collection('users').doc(user.email).set(userData);
-                        console.log("Novo usuário criado:", userData.email);
                     }
                     showMainApp();
                     updateUserDisplay();

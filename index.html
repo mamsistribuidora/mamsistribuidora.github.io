@@ -81,7 +81,7 @@
         .btn-small { padding: 8px 12px; font-size: 0.7rem; width: auto; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.3); padding: 20px; border-radius: 10px; text-align: center; }
@@ -112,12 +112,16 @@
         .spinner { width: 50px; height: 50px; border: 5px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .disco-item { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
-        .disco-item:hover { border-color: var(--gold); background: #151515; transform: translateY(-5px); }
-        .disco-cover { width: 140px; height: 140px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(212,175,55,0.3); transition: 0.3s; }
-        .disco-item:hover .disco-cover { transform: scale(1.02); box-shadow: 0 0 30px rgba(212,175,55,0.5); }
-        .disco-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        .disco-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
+        .music-card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .music-card:hover { border-color: var(--gold); background: #151515; transform: translateY(-5px); }
+        .music-cover { width: 140px; height: 140px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(212,175,55,0.3); transition: 0.3s; }
+        .music-card:hover .music-cover { transform: scale(1.02); box-shadow: 0 0 30px rgba(212,175,55,0.5); }
+        .music-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        .music-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
+        .music-user { font-size: 0.7rem; color: #555; margin-bottom: 10px; }
+        .music-actions { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        .music-actions button { padding: 8px 15px; font-size: 0.7rem; }
+        audio { width: 100%; margin-top: 10px; border-radius: 8px; }
         
         .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
         .plan-card { background: var(--card); border: 2px solid #333; padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; }
@@ -363,19 +367,15 @@
                     </div>
                 </div>
 
+                <!-- FEED DE LANÇAMENTOS - TODAS AS MÚSICAS APROVADAS -->
                 <div class="card">
-                    <h3><i class="fas fa-star"></i> Destaques - Top 5 Músicas Mais Ouvidas</h3>
-                    <div id="destaques-container" class="grid"></div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-headphones"></i> Feed de Lançamentos</h3>
+                    <h3><i class="fas fa-headphones"></i> Feed de Lançamentos - Música para todos</h3>
                     <div id="feed-container" class="grid"></div>
                 </div>
 
                 <div class="card">
                     <h3><i class="fas fa-newspaper"></i> Novidades</h3>
-                    <p style="color: var(--gray); line-height: 1.6;">🎵 Bem-vindo à nova era da MAM Distribuidora. Agora com pagamentos automáticos via Satélite e gestão em tempo real. Lançamos a sua música em mais de 150 plataformas digitais incluindo Spotify, Apple Music e Deezer.</p>
+                    <p style="color: var(--gray); line-height: 1.6;">🎵 Bem-vindo à nova era da MAM Distribuidora. Agora com pagamentos automáticos e gestão em tempo real. Lançamos a sua música em mais de 150 plataformas digitais incluindo Spotify, Apple Music e Deezer.</p>
                 </div>
             </div>
 
@@ -798,7 +798,7 @@
         const ADMIN_WHATSAPP = "937881307";
         const VALOR_POR_STREAM = 3;
 
-        // Cloudinary Config (UNSIGNED - sem API Key)
+        // Cloudinary Config
         const CLOUDINARY_CLOUD_NAME = "dbjhwnhoq";
         const CLOUDINARY_UPLOAD_PRESET = "mam_distribuidora";
 
@@ -846,25 +846,32 @@
         function showAlert(message) {
             const alertModal = document.getElementById('modal-alert');
             const msgEl = document.getElementById('alert-message');
-            msgEl.innerText = message;
-            alertModal.style.display = 'flex';
+            if (alertModal && msgEl) {
+                msgEl.innerText = message;
+                alertModal.style.display = 'flex';
+            }
         }
 
         function closeAlertModal() {
-            document.getElementById('modal-alert').style.display = 'none';
+            const alertModal = document.getElementById('modal-alert');
+            if (alertModal) alertModal.style.display = 'none';
         }
 
         function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('active');
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('active');
         }
 
         function showLoading(show, text = "Processando...") {
-            document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
-            document.getElementById('loading-text').innerText = text;
+            const overlay = document.getElementById('loading-overlay');
+            const textEl = document.getElementById('loading-text');
+            if (overlay) overlay.style.display = show ? 'flex' : 'none';
+            if (textEl) textEl.innerText = text;
         }
 
         function togglePasswordVisibility(inputId) {
@@ -885,33 +892,165 @@
         function showSection(sectionId, button) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+            const section = document.getElementById(sectionId);
+            if (section) section.classList.add('active');
             if (button) button.classList.add('active');
             
             if (sectionId === 'artistas') loadArtists();
             if (sectionId === 'minhas-musicas') loadUserMusic();
             if (sectionId === 'carteira') loadWallet();
             if (sectionId === 'lancar') loadArtistSelect();
-            if (sectionId === 'home') { loadHomeData(); loadFeed(); }
+            if (sectionId === 'home') { loadFeed(); }
         }
 
         function showFooterContent(type) {
             const contents = {
-                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global. Operamos com tecnologia de ponta para garantir que a sua obra alcance mais de 150 lojas digitais, assegurando a máxima performance e visibilidade internacional.',
-                privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados. Informações sensíveis e ativos digitais (masters e artes) são encriptados e armazenados em servidores seguros. Garantimos que nenhum dado de utilizador ou metadado de obra seja partilhado com terceiros sem autorização expressa.',
-                termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais. A MAM Distribuidora reserva-se o direito de auditar royalties para prevenir fraudes de streaming. O descumprimento das normas de originalidade resultará na suspensão imediata da conta e retenção de fundos para análise jurídica.',
-                suporte: 'Central de Apoio Estratégico\n\nPara questões financeiras, suporte técnico ou gestão de catálogos, contacte a nossa equipa de administração:\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
+                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global.',
+                privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados.',
+                termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais.',
+                suporte: 'Central de Apoio Estratégico\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
             };
             showAlert(contents[type]);
         }
 
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Função para fazer download do áudio
+        function downloadAudio(audioUrl, musicTitle) {
+            if (!audioUrl) {
+                showAlert('Áudio não disponível para download');
+                return;
+            }
+            const link = document.createElement('a');
+            link.href = audioUrl;
+            link.download = `${musicTitle || 'musica'}.mp3`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showAlert(`⬇️ Download iniciado: ${musicTitle}`);
+        }
+
+        // ========== FEED - TODAS AS MÚSICAS APROVADAS ==========
+        async function loadFeed() {
+            console.log("loadFeed() iniciada - Carregando todas as músicas aprovadas");
+            const feedContainer = document.getElementById('feed-container');
+            if (!feedContainer) {
+                console.error("Elemento feed-container não encontrado");
+                return;
+            }
+            
+            feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
+            
+            try {
+                // Buscar TODAS as músicas aprovadas por data decrescente
+                const feedSnapshot = await db.collection('releases')
+                    .where('status', '==', 'approved')
+                    .orderBy('createdAt', 'desc')
+                    .limit(50)
+                    .get();
+                
+                console.log("Feed encontrado:", feedSnapshot.size, "músicas");
+                
+                if (feedSnapshot.empty) {
+                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum lançamento disponível ainda. Seja o primeiro a lançar uma música!</p>';
+                    return;
+                }
+                
+                feedContainer.innerHTML = '';
+                
+                for (const doc of feedSnapshot.docs) {
+                    const release = doc.data();
+                    try {
+                        let artistName = 'Artista';
+                        let userEmail = release.ownerEmail || '';
+                        
+                        if (release.artistaId) {
+                            const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                            if (artistDoc.exists) {
+                                artistName = artistDoc.data().nome;
+                            }
+                        }
+                        
+                        // Buscar nome do usuário que lançou
+                        let userName = '';
+                        if (release.ownerEmail) {
+                            const userDoc = await db.collection('users').doc(release.ownerEmail).get();
+                            if (userDoc.exists) {
+                                userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
+                            }
+                        }
+                        
+                        const musicCard = document.createElement('div');
+                        musicCard.className = 'music-card';
+                        musicCard.innerHTML = `
+                            <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
+                            <div class="music-artist">${escapeHtml(artistName)}</div>
+                            <div class="music-user"><i class="fas fa-user"></i> ${escapeHtml(userName)}</div>
+                            <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
+                            <div class="music-actions">
+                                <button class="btn-small play-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-play"></i> Ouvir</button>
+                                <button class="btn-small download-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-download"></i> Download</button>
+                            </div>
+                            <audio class="music-audio" style="display: none;" controls preload="none">
+                                <source src="${release.audioURL || ''}" type="audio/mpeg">
+                            </audio>
+                        `;
+                        
+                        // Adicionar eventos aos botões
+                        const playBtn = musicCard.querySelector('.play-btn');
+                        const downloadBtn = musicCard.querySelector('.download-btn');
+                        const audioElem = musicCard.querySelector('.music-audio');
+                        
+                        if (playBtn) {
+                            playBtn.onclick = () => {
+                                if (audioElem) {
+                                    if (audioElem.paused) {
+                                        // Parar todos os outros áudios
+                                        document.querySelectorAll('.music-audio').forEach(audio => {
+                                            if (audio !== audioElem && !audio.paused) {
+                                                audio.pause();
+                                                audio.currentTime = 0;
+                                            }
+                                        });
+                                        audioElem.style.display = 'block';
+                                        audioElem.play();
+                                        playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+                                    } else {
+                                        audioElem.pause();
+                                        playBtn.innerHTML = '<i class="fas fa-play"></i> Ouvir';
+                                    }
+                                } else {
+                                    showAlert(`🎵 Tocando: ${release.titulo}`);
+                                }
+                            };
+                        }
+                        
+                        if (downloadBtn) {
+                            downloadBtn.onclick = () => downloadAudio(release.audioURL, release.titulo);
+                        }
+                        
+                        feedContainer.appendChild(musicCard);
+                    } catch (err) {
+                        console.error("Erro ao processar música:", err);
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao carregar Feed:", error);
+                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar lançamentos. Tente novamente mais tarde.</p>';
+            }
+        }
+
         // ========== CLOUDINARY UPLOAD ==========
         function openCloudinaryUpload(options, callback) {
-            console.log("Abrindo Cloudinary Widget com:", {
-                cloudName: CLOUDINARY_CLOUD_NAME,
-                uploadPreset: CLOUDINARY_UPLOAD_PRESET
-            });
-            
             const widget = cloudinary.createUploadWidget(
                 {
                     cloudName: CLOUDINARY_CLOUD_NAME,
@@ -936,11 +1075,8 @@
                         return;
                     }
                     if (result && result.event === "success") {
-                        console.log("Upload sucesso:", result.info.secure_url);
                         const url = result.info.secure_url;
                         if (callback) callback(url);
-                    } else if (result && result.event === "close") {
-                        console.log("Widget fechado sem upload");
                     }
                 }
             );
@@ -968,7 +1104,6 @@
                     updateUserDisplay();
                     showAlert("✅ Foto de perfil atualizada com sucesso!");
                 } catch (error) {
-                    console.error("Erro ao salvar foto:", error);
                     showAlert("Erro ao salvar foto: " + error.message);
                 } finally {
                     showLoading(false);
@@ -1008,8 +1143,9 @@
             }, async (url) => {
                 document.getElementById('music-capa-url').value = url;
                 const previewImg = document.getElementById('capa-preview-img');
-                previewImg.src = url;
-                document.getElementById('capa-preview').style.display = 'block';
+                if (previewImg) previewImg.src = url;
+                const previewDiv = document.getElementById('capa-preview');
+                if (previewDiv) previewDiv.style.display = 'block';
                 showAlert("✅ Capa carregada com sucesso!");
             });
         }
@@ -1022,7 +1158,8 @@
                 folder: `releases/${currentUser?.uid || 'temp'}/audio`
             }, async (url) => {
                 document.getElementById('music-audio-url').value = url;
-                document.getElementById('audio-preview').style.display = 'block';
+                const previewDiv = document.getElementById('audio-preview');
+                if (previewDiv) previewDiv.style.display = 'block';
                 showAlert("✅ Áudio carregado com sucesso!");
             });
         }
@@ -1038,133 +1175,6 @@
             }, async (url) => {
                 document.getElementById('edit-release-capa-url').value = url;
                 showAlert("✅ Nova capa carregada! Salve para atualizar.");
-            });
-        }
-
-        // ========== LOAD HOME DATA (TOP 5 + FEED) ==========
-        async function loadHomeData() {
-            console.log("loadHomeData() iniciada");
-            const destaquesContainer = document.getElementById('destaques-container');
-            if (!destaquesContainer) {
-                console.error("Elemento destaques-container não encontrado");
-                return;
-            }
-            
-            destaquesContainer.innerHTML = '<div style="text-align:center; color:var(--gray);"><i class="fas fa-spinner fa-spin"></i> Carregando Top 5...</div>';
-            
-            try {
-                // Buscar TOP 5 músicas aprovadas por streams (decrescente)
-                const topSnapshot = await db.collection('releases')
-                    .where('status', '==', 'approved')
-                    .orderBy('streams', 'desc')
-                    .limit(5)
-                    .get();
-                
-                console.log("Top 5 snapshot size:", topSnapshot.size);
-                
-                if (topSnapshot.empty) {
-                    destaquesContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhuma música em destaque ainda.</p>';
-                } else {
-                    destaquesContainer.innerHTML = '';
-                    
-                    for (const doc of topSnapshot.docs) {
-                        const release = doc.data();
-                        try {
-                            let artistName = 'Artista';
-                            if (release.artistaId) {
-                                const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                                if (artistDoc.exists) {
-                                    artistName = artistDoc.data().nome;
-                                }
-                            }
-                            
-                            const discoDiv = document.createElement('div');
-                            discoDiv.className = 'disco-item';
-                            discoDiv.onclick = () => playMusic(release.id);
-                            discoDiv.innerHTML = `
-                                <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                                <div class="disco-title">${escapeHtml(release.titulo || 'Sem título')}</div>
-                                <div class="disco-artist">${escapeHtml(artistName)}</div>
-                                <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                                <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
-                            `;
-                            destaquesContainer.appendChild(discoDiv);
-                        } catch (err) {
-                            console.error("Erro ao processar destaque:", err);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error("Erro ao carregar Top 5:", error);
-                destaquesContainer.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro ao carregar destaques.</p>';
-            }
-        }
-
-        async function loadFeed() {
-            console.log("loadFeed() iniciada");
-            const feedContainer = document.getElementById('feed-container');
-            if (!feedContainer) {
-                console.error("Elemento feed-container não encontrado");
-                return;
-            }
-            
-            feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray);"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
-            
-            try {
-                // Buscar todos os lançamentos aprovados por data decrescente
-                const feedSnapshot = await db.collection('releases')
-                    .where('status', '==', 'approved')
-                    .orderBy('createdAt', 'desc')
-                    .limit(30)
-                    .get();
-                
-                console.log("Feed snapshot size:", feedSnapshot.size);
-                
-                if (feedSnapshot.empty) {
-                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum lançamento disponível.</p>';
-                    return;
-                }
-                
-                feedContainer.innerHTML = '';
-                
-                for (const doc of feedSnapshot.docs) {
-                    const release = doc.data();
-                    try {
-                        let artistName = 'Artista';
-                        if (release.artistaId) {
-                            const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                            if (artistDoc.exists) {
-                                artistName = artistDoc.data().nome;
-                            }
-                        }
-                        
-                        const discoDiv = document.createElement('div');
-                        discoDiv.className = 'disco-item';
-                        discoDiv.onclick = () => playMusic(release.id);
-                        discoDiv.innerHTML = `
-                            <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                            <div class="disco-title">${escapeHtml(release.titulo || 'Sem título')}</div>
-                            <div class="disco-artist">${escapeHtml(artistName)}</div>
-                            <div style="margin-top: 10px;"><i class="fas fa-play-circle" style="color: var(--gold); font-size: 1.5rem;"></i></div>
-                        `;
-                        feedContainer.appendChild(discoDiv);
-                    } catch (err) {
-                        console.error("Erro ao processar feed:", err);
-                    }
-                }
-            } catch (error) {
-                console.error("Erro ao carregar Feed:", error);
-                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro ao carregar lançamentos.</p>';
-            }
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str).replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
             });
         }
 
@@ -1358,11 +1368,13 @@
         // ========== ARTISTAS ==========
         async function loadArtists() {
             if (!userData?.artists || userData.artists.length === 0) {
-                document.getElementById('artistas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
+                const container = document.getElementById('artistas-container');
+                if (container) container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum artista adicionado.</p>';
                 return;
             }
             
             const container = document.getElementById('artistas-container');
+            if (!container) return;
             container.innerHTML = '';
             
             for (const artistId of userData.artists) {
@@ -1403,20 +1415,33 @@
         }
 
         function limparFormularioArtista() {
-            document.getElementById('artist-name').value = '';
-            document.getElementById('artist-style').value = '';
-            document.getElementById('artist-bio').value = '';
-            document.getElementById('artist-instagram').value = '';
-            document.getElementById('artist-facebook').value = '';
-            document.getElementById('artist-youtube').value = '';
-            document.getElementById('artist-tiktok').value = '';
-            document.getElementById('artist-spotify').value = '';
-            document.getElementById('artist-apple').value = '';
-            document.getElementById('artist-twitter').value = '';
-            document.getElementById('artist-soundcloud').value = '';
-            document.getElementById('artist-photo-preview').src = 'https://via.placeholder.com/100';
+            const nameInput = document.getElementById('artist-name');
+            if (nameInput) nameInput.value = '';
+            const styleSelect = document.getElementById('artist-style');
+            if (styleSelect) styleSelect.value = '';
+            const bioTextarea = document.getElementById('artist-bio');
+            if (bioTextarea) bioTextarea.value = '';
+            const instagramInput = document.getElementById('artist-instagram');
+            if (instagramInput) instagramInput.value = '';
+            const facebookInput = document.getElementById('artist-facebook');
+            if (facebookInput) facebookInput.value = '';
+            const youtubeInput = document.getElementById('artist-youtube');
+            if (youtubeInput) youtubeInput.value = '';
+            const tiktokInput = document.getElementById('artist-tiktok');
+            if (tiktokInput) tiktokInput.value = '';
+            const spotifyInput = document.getElementById('artist-spotify');
+            if (spotifyInput) spotifyInput.value = '';
+            const appleInput = document.getElementById('artist-apple');
+            if (appleInput) appleInput.value = '';
+            const twitterInput = document.getElementById('artist-twitter');
+            if (twitterInput) twitterInput.value = '';
+            const soundcloudInput = document.getElementById('artist-soundcloud');
+            if (soundcloudInput) soundcloudInput.value = '';
+            const previewImg = document.getElementById('artist-photo-preview');
+            if (previewImg) previewImg.src = 'https://via.placeholder.com/100';
             pendingArtistPhotoUrl = null;
-            document.getElementById('artist-photo-url').value = '';
+            const photoUrlInput = document.getElementById('artist-photo-url');
+            if (photoUrlInput) photoUrlInput.value = '';
         }
 
         function openAddArtistModal() {
@@ -1448,6 +1473,7 @@
             }
             
             const submitBtn = document.getElementById('btnSaveArtist');
+            if (!submitBtn) return;
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
@@ -1613,18 +1639,24 @@
         function toggleReleaseType() {
             const type = document.getElementById('release-type').value;
             if (type === 'album') {
-                document.getElementById('single-fields').style.display = 'none';
-                document.getElementById('album-fields').style.display = 'block';
+                const singleFields = document.getElementById('single-fields');
+                const albumFields = document.getElementById('album-fields');
+                if (singleFields) singleFields.style.display = 'none';
+                if (albumFields) albumFields.style.display = 'block';
             } else {
-                document.getElementById('single-fields').style.display = 'block';
-                document.getElementById('album-fields').style.display = 'none';
+                const singleFields = document.getElementById('single-fields');
+                const albumFields = document.getElementById('album-fields');
+                if (singleFields) singleFields.style.display = 'block';
+                if (albumFields) albumFields.style.display = 'none';
             }
         }
 
         function addTrackField() {
             const container = document.getElementById('tracks-container');
+            if (!container) return;
             const trackDiv = document.createElement('div');
             trackDiv.className = 'dynamic-track';
+            const trackIndex = container.children.length;
             trackDiv.innerHTML = `
                 <input type="text" placeholder="Título da faixa" class="track-title-input" style="flex:2; margin-bottom:10px;">
                 <div style="display: flex; gap: 10px; align-items: center;">
@@ -1637,35 +1669,41 @@
             `;
             
             const uploadBtn = trackDiv.querySelector('.upload-track-btn');
-            const trackIndex = container.children.length;
-            uploadBtn.onclick = () => {
-                openCloudinaryUpload({
-                    resourceType: 'auto',
-                    formats: ['mp3', 'wav', 'm4a'],
-                    maxSize: 200000000,
-                    folder: `releases/${currentUser?.uid || 'temp'}/tracks`
-                }, (url) => {
-                    trackDiv.querySelector('.track-url-input').value = url;
-                    trackDiv.querySelector('.track-preview').style.display = 'block';
-                    showAlert(`✅ Áudio da faixa ${trackIndex + 1} carregado!`);
-                });
-            };
+            if (uploadBtn) {
+                uploadBtn.onclick = () => {
+                    openCloudinaryUpload({
+                        resourceType: 'auto',
+                        formats: ['mp3', 'wav', 'm4a'],
+                        maxSize: 200000000,
+                        folder: `releases/${currentUser?.uid || 'temp'}/tracks`
+                    }, (url) => {
+                        const urlInput = trackDiv.querySelector('.track-url-input');
+                        const previewDiv = trackDiv.querySelector('.track-preview');
+                        if (urlInput) urlInput.value = url;
+                        if (previewDiv) previewDiv.style.display = 'block';
+                        showAlert(`✅ Áudio da faixa ${trackIndex + 1} carregado!`);
+                    });
+                };
+            }
             
             container.appendChild(trackDiv);
         }
 
         function generateISRC() {
             const random = 'MAM' + Math.random().toString(36).substring(2, 10).toUpperCase();
-            document.getElementById('music-isrc').value = random;
+            const isrcInput = document.getElementById('music-isrc');
+            if (isrcInput) isrcInput.value = random;
         }
 
         function generateUPC() {
             const random = Math.floor(Math.random() * 10000000000000).toString().padStart(12, '0');
-            document.getElementById('music-upc').value = random;
+            const upcInput = document.getElementById('music-upc');
+            if (upcInput) upcInput.value = random;
         }
 
         async function loadArtistSelect() {
             const select = document.getElementById('music-artista-select');
+            if (!select) return;
             select.innerHTML = '<option value="">Selecione um Artista</option>';
             
             if (userData?.artists && userData.artists.length > 0) {
@@ -1708,6 +1746,7 @@
             }
             
             const submitBtn = document.getElementById('btnEnviarLancamento');
+            if (!submitBtn) return;
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
@@ -1767,20 +1806,33 @@
                 userData.releases.push(releaseId);
                 
                 // Reset form
-                document.getElementById('music-titulo').value = '';
-                document.getElementById('music-capa-url').value = '';
-                document.getElementById('music-audio-url').value = '';
-                document.getElementById('music-isrc').value = '';
-                document.getElementById('music-upc').value = '';
-                document.getElementById('music-data').value = '';
-                document.getElementById('music-colaboradores').value = '';
-                document.getElementById('music-produtores').value = '';
-                document.getElementById('music-estilo').value = '';
-                document.getElementById('capa-preview').style.display = 'none';
-                document.getElementById('audio-preview').style.display = 'none';
-                document.getElementById('tracks-container').innerHTML = '';
+                const tituloInput = document.getElementById('music-titulo');
+                if (tituloInput) tituloInput.value = '';
+                const capaUrlInput = document.getElementById('music-capa-url');
+                if (capaUrlInput) capaUrlInput.value = '';
+                const audioUrlInput = document.getElementById('music-audio-url');
+                if (audioUrlInput) audioUrlInput.value = '';
+                const isrcInput = document.getElementById('music-isrc');
+                if (isrcInput) isrcInput.value = '';
+                const upcInput = document.getElementById('music-upc');
+                if (upcInput) upcInput.value = '';
+                const dataInput = document.getElementById('music-data');
+                if (dataInput) dataInput.value = '';
+                const colaboradoresInput = document.getElementById('music-colaboradores');
+                if (colaboradoresInput) colaboradoresInput.value = '';
+                const produtoresInput = document.getElementById('music-produtores');
+                if (produtoresInput) produtoresInput.value = '';
+                const estiloSelect = document.getElementById('music-estilo');
+                if (estiloSelect) estiloSelect.value = '';
+                const capaPreview = document.getElementById('capa-preview');
+                if (capaPreview) capaPreview.style.display = 'none';
+                const audioPreview = document.getElementById('audio-preview');
+                if (audioPreview) audioPreview.style.display = 'none';
+                const tracksContainer = document.getElementById('tracks-container');
+                if (tracksContainer) tracksContainer.innerHTML = '';
                 if (releaseType === 'album') addTrackField();
-                document.getElementById('music-artista-select').value = '';
+                const artistaSelect = document.getElementById('music-artista-select');
+                if (artistaSelect) artistaSelect.value = '';
                 
                 showLoading(false);
                 showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
@@ -1797,11 +1849,13 @@
         // ========== MÚSICAS DO USUÁRIO ==========
         async function loadUserMusic() {
             if (!userData?.releases || userData.releases.length === 0) {
-                document.getElementById('minhas-musicas-container').innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhuma música lançada.</p>';
+                const container = document.getElementById('minhas-musicas-container');
+                if (container) container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhuma música lançada.</p>';
                 return;
             }
             
             const container = document.getElementById('minhas-musicas-container');
+            if (!container) return;
             container.innerHTML = '';
             
             for (const releaseId of userData.releases) {
@@ -1815,21 +1869,21 @@
                         const statusText = release.status === 'approved' ? 'Aprovado' : (release.status === 'rejected' ? 'Reprovado' : 'Pendente');
                         const statusClass = release.status === 'approved' ? 'status-active' : (release.status === 'rejected' ? 'status-error' : 'status-pending');
                         
-                        const discoDiv = document.createElement('div');
-                        discoDiv.className = 'disco-item';
-                        discoDiv.innerHTML = `
-                            <img src="${release.capaURL}" class="disco-cover" onerror="this.src='https://via.placeholder.com/140'">
-                            <div class="disco-title">${escapeHtml(release.titulo)}</div>
-                            <div class="disco-artist">${escapeHtml(artistName)}</div>
+                        const musicCard = document.createElement('div');
+                        musicCard.className = 'music-card';
+                        musicCard.innerHTML = `
+                            <img src="${release.capaURL}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <div class="music-title">${escapeHtml(release.titulo)}</div>
+                            <div class="music-artist">${escapeHtml(artistName)}</div>
                             <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
                             <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
-                            <div class="list-actions" style="margin-top: 10px; justify-content: center;">
+                            <div class="music-actions" style="margin-top: 10px;">
                                 <button class="btn-small" onclick="playMusic('${releaseId}')"><i class="fas fa-play"></i> Ouvir</button>
                                 <button class="btn-small" onclick="openEditReleaseModal('${releaseId}')"><i class="fas fa-edit"></i> Editar</button>
                                 <button class="btn-small btn-danger" onclick="deleteRelease('${releaseId}')"><i class="fas fa-trash"></i> Eliminar</button>
                             </div>
                         `;
-                        container.appendChild(discoDiv);
+                        container.appendChild(musicCard);
                     }
                 } catch (err) {
                     console.error('Erro ao carregar música do usuário:', err);
@@ -1926,7 +1980,7 @@
             }
         }
 
-        // ========== REPRODUÇÃO ==========
+        // ========== REPRODUÇÃO E STREAM ==========
         async function playMusic(releaseId) {
             showLoading(true, 'A processar stream...');
             try {
@@ -1961,7 +2015,7 @@
                 }
                 
                 loadWallet();
-                if (document.getElementById('minhas-musicas').classList.contains('active')) loadUserMusic();
+                loadUserMusic();
                 showLoading(false);
             } catch (error) {
                 console.error('Erro ao registrar stream:', error);
@@ -1985,13 +2039,18 @@
                 userData.cartao = cartaoData;
             }
 
-            document.getElementById('visa-number').textContent = userData.cartao.numero;
-            document.getElementById('visa-holder').textContent = userData.nome || 'ARTISTA MAM';
-            document.getElementById('visa-expiry').textContent = 'VAL: ' + userData.cartao.validade;
+            const visaNumber = document.getElementById('visa-number');
+            if (visaNumber) visaNumber.textContent = userData.cartao.numero;
+            const visaHolder = document.getElementById('visa-holder');
+            if (visaHolder) visaHolder.textContent = userData.nome || 'ARTISTA MAM';
+            const visaExpiry = document.getElementById('visa-expiry');
+            if (visaExpiry) visaExpiry.textContent = 'VAL: ' + userData.cartao.validade;
 
             const rate = 1;
-            document.getElementById('carteira-saldo').textContent = (userData.saldo * rate).toLocaleString() + ' Kz';
-            document.getElementById('carteira-total-ganhos').textContent = (userData.totalGanhos * rate).toLocaleString() + ' Kz';
+            const carteiraSaldo = document.getElementById('carteira-saldo');
+            if (carteiraSaldo) carteiraSaldo.textContent = (userData.saldo * rate).toLocaleString() + ' Kz';
+            const carteiraTotal = document.getElementById('carteira-total-ganhos');
+            if (carteiraTotal) carteiraTotal.textContent = (userData.totalGanhos * rate).toLocaleString() + ' Kz';
             
             let monthlyEarnings = 0;
             if (userData.releases) {
@@ -2006,7 +2065,8 @@
                     }
                 }
             }
-            document.getElementById('carteira-ganhos-mes').textContent = (monthlyEarnings * rate).toLocaleString() + ' Kz';
+            const carteiraGanhosMes = document.getElementById('carteira-ganhos-mes');
+            if (carteiraGanhosMes) carteiraGanhosMes.textContent = (monthlyEarnings * rate).toLocaleString() + ' Kz';
             
             try {
                 const saquesSnapshot = await db.collection('withdrawals')
@@ -2015,6 +2075,7 @@
                     .get();
                 
                 const historicoContainer = document.getElementById('historico-saques');
+                if (!historicoContainer) return;
                 if (saquesSnapshot.empty) {
                     historicoContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum saque solicitado.</p>';
                 } else {
@@ -2092,9 +2153,12 @@
                 
                 userData.saldo -= valor;
                 closeModal('saqueModal');
-                document.getElementById('saque-valor').value = '';
-                document.getElementById('saque-metodo').value = '';
-                document.getElementById('saque-conta').value = '';
+                const saqueValor = document.getElementById('saque-valor');
+                if (saqueValor) saqueValor.value = '';
+                const saqueMetodo = document.getElementById('saque-metodo');
+                if (saqueMetodo) saqueMetodo.value = '';
+                const saqueConta = document.getElementById('saque-conta');
+                if (saqueConta) saqueConta.value = '';
                 loadWallet();
                 updateUserDisplay();
                 showLoading(false);
@@ -2119,25 +2183,33 @@
                 default: return;
             }
             
-            document.getElementById('plan-details').innerHTML = `
-                <h3 style="color: var(--gold);">Plano ${planName}</h3>
-                <p style="font-size: 1.5rem; color: var(--gold);">${price.toLocaleString()} Kz</p>
-                <p>${artistsLimit === 999999 ? 'Artistas Ilimitados' : `${artistsLimit} Artistas`}</p>
-            `;
+            const planDetails = document.getElementById('plan-details');
+            if (planDetails) {
+                planDetails.innerHTML = `
+                    <h3 style="color: var(--gold);">Plano ${planName}</h3>
+                    <p style="font-size: 1.5rem; color: var(--gold);">${price.toLocaleString()} Kz</p>
+                    <p>${artistsLimit === 999999 ? 'Artistas Ilimitados' : `${artistsLimit} Artistas`}</p>
+                `;
+            }
             openModal('planPurchaseModal');
         }
 
         function selectPaymentMethod(method) {
             selectedPaymentMethod = method;
             document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
-            event.target.closest('.payment-method').classList.add('selected');
+            if (event && event.target) {
+                const target = event.target.closest('.payment-method');
+                if (target) target.classList.add('selected');
+            }
             
+            const bankInfo = document.getElementById('bank-info');
+            const walletBtn = document.getElementById('pay-with-wallet-btn');
             if (method === 'transfer') {
-                document.getElementById('bank-info').style.display = 'block';
-                document.getElementById('pay-with-wallet-btn').style.display = 'none';
+                if (bankInfo) bankInfo.style.display = 'block';
+                if (walletBtn) walletBtn.style.display = 'none';
             } else {
-                document.getElementById('bank-info').style.display = 'none';
-                document.getElementById('pay-with-wallet-btn').style.display = 'block';
+                if (bankInfo) bankInfo.style.display = 'none';
+                if (walletBtn) walletBtn.style.display = 'block';
             }
         }
 
@@ -2199,6 +2271,7 @@
             try {
                 const snapshot = await db.collection('releases').get();
                 const container = document.getElementById('admin-musics-list');
+                if (!container) return;
                 container.innerHTML = '';
                 
                 if (snapshot.empty) {
@@ -2256,6 +2329,7 @@
                 showLoading(false);
                 showAlert('✅ Música aprovada com sucesso! Agora está disponível no feed.');
                 openAdminMusicsModal();
+                loadFeed();
             } catch (error) {
                 console.error('Erro ao aprovar música:', error);
                 showLoading(false);
@@ -2285,6 +2359,7 @@
             try {
                 const snapshot = await db.collection('releases').where('status', '==', 'approved').get();
                 const select = document.getElementById('dist-music-select');
+                if (!select) return;
                 select.innerHTML = '<option value="">Selecione uma música</option>';
                 
                 if (snapshot.empty) {
@@ -2313,7 +2388,8 @@
         
         async function loadDistributionForm(musicId) {
             if (!musicId) {
-                document.getElementById('platforms-list').innerHTML = '';
+                const platformsList = document.getElementById('platforms-list');
+                if (platformsList) platformsList.innerHTML = '';
                 return;
             }
             
@@ -2334,7 +2410,8 @@
                         </div>
                     `;
                 });
-                document.getElementById('platforms-list').innerHTML = html;
+                const platformsList = document.getElementById('platforms-list');
+                if (platformsList) platformsList.innerHTML = html;
                 window.currentDistMusicId = musicId;
                 showLoading(false);
             } catch (error) {
@@ -2366,7 +2443,7 @@
                 });
                 
                 showLoading(false);
-                showAlert('✅ Distribuição atualizada com sucesso! As plataformas selecionadas foram registradas.');
+                showAlert('✅ Distribuição atualizada com sucesso!');
             } catch (error) {
                 console.error('Erro ao atualizar distribuição:', error);
                 showLoading(false);
@@ -2447,6 +2524,7 @@
             try {
                 const doc = await db.collection('users').doc(email).get();
                 const resultsDiv = document.getElementById('user-manage-results');
+                if (!resultsDiv) return;
                 
                 if (!doc.exists) {
                     resultsDiv.innerHTML = '<p style="color: var(--danger);">Utilizador não encontrado!</p>';
@@ -2520,8 +2598,10 @@
                 await db.collection('users').doc(email).delete();
                 showLoading(false);
                 showAlert('🗑️ Utilizador eliminado permanentemente!');
-                document.getElementById('user-manage-results').innerHTML = '';
-                document.getElementById('admin-search-email').value = '';
+                const resultsDiv = document.getElementById('user-manage-results');
+                if (resultsDiv) resultsDiv.innerHTML = '';
+                const searchInput = document.getElementById('admin-search-email');
+                if (searchInput) searchInput.value = '';
             } catch (error) {
                 console.error('Erro ao eliminar usuário:', error);
                 showLoading(false);
@@ -2532,37 +2612,94 @@
         // ========== ATUALIZAÇÃO DE INTERFACE ==========
         function updateUserDisplay() {
             if (!userData) return;
-            document.getElementById('user-display-name').textContent = userData.nome || 'Utilizador';
-            document.getElementById('user-display-type').textContent = userData.tipo || 'Artista';
-            document.getElementById('user-display-country').textContent = userData.pais || 'Angola';
-            document.getElementById('user-display-plan').textContent = `PLANO ${userData.plano || 'FREE'}`;
-            document.getElementById('home-user-photo').src = userData.foto || 'https://via.placeholder.com/80';
-            document.getElementById('perfil-foto-preview').src = userData.foto || 'https://via.placeholder.com/120';
-            document.getElementById('perfil-nome').value = userData.nome || '';
-            document.getElementById('perfil-telefone').value = userData.telefone || '';
-            document.getElementById('perfil-pais').value = userData.pais || '';
-            document.getElementById('stat-saldo').textContent = (userData.saldo || 0).toLocaleString() + ' Kz';
-            document.getElementById('stat-artistas-count').textContent = (userData.artists?.length || 0);
-            document.getElementById('stat-musicas-count').textContent = (userData.releases?.length || 0);
+            const displayName = document.getElementById('user-display-name');
+            if (displayName) displayName.textContent = userData.nome || 'Utilizador';
+            const displayType = document.getElementById('user-display-type');
+            if (displayType) displayType.textContent = userData.tipo || 'Artista';
+            const displayCountry = document.getElementById('user-display-country');
+            if (displayCountry) displayCountry.textContent = userData.pais || 'Angola';
+            const displayPlan = document.getElementById('user-display-plan');
+            if (displayPlan) displayPlan.textContent = `PLANO ${userData.plano || 'FREE'}`;
+            const homePhoto = document.getElementById('home-user-photo');
+            if (homePhoto) homePhoto.src = userData.foto || 'https://via.placeholder.com/80';
+            const perfilPhoto = document.getElementById('perfil-foto-preview');
+            if (perfilPhoto) perfilPhoto.src = userData.foto || 'https://via.placeholder.com/120';
+            const perfilNome = document.getElementById('perfil-nome');
+            if (perfilNome) perfilNome.value = userData.nome || '';
+            const perfilTelefone = document.getElementById('perfil-telefone');
+            if (perfilTelefone) perfilTelefone.value = userData.telefone || '';
+            const perfilPais = document.getElementById('perfil-pais');
+            if (perfilPais) perfilPais.value = userData.pais || '';
+            const statSaldo = document.getElementById('stat-saldo');
+            if (statSaldo) statSaldo.textContent = (userData.saldo || 0).toLocaleString() + ' Kz';
+            const statArtistas = document.getElementById('stat-artistas-count');
+            if (statArtistas) statArtistas.textContent = (userData.artists?.length || 0);
+            const statMusicas = document.getElementById('stat-musicas-count');
+            if (statMusicas) statMusicas.textContent = (userData.releases?.length || 0);
+            
+            // Calcular total de streams do usuário
+            let totalStreams = 0;
+            if (userData.releases && userData.releases.length > 0) {
+                (async () => {
+                    for (const releaseId of userData.releases) {
+                        const releaseDoc = await db.collection('releases').doc(releaseId).get();
+                        if (releaseDoc.exists) {
+                            totalStreams += releaseDoc.data().streams || 0;
+                        }
+                    }
+                    const statStreams = document.getElementById('stat-streams');
+                    if (statStreams) statStreams.textContent = totalStreams.toLocaleString();
+                })();
+            }
         }
 
         function showAuthScreen() {
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-            document.querySelectorAll('#nav-artistas, #nav-lancar, #nav-minhas-musicas, #nav-carteira, #nav-perfil, #btn-admin-global').forEach(el => el.style.display = 'none');
-            document.getElementById('nav-login').style.display = 'inline-flex';
-            document.getElementById('nav-logout').style.display = 'none';
+            const authScreen = document.getElementById('auth-screen');
+            const mainApp = document.getElementById('main-app');
+            if (authScreen) authScreen.style.display = 'flex';
+            if (mainApp) mainApp.style.display = 'none';
+            const navArtistas = document.getElementById('nav-artistas');
+            if (navArtistas) navArtistas.style.display = 'none';
+            const navLancar = document.getElementById('nav-lancar');
+            if (navLancar) navLancar.style.display = 'none';
+            const navMinhasMusicas = document.getElementById('nav-minhas-musicas');
+            if (navMinhasMusicas) navMinhasMusicas.style.display = 'none';
+            const navCarteira = document.getElementById('nav-carteira');
+            if (navCarteira) navCarteira.style.display = 'none';
+            const navPerfil = document.getElementById('nav-perfil');
+            if (navPerfil) navPerfil.style.display = 'none';
+            const btnAdmin = document.getElementById('btn-admin-global');
+            if (btnAdmin) btnAdmin.style.display = 'none';
+            const navLogin = document.getElementById('nav-login');
+            if (navLogin) navLogin.style.display = 'inline-flex';
+            const navLogout = document.getElementById('nav-logout');
+            if (navLogout) navLogout.style.display = 'none';
         }
 
         function showMainApp() {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            document.querySelectorAll('#nav-artistas, #nav-lancar, #nav-minhas-musicas, #nav-carteira, #nav-perfil').forEach(el => el.style.display = 'inline-flex');
-            document.getElementById('nav-login').style.display = 'none';
-            document.getElementById('nav-logout').style.display = 'inline-flex';
+            const authScreen = document.getElementById('auth-screen');
+            const mainApp = document.getElementById('main-app');
+            if (authScreen) authScreen.style.display = 'none';
+            if (mainApp) mainApp.style.display = 'block';
+            const navArtistas = document.getElementById('nav-artistas');
+            if (navArtistas) navArtistas.style.display = 'inline-flex';
+            const navLancar = document.getElementById('nav-lancar');
+            if (navLancar) navLancar.style.display = 'inline-flex';
+            const navMinhasMusicas = document.getElementById('nav-minhas-musicas');
+            if (navMinhasMusicas) navMinhasMusicas.style.display = 'inline-flex';
+            const navCarteira = document.getElementById('nav-carteira');
+            if (navCarteira) navCarteira.style.display = 'inline-flex';
+            const navPerfil = document.getElementById('nav-perfil');
+            if (navPerfil) navPerfil.style.display = 'inline-flex';
+            const navLogin = document.getElementById('nav-login');
+            if (navLogin) navLogin.style.display = 'none';
+            const navLogout = document.getElementById('nav-logout');
+            if (navLogout) navLogout.style.display = 'inline-flex';
             if (currentUser && currentUser.email === ADMIN_EMAIL) {
-                document.getElementById('btn-admin-global').style.display = 'inline-flex';
-                document.getElementById('admin-pro-max-indicator').style.display = 'inline-block';
+                const btnAdmin = document.getElementById('btn-admin-global');
+                if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+                const adminIndicator = document.getElementById('admin-pro-max-indicator');
+                if (adminIndicator) adminIndicator.style.display = 'inline-block';
             }
             carregarPaisesEEstilos();
         }
@@ -2570,15 +2707,6 @@
         // ========== INICIALIZAÇÃO DOS BOTÕES ==========
         window.onload = function() {
             console.log("Site carregado - Inicializando botões");
-            
-            // Botão Adicionar Artista
-            const btnArt = document.querySelector('.btn-add-artist');
-            if (btnArt) {
-                btnArt.onclick = function(e) {
-                    e.preventDefault();
-                    openAddArtistModal();
-                };
-            }
             
             const btnArtistById = document.getElementById('btnAddArtist');
             if (btnArtistById) {
@@ -2588,71 +2716,38 @@
                 };
             }
             
-            // Botão Salvar Artista
             const saveArtistBtn = document.getElementById('btnSaveArtist');
-            if (saveArtistBtn) {
-                saveArtistBtn.onclick = saveArtist;
-            }
+            if (saveArtistBtn) saveArtistBtn.onclick = saveArtist;
             
-            // Botão Atualizar Artista
             const updateArtistBtn = document.getElementById('btnUpdateArtist');
-            if (updateArtistBtn) {
-                updateArtistBtn.onclick = updateArtist;
-            }
+            if (updateArtistBtn) updateArtistBtn.onclick = updateArtist;
             
-            // Botão Enviar Lançamento
             const enviarBtn = document.getElementById('btnEnviarLancamento');
-            if (enviarBtn) {
-                enviarBtn.onclick = enviarLancamento;
-            }
+            if (enviarBtn) enviarBtn.onclick = enviarLancamento;
             
-            // Botão Atualizar Perfil
             const updateProfileBtn = document.getElementById('btnUpdateProfile');
-            if (updateProfileBtn) {
-                updateProfileBtn.onclick = handleUpdateProfile;
-            }
+            if (updateProfileBtn) updateProfileBtn.onclick = handleUpdateProfile;
             
-            // Botão Atualizar Lançamento
             const updateReleaseBtn = document.getElementById('btnUpdateRelease');
-            if (updateReleaseBtn) {
-                updateReleaseBtn.onclick = updateRelease;
-            }
+            if (updateReleaseBtn) updateReleaseBtn.onclick = updateRelease;
             
-            // Upload de foto de perfil
             const profileUploadTrigger = document.getElementById('profile-upload-trigger');
-            if (profileUploadTrigger) {
-                profileUploadTrigger.onclick = function() { uploadProfilePhoto(); };
-            }
+            if (profileUploadTrigger) profileUploadTrigger.onclick = function() { uploadProfilePhoto(); };
             
-            // Upload de foto do artista
             const uploadArtistPhotoBtn = document.getElementById('upload-artist-photo-btn');
-            if (uploadArtistPhotoBtn) {
-                uploadArtistPhotoBtn.onclick = function() { uploadArtistPhoto(false); };
-            }
+            if (uploadArtistPhotoBtn) uploadArtistPhotoBtn.onclick = function() { uploadArtistPhoto(false); };
             
-            // Upload de foto do artista (edição)
             const editUploadArtistPhotoBtn = document.getElementById('edit-upload-artist-photo-btn');
-            if (editUploadArtistPhotoBtn) {
-                editUploadArtistPhotoBtn.onclick = function() { uploadArtistPhoto(true); };
-            }
+            if (editUploadArtistPhotoBtn) editUploadArtistPhotoBtn.onclick = function() { uploadArtistPhoto(true); };
             
-            // Upload de capa do lançamento
             const uploadCapaBtn = document.getElementById('upload-capa-btn');
-            if (uploadCapaBtn) {
-                uploadCapaBtn.onclick = function() { uploadReleaseCover(); };
-            }
+            if (uploadCapaBtn) uploadCapaBtn.onclick = function() { uploadReleaseCover(); };
             
-            // Upload de áudio do lançamento
             const uploadAudioBtn = document.getElementById('upload-audio-btn');
-            if (uploadAudioBtn) {
-                uploadAudioBtn.onclick = function() { uploadReleaseAudio(); };
-            }
+            if (uploadAudioBtn) uploadAudioBtn.onclick = function() { uploadReleaseAudio(); };
             
-            // Upload de capa de edição
             const editUploadCapaBtn = document.getElementById('edit-upload-capa-btn');
-            if (editUploadCapaBtn) {
-                editUploadCapaBtn.onclick = function() { uploadEditReleaseCover(); };
-            }
+            if (editUploadCapaBtn) editUploadCapaBtn.onclick = function() { uploadEditReleaseCover(); };
             
             carregarPaisesEEstilos();
             setTimeout(function() { addTrackField(); }, 100);
@@ -2690,7 +2785,6 @@
                     }
                     showMainApp();
                     updateUserDisplay();
-                    loadHomeData();
                     loadFeed();
                     loadArtistSelect();
                 } catch (error) {
@@ -2704,10 +2798,8 @@
             }
         });
 
-        // Inicialização do EmailJS
         emailjs.init("vuAVZ5U4lRBZcsIon");
         
-        // Fechar modais ao clicar fora
         document.querySelectorAll('.modal').forEach(function(modal) {
             modal.addEventListener('click', function(e) { 
                 if (e.target === modal) modal.classList.remove('active'); 

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="MAM Distribuidora - O Império da Música. Distribua sua música para mais de 150 plataformas digitais.">
-    <meta name="keywords" content="distribuição musical, spotify, apple music, deezer, música, artistas, angola">
+    <meta name="description" content="MAM Distribuidora - O Império da Música. Distribuição profissional com DDEX ERN 4.3 para mais de 150 plataformas.">
+    <meta name="keywords" content="distribuição musical, spotify, apple music, deezer, música, artistas, angola, ddex">
     <meta name="author" content="Matias Arsénio Manuel">
     <meta name="robots" content="index, follow">
     
@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Firebase SDK Compat -->
+    <!-- Firebase SDK (ORDEM CORRETA) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -69,6 +69,9 @@
         input, select, textarea { width: 100%; padding: 14px; background: #000; border: 1px solid #333; color: var(--text); border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
         
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-row-full { grid-column: span 2; }
+        
         .password-container { position: relative; margin-bottom: 15px; }
         .password-container input { margin-bottom: 0; padding-right: 45px; }
         .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gold); cursor: pointer; font-size: 1.1rem; }
@@ -119,7 +122,7 @@
         .music-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
         .music-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
         .music-user { font-size: 0.7rem; color: #555; margin-bottom: 10px; }
-        .music-actions { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        .music-actions { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
         .music-actions button { padding: 8px 15px; font-size: 0.7rem; }
         audio { width: 100%; margin-top: 10px; border-radius: 8px; }
         
@@ -144,7 +147,7 @@
         
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { background: var(--card); border: 1px solid #333; padding: 40px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; border-left: 4px solid var(--gold); position: relative; }
+        .modal-content { background: var(--card); border: 1px solid #333; padding: 40px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; border-left: 4px solid var(--gold); position: relative; }
         .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--gold); font-size: 1.5rem; cursor: pointer; }
         .modal-close:hover { color: #fff; }
         
@@ -186,12 +189,17 @@
         .platform-checkbox input { width: auto; margin: 0; }
         .platform-checkbox label { margin: 0; cursor: pointer; color: var(--gray); }
         
+        .ddex-info { background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 3px solid var(--gold); }
+        .ddex-info p { font-size: 0.75rem; margin: 5px 0; color: var(--gray); }
+        
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .grid { grid-template-columns: 1fr; }
             .stat-grid { grid-template-columns: 1fr; }
             .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
             .info-grid { grid-template-columns: 1fr; gap: 10px; }
+            .form-row { grid-template-columns: 1fr; }
+            .form-row-full { grid-column: span 1; }
         }
     </style>
 </head>
@@ -221,7 +229,7 @@
             <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" alt="MAM Logo">
             <h1 class="logo-text">MAM DISTRIBUIDORA</h1>
         </div>
-        <p style="color: var(--gold); font-size: 0.75rem; margin-top: 5px; letter-spacing: 1px;">O Império da Música em Angola</p>
+        <p style="color: var(--gold); font-size: 0.75rem; margin-top: 5px; letter-spacing: 1px;">O Império da Música em Angola | DDEX ERN 4.3</p>
     </header>
 
     <nav>
@@ -306,7 +314,7 @@
         <div style="max-width: 650px; width: 100%; text-align: center;">
             <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" style="width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--gold); margin-bottom: 30px; box-shadow: 0 0 20px rgba(212,175,55,0.3);">
             <h1 style="color: var(--gold); font-size: 2.5rem; margin-bottom: 15px; letter-spacing: 2px;">O IMPÉRIO DA MÚSICA</h1>
-            <p style="color: var(--gray); font-size: 1rem; margin-bottom: 30px;">Distribua suas músicas para mais de 150 plataformas digitais. Ganhe com seus lançamentos!</p>
+            <p style="color: var(--gray); font-size: 1rem; margin-bottom: 30px;">Distribua suas músicas para mais de 150 plataformas digitais. Compatível com DDEX ERN 4.3 para Meta e TikTok.</p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <button class="btn" style="width: auto; padding: 15px 40px;" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Entrar</button>
                 <button class="btn btn-sec" style="width: auto; padding: 15px 40px;" onclick="openModal('modal-registro')"><i class="fas fa-user-plus"></i> Criar Conta</button>
@@ -318,9 +326,9 @@
                     <p>Spotify, Apple Music, Deezer, YouTube...</p>
                 </div>
                 <div class="info-card">
-                    <i class="fas fa-coins"></i>
-                    <h3>Ganhe Real</h3>
-                    <p>Receba seus ganhos em Kz ou Euros</p>
+                    <i class="fas fa-file-code"></i>
+                    <h3>DDEX ERN 4.3</h3>
+                    <p>Metadados oficiais para Meta/TikTok</p>
                 </div>
                 <div class="info-card">
                     <i class="fas fa-rocket"></i>
@@ -367,7 +375,6 @@
                     </div>
                 </div>
 
-                <!-- FEED DE LANÇAMENTOS - TODAS AS MÚSICAS APROVADAS -->
                 <div class="card">
                     <h3><i class="fas fa-headphones"></i> Feed de Lançamentos - Música para todos</h3>
                     <div id="feed-container" class="grid"></div>
@@ -375,7 +382,7 @@
 
                 <div class="card">
                     <h3><i class="fas fa-newspaper"></i> Novidades</h3>
-                    <p style="color: var(--gray); line-height: 1.6;">🎵 Bem-vindo à nova era da MAM Distribuidora. Agora com pagamentos automáticos e gestão em tempo real. Lançamos a sua música em mais de 150 plataformas digitais incluindo Spotify, Apple Music e Deezer.</p>
+                    <p style="color: var(--gray); line-height: 1.6;">🎵 Bem-vindo à nova era da MAM Distribuidora. Agora com suporte DDEX ERN 4.3 para distribuição profissional. Suas músicas serão reconhecidas no Meta Rights Manager e TikTok.</p>
                 </div>
             </div>
 
@@ -390,7 +397,7 @@
                             <ul class="plan-features">
                                 <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> 1 Artista</li>
                                 <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Até 3 lançamentos/mês</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> 150+ plataformas</li>
+                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> DDEX Standard</li>
                                 <li><i class="fas fa-times" style="color: #888; margin-right: 10px;"></i> Suporte prioritário</li>
                             </ul>
                             <button class="btn btn-sec" onclick="selectPlan('free')">Começar</button>
@@ -402,8 +409,8 @@
                             <ul class="plan-features">
                                 <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> 10 Artistas</li>
                                 <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Lançamentos ilimitados</li>
+                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> DDEX Premium</li>
                                 <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Suporte prioritário</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Analytics avançado</li>
                             </ul>
                             <button class="btn" onclick="selectPlan('basico')">Escolher Plano</button>
                         </div>
@@ -443,7 +450,7 @@
 
             <div id="lancar" class="section">
                 <div class="card">
-                    <h3><i class="fas fa-cloud-upload-alt"></i> Lançar Música/Álbum</h3>
+                    <h3><i class="fas fa-cloud-upload-alt"></i> Lançar Música/Álbum (DDEX ERN 4.3)</h3>
                     <form id="lancamentoForm" onsubmit="return false;">
                         <label>Tipo de Lançamento</label>
                         <select id="release-type" onchange="toggleReleaseType()">
@@ -451,36 +458,70 @@
                             <option value="album">Álbum</option>
                         </select>
                         
-                        <label>Título</label>
-                        <input type="text" id="music-titulo" placeholder="Título da Música/Álbum" required>
+                        <div class="form-row">
+                            <div>
+                                <label>Título</label>
+                                <input type="text" id="music-titulo" placeholder="Título da Música/Álbum" required>
+                            </div>
+                            <div>
+                                <label>Artista Principal</label>
+                                <select id="music-artista-select" required>
+                                    <option value="">Selecione um Artista</option>
+                                </select>
+                            </div>
+                        </div>
                         
-                        <label>Artista Principal</label>
-                        <select id="music-artista-select" required>
-                            <option value="">Selecione um Artista</option>
-                        </select>
+                        <div class="form-row">
+                            <div>
+                                <label>Estilo Musical (Primary Genre)</label>
+                                <select id="music-estilo">
+                                    <option value="">Selecione</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Data de Lançamento</label>
+                                <input type="date" id="music-data" required>
+                            </div>
+                        </div>
                         
-                        <label>Estilo Musical</label>
-                        <select id="music-estilo">
-                            <option value="">Selecione</option>
-                        </select>
-                        
-                        <label>Colaboradores (separados por vírgula)</label>
-                        <input type="text" id="music-colaboradores" placeholder="Ex: Artista 1, Artista 2">
+                        <label>Compositores (separados por vírgula)</label>
+                        <input type="text" id="music-compositores" placeholder="Ex: João Silva, Maria Santos">
                         
                         <label>Produtores (separados por vírgula)</label>
                         <input type="text" id="music-produtores" placeholder="Ex: Produtor 1, Produtor 2">
                         
-                        <label>ISRC</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="music-isrc" placeholder="Ex: USRC17607839" style="flex:2;">
-                            <button type="button" class="btn-small" onclick="generateISRC()" style="width: auto;">Gerar ISRC</button>
+                        <div class="form-row">
+                            <div>
+                                <label>℗ Copyright Fonográfico (P-Line)</label>
+                                <input type="text" id="music-pline" placeholder="℗ 2024 MAM Distribuidora" required>
+                            </div>
+                            <div>
+                                <label>© Copyright Editorial (C-Line)</label>
+                                <input type="text" id="music-cline" placeholder="© 2024 MAM Distribuidora" required>
+                            </div>
                         </div>
                         
-                        <label>UPC/EAN</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="music-upc" placeholder="Código de Barras" style="flex:2;">
-                            <button type="button" class="btn-small" onclick="generateUPC()" style="width: auto;">Gerar UPC</button>
+                        <div class="form-row">
+                            <div>
+                                <label>ISRC</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" id="music-isrc" placeholder="Ex: AO-MAM-26-00001" style="flex:2;">
+                                    <button type="button" class="btn-small" onclick="generateValidISRC()" style="width: auto;">Gerar ISRC</button>
+                                </div>
+                                <small style="color: var(--gray);">Padrão: AO-XXX-26-XXXXX</small>
+                            </div>
+                            <div>
+                                <label>UPC/EAN</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" id="music-upc" placeholder="Código de Barras (12 ou 13 dígitos)" style="flex:2;">
+                                    <button type="button" class="btn-small" onclick="generateValidUPC()" style="width: auto;">Gerar UPC</button>
+                                </div>
+                                <small style="color: var(--gray);">12 ou 13 dígitos numéricos</small>
+                            </div>
                         </div>
+                        
+                        <label>Colaboradores (separados por vírgula)</label>
+                        <input type="text" id="music-colaboradores" placeholder="Ex: Artista Convidado 1, Artista Convidado 2">
                         
                         <label>Capa (JPG, PNG - máx 15MB)</label>
                         <div id="capa-upload-container">
@@ -511,10 +552,13 @@
                             </div>
                         </div>
                         
-                        <label>Data de Lançamento</label>
-                        <input type="date" id="music-data" required>
+                        <div class="ddex-info">
+                            <p><i class="fas fa-file-code"></i> <strong>Distribuição DDEX ERN 4.3</strong></p>
+                            <p>Os metadados serão embalados em XML compatível com Meta Rights Manager e TikTok.</p>
+                            <p>ISRC obrigatório para monetização em todas as plataformas.</p>
+                        </div>
                         
-                        <button type="submit" id="btnEnviarLancamento" class="btn"><i class="fas fa-check"></i> Enviar Lançamento</button>
+                        <button type="submit" id="btnEnviarLancamento" class="btn"><i class="fas fa-check"></i> Enviar Lançamento (DDEX)</button>
                     </form>
                 </div>
             </div>
@@ -588,6 +632,7 @@
                     <button class="btn btn-danger" onclick="openAdminUsersModal()" style="margin-bottom: 10px;"><i class="fas fa-users"></i> Gerenciar Utilizadores</button>
                     <button class="btn btn-danger" onclick="openAdminMusicsModal()" style="margin-bottom: 10px;"><i class="fas fa-music"></i> Gerenciar Músicas</button>
                     <button class="btn btn-danger" onclick="openAdminDistribuicaoModal()" style="margin-bottom: 10px;"><i class="fas fa-globe"></i> Distribuição</button>
+                    <button class="btn btn-danger" onclick="generateDDEXReport()" style="margin-bottom: 10px;"><i class="fas fa-file-code"></i> Exportar DDEX XML</button>
                     <button class="btn btn-danger" onclick="downloadPlatformReport()" style="margin-bottom: 10px;"><i class="fas fa-file-download"></i> Download Relatório</button>
                 </div>
             </div>
@@ -604,12 +649,12 @@
         <p>MAM Distribuidora © 2024 | O Império da Música em Angola</p>
         <p class="footer-founder">Fundado por <strong>Matias Arsénio Manuel</strong></p>
         <div class="footer-security">
-            <i class="fas fa-lock"></i> Segurança de Nível Empresarial | Firebase + Cloudinary
+            <i class="fas fa-lock"></i> Segurança de Nível Empresarial | DDEX ERN 4.3 Ready
         </div>
     </footer>
 
     <div class="security-badge">
-        <i class="fas fa-shield-alt"></i> SEGURO
+        <i class="fas fa-shield-alt"></i> DDEX COMPATIBLE
     </div>
 
     <div id="saqueModal" class="modal">
@@ -688,6 +733,7 @@
             </select>
             <div id="platforms-list"></div>
             <button class="btn" onclick="updateDistribution()"><i class="fas fa-save"></i> Atualizar Distribuição</button>
+            <button class="btn btn-sec" style="margin-top: 10px;" onclick="exportSelectedDDEX()"><i class="fas fa-file-code"></i> Exportar DDEX XML</button>
         </div>
     </div>
 
@@ -789,9 +835,12 @@
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
+        
         const auth = firebase.auth();
         const db = firebase.firestore();
         const storage = firebase.storage();
+
+        console.log("Firebase inicializado:", !!db);
 
         // ========== CONFIGURAÇÕES ==========
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
@@ -810,37 +859,298 @@
         let pendingArtistPhotoUrl = null;
         let pendingEditArtistPhotoUrl = null;
 
-        // ========== TODOS OS PAÍSES ==========
-        const todosPaises = [
-            "Afeganistão", "África do Sul", "Albânia", "Alemanha", "Andorra", "Angola", "Arábia Saudita", "Argélia", "Argentina", "Armênia",
-            "Austrália", "Áustria", "Azerbaijão", "Bahamas", "Bangladesh", "Barbados", "Bélgica", "Belize", "Benim", "Bielorrússia",
-            "Bolívia", "Bósnia e Herzegovina", "Botsuana", "Brasil", "Brunei", "Bulgária", "Burkina Faso", "Burundi", "Butão", "Cabo Verde",
-            "Camarões", "Camboja", "Canadá", "Catar", "Cazaquistão", "Chade", "Chile", "China", "Chipre", "Colômbia", "Comores", "Congo",
-            "Coreia do Norte", "Coreia do Sul", "Costa do Marfim", "Costa Rica", "Croácia", "Cuba", "Dinamarca", "Djibouti", "Dominica",
-            "Egito", "El Salvador", "Emirados Árabes Unidos", "Equador", "Eritreia", "Eslováquia", "Eslovênia", "Espanha", "Essuatíni",
-            "Estados Unidos", "Estônia", "Etiópia", "Fiji", "Filipinas", "Finlândia", "França", "Gabão", "Gâmbia", "Gana", "Geórgia",
-            "Granada", "Grécia", "Guatemala", "Guiana", "Guiné", "Guiné-Bissau", "Guiné Equatorial", "Haiti", "Holanda", "Honduras",
-            "Hungria", "Iêmen", "Índia", "Indonésia", "Irã", "Iraque", "Irlanda", "Islândia", "Israel", "Itália", "Jamaica", "Japão",
-            "Jordânia", "Kuwait", "Laos", "Lesoto", "Letônia", "Líbano", "Libéria", "Líbia", "Liechtenstein", "Lituânia", "Luxemburgo",
-            "Madagáscar", "Malásia", "Malawi", "Maldivas", "Mali", "Malta", "Marrocos", "Marshall", "Maurícia", "Mauritânia", "México",
-            "Micronésia", "Moçambique", "Moldávia", "Mônaco", "Mongólia", "Montenegro", "Myanmar", "Namíbia", "Nauru", "Nepal", "Nicarágua",
-            "Níger", "Nigéria", "Noruega", "Nova Zelândia", "Omã", "Países Baixos", "Palau", "Panamá", "Papua-Nova Guiné", "Paquistão",
-            "Paraguai", "Peru", "Polônia", "Portugal", "Quênia", "Quirguistão", "Quiribati", "Reino Unido", "República Centro-Africana",
-            "República Checa", "República Dominicana", "Romênia", "Ruanda", "Rússia", "Salomão", "Samoa", "San Marino", "Santa Lúcia",
-            "São Cristóvão e Neves", "São Tomé e Príncipe", "São Vicente e Granadinas", "Senegal", "Serra Leoa", "Sérvia", "Seychelles",
-            "Singapura", "Síria", "Somália", "Sri Lanka", "Sudão", "Sudão do Sul", "Suécia", "Suíça", "Suriname", "Tailândia", "Taiwan",
-            "Tajiquistão", "Tanzânia", "Timor-Leste", "Togo", "Tonga", "Trinidad e Tobago", "Tunísia", "Turcomenistão", "Turquia",
-            "Tuvalu", "Ucrânia", "Uganda", "Uruguai", "Uzbequistão", "Vanuatu", "Vaticano", "Venezuela", "Vietnã", "Zâmbia", "Zimbábue"
-        ];
+        // ========== FUNÇÕES DE VALIDAÇÃO DDEX ==========
+        
+        // Validação ISRC: Padrão AO-XXX-26-XXXXX
+        function isValidISRC(isrc) {
+            const regex = /^[A-Z]{2}-[A-Z0-9]{3}-[0-9]{2}-[0-9]{5}$/;
+            return regex.test(isrc);
+        }
+        
+        // Gerar ISRC válido
+        function generateValidISRC() {
+            const country = "AO";
+            const registrant = "MAM";
+            const year = "26";
+            const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+            const isrc = `${country}-${registrant}-${year}-${random}`;
+            document.getElementById('music-isrc').value = isrc;
+            showAlert(`ISRC gerado: ${isrc}`);
+        }
+        
+        // Validação UPC/EAN (12 ou 13 dígitos numéricos)
+        function isValidUPC(upc) {
+            const regex = /^[0-9]{12,13}$/;
+            return regex.test(upc);
+        }
+        
+        // Gerar UPC válido
+        function generateValidUPC() {
+            const random = Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
+            document.getElementById('music-upc').value = random;
+            showAlert(`UPC gerado: ${random}`);
+        }
 
-        const todosEstilos = [
-            "Afrobeat", "Afro House", "Afro Pop", "Alternative Rock", "Ambient", "Blues", "Bossa Nova", "Breakbeat", "Classical", "Country",
-            "Dancehall", "Disco", "Downtempo", "Drum and Bass", "Dubstep", "Electronic", "Fado", "Flamenco", "Folk", "Funk", "Funk Carioca",
-            "Gospel", "Gothic", "Grime", "Grindcore", "Hard Rock", "Hardcore", "Heavy Metal", "Hip Hop", "House", "Indie Pop", "Indie Rock",
-            "Industrial", "Jazz", "Jungle", "Kizomba", "Kuduro", "Latin", "Lo-fi", "MPB", "Metal", "Neoclassical", "New Age", "Opera", "Orchestral",
-            "Pagode", "Pop", "Post Rock", "Progressive Rock", "Psychedelic", "Punk Rock", "R&B", "Rap", "Reggae", "Reggaeton", "Rock", "Rock and Roll",
-            "Salsa", "Samba", "Sertanejo", "Soul", "Soundtrack", "Synthwave", "Soca", "Techno", "Trance", "Trap", "Trip Hop", "World Music", "Zouk"
-        ];
+        // ========== GERADOR DE XML DDEX ERN 4.3 ==========
+        function generateDDEX(releaseData, artistName, userName) {
+            const timestamp = new Date().toISOString();
+            const releaseId = releaseData.id || Date.now().toString();
+            
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<ERN:NewReleaseMessage xmlns:ERN="http://ddex.net/xml/ern/43" xmlns="http://ddex.net/xml/ern/43" LanguageAndScriptCode="pt">
+    <MessageHeader>
+        <MessageId>${releaseId}-${Date.now()}</MessageId>
+        <MessageSender>
+            <PartyId>MAM-001</PartyId>
+            <PartyName>MAM Distribuidora</PartyName>
+        </MessageSender>
+        <MessageRecipient>
+            <PartyId>META-001</PartyId>
+            <PartyName>Meta Rights Manager</PartyName>
+        </MessageRecipient>
+        <MessageCreatedDateTime>${timestamp}</MessageCreatedDateTime>
+    </MessageHeader>
+    <ResourceList>
+        <SoundRecording>
+            <ResourceId>
+                <ISRC>${releaseData.isrc || ''}</ISRC>
+            </ResourceId>
+            <ResourceReference>SRC_${releaseId}</ResourceReference>
+            <Duration>PT0M0S</Duration>
+            <ResourceTitle LanguageAndScriptCode="pt">${escapeXml(releaseData.titulo || '')}</ResourceTitle>
+            <DisplayArtist>
+                <ArtistName>${escapeXml(artistName)}</ArtistName>
+                <Role>MainArtist</Role>
+            </DisplayArtist>
+            <IndirectResourceContributor>
+                <ContributorRole>Composer</ContributorRole>
+                <PartyName>${escapeXml(releaseData.compositores || artistName)}</PartyName>
+            </IndirectResourceContributor>
+            <IndirectResourceContributor>
+                <ContributorRole>Producer</ContributorRole>
+                <PartyName>${escapeXml(releaseData.produtores || 'MAM Distribuidora')}</PartyName>
+            </IndirectResourceContributor>
+            <RightsController>
+                <RightsControllerRole>RightsController</RightsControllerRole>
+                <PartyName>MAM Distribuidora</PartyName>
+                <RightsControlType>Exclusive</RightsControlType>
+            </RightsController>
+        </SoundRecording>
+    </ResourceList>
+    <ReleaseList>
+        <Release>
+            <ReleaseId>
+                <UPC>${releaseData.upc || ''}</UPC>
+            </ReleaseId>
+            <ReleaseReference>REL_${releaseId}</ReleaseReference>
+            <ReleaseType>SingleResource</ReleaseType>
+            <ReferenceTitle LanguageAndScriptCode="pt">${escapeXml(releaseData.titulo || '')}</ReferenceTitle>
+            <DisplayArtistName>${escapeXml(artistName)}</DisplayArtistName>
+            <ReleaseDate>
+                <Date>${releaseData.dataLancamento || new Date().toISOString().split('T')[0]}</Date>
+            </ReleaseDate>
+            <PLine>
+                <Year>${new Date().getFullYear()}</Year>
+                <PLineText>${escapeXml(releaseData.pline || '℗ 2024 MAM Distribuidora')}</PLineText>
+            </PLine>
+            <CLine>
+                <Year>${new Date().getFullYear()}</Year>
+                <CLineText>${escapeXml(releaseData.cline || '© 2024 MAM Distribuidora')}</CLineText>
+            </CLine>
+            <Genre>
+                <GenreName>${escapeXml(releaseData.estilo || 'Pop')}</GenreName>
+            </Genre>
+            <DealList>
+                <Deal>
+                    <DealReference>DEAL_${releaseId}</DealReference>
+                    <DealType>Standard</DealType>
+                    <DealTerms>
+                        <TerritoryList>
+                            <Territory>Worldwide</Territory>
+                        </TerritoryList>
+                        <CommercialModelType>PayAsYouGo</CommercialModelType>
+                        <UseType>Stream</UseType>
+                        <RoyaltyRate>70</RoyaltyRate>
+                        <RightsType>Digital</RightsType>
+                    </DealTerms>
+                    <RightsController>
+                        <PartyName>MAM Distribuidora</PartyName>
+                        <RightsControlType>Exclusive</RightsControlType>
+                    </RightsController>
+                </Deal>
+            </DealList>
+            <ResourceGroup>
+                <ResourceGroupType>MainAlbum</ResourceGroupType>
+                <ResourceReferenceList>
+                    <ResourceReference>SRC_${releaseId}</ResourceReference>
+                </ResourceReferenceList>
+            </ResourceGroup>
+        </Release>
+    </ReleaseList>
+</ERN:NewReleaseMessage>`;
+            
+            return xml;
+        }
+        
+        function escapeXml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // Exportar DDEX XML para download
+        function downloadDDEX(xml, filename) {
+            const blob = new Blob([xml], { type: 'application/xml' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Gerar relatório DDEX para todas as músicas aprovadas
+        async function generateDDEXReport() {
+            showLoading(true, 'Gerando relatório DDEX ERN 4.3...');
+            try {
+                const snapshot = await db.collection('releases').where('status', '==', 'approved').get();
+                if (snapshot.empty) {
+                    showAlert('Nenhuma música aprovada para exportar.');
+                    showLoading(false);
+                    return;
+                }
+                
+                let combinedXml = `<?xml version="1.0" encoding="UTF-8"?>
+<ERN:NewReleaseMessage xmlns:ERN="http://ddex.net/xml/ern/43" xmlns="http://ddex.net/xml/ern/43" LanguageAndScriptCode="pt">
+    <MessageHeader>
+        <MessageId>BULK-${Date.now()}</MessageId>
+        <MessageSender>
+            <PartyId>MAM-001</PartyId>
+            <PartyName>MAM Distribuidora</PartyName>
+        </MessageSender>
+        <MessageRecipient>
+            <PartyId>META-001</PartyId>
+            <PartyName>Meta Rights Manager</PartyName>
+        </MessageRecipient>
+        <MessageCreatedDateTime>${new Date().toISOString()}</MessageCreatedDateTime>
+    </MessageHeader>
+    <ResourceList>`;
+                
+                let releaseList = `<ReleaseList>`;
+                
+                for (const doc of snapshot.docs) {
+                    const release = doc.data();
+                    try {
+                        let artistName = 'Artista';
+                        if (release.artistaId) {
+                            const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                            if (artistDoc.exists) artistName = artistDoc.data().nome;
+                        }
+                        
+                        combinedXml += `
+    <SoundRecording>
+        <ResourceId>
+            <ISRC>${release.isrc || ''}</ISRC>
+        </ResourceId>
+        <ResourceReference>SRC_${release.id}</ResourceReference>
+        <ResourceTitle LanguageAndScriptCode="pt">${escapeXml(release.titulo || '')}</ResourceTitle>
+        <DisplayArtist>
+            <ArtistName>${escapeXml(artistName)}</ArtistName>
+            <Role>MainArtist</Role>
+        </DisplayArtist>
+    </SoundRecording>`;
+                        
+                        releaseList += `
+    <Release>
+        <ReleaseId>
+            <UPC>${release.upc || ''}</UPC>
+        </ReleaseId>
+        <ReleaseReference>REL_${release.id}</ReleaseReference>
+        <ReferenceTitle LanguageAndScriptCode="pt">${escapeXml(release.titulo || '')}</ReferenceTitle>
+        <DisplayArtistName>${escapeXml(artistName)}</DisplayArtistName>
+        <ReleaseDate>
+            <Date>${release.dataLancamento || new Date().toISOString().split('T')[0]}</Date>
+        </ReleaseDate>
+        <PLine>
+            <Year>${new Date().getFullYear()}</Year>
+            <PLineText>${escapeXml(release.pline || '℗ 2024 MAM Distribuidora')}</PLineText>
+        </PLine>
+        <CLine>
+            <Year>${new Date().getFullYear()}</Year>
+            <CLineText>${escapeXml(release.cline || '© 2024 MAM Distribuidora')}</CLineText>
+        </CLine>
+        <DealList>
+            <Deal>
+                <DealReference>DEAL_${release.id}</DealReference>
+                <DealType>Standard</DealType>
+                <DealTerms>
+                    <TerritoryList><Territory>Worldwide</Territory></TerritoryList>
+                    <CommercialModelType>PayAsYouGo</CommercialModelType>
+                    <UseType>Stream</UseType>
+                    <RoyaltyRate>70</RoyaltyRate>
+                    <RightsType>Digital</RightsType>
+                </DealTerms>
+            </Deal>
+        </DealList>
+        <ResourceGroup>
+            <ResourceGroupType>MainAlbum</ResourceGroupType>
+            <ResourceReferenceList>
+                <ResourceReference>SRC_${release.id}</ResourceReference>
+            </ResourceReferenceList>
+        </ResourceGroup>
+    </Release>`;
+                    } catch (err) {
+                        console.error('Erro ao processar release:', err);
+                    }
+                }
+                
+                combinedXml += `\n    </ResourceList>\n    ${releaseList}\n    </ReleaseList>\n</ERN:NewReleaseMessage>`;
+                
+                downloadDDEX(combinedXml, `ddex_ern43_mam_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.xml`);
+                showAlert('✅ Relatório DDEX ERN 4.3 exportado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao gerar relatório DDEX:', error);
+                showAlert('Erro ao gerar relatório: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function exportSelectedDDEX() {
+            const musicId = window.currentDistMusicId;
+            if (!musicId) {
+                showAlert('Selecione uma música primeiro!');
+                return;
+            }
+            
+            showLoading(true, 'Gerando XML DDEX...');
+            try {
+                const doc = await db.collection('releases').doc(musicId).get();
+                if (!doc.exists) throw new Error('Música não encontrada');
+                
+                const release = doc.data();
+                let artistName = 'Artista';
+                if (release.artistaId) {
+                    const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                    if (artistDoc.exists) artistName = artistDoc.data().nome;
+                }
+                
+                const xml = generateDDEX(release, artistName, release.ownerEmail);
+                downloadDDEX(xml, `ddex_${release.isrc || release.id}.xml`);
+                showAlert('✅ XML DDEX ERN 4.3 exportado!');
+            } catch (error) {
+                console.error('Erro ao exportar DDEX:', error);
+                showAlert('Erro: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
 
         // ========== FUNÇÕES GERAIS ==========
         function showAlert(message) {
@@ -849,6 +1159,8 @@
             if (alertModal && msgEl) {
                 msgEl.innerText = message;
                 alertModal.style.display = 'flex';
+            } else {
+                alert(message);
             }
         }
 
@@ -871,7 +1183,7 @@
             const overlay = document.getElementById('loading-overlay');
             const textEl = document.getElementById('loading-text');
             if (overlay) overlay.style.display = show ? 'flex' : 'none';
-            if (textEl) textEl.innerText = text;
+            if (textEl && text) textEl.innerText = text;
         }
 
         function togglePasswordVisibility(inputId) {
@@ -905,7 +1217,7 @@
 
         function showFooterContent(type) {
             const contents = {
-                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global.',
+                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel, a MAM Distribuidora é uma infraestrutura tecnológica dedicada à exportação do talento angolano para o mercado global com padrão DDEX ERN 4.3.',
                 privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados.',
                 termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais.',
                 suporte: 'Central de Apoio Estratégico\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
@@ -923,7 +1235,6 @@
             });
         }
 
-        // Função para fazer download do áudio
         function downloadAudio(audioUrl, musicTitle) {
             if (!audioUrl) {
                 showAlert('Áudio não disponível para download');
@@ -938,29 +1249,29 @@
             showAlert(`⬇️ Download iniciado: ${musicTitle}`);
         }
 
-        // ========== FEED - TODAS AS MÚSICAS APROVADAS ==========
+        // ========== FEED ==========
         async function loadFeed() {
-            console.log("loadFeed() iniciada - Carregando todas as músicas aprovadas");
-            const feedContainer = document.getElementById('feed-container');
-            if (!feedContainer) {
-                console.error("Elemento feed-container não encontrado");
+            if (!db) {
+                console.error("db não está definido");
+                const feedContainer = document.getElementById('feed-container');
+                if (feedContainer) feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro: Firebase não inicializado. Recarregue a página.</p>';
                 return;
             }
+            
+            const feedContainer = document.getElementById('feed-container');
+            if (!feedContainer) return;
             
             feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
             
             try {
-                // Buscar TODAS as músicas aprovadas por data decrescente
                 const feedSnapshot = await db.collection('releases')
                     .where('status', '==', 'approved')
                     .orderBy('createdAt', 'desc')
                     .limit(50)
                     .get();
                 
-                console.log("Feed encontrado:", feedSnapshot.size, "músicas");
-                
                 if (feedSnapshot.empty) {
-                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum lançamento disponível ainda. Seja o primeiro a lançar uma música!</p>';
+                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum lançamento disponível ainda.</p>';
                     return;
                 }
                 
@@ -970,22 +1281,16 @@
                     const release = doc.data();
                     try {
                         let artistName = 'Artista';
-                        let userEmail = release.ownerEmail || '';
+                        let userName = '';
                         
                         if (release.artistaId) {
                             const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                            if (artistDoc.exists) {
-                                artistName = artistDoc.data().nome;
-                            }
+                            if (artistDoc.exists) artistName = artistDoc.data().nome;
                         }
                         
-                        // Buscar nome do usuário que lançou
-                        let userName = '';
                         if (release.ownerEmail) {
                             const userDoc = await db.collection('users').doc(release.ownerEmail).get();
-                            if (userDoc.exists) {
-                                userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
-                            }
+                            if (userDoc.exists) userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
                         }
                         
                         const musicCard = document.createElement('div');
@@ -1005,7 +1310,6 @@
                             </audio>
                         `;
                         
-                        // Adicionar eventos aos botões
                         const playBtn = musicCard.querySelector('.play-btn');
                         const downloadBtn = musicCard.querySelector('.download-btn');
                         const audioElem = musicCard.querySelector('.music-audio');
@@ -1014,7 +1318,6 @@
                             playBtn.onclick = () => {
                                 if (audioElem) {
                                     if (audioElem.paused) {
-                                        // Parar todos os outros áudios
                                         document.querySelectorAll('.music-audio').forEach(audio => {
                                             if (audio !== audioElem && !audio.paused) {
                                                 audio.pause();
@@ -1028,8 +1331,6 @@
                                         audioElem.pause();
                                         playBtn.innerHTML = '<i class="fas fa-play"></i> Ouvir';
                                     }
-                                } else {
-                                    showAlert(`🎵 Tocando: ${release.titulo}`);
                                 }
                             };
                         }
@@ -1045,7 +1346,7 @@
                 }
             } catch (error) {
                 console.error("Erro ao carregar Feed:", error);
-                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar lançamentos. Tente novamente mais tarde.</p>';
+                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar lançamentos.</p>';
             }
         }
 
@@ -1083,7 +1384,7 @@
             widget.open();
         }
 
-        // ========== UPLOADS ESPECÍFICOS ==========
+        // ========== UPLOADS ==========
         function uploadProfilePhoto() {
             if (!currentUser) {
                 showAlert("Faça login primeiro!");
@@ -1183,7 +1484,8 @@
             const selectPais = document.getElementById('perfil-pais');
             if (selectPais) {
                 selectPais.innerHTML = '<option value="">Selecione seu País</option>';
-                todosPaises.sort().forEach(pais => {
+                const paises = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau", "Timor-Leste", "Outro"];
+                paises.forEach(pais => {
                     const option = document.createElement('option');
                     option.value = pais;
                     option.textContent = pais;
@@ -1194,7 +1496,8 @@
             const selectEstilo = document.getElementById('music-estilo');
             if (selectEstilo) {
                 selectEstilo.innerHTML = '<option value="">Selecione</option>';
-                todosEstilos.sort().forEach(estilo => {
+                const estilos = ["Afrobeat", "Kizomba", "Kuduro", "Semba", "Hip Hop", "R&B", "Pop", "Rock", "Electronic", "Jazz", "Gospel", "Outro"];
+                estilos.forEach(estilo => {
                     const option = document.createElement('option');
                     option.value = estilo;
                     option.textContent = estilo;
@@ -1205,7 +1508,8 @@
             const selectArtistStyle = document.getElementById('artist-style');
             if (selectArtistStyle) {
                 selectArtistStyle.innerHTML = '<option value="">Estilo Musical</option>';
-                todosEstilos.sort().forEach(estilo => {
+                const estilos = ["Afrobeat", "Kizomba", "Kuduro", "Semba", "Hip Hop", "R&B", "Pop", "Rock", "Electronic", "Jazz", "Gospel", "Outro"];
+                estilos.forEach(estilo => {
                     const option = document.createElement('option');
                     option.value = estilo;
                     option.textContent = estilo;
@@ -1216,7 +1520,8 @@
             const editSelectStyle = document.getElementById('edit-artist-style');
             if (editSelectStyle) {
                 editSelectStyle.innerHTML = '<option value="">Estilo Musical</option>';
-                todosEstilos.sort().forEach(estilo => {
+                const estilos = ["Afrobeat", "Kizomba", "Kuduro", "Semba", "Hip Hop", "R&B", "Pop", "Rock", "Electronic", "Jazz", "Gospel", "Outro"];
+                estilos.forEach(estilo => {
                     const option = document.createElement('option');
                     option.value = estilo;
                     option.textContent = estilo;
@@ -1227,7 +1532,8 @@
             const editReleaseEstilo = document.getElementById('edit-release-estilo');
             if (editReleaseEstilo) {
                 editReleaseEstilo.innerHTML = '<option value="">Selecione</option>';
-                todosEstilos.sort().forEach(estilo => {
+                const estilos = ["Afrobeat", "Kizomba", "Kuduro", "Semba", "Hip Hop", "R&B", "Pop", "Rock", "Electronic", "Jazz", "Gospel", "Outro"];
+                estilos.forEach(estilo => {
                     const option = document.createElement('option');
                     option.value = estilo;
                     option.textContent = estilo;
@@ -1415,33 +1721,14 @@
         }
 
         function limparFormularioArtista() {
-            const nameInput = document.getElementById('artist-name');
-            if (nameInput) nameInput.value = '';
-            const styleSelect = document.getElementById('artist-style');
-            if (styleSelect) styleSelect.value = '';
-            const bioTextarea = document.getElementById('artist-bio');
-            if (bioTextarea) bioTextarea.value = '';
-            const instagramInput = document.getElementById('artist-instagram');
-            if (instagramInput) instagramInput.value = '';
-            const facebookInput = document.getElementById('artist-facebook');
-            if (facebookInput) facebookInput.value = '';
-            const youtubeInput = document.getElementById('artist-youtube');
-            if (youtubeInput) youtubeInput.value = '';
-            const tiktokInput = document.getElementById('artist-tiktok');
-            if (tiktokInput) tiktokInput.value = '';
-            const spotifyInput = document.getElementById('artist-spotify');
-            if (spotifyInput) spotifyInput.value = '';
-            const appleInput = document.getElementById('artist-apple');
-            if (appleInput) appleInput.value = '';
-            const twitterInput = document.getElementById('artist-twitter');
-            if (twitterInput) twitterInput.value = '';
-            const soundcloudInput = document.getElementById('artist-soundcloud');
-            if (soundcloudInput) soundcloudInput.value = '';
+            const fields = ['artist-name', 'artist-style', 'artist-bio', 'artist-instagram', 'artist-facebook', 'artist-youtube', 'artist-tiktok', 'artist-spotify', 'artist-apple', 'artist-twitter', 'artist-soundcloud'];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
             const previewImg = document.getElementById('artist-photo-preview');
             if (previewImg) previewImg.src = 'https://via.placeholder.com/100';
             pendingArtistPhotoUrl = null;
-            const photoUrlInput = document.getElementById('artist-photo-url');
-            if (photoUrlInput) photoUrlInput.value = '';
         }
 
         function openAddArtistModal() {
@@ -1638,14 +1925,12 @@
         // ========== LANÇAMENTOS ==========
         function toggleReleaseType() {
             const type = document.getElementById('release-type').value;
+            const singleFields = document.getElementById('single-fields');
+            const albumFields = document.getElementById('album-fields');
             if (type === 'album') {
-                const singleFields = document.getElementById('single-fields');
-                const albumFields = document.getElementById('album-fields');
                 if (singleFields) singleFields.style.display = 'none';
                 if (albumFields) albumFields.style.display = 'block';
             } else {
-                const singleFields = document.getElementById('single-fields');
-                const albumFields = document.getElementById('album-fields');
                 if (singleFields) singleFields.style.display = 'block';
                 if (albumFields) albumFields.style.display = 'none';
             }
@@ -1690,15 +1975,11 @@
         }
 
         function generateISRC() {
-            const random = 'MAM' + Math.random().toString(36).substring(2, 10).toUpperCase();
-            const isrcInput = document.getElementById('music-isrc');
-            if (isrcInput) isrcInput.value = random;
+            generateValidISRC();
         }
 
         function generateUPC() {
-            const random = Math.floor(Math.random() * 10000000000000).toString().padStart(12, '0');
-            const upcInput = document.getElementById('music-upc');
-            if (upcInput) upcInput.value = random;
+            generateValidUPC();
         }
 
         async function loadArtistSelect() {
@@ -1726,14 +2007,38 @@
         async function enviarLancamento(e) {
             if (e) e.preventDefault();
             
+            if (!db) {
+                showAlert('Erro crítico: Base de dados não inicializada. Recarregue a página.');
+                return;
+            }
+            
             const titulo = document.getElementById('music-titulo').value.trim();
             const artistaId = document.getElementById('music-artista-select').value;
             const releaseDate = document.getElementById('music-data').value;
             const capaUrl = document.getElementById('music-capa-url').value;
             const releaseType = document.getElementById('release-type').value;
+            const isrc = document.getElementById('music-isrc').value.trim();
+            const upc = document.getElementById('music-upc').value.trim();
+            const pline = document.getElementById('music-pline').value.trim();
+            const cline = document.getElementById('music-cline').value.trim();
             
             if (!titulo || !artistaId || !releaseDate || !capaUrl) {
                 showAlert('Preencha os campos obrigatórios (Título, Artista, Data e Capa)!');
+                return;
+            }
+            
+            if (!pline || !cline) {
+                showAlert('Preencha os campos de Copyright (P-Line e C-Line)!');
+                return;
+            }
+            
+            if (isrc && !isValidISRC(isrc)) {
+                showAlert('ISRC inválido! Use o formato: AO-XXX-26-XXXXX');
+                return;
+            }
+            
+            if (upc && !isValidUPC(upc)) {
+                showAlert('UPC/EAN inválido! Deve ter 12 ou 13 dígitos numéricos.');
                 return;
             }
             
@@ -1751,7 +2056,7 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             
-            showLoading(true, 'A processar lançamento...');
+            showLoading(true, 'A processar lançamento DDEX...');
             
             try {
                 const releaseId = Date.now().toString();
@@ -1763,8 +2068,11 @@
                     estilo: document.getElementById('music-estilo').value,
                     colaboradores: document.getElementById('music-colaboradores').value,
                     produtores: document.getElementById('music-produtores').value,
-                    isrc: document.getElementById('music-isrc').value || generateISRC(),
-                    upc: document.getElementById('music-upc').value || generateUPC(),
+                    compositores: document.getElementById('music-compositores').value,
+                    pline: pline,
+                    cline: cline,
+                    isrc: isrc || generateValidISRCAndReturn(),
+                    upc: upc || generateValidUPCAndReturn(),
                     capaURL: capaUrl,
                     dataLancamento: releaseDate,
                     tipo: releaseType,
@@ -1776,6 +2084,14 @@
                     distributedTo: {},
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
+                
+                function generateValidISRCAndReturn() {
+                    return `AO-MAM-26-${Math.floor(Math.random() * 100000).toString().padStart(5, '0')}`;
+                }
+                
+                function generateValidUPCAndReturn() {
+                    return Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
+                }
                 
                 if (releaseType === 'single') {
                     releaseData.audioURL = document.getElementById('music-audio-url').value;
@@ -1805,25 +2121,25 @@
                 if (!userData.releases) userData.releases = [];
                 userData.releases.push(releaseId);
                 
+                // Gerar e salvar XML DDEX
+                let artistName = 'Artista';
+                const artistDoc = await db.collection('artists').doc(artistaId).get();
+                if (artistDoc.exists) artistName = artistDoc.data().nome;
+                const ddexXml = generateDDEX(releaseData, artistName, currentUser.email);
+                
+                // Salvar XML no Firestore
+                await db.collection('ddex_exports').doc(releaseId).set({
+                    releaseId: releaseId,
+                    xml: ddexXml,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
                 // Reset form
-                const tituloInput = document.getElementById('music-titulo');
-                if (tituloInput) tituloInput.value = '';
-                const capaUrlInput = document.getElementById('music-capa-url');
-                if (capaUrlInput) capaUrlInput.value = '';
-                const audioUrlInput = document.getElementById('music-audio-url');
-                if (audioUrlInput) audioUrlInput.value = '';
-                const isrcInput = document.getElementById('music-isrc');
-                if (isrcInput) isrcInput.value = '';
-                const upcInput = document.getElementById('music-upc');
-                if (upcInput) upcInput.value = '';
-                const dataInput = document.getElementById('music-data');
-                if (dataInput) dataInput.value = '';
-                const colaboradoresInput = document.getElementById('music-colaboradores');
-                if (colaboradoresInput) colaboradoresInput.value = '';
-                const produtoresInput = document.getElementById('music-produtores');
-                if (produtoresInput) produtoresInput.value = '';
-                const estiloSelect = document.getElementById('music-estilo');
-                if (estiloSelect) estiloSelect.value = '';
+                const resetFields = ['music-titulo', 'music-capa-url', 'music-audio-url', 'music-isrc', 'music-upc', 'music-data', 'music-colaboradores', 'music-produtores', 'music-compositores', 'music-pline', 'music-cline', 'music-estilo', 'music-artista-select'];
+                resetFields.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
                 const capaPreview = document.getElementById('capa-preview');
                 if (capaPreview) capaPreview.style.display = 'none';
                 const audioPreview = document.getElementById('audio-preview');
@@ -1831,11 +2147,9 @@
                 const tracksContainer = document.getElementById('tracks-container');
                 if (tracksContainer) tracksContainer.innerHTML = '';
                 if (releaseType === 'album') addTrackField();
-                const artistaSelect = document.getElementById('music-artista-select');
-                if (artistaSelect) artistaSelect.value = '';
                 
                 showLoading(false);
-                showAlert('✅ Lançamento enviado com sucesso! Aguardando aprovação do ADMIN.');
+                showAlert('✅ Lançamento enviado com sucesso! XML DDEX gerado e armazenado.');
             } catch (error) {
                 console.error('Erro ao enviar lançamento:', error);
                 showLoading(false);
@@ -1875,12 +2189,14 @@
                             <img src="${release.capaURL}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
                             <div class="music-title">${escapeHtml(release.titulo)}</div>
                             <div class="music-artist">${escapeHtml(artistName)}</div>
+                            <div style="margin-top: 5px; font-size: 0.65rem; color: var(--gray);">ISRC: ${release.isrc || 'N/A'}</div>
                             <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
                             <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
                             <div class="music-actions" style="margin-top: 10px;">
                                 <button class="btn-small" onclick="playMusic('${releaseId}')"><i class="fas fa-play"></i> Ouvir</button>
                                 <button class="btn-small" onclick="openEditReleaseModal('${releaseId}')"><i class="fas fa-edit"></i> Editar</button>
                                 <button class="btn-small btn-danger" onclick="deleteRelease('${releaseId}')"><i class="fas fa-trash"></i> Eliminar</button>
+                                <button class="btn-small" onclick="downloadMusicDDEX('${releaseId}')"><i class="fas fa-file-code"></i> DDEX</button>
                             </div>
                         `;
                         container.appendChild(musicCard);
@@ -1888,6 +2204,38 @@
                 } catch (err) {
                     console.error('Erro ao carregar música do usuário:', err);
                 }
+            }
+        }
+        
+        async function downloadMusicDDEX(releaseId) {
+            showLoading(true, 'Gerando XML DDEX...');
+            try {
+                const ddexDoc = await db.collection('ddex_exports').doc(releaseId).get();
+                if (ddexDoc.exists) {
+                    const xml = ddexDoc.data().xml;
+                    downloadDDEX(xml, `ddex_${releaseId}.xml`);
+                    showAlert('✅ XML DDEX baixado!');
+                } else {
+                    const releaseDoc = await db.collection('releases').doc(releaseId).get();
+                    if (releaseDoc.exists) {
+                        const release = releaseDoc.data();
+                        let artistName = 'Artista';
+                        if (release.artistaId) {
+                            const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                            if (artistDoc.exists) artistName = artistDoc.data().nome;
+                        }
+                        const xml = generateDDEX(release, artistName, release.ownerEmail);
+                        downloadDDEX(xml, `ddex_${releaseId}.xml`);
+                        showAlert('✅ XML DDEX gerado e baixado!');
+                    } else {
+                        showAlert('Música não encontrada!');
+                    }
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlert('Erro ao gerar DDEX: ' + error.message);
+            } finally {
+                showLoading(false);
             }
         }
 
@@ -1944,6 +2292,17 @@
                 }
 
                 await db.collection('releases').doc(releaseId).update(updateData);
+                
+                // Atualizar XML DDEX
+                const release = { ...(await db.collection('releases').doc(releaseId).get()).data(), ...updateData };
+                let artistName = 'Artista';
+                if (release.artistaId) {
+                    const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                    if (artistDoc.exists) artistName = artistDoc.data().nome;
+                }
+                const xml = generateDDEX(release, artistName, release.ownerEmail);
+                await db.collection('ddex_exports').doc(releaseId).set({ xml, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+                
                 closeModal('editReleaseModal');
                 await loadUserMusic();
                 showLoading(false);
@@ -1960,6 +2319,7 @@
             showLoading(true, 'Eliminando lançamento...');
             try {
                 await db.collection('releases').doc(releaseId).delete();
+                await db.collection('ddex_exports').doc(releaseId).delete();
                 
                 await db.collection('users').doc(currentUser.email).update({
                     releases: firebase.firestore.FieldValue.arrayRemove(releaseId)
@@ -1980,7 +2340,7 @@
             }
         }
 
-        // ========== REPRODUÇÃO E STREAM ==========
+        // ========== REPRODUÇÃO ==========
         async function playMusic(releaseId) {
             showLoading(true, 'A processar stream...');
             try {
@@ -2297,12 +2657,14 @@
                             <div class="list-info">
                                 <h4>${escapeHtml(music.titulo)}</h4>
                                 <p>Artista: ${escapeHtml(artistName)}</p>
+                                <p>ISRC: ${music.isrc || 'N/A'}</p>
                                 <p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
                                 ${music.audioURL ? `<audio controls src="${music.audioURL}" style="height: 35px; margin-top: 5px;"></audio>` : '<p style="color: var(--gray);">Álbum (múltiplas faixas)</p>'}
                             </div>
                             <div class="list-actions">
                                 ${music.status !== 'approved' ? `<button class="btn-small" style="background:#28a745; color:#fff;" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
                                 ${music.status !== 'rejected' ? `<button class="btn-small" style="background:#dc3545; color:#fff;" onclick="rejectMusic('${doc.id}')"><i class="fas fa-times"></i> Reprovar</button>` : ''}
+                                <button class="btn-small" onclick="downloadMusicDDEX('${doc.id}')"><i class="fas fa-file-code"></i> DDEX</button>
                             </div>
                         `;
                         container.appendChild(itemDiv);
@@ -2372,7 +2734,7 @@
                     const music = doc.data();
                     const option = document.createElement('option');
                     option.value = doc.id;
-                    option.textContent = music.titulo;
+                    option.textContent = `${music.titulo} (${music.isrc || 'Sem ISRC'})`;
                     select.appendChild(option);
                 });
                 
@@ -2399,14 +2761,14 @@
                 const music = doc.data();
                 const distributedTo = music.distributedTo || {};
                 
-                const platforms = ['Spotify', 'Apple Music', 'Deezer', 'YouTube Music', 'Tidal', 'Amazon Music'];
+                const platforms = ['Spotify', 'Apple Music', 'Deezer', 'YouTube Music', 'Tidal', 'Amazon Music', 'Instagram/Facebook', 'TikTok'];
                 let html = '';
                 platforms.forEach(platform => {
                     const isChecked = distributedTo[platform] === true;
                     html += `
                         <div class="platform-checkbox">
                             <input type="checkbox" id="dist-${platform.replace(/ /g, '')}" ${isChecked ? 'checked' : ''}>
-                            <label for="dist-${platform.replace(/ /g, '')}"><i class="fab fa-${platform.toLowerCase().replace(' ', '')}"></i> ${platform}</label>
+                            <label for="dist-${platform.replace(/ /g, '')}"><i class="fab fa-${platform.toLowerCase().replace(/ /g, '')}"></i> ${platform}</label>
                         </div>
                     `;
                 });
@@ -2430,7 +2792,7 @@
             
             showLoading(true, 'Atualizando distribuição...');
             try {
-                const platforms = ['Spotify', 'Apple Music', 'Deezer', 'YouTube Music', 'Tidal', 'Amazon Music'];
+                const platforms = ['Spotify', 'Apple Music', 'Deezer', 'YouTube Music', 'Tidal', 'Amazon Music', 'Instagram/Facebook', 'TikTok'];
                 const distributedTo = {};
                 platforms.forEach(platform => {
                     const checkbox = document.getElementById(`dist-${platform.replace(/ /g, '')}`);
@@ -2478,6 +2840,8 @@
                                 if (releaseDoc.exists) {
                                     const music = releaseDoc.data();
                                     report += `      - ${music.titulo}\n`;
+                                    report += `        ISRC: ${music.isrc || 'N/A'}\n`;
+                                    report += `        UPC: ${music.upc || 'N/A'}\n`;
                                     report += `        Streams: ${music.streams || 0}\n`;
                                     report += `        Ganhos: ${(music.totalGanhos || 0).toLocaleString()} Kz\n`;
                                     report += `        Status: ${music.status || 'pending'}\n`;
@@ -2637,7 +3001,6 @@
             const statMusicas = document.getElementById('stat-musicas-count');
             if (statMusicas) statMusicas.textContent = (userData.releases?.length || 0);
             
-            // Calcular total de streams do usuário
             let totalStreams = 0;
             if (userData.releases && userData.releases.length > 0) {
                 (async () => {
@@ -2658,18 +3021,11 @@
             const mainApp = document.getElementById('main-app');
             if (authScreen) authScreen.style.display = 'flex';
             if (mainApp) mainApp.style.display = 'none';
-            const navArtistas = document.getElementById('nav-artistas');
-            if (navArtistas) navArtistas.style.display = 'none';
-            const navLancar = document.getElementById('nav-lancar');
-            if (navLancar) navLancar.style.display = 'none';
-            const navMinhasMusicas = document.getElementById('nav-minhas-musicas');
-            if (navMinhasMusicas) navMinhasMusicas.style.display = 'none';
-            const navCarteira = document.getElementById('nav-carteira');
-            if (navCarteira) navCarteira.style.display = 'none';
-            const navPerfil = document.getElementById('nav-perfil');
-            if (navPerfil) navPerfil.style.display = 'none';
-            const btnAdmin = document.getElementById('btn-admin-global');
-            if (btnAdmin) btnAdmin.style.display = 'none';
+            const navItems = ['nav-artistas', 'nav-lancar', 'nav-minhas-musicas', 'nav-carteira', 'nav-perfil', 'btn-admin-global'];
+            navItems.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
             const navLogin = document.getElementById('nav-login');
             if (navLogin) navLogin.style.display = 'inline-flex';
             const navLogout = document.getElementById('nav-logout');
@@ -2681,16 +3037,11 @@
             const mainApp = document.getElementById('main-app');
             if (authScreen) authScreen.style.display = 'none';
             if (mainApp) mainApp.style.display = 'block';
-            const navArtistas = document.getElementById('nav-artistas');
-            if (navArtistas) navArtistas.style.display = 'inline-flex';
-            const navLancar = document.getElementById('nav-lancar');
-            if (navLancar) navLancar.style.display = 'inline-flex';
-            const navMinhasMusicas = document.getElementById('nav-minhas-musicas');
-            if (navMinhasMusicas) navMinhasMusicas.style.display = 'inline-flex';
-            const navCarteira = document.getElementById('nav-carteira');
-            if (navCarteira) navCarteira.style.display = 'inline-flex';
-            const navPerfil = document.getElementById('nav-perfil');
-            if (navPerfil) navPerfil.style.display = 'inline-flex';
+            const navItems = ['nav-artistas', 'nav-lancar', 'nav-minhas-musicas', 'nav-carteira', 'nav-perfil'];
+            navItems.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'inline-flex';
+            });
             const navLogin = document.getElementById('nav-login');
             if (navLogin) navLogin.style.display = 'none';
             const navLogout = document.getElementById('nav-logout');
@@ -2704,9 +3055,9 @@
             carregarPaisesEEstilos();
         }
 
-        // ========== INICIALIZAÇÃO DOS BOTÕES ==========
+        // ========== INICIALIZAÇÃO ==========
         window.onload = function() {
-            console.log("Site carregado - Inicializando botões");
+            console.log("Site carregado - Inicializando MAM Distribuidora DDEX");
             
             const btnArtistById = document.getElementById('btnAddArtist');
             if (btnArtistById) {

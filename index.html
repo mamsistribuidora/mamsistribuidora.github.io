@@ -120,8 +120,9 @@
         .music-cover { width: 140px; height: 140px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(212,175,55,0.3); transition: 0.3s; }
         .music-card:hover .music-cover { transform: scale(1.02); box-shadow: 0 0 30px rgba(212,175,55,0.5); }
         .music-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        .music-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
-        .music-user { font-size: 0.7rem; color: #555; margin-bottom: 10px; }
+        .music-artist { font-size: 0.85rem; color: var(--gray); margin-bottom: 5px; }
+        .music-user { font-size: 0.7rem; color: #555; margin-bottom: 5px; }
+        .music-isrc { font-size: 0.65rem; color: #666; margin-bottom: 5px; font-family: monospace; }
         .music-actions { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
         .music-actions button { padding: 8px 15px; font-size: 0.7rem; }
         audio { width: 100%; margin-top: 10px; border-radius: 8px; }
@@ -549,7 +550,7 @@
                                     <p style="font-size: 0.7rem; color: var(--gold);"><i class="fas fa-check-circle"></i> Áudio WAV carregado ✓</p>
                                 </div>
                             </div>
-                            <small style="color: var(--gray);">A MAM Distribuidora apenas aceita formato WAV para garantir qualidade máxima nas lojas digitais.</small>
+                            <small style="color: var(--gray);">A MAM Distribuidora apenas aceita formato WAV (16/24 bit) para garantir qualidade máxima nas lojas digitais.</small>
                         </div>
                         
                         <div id="album-fields" style="display: none;">
@@ -1301,6 +1302,7 @@
                             <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
                             <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
                             <div class="music-artist">${escapeHtml(artistName)}</div>
+                            <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
                             <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
                             <div class="music-actions">
                                 <button class="btn-small play-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-play"></i> Ouvir</button>
@@ -1403,6 +1405,9 @@
                             if (userDoc.exists) userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
                         }
                         
+                        const statusText = release.status === 'approved' ? 'Aprovado' : (release.status === 'rejected' ? 'Reprovado' : 'Pendente');
+                        const statusClass = release.status === 'approved' ? 'status-active' : (release.status === 'rejected' ? 'status-error' : 'status-pending');
+                        
                         const musicCard = document.createElement('div');
                         musicCard.className = 'music-card';
                         musicCard.innerHTML = `
@@ -1410,7 +1415,9 @@
                             <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
                             <div class="music-artist">${escapeHtml(artistName)}</div>
                             <div class="music-user"><i class="fas fa-user"></i> ${escapeHtml(userName)}</div>
-                            <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
+                            <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
+                            <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText} ${release.status === 'pending' ? '(Processando DDEX)' : ''}</span></div>
+                            <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
                             <div class="music-actions">
                                 <button class="btn-small play-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-play"></i> Ouvir</button>
                                 <button class="btn-small download-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-download"></i> Download</button>
@@ -1456,12 +1463,36 @@
                 }
             } catch (error) {
                 console.error("Erro ao carregar Feed:", error);
-                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar lançamentos.</p>';
+                // Se erro de índice, mostrar mensagem amigável
+                if (error.message && error.message.includes('index')) {
+                    feedContainer.innerHTML = '<p style="color: var(--warning); text-align: center; padding: 40px;">⚠️ É necessário criar um índice no Firebase Console para ordenar por data. O administrador será notificado.</p>';
+                } else {
+                    feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar lançamentos.</p>';
+                }
             }
+        }
+
+        // ========== VALIDAÇÃO DE ÁUDIO WAV ==========
+        function validateAudioFile(file) {
+            if (!file) return false;
+            const fileName = file.name.toLowerCase();
+            const fileType = file.type;
+            
+            if (!fileName.endsWith('.wav') && fileType !== 'audio/wav' && fileType !== 'audio/x-wav') {
+                showAlert('Erro: A MAM Distribuidora exige formato WAV (16/24 bit) para distribuição oficial.');
+                return false;
+            }
+            return true;
         }
 
         // ========== CLOUDINARY UPLOAD COM VALIDAÇÃO WAV ==========
         function openCloudinaryUpload(options, callback) {
+            // Para upload de áudio, forçar apenas WAV
+            if (options.resourceType === 'auto') {
+                options.formats = ['wav'];
+                options.clientAllowedFormats = ['wav'];
+            }
+            
             const widget = cloudinary.createUploadWidget(
                 {
                     cloudName: CLOUDINARY_CLOUD_NAME,
@@ -1489,7 +1520,7 @@
                         const url = result.info.secure_url;
                         const format = result.info.format;
                         if (options.resourceType === 'auto' && format !== 'wav') {
-                            showAlert('A MAM Distribuidora apenas aceita formato WAV para garantir qualidade máxima nas lojas digitais.');
+                            showAlert('Erro: A MAM Distribuidora exige formato WAV (16/24 bit) para distribuição oficial.');
                             return;
                         }
                         if (callback) callback(url);
@@ -2301,8 +2332,8 @@
                             <img src="${release.capaURL}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
                             <div class="music-title">${escapeHtml(release.titulo)}</div>
                             <div class="music-artist">${escapeHtml(artistName)}</div>
-                            <div style="margin-top: 5px; font-size: 0.65rem; color: var(--gray);">ISRC: ${release.isrc || 'N/A'}</div>
-                            <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
+                            <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
+                            <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText} ${release.status === 'pending' ? '(Processando DDEX)' : ''}</span></div>
                             <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
                             <div class="music-actions" style="margin-top: 10px;">
                                 <button class="btn-small" onclick="playMusic('${releaseId}')"><i class="fas fa-play"></i> Ouvir</button>
@@ -2769,7 +2800,7 @@
                                 <h4>${escapeHtml(music.titulo)}</h4>
                                 <p>Artista: ${escapeHtml(artistName)}</p>
                                 <p>ISRC: ${music.isrc || 'N/A'}</p>
-                                <p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
+                                <p>Status: <span class="status-pill ${statusClass}">${statusText} ${music.status === 'pending' ? '(Processando DDEX)' : ''}</span></p>
                                 ${music.audioURL ? `<audio controls src="${music.audioURL}" style="height: 35px; margin-top: 5px;"></audio>` : '<p style="color: var(--gray);">Álbum (múltiplas faixas)</p>'}
                             </div>
                             <div class="list-actions">

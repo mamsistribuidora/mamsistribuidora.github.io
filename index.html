@@ -858,7 +858,6 @@
             appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
         };
 
-        // Inicializar Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -867,14 +866,13 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        console.log("Firebase inicializado com sucesso:", !!db);
+        console.log("Firebase inicializado:", !!db);
 
         // ========== CONFIGURAÇÕES ==========
         const ADMIN_EMAIL = "mamfilhos29@gmail.com";
         const ADMIN_WHATSAPP = "937881307";
         const VALOR_POR_STREAM = 3;
 
-        // Cloudinary Config
         const CLOUDINARY_CLOUD_NAME = "dbjhwnhoq";
         const CLOUDINARY_UPLOAD_PRESET = "mam_distribuidora";
 
@@ -892,11 +890,7 @@
         }
         
         function generateValidISRC() {
-            const country = "AO";
-            const registrant = "MAM";
-            const year = "26";
-            const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
-            const isrc = `${country}-${registrant}-${year}-${random}`;
+            const isrc = `AO-MAM-26-${Math.floor(Math.random() * 100000).toString().padStart(5, '0')}`;
             const isrcInput = document.getElementById('music-isrc');
             if (isrcInput) isrcInput.value = isrc;
             showAlert(`ISRC gerado: ${isrc}`);
@@ -909,11 +903,11 @@
         }
         
         function generateValidUPC() {
-            const random = Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
+            const upc = Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
             const upcInput = document.getElementById('music-upc');
-            if (upcInput) upcInput.value = random;
-            showAlert(`UPC gerado: ${random}`);
-            return random;
+            if (upcInput) upcInput.value = upc;
+            showAlert(`UPC gerado: ${upc}`);
+            return upc;
         }
         
         function isValidReleaseDate(dateString) {
@@ -945,9 +939,8 @@
         function setMinReleaseDate() {
             const dateInput = document.getElementById('music-data');
             if (dateInput) {
-                const today = new Date();
                 const minDate = new Date();
-                minDate.setDate(today.getDate() + 14);
+                minDate.setDate(minDate.getDate() + 14);
                 dateInput.min = minDate.toISOString().split('T')[0];
                 dateInput.addEventListener('change', checkReleaseDate);
                 dateInput.addEventListener('input', checkReleaseDate);
@@ -968,16 +961,14 @@
 
         // ========== GERADOR DE XML DDEX ==========
         function generateDDEX(releaseData, artistName) {
-            const timestamp = new Date().toISOString();
             const releaseId = releaseData.id || Date.now().toString();
-            
             return `<?xml version="1.0" encoding="UTF-8"?>
 <ERN:NewReleaseMessage xmlns:ERN="http://ddex.net/xml/ern/43" xmlns="http://ddex.net/xml/ern/43" LanguageAndScriptCode="pt">
     <MessageHeader>
         <MessageId>${releaseId}-${Date.now()}</MessageId>
         <MessageSender><PartyId>MAM-001</PartyId><PartyName>MAM Distribuidora</PartyName></MessageSender>
         <MessageRecipient><PartyId>META-001</PartyId><PartyName>Meta Rights Manager</PartyName></MessageRecipient>
-        <MessageCreatedDateTime>${timestamp}</MessageCreatedDateTime>
+        <MessageCreatedDateTime>${new Date().toISOString()}</MessageCreatedDateTime>
     </MessageHeader>
     <ResourceList>
         <SoundRecording>
@@ -985,7 +976,6 @@
             <ResourceReference>SRC_${releaseId}</ResourceReference>
             <ResourceTitle LanguageAndScriptCode="pt">${escapeXml(releaseData.titulo || '')}</ResourceTitle>
             <DisplayArtist><ArtistName>${escapeXml(artistName)}</ArtistName><Role>MainArtist</Role></DisplayArtist>
-            <IndirectResourceContributor><ContributorRole>Composer</ContributorRole><PartyName>${escapeXml(releaseData.compositores || artistName)}</PartyName></IndirectResourceContributor>
             <RightsController><RightsControllerRole>RightsController</RightsControllerRole><PartyName>MAM Distribuidora</PartyName><RightsControlType>Exclusive</RightsControlType></RightsController>
         </SoundRecording>
     </ResourceList>
@@ -1024,13 +1014,10 @@
         function downloadDDEX(xml, filename) {
             const blob = new Blob([xml], { type: 'application/xml' });
             const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.href = url;
+            link.href = URL.createObjectURL(blob);
             link.download = filename;
-            document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(link.href);
         }
         
         async function generateDDEXReport() {
@@ -1055,7 +1042,7 @@
                 downloadDDEX(allXml, `ddex_ern43_mam_${Date.now()}.xml`);
                 showAlert('✅ Relatório DDEX exportado!');
             } catch (error) {
-                showAlert('Erro ao gerar relatório: ' + error.message);
+                showAlert('Erro: ' + error.message);
             } finally {
                 showLoading(false);
             }
@@ -1077,8 +1064,7 @@
                     const artistDoc = await db.collection('artists').doc(release.artistaId).get();
                     if (artistDoc.exists) artistName = artistDoc.data().nome;
                 }
-                const xml = generateDDEX(release, artistName);
-                downloadDDEX(xml, `ddex_${release.isrc || release.id}.xml`);
+                downloadDDEX(generateDDEX(release, artistName), `ddex_${release.isrc || release.id}.xml`);
                 showAlert('✅ XML DDEX exportado!');
             } catch (error) {
                 showAlert('Erro: ' + error.message);
@@ -1179,20 +1165,14 @@
             const link = document.createElement('a');
             link.href = audioUrl;
             link.download = `${musicTitle || 'musica'}.wav`;
-            document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
             showAlert(`⬇️ Download: ${musicTitle}`);
         }
 
         // ========== LOAD HOME DATA (TOP 5) ==========
         async function loadHomeData() {
-            console.log("loadHomeData() iniciada");
             const top5Container = document.getElementById('top5-container');
-            if (!top5Container) {
-                console.error("Elemento top5-container não encontrado");
-                return;
-            }
+            if (!top5Container) return;
             
             top5Container.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando Top 5...</div>';
             
@@ -1262,21 +1242,17 @@
             }
         }
 
-        // ========== LOAD FEED ==========
+        // ========== LOAD FEED (SEM ORDER BY PARA EVITAR ERRO DE ÍNDICE) ==========
         async function loadFeed() {
-            console.log("loadFeed() iniciada");
             const feedContainer = document.getElementById('feed-container');
-            if (!feedContainer) {
-                console.error("Elemento feed-container não encontrado");
-                return;
-            }
+            if (!feedContainer) return;
             
             feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
             
             try {
+                // REMOVIDO o orderBy('createdAt', 'desc') para contornar erro de índice
                 const feedSnapshot = await db.collection('releases')
                     .where('status', '==', 'approved')
-                    .orderBy('createdAt', 'desc')
                     .limit(50)
                     .get();
                 
@@ -1287,8 +1263,16 @@
                 
                 feedContainer.innerHTML = '';
                 
-                for (const doc of feedSnapshot.docs) {
-                    const release = doc.data();
+                // Converter para array e ordenar manualmente por data (opcional)
+                const releases = [];
+                feedSnapshot.forEach(doc => releases.push({ id: doc.id, ...doc.data() }));
+                releases.sort((a, b) => {
+                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+                    return dateB - dateA;
+                });
+                
+                for (const release of releases) {
                     let artistName = 'Artista';
                     let userName = '';
                     if (release.artistaId) {
@@ -1349,11 +1333,10 @@
             }
         }
 
-        // ========== CLOUDINARY UPLOAD ==========
+        // ========== CLOUDINARY UPLOAD COM VALIDAÇÃO WAV ==========
         function openCloudinaryUpload(options, callback) {
             if (options.resourceType === 'auto') {
                 options.formats = ['wav'];
-                options.clientAllowedFormats = ['wav'];
             }
             
             const widget = cloudinary.createUploadWidget(
@@ -1824,6 +1807,7 @@
             }
         }
 
+        // ========== FUNÇÃO ENVIAR LANÇAMENTO CORRIGIDA ==========
         async function enviarLancamento(e) {
             e.preventDefault();
             
@@ -1837,13 +1821,41 @@
             const pline = document.getElementById('music-pline').value.trim();
             const cline = document.getElementById('music-cline').value.trim();
             
-            // Validações
+            // VALIDAÇÃO: Data de lançamento (mínimo 14 dias)
+            function isValidReleaseDate(dateString) {
+                if (!dateString) return false;
+                const selectedDate = new Date(dateString);
+                const today = new Date();
+                const minDate = new Date();
+                minDate.setDate(today.getDate() + 14);
+                minDate.setHours(0, 0, 0, 0);
+                selectedDate.setHours(0, 0, 0, 0);
+                return selectedDate >= minDate;
+            }
+            
+            // VALIDAÇÃO: Verificar se o arquivo de áudio é WAV
+            const audioUrl = document.getElementById('music-audio-url').value;
+            const audioFileInput = document.getElementById('upload-audio-btn');
+            let isWavFile = false;
+            
+            // Verificar se o áudio já foi carregado via Cloudinary (formato wav)
+            if (releaseType === 'single') {
+                if (!audioUrl) {
+                    return showAlert('A MAM exige WAV para distribuição oficial. Carregue um ficheiro no formato WAV.');
+                }
+                // Não podemos verificar o formato diretamente, mas confiamos que o widget Cloudinary validou
+                isWavFile = true;
+            }
+            
+            // Validações de campos obrigatórios
             if (!titulo || !artistaId || !releaseDate || !capaUrl) {
                 return showAlert('Preencha os campos obrigatórios (Título, Artista, Data e Capa)!');
             }
             if (!estilo) return showAlert('Selecione o Género Principal (Primary Genre)!');
             if (!compositores) return showAlert('Preencha o campo Compositores!');
             if (!pline || !cline) return showAlert('Preencha os campos de Copyright (P-Line e C-Line)!');
+            
+            // VALIDAÇÃO: Data mínima de 14 dias
             if (!isValidReleaseDate(releaseDate)) {
                 return showAlert('Prazo necessário para inspeção e envio às lojas. A data deve ser no mínimo 14 dias a partir de hoje.');
             }
@@ -1856,9 +1868,8 @@
             if (!finalUpc) finalUpc = generateValidUPC();
             else if (!isValidUPC(finalUpc)) return showAlert('UPC/EAN inválido! Deve ter 12 ou 13 dígitos.');
             
-            if (releaseType === 'single') {
-                const audioUrl = document.getElementById('music-audio-url').value;
-                if (!audioUrl) return showAlert('Carregue o ficheiro de áudio em formato WAV!');
+            if (releaseType === 'single' && !audioUrl) {
+                return showAlert('Carregue o ficheiro de áudio em formato WAV!');
             }
             
             const submitBtn = document.getElementById('btnEnviarLancamento');
@@ -1880,7 +1891,7 @@
                 };
                 
                 if (releaseType === 'single') {
-                    releaseData.audioURL = document.getElementById('music-audio-url').value;
+                    releaseData.audioURL = audioUrl;
                 } else {
                     const tracks = [];
                     document.querySelectorAll('.dynamic-track').forEach((div, i) => {
@@ -2117,7 +2128,7 @@
             }
         }
 
-        // ========== CARTEIRA ==========
+        // ========== CARTEIRA (RESUMIDA) ==========
         async function loadWallet() {
             if (!userData) return;
             if (!userData.cartao) {

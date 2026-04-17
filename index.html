@@ -375,6 +375,13 @@
                     </div>
                 </div>
 
+                <!-- TOP 5 MÚSICAS MAIS OUVIDAS -->
+                <div class="card">
+                    <h3><i class="fas fa-star"></i> Top 5 Músicas Mais Ouvidas</h3>
+                    <div id="top5-container" class="grid"></div>
+                </div>
+
+                <!-- FEED DE LANÇAMENTOS -->
                 <div class="card">
                     <h3><i class="fas fa-headphones"></i> Feed de Lançamentos - Música para todos</h3>
                     <div id="feed-container" class="grid"></div>
@@ -534,14 +541,15 @@
                         </div>
                         
                         <div id="single-fields">
-                            <label>Ficheiro de Áudio (MP3, WAV - máx 200MB)</label>
+                            <label>Ficheiro de Áudio (FORMATO OBRIGATÓRIO: WAV)</label>
                             <div id="audio-upload-container">
-                                <button type="button" id="upload-audio-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Áudio</button>
+                                <button type="button" id="upload-audio-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Áudio WAV</button>
                                 <input type="hidden" id="music-audio-url">
                                 <div id="audio-preview" style="margin-top: 10px; display: none;">
-                                    <p style="font-size: 0.7rem; color: var(--gold);"><i class="fas fa-check-circle"></i> Áudio carregado ✓</p>
+                                    <p style="font-size: 0.7rem; color: var(--gold);"><i class="fas fa-check-circle"></i> Áudio WAV carregado ✓</p>
                                 </div>
                             </div>
+                            <small style="color: var(--gray);">A MAM Distribuidora apenas aceita formato WAV para garantir qualidade máxima nas lojas digitais.</small>
                         </div>
                         
                         <div id="album-fields" style="display: none;">
@@ -861,13 +869,11 @@
 
         // ========== FUNÇÕES DE VALIDAÇÃO DDEX ==========
         
-        // Validação ISRC: Padrão AO-XXX-26-XXXXX
         function isValidISRC(isrc) {
             const regex = /^[A-Z]{2}-[A-Z0-9]{3}-[0-9]{2}-[0-9]{5}$/;
             return regex.test(isrc);
         }
         
-        // Gerar ISRC válido
         function generateValidISRC() {
             const country = "AO";
             const registrant = "MAM";
@@ -878,13 +884,11 @@
             showAlert(`ISRC gerado: ${isrc}`);
         }
         
-        // Validação UPC/EAN (12 ou 13 dígitos numéricos)
         function isValidUPC(upc) {
             const regex = /^[0-9]{12,13}$/;
             return regex.test(upc);
         }
         
-        // Gerar UPC válido
         function generateValidUPC() {
             const random = Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
             document.getElementById('music-upc').value = random;
@@ -1002,7 +1006,6 @@
             });
         }
         
-        // Exportar DDEX XML para download
         function downloadDDEX(xml, filename) {
             const blob = new Blob([xml], { type: 'application/xml' });
             const link = document.createElement('a');
@@ -1015,7 +1018,6 @@
             URL.revokeObjectURL(url);
         }
         
-        // Gerar relatório DDEX para todas as músicas aprovadas
         async function generateDDEXReport() {
             showLoading(true, 'Gerando relatório DDEX ERN 4.3...');
             try {
@@ -1212,7 +1214,7 @@
             if (sectionId === 'minhas-musicas') loadUserMusic();
             if (sectionId === 'carteira') loadWallet();
             if (sectionId === 'lancar') loadArtistSelect();
-            if (sectionId === 'home') { loadFeed(); }
+            if (sectionId === 'home') { loadHomeData(); loadFeed(); }
         }
 
         function showFooterContent(type) {
@@ -1242,15 +1244,117 @@
             }
             const link = document.createElement('a');
             link.href = audioUrl;
-            link.download = `${musicTitle || 'musica'}.mp3`;
+            link.download = `${musicTitle || 'musica'}.wav`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             showAlert(`⬇️ Download iniciado: ${musicTitle}`);
         }
 
-        // ========== FEED ==========
+        // ========== TOP 5 MÚSICAS MAIS OUVIDAS ==========
+        async function loadHomeData() {
+            console.log("loadHomeData() iniciada - Carregando Top 5");
+            
+            if (!db) {
+                console.error("db não está definido");
+                const top5Container = document.getElementById('top5-container');
+                if (top5Container) top5Container.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro: Firebase não inicializado.</p>';
+                return;
+            }
+            
+            const top5Container = document.getElementById('top5-container');
+            if (!top5Container) {
+                console.error("Elemento top5-container não encontrado");
+                return;
+            }
+            
+            top5Container.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando Top 5...</div>';
+            
+            try {
+                const topSnapshot = await db.collection('releases')
+                    .where('status', '==', 'approved')
+                    .orderBy('streams', 'desc')
+                    .limit(5)
+                    .get();
+                
+                console.log("Top 5 encontrado:", topSnapshot.size, "músicas");
+                
+                if (topSnapshot.empty) {
+                    top5Container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhuma música em destaque ainda.</p>';
+                    return;
+                }
+                
+                top5Container.innerHTML = '';
+                
+                for (const doc of topSnapshot.docs) {
+                    const release = doc.data();
+                    try {
+                        let artistName = 'Artista';
+                        if (release.artistaId) {
+                            const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                            if (artistDoc.exists) artistName = artistDoc.data().nome;
+                        }
+                        
+                        const musicCard = document.createElement('div');
+                        musicCard.className = 'music-card';
+                        musicCard.innerHTML = `
+                            <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
+                            <div class="music-artist">${escapeHtml(artistName)}</div>
+                            <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
+                            <div class="music-actions">
+                                <button class="btn-small play-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-play"></i> Ouvir</button>
+                                <button class="btn-small download-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-download"></i> Download</button>
+                            </div>
+                            <audio class="music-audio" style="display: none;" controls preload="none">
+                                <source src="${release.audioURL || ''}" type="audio/wav">
+                            </audio>
+                        `;
+                        
+                        const playBtn = musicCard.querySelector('.play-btn');
+                        const downloadBtn = musicCard.querySelector('.download-btn');
+                        const audioElem = musicCard.querySelector('.music-audio');
+                        
+                        if (playBtn) {
+                            playBtn.onclick = () => {
+                                if (audioElem) {
+                                    if (audioElem.paused) {
+                                        document.querySelectorAll('.music-audio').forEach(audio => {
+                                            if (audio !== audioElem && !audio.paused) {
+                                                audio.pause();
+                                                audio.currentTime = 0;
+                                            }
+                                        });
+                                        audioElem.style.display = 'block';
+                                        audioElem.play();
+                                        playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+                                    } else {
+                                        audioElem.pause();
+                                        playBtn.innerHTML = '<i class="fas fa-play"></i> Ouvir';
+                                    }
+                                }
+                            };
+                        }
+                        
+                        if (downloadBtn) {
+                            downloadBtn.onclick = () => downloadAudio(release.audioURL, release.titulo);
+                        }
+                        
+                        top5Container.appendChild(musicCard);
+                    } catch (err) {
+                        console.error("Erro ao processar música do Top 5:", err);
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao carregar Top 5:", error);
+                top5Container.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar Top 5.</p>';
+            }
+        }
+
+        // ========== FEED DE LANÇAMENTOS (ORDER BY DATA DESC) ==========
         async function loadFeed() {
+            console.log("loadFeed() iniciada - Carregando feed por ordem decrescente");
+            
             if (!db) {
                 console.error("db não está definido");
                 const feedContainer = document.getElementById('feed-container');
@@ -1259,16 +1363,22 @@
             }
             
             const feedContainer = document.getElementById('feed-container');
-            if (!feedContainer) return;
+            if (!feedContainer) {
+                console.error("Elemento feed-container não encontrado");
+                return;
+            }
             
             feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
             
             try {
+                // ORDER BY createdAt DESC - Mais novos primeiro
                 const feedSnapshot = await db.collection('releases')
                     .where('status', '==', 'approved')
                     .orderBy('createdAt', 'desc')
                     .limit(50)
                     .get();
+                
+                console.log("Feed encontrado:", feedSnapshot.size, "músicas");
                 
                 if (feedSnapshot.empty) {
                     feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum lançamento disponível ainda.</p>';
@@ -1306,7 +1416,7 @@
                                 <button class="btn-small download-btn" data-url="${release.audioURL || ''}" data-title="${escapeHtml(release.titulo)}"><i class="fas fa-download"></i> Download</button>
                             </div>
                             <audio class="music-audio" style="display: none;" controls preload="none">
-                                <source src="${release.audioURL || ''}" type="audio/mpeg">
+                                <source src="${release.audioURL || ''}" type="audio/wav">
                             </audio>
                         `;
                         
@@ -1341,7 +1451,7 @@
                         
                         feedContainer.appendChild(musicCard);
                     } catch (err) {
-                        console.error("Erro ao processar música:", err);
+                        console.error("Erro ao processar música do feed:", err);
                     }
                 }
             } catch (error) {
@@ -1350,7 +1460,7 @@
             }
         }
 
-        // ========== CLOUDINARY UPLOAD ==========
+        // ========== CLOUDINARY UPLOAD COM VALIDAÇÃO WAV ==========
         function openCloudinaryUpload(options, callback) {
             const widget = cloudinary.createUploadWidget(
                 {
@@ -1360,8 +1470,8 @@
                     multiple: false,
                     maxFiles: 1,
                     resourceType: options.resourceType || 'image',
-                    clientAllowedFormats: options.formats || ['jpg', 'png', 'jpeg', 'mp3', 'wav'],
-                    maxFileSize: options.maxSize || 15000000,
+                    clientAllowedFormats: options.formats || ['jpg', 'png', 'jpeg', 'wav'],
+                    maxFileSize: options.maxSize || 200000000,
                     showUploadMoreButton: false,
                     showCompletedButton: true,
                     showPoweredBy: false,
@@ -1377,6 +1487,11 @@
                     }
                     if (result && result.event === "success") {
                         const url = result.info.secure_url;
+                        const format = result.info.format;
+                        if (options.resourceType === 'auto' && format !== 'wav') {
+                            showAlert('A MAM Distribuidora apenas aceita formato WAV para garantir qualidade máxima nas lojas digitais.');
+                            return;
+                        }
                         if (callback) callback(url);
                     }
                 }
@@ -1454,14 +1569,14 @@
         function uploadReleaseAudio() {
             openCloudinaryUpload({
                 resourceType: 'auto',
-                formats: ['mp3', 'wav', 'm4a'],
+                formats: ['wav'],
                 maxSize: 200000000,
                 folder: `releases/${currentUser?.uid || 'temp'}/audio`
             }, async (url) => {
                 document.getElementById('music-audio-url').value = url;
                 const previewDiv = document.getElementById('audio-preview');
                 if (previewDiv) previewDiv.style.display = 'block';
-                showAlert("✅ Áudio carregado com sucesso!");
+                showAlert("✅ Áudio WAV carregado com sucesso!");
             });
         }
 
@@ -1945,11 +2060,11 @@
             trackDiv.innerHTML = `
                 <input type="text" placeholder="Título da faixa" class="track-title-input" style="flex:2; margin-bottom:10px;">
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <button type="button" class="upload-track-btn btn-small" style="width: auto;"><i class="fas fa-cloud-upload-alt"></i> Upload Áudio</button>
+                    <button type="button" class="upload-track-btn btn-small" style="width: auto;"><i class="fas fa-cloud-upload-alt"></i> Upload Áudio WAV</button>
                     <input type="hidden" class="track-url-input">
                     <button type="button" class="remove-track btn-small" onclick="this.closest('.dynamic-track').remove()" style="background:#dc3545; color:#fff;"><i class="fas fa-trash"></i> Remover</button>
                 </div>
-                <div class="track-preview" style="margin-top: 5px; display: none; font-size: 0.7rem; color: var(--gold);">✓ Áudio carregado</div>
+                <div class="track-preview" style="margin-top: 5px; display: none; font-size: 0.7rem; color: var(--gold);">✓ Áudio WAV carregado</div>
                 <hr style="margin: 10px 0;">
             `;
             
@@ -1958,7 +2073,7 @@
                 uploadBtn.onclick = () => {
                     openCloudinaryUpload({
                         resourceType: 'auto',
-                        formats: ['mp3', 'wav', 'm4a'],
+                        formats: ['wav'],
                         maxSize: 200000000,
                         folder: `releases/${currentUser?.uid || 'temp'}/tracks`
                     }, (url) => {
@@ -1966,7 +2081,7 @@
                         const previewDiv = trackDiv.querySelector('.track-preview');
                         if (urlInput) urlInput.value = url;
                         if (previewDiv) previewDiv.style.display = 'block';
-                        showAlert(`✅ Áudio da faixa ${trackIndex + 1} carregado!`);
+                        showAlert(`✅ Áudio WAV da faixa ${trackIndex + 1} carregado!`);
                     });
                 };
             }
@@ -2045,7 +2160,7 @@
             if (releaseType === 'single') {
                 const audioUrl = document.getElementById('music-audio-url').value;
                 if (!audioUrl) {
-                    showAlert('Carregue o ficheiro de áudio!');
+                    showAlert('Carregue o ficheiro de áudio em formato WAV!');
                     return;
                 }
             }
@@ -2121,20 +2236,17 @@
                 if (!userData.releases) userData.releases = [];
                 userData.releases.push(releaseId);
                 
-                // Gerar e salvar XML DDEX
                 let artistName = 'Artista';
                 const artistDoc = await db.collection('artists').doc(artistaId).get();
                 if (artistDoc.exists) artistName = artistDoc.data().nome;
                 const ddexXml = generateDDEX(releaseData, artistName, currentUser.email);
                 
-                // Salvar XML no Firestore
                 await db.collection('ddex_exports').doc(releaseId).set({
                     releaseId: releaseId,
                     xml: ddexXml,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
-                // Reset form
                 const resetFields = ['music-titulo', 'music-capa-url', 'music-audio-url', 'music-isrc', 'music-upc', 'music-data', 'music-colaboradores', 'music-produtores', 'music-compositores', 'music-pline', 'music-cline', 'music-estilo', 'music-artista-select'];
                 resetFields.forEach(id => {
                     const el = document.getElementById(id);
@@ -2293,7 +2405,6 @@
 
                 await db.collection('releases').doc(releaseId).update(updateData);
                 
-                // Atualizar XML DDEX
                 const release = { ...(await db.collection('releases').doc(releaseId).get()).data(), ...updateData };
                 let artistName = 'Artista';
                 if (release.artistaId) {
@@ -2691,6 +2802,7 @@
                 showLoading(false);
                 showAlert('✅ Música aprovada com sucesso! Agora está disponível no feed.');
                 openAdminMusicsModal();
+                loadHomeData();
                 loadFeed();
             } catch (error) {
                 console.error('Erro ao aprovar música:', error);
@@ -3057,7 +3169,7 @@
 
         // ========== INICIALIZAÇÃO ==========
         window.onload = function() {
-            console.log("Site carregado - Inicializando MAM Distribuidora DDEX");
+            console.log("MAM Distribuidora DDEX - Inicializada");
             
             const btnArtistById = document.getElementById('btnAddArtist');
             if (btnArtistById) {
@@ -3136,6 +3248,7 @@
                     }
                     showMainApp();
                     updateUserDisplay();
+                    loadHomeData();
                     loadFeed();
                     loadArtistSelect();
                 } catch (error) {

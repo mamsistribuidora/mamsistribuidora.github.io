@@ -942,7 +942,6 @@
             return true;
         }
         
-        // Configurar data mínima
         function setMinReleaseDate() {
             const dateInput = document.getElementById('music-data');
             if (dateInput) {
@@ -976,14 +975,8 @@
 <ERN:NewReleaseMessage xmlns:ERN="http://ddex.net/xml/ern/43" xmlns="http://ddex.net/xml/ern/43" LanguageAndScriptCode="pt">
     <MessageHeader>
         <MessageId>${releaseId}-${Date.now()}</MessageId>
-        <MessageSender>
-            <PartyId>MAM-001</PartyId>
-            <PartyName>MAM Distribuidora</PartyName>
-        </MessageSender>
-        <MessageRecipient>
-            <PartyId>META-001</PartyId>
-            <PartyName>Meta Rights Manager</PartyName>
-        </MessageRecipient>
+        <MessageSender><PartyId>MAM-001</PartyId><PartyName>MAM Distribuidora</PartyName></MessageSender>
+        <MessageRecipient><PartyId>META-001</PartyId><PartyName>Meta Rights Manager</PartyName></MessageRecipient>
         <MessageCreatedDateTime>${timestamp}</MessageCreatedDateTime>
     </MessageHeader>
     <ResourceList>
@@ -991,19 +984,9 @@
             <ResourceId><ISRC>${releaseData.isrc || ''}</ISRC></ResourceId>
             <ResourceReference>SRC_${releaseId}</ResourceReference>
             <ResourceTitle LanguageAndScriptCode="pt">${escapeXml(releaseData.titulo || '')}</ResourceTitle>
-            <DisplayArtist>
-                <ArtistName>${escapeXml(artistName)}</ArtistName>
-                <Role>MainArtist</Role>
-            </DisplayArtist>
-            <IndirectResourceContributor>
-                <ContributorRole>Composer</ContributorRole>
-                <PartyName>${escapeXml(releaseData.compositores || artistName)}</PartyName>
-            </IndirectResourceContributor>
-            <RightsController>
-                <RightsControllerRole>RightsController</RightsControllerRole>
-                <PartyName>MAM Distribuidora</PartyName>
-                <RightsControlType>Exclusive</RightsControlType>
-            </RightsController>
+            <DisplayArtist><ArtistName>${escapeXml(artistName)}</ArtistName><Role>MainArtist</Role></DisplayArtist>
+            <IndirectResourceContributor><ContributorRole>Composer</ContributorRole><PartyName>${escapeXml(releaseData.compositores || artistName)}</PartyName></IndirectResourceContributor>
+            <RightsController><RightsControllerRole>RightsController</RightsControllerRole><PartyName>MAM Distribuidora</PartyName><RightsControlType>Exclusive</RightsControlType></RightsController>
         </SoundRecording>
     </ResourceList>
     <ReleaseList>
@@ -1019,18 +1002,10 @@
             <DealList>
                 <Deal>
                     <DealReference>DEAL_${releaseId}</DealReference>
-                    <DealTerms>
-                        <TerritoryList><Territory>Worldwide</Territory></TerritoryList>
-                        <CommercialModelType>PayAsYouGo</CommercialModelType>
-                        <UseType>Stream</UseType>
-                        <RoyaltyRate>70</RoyaltyRate>
-                    </DealTerms>
+                    <DealTerms><TerritoryList><Territory>Worldwide</Territory></TerritoryList><CommercialModelType>PayAsYouGo</CommercialModelType><UseType>Stream</UseType><RoyaltyRate>70</RoyaltyRate></DealTerms>
                 </Deal>
             </DealList>
-            <ResourceGroup>
-                <ResourceGroupType>MainAlbum</ResourceGroupType>
-                <ResourceReferenceList><ResourceReference>SRC_${releaseId}</ResourceReference></ResourceReferenceList>
-            </ResourceGroup>
+            <ResourceGroup><ResourceGroupType>MainAlbum</ResourceGroupType><ResourceReferenceList><ResourceReference>SRC_${releaseId}</ResourceReference></ResourceReferenceList></ResourceGroup>
         </Release>
     </ReleaseList>
 </ERN:NewReleaseMessage>`;
@@ -1408,7 +1383,7 @@
                         const url = result.info.secure_url;
                         const format = result.info.format;
                         if (options.resourceType === 'auto' && format !== 'wav') {
-                            showAlert('Apenas WAV é aceite para distribuição profissional.');
+                            showAlert('A MAM exige WAV para distribuição oficial.');
                             return;
                         }
                         if (callback) callback(url);

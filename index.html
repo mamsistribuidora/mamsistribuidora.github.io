@@ -53,6 +53,10 @@
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); }
         .logo-text { color: var(--gold); font-size: 1.4rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
         
+        .search-bar-container { max-width: 600px; margin: 10px auto; padding: 0 15px; }
+        .search-bar { width: 100%; padding: 12px 20px; background: #111; border: 1px solid #333; border-radius: 50px; color: white; font-size: 0.9rem; transition: 0.3s; }
+        .search-bar:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+        
         nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; }
         .nav-btn { background: #111; border: 1px solid #333; color: var(--gray); padding: 10px 15px; font-size: 0.75rem; cursor: pointer; border-radius: 4px; transition: 0.3s; font-weight: 600; }
         .nav-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
@@ -70,6 +74,13 @@
         input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
         
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .phone-group { display: flex; gap: 10px; }
+        .phone-group select { width: 35%; margin: 0; }
+        .phone-group input { width: 65%; margin: 0; }
+        
+        .currency-selector { display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-bottom: 15px; }
+        .currency-selector label { color: var(--gold); font-size: 0.8rem; margin: 0; }
+        .currency-selector select { width: auto; padding: 5px 10px; margin: 0; background: #000; }
         
         .password-container { position: relative; margin-bottom: 15px; }
         .password-container input { margin-bottom: 0; padding-right: 45px; }
@@ -217,6 +228,8 @@
             .nav-btn { padding: 8px 10px; font-size: 0.65rem; }
             .info-grid { grid-template-columns: 1fr; gap: 10px; }
             .form-row { grid-template-columns: 1fr; }
+            .phone-group { flex-direction: column; }
+            .phone-group select, .phone-group input { width: 100%; }
         }
     </style>
 </head>
@@ -247,6 +260,11 @@
             <h1 class="logo-text">MAM DISTRIBUIDORA</h1>
         </div>
         <p style="color: var(--gold); font-size: 0.75rem; margin-top: 5px; letter-spacing: 1px;">O Império da Música em Angola | DDEX ERN 4.3</p>
+        
+        <!-- BARRA DE PESQUISA GLOBAL -->
+        <div class="search-bar-container">
+            <input type="text" id="global-search" class="search-bar" placeholder="🔍 Pesquisar música por título ou artista...">
+        </div>
     </header>
 
     <nav>
@@ -296,6 +314,22 @@
             </div>
             <input type="text" id="reg-nome" placeholder="Nome Completo" style="margin-bottom: 15px;">
             <input type="email" id="reg-email" placeholder="E-mail" style="margin-bottom: 15px;">
+            <div class="phone-group" style="margin-bottom: 15px;">
+                <select id="reg-phone-code">
+                    <option value="+244">🇦🇴 +244 (Angola)</option>
+                    <option value="+351">🇵🇹 +351 (Portugal)</option>
+                    <option value="+55">🇧🇷 +55 (Brasil)</option>
+                    <option value="+1">🇺🇸 +1 (EUA/Canadá)</option>
+                    <option value="+238">🇨🇻 +238 (Cabo Verde)</option>
+                    <option value="+258">🇲🇿 +258 (Moçambique)</option>
+                    <option value="+239">🇸🇹 +239 (São Tomé)</option>
+                    <option value="+245">🇬🇼 +245 (Guiné-Bissau)</option>
+                    <option value="+44">🇬🇧 +44 (Reino Unido)</option>
+                    <option value="+33">🇫🇷 +33 (França)</option>
+                    <option value="+34">🇪🇸 +34 (Espanha)</option>
+                </select>
+                <input type="tel" id="reg-telefone" placeholder="Número de telefone">
+            </div>
             <div class="password-container">
                 <input type="password" id="reg-pass" placeholder="Senha">
                 <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass')">
@@ -392,10 +426,10 @@
                     </div>
                 </div>
 
-                <!-- TOP 5 MÚSICAS MAIS OUVIDAS -->
+                <!-- ÚLTIMO LANÇAMENTO GLOBAL -->
                 <div class="card">
-                    <h3><i class="fas fa-star"></i> Top 5 Músicas Mais Ouvidas</h3>
-                    <div id="top5-container" class="grid"></div>
+                    <h3><i class="fas fa-clock"></i> Último Lançamento Global</h3>
+                    <div id="latest-release-container" class="grid"></div>
                 </div>
 
                 <!-- FEED DE LANÇAMENTOS -->
@@ -600,6 +634,15 @@
                 <div class="card">
                     <h3><i class="fas fa-wallet"></i> Carteira Oficial MAM</h3>
                     
+                    <div class="currency-selector">
+                        <label><i class="fas fa-coins"></i> Visualizar em:</label>
+                        <select id="currency-select">
+                            <option value="Kz">🇦🇴 Kz (Kwanza)</option>
+                            <option value="USD">🇺🇸 USD (Dólar)</option>
+                            <option value="EUR">🇪🇺 EUR (Euro)</option>
+                        </select>
+                    </div>
+                    
                     <div class="visa-card-mam" style="width: 100%; max-width: 400px; height: 220px; margin: 20px auto; border-radius: 15px; position: relative; padding: 25px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); box-shadow: 0 15px 35px rgba(0,0,0,0.5); background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg') center/cover; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; border: 1px solid rgba(212,175,55,0.3);">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;">
                             <div style="font-weight: bold; font-style: italic; font-size: 1.2rem; color: var(--gold);">MAM Distribuidora</div>
@@ -615,7 +658,7 @@
 
                     <div class="stat-grid">
                         <div class="stat-box">
-                            <p>Saldo Real (Kz)</p>
+                            <p>Saldo Real</p>
                             <h4 id="carteira-saldo">0,00 Kz</h4>
                         </div>
                         <div class="stat-box">
@@ -643,7 +686,22 @@
                     </div>
                     <input type="hidden" id="perfil-foto-url">
                     <input type="text" id="perfil-nome" placeholder="Nome Completo">
-                    <input type="tel" id="perfil-telefone" placeholder="Telefone (Opcional)">
+                    <div class="phone-group" style="margin-bottom: 15px;">
+                        <select id="perfil-phone-code">
+                            <option value="+244">🇦🇴 +244 (Angola)</option>
+                            <option value="+351">🇵🇹 +351 (Portugal)</option>
+                            <option value="+55">🇧🇷 +55 (Brasil)</option>
+                            <option value="+1">🇺🇸 +1 (EUA/Canadá)</option>
+                            <option value="+238">🇨🇻 +238 (Cabo Verde)</option>
+                            <option value="+258">🇲🇿 +258 (Moçambique)</option>
+                            <option value="+239">🇸🇹 +239 (São Tomé)</option>
+                            <option value="+245">🇬🇼 +245 (Guiné-Bissau)</option>
+                            <option value="+44">🇬🇧 +44 (Reino Unido)</option>
+                            <option value="+33">🇫🇷 +33 (França)</option>
+                            <option value="+34">🇪🇸 +34 (Espanha)</option>
+                        </select>
+                        <input type="tel" id="perfil-telefone" placeholder="Número de telefone">
+                    </div>
                     <select id="perfil-pais">
                         <option value="">Selecione seu País</option>
                     </select>
@@ -875,6 +933,10 @@
 
         const CLOUDINARY_CLOUD_NAME = "dbjhwnhoq";
         const CLOUDINARY_UPLOAD_PRESET = "mam_distribuidora";
+
+        // Taxas de câmbio (aproximadas para visualização)
+        const exchangeRates = { Kz: 1, USD: 0.00115, EUR: 0.00106 };
+        let currentCurrency = 'Kz';
 
         let currentUser = null;
         let userData = null;
@@ -1134,15 +1196,16 @@
             if (sectionId === 'minhas-musicas') loadUserMusic();
             if (sectionId === 'carteira') loadWallet();
             if (sectionId === 'lancar') loadArtistSelect();
-            if (sectionId === 'home') { loadHomeData(); loadFeed(); }
+            if (sectionId === 'home') { loadLatestRelease(); loadFeed(); }
         }
 
+        // ========== TEXTO LEGAL PROFISSIONAL ==========
         function showFooterContent(type) {
             const contents = {
-                sobre: 'MAM Distribuidora – Global Music Network\n\nFundada pelo CEO Matias Arsénio Manuel.',
-                privacidade: 'Política de Proteção de Dados\n\nA MAM Distribuidora cumpre com os rigorosos padrões de segurança de dados.',
-                termos: 'Termos e Condições de Serviço\n\nAo submeter conteúdos, o utilizador declara ser o detentor legítimo dos direitos autorais.',
-                suporte: 'Central de Apoio Estratégico\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola.'
+                sobre: `MAM DISTRIBUIDORA – INFRAESTRUTURA GLOBAL DE DISTRIBUIÇÃO DIGITAL\n\nFundada por Matias Arsénio Manuel, a MAM Distribuidora é uma empresa de tecnologia musical especializada na distribuição independente. Operamos com conformidade DDEX ERN 4.3, conectando artistas a mais de 150 lojas digitais (Spotify, Apple Music, Deezer, TikTok, Meta, etc.).\n\nNossa missão é democratizar o acesso ao mercado fonográfico global, garantindo que 100% dos royalties sejam repassados diretamente aos criadores, com transparência total.`,
+                privacidade: `POLÍTICA DE PRIVACIDADE E PROTEÇÃO DE DADOS\n\nA MAM Distribuidora está em conformidade com a Lei Geral de Proteção de Dados (LGPD - Brasil) e o Regulamento Geral de Proteção de Dados (GDPR - Europa).\n\n- Coletamos apenas dados essenciais para distribuição musical (nome, e-mail, telefone, documentos fiscais).\n- Não compartilhamos suas informações com terceiros não autorizados.\n- Os metadados das obras (ISRC, UPC) são registrados em blockchain para prova de autoria.\n- Você pode solicitar a exclusão total dos seus dados a qualquer momento através do e-mail mamfilhos29@gmail.com.`,
+                termos: `TERMOS E CONDIÇÕES DE SERVIÇO\n\n1. DECLARAÇÃO DE DIREITOS: Ao enviar uma obra, o utilizador declara sob as penas da lei ser o legítimo titular dos direitos autorais e conexos.\n\n2. ROYALTIES: A MAM Distribuidora repassa 70% de todos os royalties líquidos recebidos das plataformas. O pagamento é processado mensalmente.\n\n3. PRAZOS: Lançamentos requerem prazo mínimo de 14 dias para inspeção e distribuição.\n\n4. VIOLAÇÕES: O envio de material plagiado ou com samples não autorizados resultará na suspensão imediata da conta e retenção de valores para fins de indenização.\n\n5. LEI APLICÁVEL: Este contrato é regido pelas leis de Angola e pelos tratados internacionais de propriedade intelectual.`,
+                suporte: `CENTRAL DE APOIO ESTRATÉGICO\n\n📞 WhatsApp/Tel: 937881307\n📧 E-mail: mamfilhos29@gmail.com\n📍 Luanda, Angola\n\nHorário de Atendimento:\nSegunda a Sexta: 9h às 18h\nSábado: 9h às 13h\n\nPara questões de royalties, distribuição ou suporte técnico, nossa equipe está disponível para responder em até 24h úteis.`
             };
             showAlert(contents[type]);
         }
@@ -1169,111 +1232,29 @@
             showAlert(`⬇️ Download: ${musicTitle}`);
         }
 
-        // ========== LOAD HOME DATA (TOP 5) ==========
-        async function loadHomeData() {
-            const top5Container = document.getElementById('top5-container');
-            if (!top5Container) return;
+        // ========== ÚLTIMO LANÇAMENTO GLOBAL ==========
+        async function loadLatestRelease() {
+            const latestContainer = document.getElementById('latest-release-container');
+            if (!latestContainer) return;
             
-            top5Container.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando Top 5...</div>';
+            latestContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando último lançamento...</div>';
             
             try {
-                const topSnapshot = await db.collection('releases')
+                const latestSnapshot = await db.collection('releases')
                     .where('status', '==', 'approved')
-                    .orderBy('streams', 'desc')
-                    .limit(5)
+                    .orderBy('createdAt', 'desc')
+                    .limit(1)
                     .get();
                 
-                if (topSnapshot.empty) {
-                    top5Container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhuma música em destaque ainda.</p>';
+                if (latestSnapshot.empty) {
+                    latestContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Aguardando primeiro lançamento mundial.</p>';
                     return;
                 }
                 
-                top5Container.innerHTML = '';
+                latestContainer.innerHTML = '';
                 
-                for (const doc of topSnapshot.docs) {
+                for (const doc of latestSnapshot.docs) {
                     const release = doc.data();
-                    let artistName = 'Artista';
-                    if (release.artistaId) {
-                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                        if (artistDoc.exists) artistName = artistDoc.data().nome;
-                    }
-                    
-                    const musicCard = document.createElement('div');
-                    musicCard.className = 'music-card';
-                    musicCard.innerHTML = `
-                        <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
-                        <div class="music-artist">${escapeHtml(artistName)}</div>
-                        <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
-                        <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
-                        <div class="music-actions">
-                            <button class="btn-small play-btn"><i class="fas fa-play"></i> Ouvir</button>
-                            <button class="btn-small download-btn"><i class="fas fa-download"></i> Download</button>
-                        </div>
-                        <audio class="music-audio" style="display: none;" controls preload="none">
-                            <source src="${release.audioURL || ''}" type="audio/wav">
-                        </audio>
-                    `;
-                    
-                    const playBtn = musicCard.querySelector('.play-btn');
-                    const downloadBtn = musicCard.querySelector('.download-btn');
-                    const audioElem = musicCard.querySelector('.music-audio');
-                    
-                    playBtn.onclick = () => {
-                        if (audioElem.paused) {
-                            document.querySelectorAll('.music-audio').forEach(audio => {
-                                if (audio !== audioElem && !audio.paused) audio.pause();
-                            });
-                            audioElem.style.display = 'block';
-                            audioElem.play();
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-                        } else {
-                            audioElem.pause();
-                            playBtn.innerHTML = '<i class="fas fa-play"></i> Ouvir';
-                        }
-                    };
-                    downloadBtn.onclick = () => downloadAudio(release.audioURL, release.titulo);
-                    
-                    top5Container.appendChild(musicCard);
-                }
-            } catch (error) {
-                console.error("Erro ao carregar Top 5:", error);
-                top5Container.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar Top 5.</p>';
-            }
-        }
-
-        // ========== LOAD FEED (SEM ORDER BY PARA EVITAR ERRO DE ÍNDICE - ORDEM POR ID) ==========
-        async function loadFeed() {
-            const feedContainer = document.getElementById('feed-container');
-            if (!feedContainer) return;
-            
-            feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
-            
-            try {
-                // REMOVIDO orderBy para não depender de índices do Firebase
-                const feedSnapshot = await db.collection('releases')
-                    .where('status', '==', 'approved')
-                    .limit(50)
-                    .get();
-                
-                if (feedSnapshot.empty) {
-                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum lançamento disponível.</p>';
-                    return;
-                }
-                
-                feedContainer.innerHTML = '';
-                
-                // Ordenar por ID (decrescente - mais novos primeiro baseado no timestamp do ID)
-                const releases = [];
-                feedSnapshot.forEach(doc => releases.push({ id: doc.id, ...doc.data() }));
-                releases.sort((a, b) => {
-                    // IDs são timestamps, então comparar numericamente
-                    const idA = parseInt(a.id) || 0;
-                    const idB = parseInt(b.id) || 0;
-                    return idB - idA;
-                });
-                
-                for (const release of releases) {
                     let artistName = 'Artista';
                     let userName = '';
                     if (release.artistaId) {
@@ -1285,9 +1266,6 @@
                         if (userDoc.exists) userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
                     }
                     
-                    const statusText = release.status === 'approved' ? 'Aprovado' : (release.status === 'rejected' ? 'Reprovado' : 'Em Revisão DDEX');
-                    const statusClass = release.status === 'approved' ? 'status-active' : (release.status === 'rejected' ? 'status-error' : 'status-pending');
-                    
                     const musicCard = document.createElement('div');
                     musicCard.className = 'music-card';
                     musicCard.innerHTML = `
@@ -1296,7 +1274,6 @@
                         <div class="music-artist">${escapeHtml(artistName)}</div>
                         <div class="music-user"><i class="fas fa-user"></i> ${escapeHtml(userName)}</div>
                         <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
-                        <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
                         <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
                         <div class="music-actions">
                             <button class="btn-small play-btn"><i class="fas fa-play"></i> Ouvir</button>
@@ -1313,9 +1290,6 @@
                     
                     playBtn.onclick = () => {
                         if (audioElem.paused) {
-                            document.querySelectorAll('.music-audio').forEach(audio => {
-                                if (audio !== audioElem && !audio.paused) audio.pause();
-                            });
                             audioElem.style.display = 'block';
                             audioElem.play();
                             playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
@@ -1326,11 +1300,135 @@
                     };
                     downloadBtn.onclick = () => downloadAudio(release.audioURL, release.titulo);
                     
-                    feedContainer.appendChild(musicCard);
+                    latestContainer.appendChild(musicCard);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar último lançamento:", error);
+                latestContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar último lançamento.</p>';
+            }
+        }
+
+        // ========== LOAD FEED COM PESQUISA GLOBAL ==========
+        let allReleases = [];
+        let filteredReleases = [];
+        
+        async function loadFeed() {
+            const feedContainer = document.getElementById('feed-container');
+            if (!feedContainer) return;
+            
+            feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
+            
+            try {
+                const feedSnapshot = await db.collection('releases')
+                    .where('status', '==', 'approved')
+                    .limit(100)
+                    .get();
+                
+                if (feedSnapshot.empty) {
+                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum lançamento disponível.</p>';
+                    return;
+                }
+                
+                allReleases = [];
+                for (const doc of feedSnapshot.docs) {
+                    const release = doc.data();
+                    let artistName = 'Artista';
+                    if (release.artistaId) {
+                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
+                        if (artistDoc.exists) artistName = artistDoc.data().nome;
+                    }
+                    allReleases.push({ id: doc.id, ...release, artistName });
+                }
+                
+                // Ordenar por data decrescente
+                allReleases.sort((a, b) => {
+                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+                    return dateB - dateA;
+                });
+                
+                filteredReleases = [...allReleases];
+                renderFeed();
+                
+                // Configurar pesquisa global
+                const searchInput = document.getElementById('global-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        const term = e.target.value.toLowerCase().trim();
+                        if (term === '') {
+                            filteredReleases = [...allReleases];
+                        } else {
+                            filteredReleases = allReleases.filter(release => 
+                                (release.titulo && release.titulo.toLowerCase().includes(term)) ||
+                                (release.artistName && release.artistName.toLowerCase().includes(term))
+                            );
+                        }
+                        renderFeed();
+                    });
                 }
             } catch (error) {
                 console.error("Erro ao carregar Feed:", error);
                 feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar lançamentos.</p>';
+            }
+        }
+        
+        function renderFeed() {
+            const feedContainer = document.getElementById('feed-container');
+            if (!feedContainer) return;
+            
+            if (filteredReleases.length === 0) {
+                feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum resultado encontrado.</p>';
+                return;
+            }
+            
+            feedContainer.innerHTML = '';
+            
+            for (const release of filteredReleases) {
+                let userName = '';
+                if (release.ownerEmail) {
+                    (async () => {
+                        const userDoc = await db.collection('users').doc(release.ownerEmail).get();
+                        if (userDoc.exists) userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
+                    })();
+                }
+                
+                const musicCard = document.createElement('div');
+                musicCard.className = 'music-card';
+                musicCard.innerHTML = `
+                    <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
+                    <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
+                    <div class="music-artist">${escapeHtml(release.artistName)}</div>
+                    <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
+                    <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
+                    <div class="music-actions">
+                        <button class="btn-small play-btn"><i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn-small download-btn"><i class="fas fa-download"></i> Download</button>
+                    </div>
+                    <audio class="music-audio" style="display: none;" controls preload="none">
+                        <source src="${release.audioURL || ''}" type="audio/wav">
+                    </audio>
+                `;
+                
+                const playBtn = musicCard.querySelector('.play-btn');
+                const downloadBtn = musicCard.querySelector('.download-btn');
+                const audioElem = musicCard.querySelector('.music-audio');
+                
+                playBtn.onclick = () => {
+                    if (audioElem.paused) {
+                        document.querySelectorAll('.music-audio').forEach(audio => {
+                            if (audio !== audioElem && !audio.paused) audio.pause();
+                        });
+                        audioElem.style.display = 'block';
+                        audioElem.play();
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+                    } else {
+                        audioElem.pause();
+                        playBtn.innerHTML = '<i class="fas fa-play"></i> Ouvir';
+                    }
+                };
+                downloadBtn.onclick = () => downloadAudio(release.audioURL, release.titulo);
+                
+                feedContainer.appendChild(musicCard);
             }
         }
 
@@ -1468,10 +1566,18 @@
             });
         }
 
-        // ========== CARREGAR PAÍSES E ESTILOS ==========
+        // ========== CARREGAR PAÍSES E ESTILOS (EXPANDIDO) ==========
         function carregarPaisesEEstilos() {
-            const paises = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau", "Timor-Leste", "Outro"];
-            const estilos = ["Afrobeat", "Kizomba", "Kuduro", "Semba", "Hip Hop", "R&B", "Pop", "Rock", "Electronic", "Jazz", "Gospel", "Outro"];
+            const paises = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau", "Timor-Leste", "África do Sul", "Estados Unidos", "Reino Unido", "França", "Espanha", "Alemanha", "Itália", "Outro"];
+            
+            const estilos = [
+                "Afrobeat", "Afro House", "Afro Pop", "Amapiano", "Kizomba", "Kuduro", "Semba", "Hip Hop", "Rap", "Trap", "R&B", "Soul",
+                "Pop", "Rock", "Alternative Rock", "Indie Rock", "Electronic", "House", "Techno", "Trance", "Dubstep", "Drum and Bass",
+                "Jazz", "Blues", "Classical", "Orchestral", "Country", "Folk", "Reggae", "Dancehall", "Soca", "Funk", "Disco",
+                "Metal", "Punk Rock", "Hardcore", "Grime", "Drill", "Lo-fi", "Ambient", "Soundtrack", "Gospel", "Christian", "Latin",
+                "Salsa", "Bachata", "Reggaeton", "Flamenco", "Bossa Nova", "MPB", "Sertanejo", "Pagode", "Forró", "K-Pop", "J-Pop",
+                "World Music", "Experimental", "Instrumental", "Spoken Word", "Comedy", "Other"
+            ];
             
             const selectPais = document.getElementById('perfil-pais');
             if (selectPais) {
@@ -1534,8 +1640,11 @@
         async function handleRegister() {
             const nome = document.getElementById('reg-nome').value.trim();
             const email = document.getElementById('reg-email').value.trim();
+            const phoneCode = document.getElementById('reg-phone-code').value;
+            const telefone = document.getElementById('reg-telefone').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
             const passConfirm = document.getElementById('reg-pass-confirm').value.trim();
+            const telefoneCompleto = telefone ? phoneCode + telefone : '';
             
             if (!nome || !email || !pass || !passConfirm) return showAlert('Preencha todos os campos!');
             if (pass !== passConfirm) return showAlert('As senhas não coincidem!');
@@ -1546,7 +1655,7 @@
                 const result = await auth.createUserWithEmailAndPassword(email, pass);
                 await result.user.sendEmailVerification();
                 await db.collection('users').doc(email).set({
-                    nome, email, tipo: "Artista", pais: "Angola", plano: "FREE",
+                    nome, email, telefone: telefoneCompleto, tipo: "Artista", pais: "Angola", plano: "FREE",
                     artistasLimit: 1, saldo: 0, totalGanhos: 0, artists: [], releases: [],
                     ownerUID: result.user.uid, createdAt: new Date()
                 });
@@ -1572,13 +1681,15 @@
         async function handleUpdateProfile(e) {
             e.preventDefault();
             const nome = document.getElementById('perfil-nome').value.trim();
+            const phoneCode = document.getElementById('perfil-phone-code').value;
             const telefone = document.getElementById('perfil-telefone').value.trim();
             const pais = document.getElementById('perfil-pais').value;
+            const telefoneCompleto = telefone ? phoneCode + telefone : '';
             if (!nome) return showAlert('Nome é obrigatório!');
             showLoading(true, 'A atualizar...');
             try {
-                await db.collection('users').doc(currentUser.email).update({ nome, telefone, pais });
-                userData = { ...userData, nome, telefone, pais };
+                await db.collection('users').doc(currentUser.email).update({ nome, telefone: telefoneCompleto, pais });
+                userData = { ...userData, nome, telefone: telefoneCompleto, pais };
                 updateUserDisplay();
                 showAlert('Perfil atualizado!');
             } catch (error) {
@@ -1808,7 +1919,7 @@
             }
         }
 
-        // ========== FUNÇÃO ENVIAR LANÇAMENTO CORRIGIDA (SEGURANÇA: WAV + DATA 14 DIAS) ==========
+        // ========== FUNÇÃO ENVIAR LANÇAMENTO COM EMAILJS ==========
         async function enviarLancamento(e) {
             e.preventDefault();
             
@@ -1822,7 +1933,6 @@
             const pline = document.getElementById('music-pline').value.trim();
             const cline = document.getElementById('music-cline').value.trim();
             
-            // VALIDAÇÃO: Data de lançamento (mínimo 14 dias)
             function isValidReleaseDate(dateString) {
                 if (!dateString) return false;
                 const selectedDate = new Date(dateString);
@@ -1834,18 +1944,14 @@
                 return selectedDate >= minDate;
             }
             
-            // VALIDAÇÃO: Verificar se o áudio foi carregado (via Cloudinary já valida WAV)
             const audioUrl = document.getElementById('music-audio-url').value;
             
-            // Validações de campos obrigatórios
             if (!titulo || !artistaId || !releaseDate || !capaUrl) {
                 return showAlert('Preencha os campos obrigatórios (Título, Artista, Data e Capa)!');
             }
             if (!estilo) return showAlert('Selecione o Género Principal (Primary Genre)!');
             if (!compositores) return showAlert('Preencha o campo Compositores!');
             if (!pline || !cline) return showAlert('Preencha os campos de Copyright (P-Line e C-Line)!');
-            
-            // VALIDAÇÃO: Data mínima de 14 dias
             if (!isValidReleaseDate(releaseDate)) {
                 return showAlert('Prazo necessário para inspeção e envio às lojas. A data deve ser no mínimo 14 dias a partir de hoje.');
             }
@@ -1858,7 +1964,6 @@
             if (!finalUpc) finalUpc = generateValidUPC();
             else if (!isValidUPC(finalUpc)) return showAlert('UPC/EAN inválido! Deve ter 12 ou 13 dígitos.');
             
-            // VALIDAÇÃO: Para single, verificar se áudio foi carregado
             if (releaseType === 'single' && !audioUrl) {
                 return showAlert('Carregue o ficheiro de áudio em formato WAV!');
             }
@@ -1906,6 +2011,25 @@
                 const ddexXml = generateDDEX(releaseData, artistName);
                 await db.collection('ddex_exports').doc(releaseId).set({ releaseId, xml: ddexXml, createdAt: new Date() });
                 
+                // ENVIAR NOTIFICAÇÃO VIA EMAILJS PARA O ADMIN
+                try {
+                    await emailjs.send("default_service", "template_id_aqui", {
+                        to_email: ADMIN_EMAIL,
+                        artist_name: artistName,
+                        release_title: titulo,
+                        isrc: finalIsrc,
+                        upc: finalUpc,
+                        p_line: pline,
+                        c_line: cline,
+                        genre: estilo,
+                        composers: compositores,
+                        release_date: releaseDate,
+                        message: `Novo lançamento registado na MAM Distribuidora!\n\nArtista: ${artistName}\nTítulo: ${titulo}\nISRC: ${finalIsrc}\nUPC: ${finalUpc}\nP-Line: ${pline}\nC-Line: ${cline}\nGénero: ${estilo}\nCompositores: ${compositores}\nData de Lançamento: ${releaseDate}`
+                    }, "vuAVZ5U4lRBZcsIon");
+                } catch (emailError) {
+                    console.error("Erro ao enviar email:", emailError);
+                }
+                
                 // Limpar formulário
                 ['music-titulo', 'music-capa-url', 'music-audio-url', 'music-isrc', 'music-upc', 'music-data', 'music-colaboradores', 'music-produtores', 'music-compositores', 'music-pline', 'music-cline', 'music-estilo', 'music-artista-select'].forEach(id => {
                     const el = document.getElementById(id);
@@ -1922,8 +2046,8 @@
                 showSuccessAnimation(`Lançamento Registado! ISRC: ${finalIsrc}`);
                 showAlert(`✅ Lançamento enviado! ISRC: ${finalIsrc}`);
                 loadUserMusic();
+                loadLatestRelease();
                 loadFeed();
-                loadHomeData();
             } catch (error) {
                 showAlert('Erro: ' + error.message);
             } finally {
@@ -2119,7 +2243,7 @@
             }
         }
 
-        // ========== CARTEIRA (RESUMIDA) ==========
+        // ========== CARTEIRA COM FIX NaN ==========
         async function loadWallet() {
             if (!userData) return;
             if (!userData.cartao) {
@@ -2136,11 +2260,9 @@
             const visaExpiry = document.getElementById('visa-expiry');
             if (visaExpiry) visaExpiry.textContent = 'VAL: ' + userData.cartao.validade;
             
-            const rate = 1;
-            const carteiraSaldo = document.getElementById('carteira-saldo');
-            if (carteiraSaldo) carteiraSaldo.textContent = (userData.saldo * rate).toLocaleString() + ' Kz';
-            const carteiraTotal = document.getElementById('carteira-total-ganhos');
-            if (carteiraTotal) carteiraTotal.textContent = (userData.totalGanhos * rate).toLocaleString() + ' Kz';
+            // FIX: (userData.totalGanhos || 0).toFixed(2) para evitar NaN
+            const saldo = (userData.saldo || 0);
+            const totalGanhos = (userData.totalGanhos || 0);
             
             let monthlyEarnings = 0;
             if (userData.releases) {
@@ -2149,8 +2271,27 @@
                     if (doc.exists) monthlyEarnings += (doc.data().streams || 0) * VALOR_POR_STREAM;
                 }
             }
+            
+            const carteiraSaldo = document.getElementById('carteira-saldo');
+            const carteiraTotal = document.getElementById('carteira-total-ganhos');
             const carteiraGanhosMes = document.getElementById('carteira-ganhos-mes');
-            if (carteiraGanhosMes) carteiraGanhosMes.textContent = (monthlyEarnings * rate).toLocaleString() + ' Kz';
+            
+            function updateCurrencyDisplay() {
+                const rate = exchangeRates[currentCurrency];
+                if (carteiraSaldo) carteiraSaldo.textContent = (saldo * rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currentCurrency;
+                if (carteiraTotal) carteiraTotal.textContent = (totalGanhos * rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currentCurrency;
+                if (carteiraGanhosMes) carteiraGanhosMes.textContent = (monthlyEarnings * rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currentCurrency;
+            }
+            
+            updateCurrencyDisplay();
+            
+            const currencySelect = document.getElementById('currency-select');
+            if (currencySelect) {
+                currencySelect.onchange = () => {
+                    currentCurrency = currencySelect.value;
+                    updateCurrencyDisplay();
+                };
+            }
             
             try {
                 const saquesSnapshot = await db.collection('withdrawals').where('userId', '==', currentUser.email).orderBy('requestedAt', 'desc').get();
@@ -2166,7 +2307,7 @@
                         const statusText = saque.status === 'approved' ? 'Aprovado' : (saque.status === 'pending' ? 'Pendente' : 'Recusado');
                         const div = document.createElement('div');
                         div.className = 'list-item';
-                        div.innerHTML = `<div class="list-info"><h4>${(saque.amount * rate).toLocaleString()} Kz</h4><p>Método: ${saque.method?.toUpperCase() || 'N/A'}</p></div><span class="status-pill ${statusClass}">${statusText}</span>`;
+                        div.innerHTML = `<div class="list-info"><h4>${(saque.amount || 0).toLocaleString()} Kz</h4><p>Método: ${saque.method?.toUpperCase() || 'N/A'}</p></div><span class="status-pill ${statusClass}">${statusText}</span>`;
                         historicoContainer.appendChild(div);
                     });
                 }
@@ -2281,7 +2422,7 @@
             showAlert('Envie o comprovativo pelo WhatsApp.');
         }
 
-        // ========== ADMIN FUNCTIONS (RESUMIDAS) ==========
+        // ========== ADMIN FUNCTIONS ==========
         function openAdminUsersModal() { openModal('adminUsersModal'); }
         
         async function openAdminMusicsModal() {
@@ -2328,7 +2469,7 @@
                 await db.collection('releases').doc(musicId).update({ status: 'approved', approvedAt: new Date() });
                 showAlert('✅ Música aprovada!');
                 openAdminMusicsModal();
-                loadHomeData();
+                loadLatestRelease();
                 loadFeed();
             } catch (error) {
                 showAlert('Erro: ' + error.message);
@@ -2540,7 +2681,24 @@
             const perfilNome = document.getElementById('perfil-nome');
             if (perfilNome) perfilNome.value = userData.nome || '';
             const perfilTelefone = document.getElementById('perfil-telefone');
-            if (perfilTelefone) perfilTelefone.value = userData.telefone || '';
+            if (perfilTelefone) {
+                let phoneNumber = userData.telefone || '';
+                let phoneCode = '+244';
+                let phoneOnly = phoneNumber;
+                if (phoneNumber.startsWith('+')) {
+                    const codes = ['+244', '+351', '+55', '+1', '+238', '+258', '+239', '+245', '+44', '+33', '+34'];
+                    for (const code of codes) {
+                        if (phoneNumber.startsWith(code)) {
+                            phoneCode = code;
+                            phoneOnly = phoneNumber.substring(code.length);
+                            break;
+                        }
+                    }
+                }
+                const phoneCodeSelect = document.getElementById('perfil-phone-code');
+                if (phoneCodeSelect) phoneCodeSelect.value = phoneCode;
+                perfilTelefone.value = phoneOnly;
+            }
             const perfilPais = document.getElementById('perfil-pais');
             if (perfilPais) perfilPais.value = userData.pais || '';
             const statSaldo = document.getElementById('stat-saldo');
@@ -2630,7 +2788,7 @@
                     }
                     showMainApp();
                     updateUserDisplay();
-                    loadHomeData();
+                    loadLatestRelease();
                     loadFeed();
                     loadArtistSelect();
                 } catch (error) {

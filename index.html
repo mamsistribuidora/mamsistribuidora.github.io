@@ -1242,7 +1242,7 @@
             }
         }
 
-        // ========== LOAD FEED (SEM ORDER BY PARA EVITAR ERRO DE ÍNDICE) ==========
+        // ========== LOAD FEED (SEM ORDER BY PARA EVITAR ERRO DE ÍNDICE - ORDEM POR ID) ==========
         async function loadFeed() {
             const feedContainer = document.getElementById('feed-container');
             if (!feedContainer) return;
@@ -1250,7 +1250,7 @@
             feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
             
             try {
-                // REMOVIDO o orderBy('createdAt', 'desc') para contornar erro de índice
+                // REMOVIDO orderBy para não depender de índices do Firebase
                 const feedSnapshot = await db.collection('releases')
                     .where('status', '==', 'approved')
                     .limit(50)
@@ -1263,13 +1263,14 @@
                 
                 feedContainer.innerHTML = '';
                 
-                // Converter para array e ordenar manualmente por data (opcional)
+                // Ordenar por ID (decrescente - mais novos primeiro baseado no timestamp do ID)
                 const releases = [];
                 feedSnapshot.forEach(doc => releases.push({ id: doc.id, ...doc.data() }));
                 releases.sort((a, b) => {
-                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
-                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
-                    return dateB - dateA;
+                    // IDs são timestamps, então comparar numericamente
+                    const idA = parseInt(a.id) || 0;
+                    const idB = parseInt(b.id) || 0;
+                    return idB - idA;
                 });
                 
                 for (const release of releases) {
@@ -1807,7 +1808,7 @@
             }
         }
 
-        // ========== FUNÇÃO ENVIAR LANÇAMENTO CORRIGIDA ==========
+        // ========== FUNÇÃO ENVIAR LANÇAMENTO CORRIGIDA (SEGURANÇA: WAV + DATA 14 DIAS) ==========
         async function enviarLancamento(e) {
             e.preventDefault();
             
@@ -1833,19 +1834,8 @@
                 return selectedDate >= minDate;
             }
             
-            // VALIDAÇÃO: Verificar se o arquivo de áudio é WAV
+            // VALIDAÇÃO: Verificar se o áudio foi carregado (via Cloudinary já valida WAV)
             const audioUrl = document.getElementById('music-audio-url').value;
-            const audioFileInput = document.getElementById('upload-audio-btn');
-            let isWavFile = false;
-            
-            // Verificar se o áudio já foi carregado via Cloudinary (formato wav)
-            if (releaseType === 'single') {
-                if (!audioUrl) {
-                    return showAlert('A MAM exige WAV para distribuição oficial. Carregue um ficheiro no formato WAV.');
-                }
-                // Não podemos verificar o formato diretamente, mas confiamos que o widget Cloudinary validou
-                isWavFile = true;
-            }
             
             // Validações de campos obrigatórios
             if (!titulo || !artistaId || !releaseDate || !capaUrl) {
@@ -1868,6 +1858,7 @@
             if (!finalUpc) finalUpc = generateValidUPC();
             else if (!isValidUPC(finalUpc)) return showAlert('UPC/EAN inválido! Deve ter 12 ou 13 dígitos.');
             
+            // VALIDAÇÃO: Para single, verificar se áudio foi carregado
             if (releaseType === 'single' && !audioUrl) {
                 return showAlert('Carregue o ficheiro de áudio em formato WAV!');
             }

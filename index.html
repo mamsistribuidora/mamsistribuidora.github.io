@@ -14,16 +14,112 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js">
+async function enviarParaDistribuicao(data) {
+    try {
+        await fetch("https://mam-backend.onrender.com/release", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Enviado para backend com sucesso");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
+    }
+}
+
+</script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js">
+async function enviarParaDistribuicao(data) {
+    try {
+        await fetch("https://mam-backend.onrender.com/release", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Enviado para backend com sucesso");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
+    }
+}
+
+</script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js">
+async function enviarParaDistribuicao(data) {
+    try {
+        await fetch("https://mam-backend.onrender.com/release", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Enviado para backend com sucesso");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
+    }
+}
+
+</script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js">
+async function enviarParaDistribuicao(data) {
+    try {
+        await fetch("https://mam-backend.onrender.com/release", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Enviado para backend com sucesso");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
+    }
+}
+
+</script>
     
     <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+async function enviarParaDistribuicao(data) {
+    try {
+        await fetch("https://mam-backend.onrender.com/release", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Enviado para backend com sucesso");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
+    }
+}
+
+</script>
     
     <!-- Cloudinary Upload Widget -->
-    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript">
+async function enviarParaDistribuicao(data) {
+    try {
+        await fetch("https://mam-backend.onrender.com/release", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Enviado para backend com sucesso");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
+    }
+}
+
+</script>
     
     <style>
         :root { 
@@ -2807,155 +2903,22 @@
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
         });
-    </script>
-
-<script>
-// === PATCH PROFISSIONAL MAM ===
-
-const firebaseConfig = {
-    // MANTÉM AS TUAS CREDENCIAIS AQUI
-};
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-let currentUser = null;
-let saldoGlobal = 0;
-
-// AUTH
-auth.onAuthStateChanged(user => {
-    if (user) {
-        currentUser = user;
-        document.getElementById("auth-screen").style.display = "none";
-        document.getElementById("main-app").style.display = "block";
-        loadDashboard();
-    } else {
-        document.getElementById("auth-screen").style.display = "flex";
-        document.getElementById("main-app").style.display = "none";
-    }
-});
-
-// ISRC + UPC
-function generateISRC() {
-    const year = new Date().getFullYear().toString().slice(-2);
-    const rand = Math.floor(10000 + Math.random() * 90000);
-    return `AO-MAM-${year}-${rand}`;
-}
-
-function generateUPC() {
-    return Math.floor(100000000000 + Math.random() * 900000000000).toString();
-}
-
-// LANÇAMENTO
-document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btnEnviarLancamento");
-    if (btn) {
-        btn.addEventListener("click", async () => {
-            const titulo = document.getElementById("music-titulo").value.trim();
-            const artistaId = document.getElementById("music-artista-select").value;
-            const audioUrl = document.getElementById("music-audio-url").value;
-            const capaUrl = document.getElementById("music-capa-url").value;
-
-            if (!titulo || !artistaId || !audioUrl || !capaUrl) {
-                alert("Preencha todos os campos.");
-                return;
-            }
-
-            if (!audioUrl.toLowerCase().includes(".wav")) {
-                alert("Apenas WAV permitido.");
-                return;
-            }
-
-            await db.collection("releases").add({
-                userId: currentUser.uid,
-                titulo,
-                artistaId,
-                audioUrl,
-                capaUrl,
-                isrc: generateISRC(),
-                upc: generateUPC(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert("Lançamento enviado!");
-            loadFeed();
+    
+async function enviarParaDistribuicao(data) {
+    try {
+        await fetch("https://mam-backend.onrender.com/release", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
         });
+        console.log("Enviado para backend com sucesso");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
     }
-});
-
-// FEED
-async function loadFeed() {
-    const snapshot = await db.collection("releases").orderBy("createdAt", "desc").get();
-
-    const feed = document.getElementById("feed-container");
-    const latest = document.getElementById("latest-release-container");
-
-    if (!feed || !latest) return;
-
-    feed.innerHTML = "";
-    latest.innerHTML = "";
-
-    snapshot.forEach((doc, index) => {
-        const data = doc.data();
-
-        const card = `
-        <div class="music-card">
-            <img src="${data.capaUrl}" class="music-cover">
-            <div class="music-title">${data.titulo}</div>
-            <audio controls src="${data.audioUrl}"></audio>
-        </div>`;
-
-        feed.innerHTML += card;
-        if (index === 0) latest.innerHTML = card;
-    });
 }
 
-// PESQUISA
-document.addEventListener("input", e => {
-    if (e.target.id === "global-search") {
-        const term = e.target.value.toLowerCase();
-        document.querySelectorAll(".music-card").forEach(c => {
-            c.style.display = c.innerText.toLowerCase().includes(term) ? "block" : "none";
-        });
-    }
-});
-
-// CARTEIRA
-async function loadWallet() {
-    const doc = await db.collection("users").doc(currentUser.uid).get();
-    const data = doc.data() || {};
-
-    const saldo = data.saldo || 0;
-    saldoGlobal = saldo;
-
-    const el = document.getElementById("carteira-saldo");
-    if (el) el.innerText = saldo + " Kz";
-}
-
-// MOEDA
-function convertCurrency(v, m) {
-    const r = {Kz:1, USD:0.0012, EUR:0.0011};
-    return (v * r[m]).toFixed(2);
-}
-
-document.addEventListener("change", e => {
-    if (e.target.id === "currency-select") {
-        const moeda = e.target.value;
-        document.getElementById("carteira-saldo").innerText =
-            convertCurrency(saldoGlobal, moeda) + " " + moeda;
-    }
-});
-
-// INIT
-function loadDashboard() {
-    loadFeed();
-    loadWallet();
-}
 </script>
-
 </body>
 </html>

@@ -1,48 +1,52 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="MAM Distribuidora - O Império da Música. Distribuição profissional com DDEX ERN 4.3 para mais de 150 plataformas.">
-    <meta name="keywords" content="distribuição musical, spotify, apple music, deezer, música, artistas, angola, ddex">
+    <meta name="description" content="MAM Distribuidora - O Império da Música em Angola. Distribuição digital profissional com suporte DDEX ERN 4.3 para Spotify, Apple Music, TikTok, Meta e mais de 150 plataformas.">
+    <meta name="keywords" content="distribuição musical, DDEX, Spotify, Apple Music, Angola, música angolana, distribuidora">
     <meta name="author" content="Matias Arsénio Manuel">
-    <meta name="robots" content="index, follow">
-    
+    <meta name="theme-color" content="#d4af37">
     <title>MAM Distribuidora - O Império da Música</title>
-    <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg" type="image/jpeg">
     
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Cloudinary Upload Widget -->
-    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <!-- Cloudinary -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --black: #000; 
-            --dark: #0a0a0a; 
-            --card: rgba(15,15,15,0.98); 
-            --text: #fff; 
-            --gray: #888; 
-            --success: #28a745; 
-            --danger: #dc3545; 
+        :root {
+            --gold: #d4af37;
+            --black: #000;
+            --dark: #0a0a0a;
+            --card: rgba(15,15,15,0.98);
+            --text: #fff;
+            --gray: #888;
+            --success: #28a745;
+            --danger: #dc3545;
             --warning: #ffc107;
         }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
+        
+        body {
             background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg') center/cover fixed;
-            color: var(--text); 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            overflow-x: hidden; 
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -233,460 +237,415 @@
         }
     </style>
 </head>
-<body>
 
+<body>
+    <!-- Loading Overlay -->
     <div id="loading-overlay">
         <div class="spinner"></div>
-        <p id="loading-text">Processando...</p>
+        <span id="loading-text">Processando...</span>
     </div>
-
+    
+    <!-- Alert Modal -->
     <div id="modal-alert">
         <div class="modal-alert-content">
             <div class="modal-alert-header">
-                <h3><i class="fas fa-exclamation-triangle"></i> MAM Distribuidora</h3>
+                <h3><i class="fas fa-crown"></i> MAM Distribuidora</h3>
             </div>
             <div class="modal-alert-body">
                 <p id="alert-message">Mensagem de aviso</p>
             </div>
             <div class="modal-alert-footer">
-                <button onclick="closeAlertModal()"><i class="fas fa-check"></i> Entendi</button>
+                <button onclick="closeAlertModal()">Entendi</button>
             </div>
         </div>
     </div>
-
+    
+    <!-- Header -->
     <header>
         <div class="logo">
-            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" alt="MAM Logo">
-            <h1 class="logo-text">MAM DISTRIBUIDORA</h1>
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg" alt="MAM Logo">
+            <span class="logo-text">MAM DISTRIBUIDORA</span>
         </div>
-        <p style="color: var(--gold); font-size: 0.75rem; margin-top: 5px; letter-spacing: 1px;">O Império da Música em Angola | DDEX ERN 4.3</p>
-        
-        <!-- BARRA DE PESQUISA GLOBAL -->
+        <p style="color: var(--gray); font-size: 0.75rem; margin-top: 5px;">O Império da Música em Angola | DDEX ERN 4.3</p>
         <div class="search-bar-container">
-            <input type="text" id="global-search" class="search-bar" placeholder="🔍 Pesquisar música por título ou artista...">
+            <input type="text" id="global-search" class="search-bar" placeholder="Pesquisar músicas, artistas...">
         </div>
     </header>
-
+    
+    <!-- Navigation -->
     <nav>
-        <button class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i> Início</button>
-        <button class="nav-btn" onclick="showSection('planos', this)"><i class="fas fa-tags"></i> Planos</button>
-        <button class="nav-btn" id="nav-artistas" style="display: none;" onclick="showSection('artistas', this)"><i class="fas fa-users"></i> Artistas</button>
-        <button class="nav-btn" id="nav-lancar" style="display: none;" onclick="showSection('lancar', this)"><i class="fas fa-cloud-upload-alt"></i> Lançar</button>
-        <button class="nav-btn" id="nav-minhas-musicas" style="display: none;" onclick="showSection('minhas-musicas', this)"><i class="fas fa-music"></i> Minhas Músicas</button>
-        <button class="nav-btn" id="nav-carteira" style="display: none;" onclick="showSection('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
-        <button class="nav-btn" id="nav-perfil" style="display: none;" onclick="showSection('perfil', this)"><i class="fas fa-user-cog"></i> Perfil</button>
-        <button class="nav-btn" id="btn-admin-global" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="showSection('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</button>
+        <button class="nav-btn active" id="nav-home" onclick="showSection('home', this)"><i class="fas fa-home"></i> Início</button>
+        <button class="nav-btn" id="nav-planos" onclick="showSection('planos', this)"><i class="fas fa-gem"></i> Planos</button>
+        <button class="nav-btn" id="nav-artistas" style="display:none;" onclick="showSection('artistas', this)"><i class="fas fa-users"></i> Artistas</button>
+        <button class="nav-btn" id="nav-lancar" style="display:none;" onclick="showSection('lancar', this)"><i class="fas fa-upload"></i> Lançar</button>
+        <button class="nav-btn" id="nav-minhas-musicas" style="display:none;" onclick="showSection('minhas-musicas', this)"><i class="fas fa-music"></i> Minhas Músicas</button>
+        <button class="nav-btn" id="nav-carteira" style="display:none;" onclick="showSection('carteira', this)"><i class="fas fa-wallet"></i> Carteira</button>
+        <button class="nav-btn" id="nav-perfil" style="display:none;" onclick="showSection('perfil', this)"><i class="fas fa-user"></i> Perfil</button>
+        <button class="nav-btn" id="btn-admin-global" style="display:none;" onclick="showSection('admin', this)"><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</button>
         <button class="nav-btn" id="nav-login" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-        <button class="nav-btn" id="nav-logout" style="display: none; color: var(--danger);" onclick="handleLogout()"><i class="fas fa-power-off"></i></button>
+        <button class="nav-btn" id="nav-logout" style="display:none;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
     </nav>
-
-    <!-- Modais -->
-    <div id="modal-login" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 15px;">
-                <h2 style="color: var(--gold); margin-bottom: 5px;">ENTRAR</h2>
-                <p style="color: var(--gray); font-size: 0.85rem;">Aceda à sua conta MAM Distribuidora</p>
-            </div>
-            <input type="email" id="login-email" placeholder="E-mail" style="margin-bottom: 15px;">
-            <div class="password-container">
-                <input type="password" id="login-pass" placeholder="Senha">
-                <button class="toggle-password" type="button" onclick="togglePasswordVisibility('login-pass')">
-                    <i class="fas fa-eye"></i>
-                </button>
-            </div>
-            <button class="btn" onclick="handleLogin()">Entrar Agora <i class="fas fa-sign-in-alt"></i></button>
-            <p style="text-align: center; font-size: 0.85rem; margin-top: 15px;">
-                <span style="color: var(--gold); cursor: pointer;" onclick="closeModal('modal-login'); openModal('modal-esqueci-senha')">Esqueci minha senha</span>
-            </p>
-            <p style="text-align: center; font-size: 0.85rem; margin-top: 10px; color: var(--gray);">Não tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="closeModal('modal-login'); openModal('modal-registro')">Criar Conta Grátis</span></p>
-        </div>
-    </div>
-
-    <div id="modal-registro" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('modal-registro')"><i class="fas fa-times"></i></button>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 15px;">
-                <h2 style="color: var(--gold); margin-bottom: 5px;">CRIAR CONTA</h2>
-                <p style="color: var(--gray); font-size: 0.85rem;">Junte-se ao Império da Música</p>
-            </div>
-            <input type="text" id="reg-nome" placeholder="Nome Completo" style="margin-bottom: 15px;">
-            <input type="email" id="reg-email" placeholder="E-mail" style="margin-bottom: 15px;">
-            <div class="phone-group" style="margin-bottom: 15px;">
-                <select id="reg-phone-code">
-                    <option value="+244">🇦🇴 +244 (Angola)</option>
-                    <option value="+351">🇵🇹 +351 (Portugal)</option>
-                    <option value="+55">🇧🇷 +55 (Brasil)</option>
-                    <option value="+1">🇺🇸 +1 (EUA/Canadá)</option>
-                    <option value="+238">🇨🇻 +238 (Cabo Verde)</option>
-                    <option value="+258">🇲🇿 +258 (Moçambique)</option>
-                    <option value="+239">🇸🇹 +239 (São Tomé)</option>
-                    <option value="+245">🇬🇼 +245 (Guiné-Bissau)</option>
-                    <option value="+44">🇬🇧 +44 (Reino Unido)</option>
-                    <option value="+33">🇫🇷 +33 (França)</option>
-                    <option value="+34">🇪🇸 +34 (Espanha)</option>
-                </select>
-                <input type="tel" id="reg-telefone" placeholder="Número de telefone">
-            </div>
-            <div class="password-container">
-                <input type="password" id="reg-pass" placeholder="Senha">
-                <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass')">
-                    <i class="fas fa-eye"></i>
-                </button>
-            </div>
-            <div class="password-container">
-                <input type="password" id="reg-pass-confirm" placeholder="Confirmar Senha">
-                <button class="toggle-password" type="button" onclick="togglePasswordVisibility('reg-pass-confirm')">
-                    <i class="fas fa-eye"></i>
-                </button>
-            </div>
-            <button class="btn" onclick="handleRegister()">Criar Conta <i class="fas fa-user-plus"></i></button>
-            <p style="text-align: center; font-size: 0.85rem; margin-top: 15px; color: var(--gray);">Já tem conta? <span style="color: var(--gold); cursor: pointer; font-weight: bold;" onclick="closeModal('modal-registro'); openModal('modal-login')">Entrar Aqui</span></p>
-        </div>
-    </div>
-
-    <div id="modal-esqueci-senha" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('modal-esqueci-senha')"><i class="fas fa-times"></i></button>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <i class="fas fa-key" style="font-size: 3rem; color: var(--gold); margin-bottom: 15px;"></i>
-                <h2 style="color: var(--gold); margin-bottom: 5px;">Recuperar Senha</h2>
-                <p style="color: var(--gray); font-size: 0.85rem;">Enviaremos um link para redefinir sua senha</p>
-            </div>
-            <input type="email" id="reset-email" placeholder="Seu e-mail" style="margin-bottom: 15px;">
-            <button class="btn" onclick="resetPassword()"><i class="fas fa-envelope"></i> Enviar Link</button>
-            <p style="text-align: center; margin-top: 15px;"><span style="color: var(--gold); cursor: pointer;" onclick="closeModal('modal-esqueci-senha'); openModal('modal-login')">Voltar ao Login</span></p>
-        </div>
-    </div>
-
-    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 250px); padding: 20px; flex: 1;">
-        <div style="max-width: 650px; width: 100%; text-align: center;">
-            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663388871430/fFdQcboBPcyVPfpE.jpg" style="width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--gold); margin-bottom: 30px; box-shadow: 0 0 20px rgba(212,175,55,0.3);">
-            <h1 style="color: var(--gold); font-size: 2.5rem; margin-bottom: 15px; letter-spacing: 2px;">O IMPÉRIO DA MÚSICA</h1>
-            <p style="color: var(--gray); font-size: 1rem; margin-bottom: 30px;">Distribua suas músicas para mais de 150 plataformas digitais. Compatível com DDEX ERN 4.3 para Meta e TikTok.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <button class="btn" style="width: auto; padding: 15px 40px;" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-                <button class="btn btn-sec" style="width: auto; padding: 15px 40px;" onclick="openModal('modal-registro')"><i class="fas fa-user-plus"></i> Criar Conta</button>
-            </div>
-            <div class="info-grid" style="margin-top: 50px;">
-                <div class="info-card">
-                    <i class="fas fa-globe"></i>
-                    <h3>150+ Plataformas</h3>
-                    <p>Spotify, Apple Music, Deezer, YouTube...</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-file-code"></i>
-                    <h3>DDEX ERN 4.3</h3>
-                    <p>Metadados oficiais para Meta/TikTok</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-rocket"></i>
-                    <h3>Rápido & Fácil</h3>
-                    <p>Upload em minutos, distribuição em horas</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="main-app" style="display: none; flex: 1;">
-        <div class="container">
-            <div id="home" class="section active">
-                <div class="card">
-                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                        <img id="home-user-photo" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold);">
-                        <div>
-                            <h2 style="font-size: 1.2rem;">Olá, <span id="user-display-name">...</span>!</h2>
-                            <p style="color: var(--gray); font-size: 0.85rem;"><span id="user-display-type">...</span> | <span id="user-display-country">...</span></p>
-                            <div style="margin-top: 8px;">
-                                <span class="status-pill status-active" id="user-display-plan">PLANO FREE</span>
-                                <span id="admin-pro-max-indicator" style="display: none;" class="admin-pro-max-badge">ADMIN PRO MAX</span>
-                            </div>
-                        </div>
+    
+    <div class="container">
+        <!-- Auth Screen -->
+        <section id="auth-screen" class="section active">
+            <!-- Login Modal -->
+            <div id="modal-login" class="modal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button>
+                    <h3><i class="fas fa-sign-in-alt"></i> ENTRAR</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Aceda à sua conta MAM Distribuidora</p>
+                    <input type="email" id="login-email" placeholder="Email">
+                    <div class="password-container">
+                        <input type="password" id="login-pass" placeholder="Senha">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('login-pass')"><i class="fas fa-eye"></i></button>
                     </div>
-                </div>
-
-                <div class="stat-grid">
-                    <div class="stat-box">
-                        <p>Saldo Atual</p>
-                        <h4 id="stat-saldo">0 Kz</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Artistas</p>
-                        <h4 id="stat-artistas-count">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Lançamentos</p>
-                        <h4 id="stat-musicas-count">0</h4>
-                    </div>
-                    <div class="stat-box">
-                        <p>Total Streams</p>
-                        <h4 id="stat-streams">0</h4>
-                    </div>
-                </div>
-
-                <!-- ÚLTIMO LANÇAMENTO GLOBAL -->
-                <div class="card">
-                    <h3><i class="fas fa-clock"></i> Último Lançamento Global</h3>
-                    <div id="latest-release-container" class="grid"></div>
-                </div>
-
-                <!-- FEED DE LANÇAMENTOS -->
-                <div class="card">
-                    <h3><i class="fas fa-headphones"></i> Feed de Lançamentos</h3>
-                    <div id="feed-container" class="grid"></div>
-                </div>
-
-                <div class="card">
-                    <h3><i class="fas fa-newspaper"></i> Novidades</h3>
-                    <p style="color: var(--gray); line-height: 1.6;">🎵 Bem-vindo à nova era da MAM Distribuidora. Suporte DDEX ERN 4.3 para distribuição profissional.</p>
+                    <button class="btn" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Entrar Agora</button>
+                    <p style="text-align: center; margin-top: 15px;"><a href="#" style="color: var(--gold);" onclick="closeModal('modal-login'); openModal('modal-esqueci-senha');">Esqueci minha senha</a></p>
+                    <p style="text-align: center; margin-top: 10px; color: var(--gray);">Não tem conta? <a href="#" style="color: var(--gold);" onclick="closeModal('modal-login'); openModal('modal-registro');">Criar Conta Grátis</a></p>
                 </div>
             </div>
-
-            <div id="planos" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-tags"></i> Nossos Planos</h3>
-                    <p style="color: var(--gray); margin-bottom: 30px;">Escolha o plano perfeito para sua jornada musical</p>
-                    <div class="plans-grid">
-                        <div class="plan-card">
-                            <div class="plan-name">FREE</div>
-                            <div class="plan-price">0 Kz</div>
-                            <ul class="plan-features">
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> 1 Artista</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Até 3 lançamentos/mês</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> DDEX Standard</li>
-                                <li><i class="fas fa-times" style="color: #888; margin-right: 10px;"></i> Suporte prioritário</li>
-                            </ul>
-                            <button class="btn btn-sec" onclick="selectPlan('free')">Começar</button>
-                        </div>
-                        <div class="plan-card featured">
-                            <div style="background: var(--gold); color: #000; padding: 8px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; font-size: 0.8rem;">MAIS POPULAR</div>
-                            <div class="plan-name">BÁSICO</div>
-                            <div class="plan-price">10.000 Kz</div>
-                            <ul class="plan-features">
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> 10 Artistas</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Lançamentos ilimitados</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> DDEX Premium</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Suporte prioritário</li>
-                            </ul>
-                            <button class="btn" onclick="selectPlan('basico')">Escolher Plano</button>
-                        </div>
-                        <div class="plan-card">
-                            <div class="plan-name">MÉDIO</div>
-                            <div class="plan-price">25.000 Kz</div>
-                            <ul class="plan-features">
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> 30 Artistas</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Lançamentos ilimitados</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Gestor dedicado</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Royalties em tempo real</li>
-                            </ul>
-                            <button class="btn btn-sec" onclick="selectPlan('medio')">Escolher Plano</button>
-                        </div>
-                        <div class="plan-card">
-                            <div class="plan-name">PRO MAX</div>
-                            <div class="plan-price">50.000 Kz</div>
-                            <ul class="plan-features">
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Artistas Ilimitados</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Distribuição prioritária</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Marketing incluso</li>
-                                <li><i class="fas fa-check" style="color: var(--gold); margin-right: 10px;"></i> Suporte 24/7</li>
-                            </ul>
-                            <button class="btn btn-sec" onclick="selectPlan('promax')">Escolher Plano</button>
-                        </div>
+            
+            <!-- Register Modal -->
+            <div id="modal-registro" class="modal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal('modal-registro')"><i class="fas fa-times"></i></button>
+                    <h3><i class="fas fa-user-plus"></i> CRIAR CONTA</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Junte-se ao Império da Música</p>
+                    <input type="text" id="reg-nome" placeholder="Nome Completo">
+                    <input type="email" id="reg-email" placeholder="Email">
+                    <div class="phone-group">
+                        <select id="reg-phone-code">
+                            <option value="+244">🇦🇴 +244 (Angola)</option>
+                            <option value="+351">🇵🇹 +351 (Portugal)</option>
+                            <option value="+55">🇧🇷 +55 (Brasil)</option>
+                            <option value="+1">🇺🇸 +1 (EUA/Canadá)</option>
+                            <option value="+238">🇨🇻 +238 (Cabo Verde)</option>
+                            <option value="+258">🇲🇿 +258 (Moçambique)</option>
+                            <option value="+239">🇸🇹 +239 (São Tomé)</option>
+                            <option value="+245">🇬🇼 +245 (Guiné-Bissau)</option>
+                            <option value="+44">🇬🇧 +44 (Reino Unido)</option>
+                            <option value="+33">🇫🇷 +33 (França)</option>
+                            <option value="+34">🇪🇸 +34 (Espanha)</option>
+                        </select>
+                        <input type="tel" id="reg-telefone" placeholder="Telefone">
+                    </div>
+                    <div class="password-container">
+                        <input type="password" id="reg-pass" placeholder="Senha (mín. 6 caracteres)">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('reg-pass')"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="password-container">
+                        <input type="password" id="reg-pass-confirm" placeholder="Confirmar Senha">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('reg-pass-confirm')"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <button class="btn" onclick="handleRegister()"><i class="fas fa-user-plus"></i> Criar Conta</button>
+                    <p style="text-align: center; margin-top: 15px; color: var(--gray);">Já tem conta? <a href="#" style="color: var(--gold);" onclick="closeModal('modal-registro'); openModal('modal-login');">Entrar Aqui</a></p>
+                </div>
+            </div>
+            
+            <!-- Forgot Password Modal -->
+            <div id="modal-esqueci-senha" class="modal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal('modal-esqueci-senha')"><i class="fas fa-times"></i></button>
+                    <h3><i class="fas fa-key"></i> Recuperar Senha</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Enviaremos um link para redefinir sua senha</p>
+                    <input type="email" id="reset-email" placeholder="Seu Email">
+                    <button class="btn" onclick="resetPassword()"><i class="fas fa-paper-plane"></i> Enviar Link</button>
+                    <button class="btn btn-sec" style="margin-top: 10px;" onclick="closeModal('modal-esqueci-senha'); openModal('modal-login');">Voltar ao Login</button>
+                </div>
+            </div>
+            
+            <!-- Welcome Card -->
+            <div class="card" style="text-align: center; padding: 60px 30px;">
+                <h2 style="color: var(--gold); font-size: 2rem; margin-bottom: 15px;"><i class="fas fa-crown"></i> O IMPÉRIO DA MÚSICA</h2>
+                <p style="color: var(--gray); max-width: 600px; margin: 0 auto 30px;">Distribua suas músicas para mais de 150 plataformas digitais. Compatível com DDEX ERN 4.3 para Meta e TikTok.</p>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn" style="width: auto;" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+                    <button class="btn btn-sec" style="width: auto;" onclick="openModal('modal-registro')"><i class="fas fa-user-plus"></i> Criar Conta</button>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-globe"></i>
+                        <h3>150+ Plataformas</h3>
+                        <p>Spotify, Apple Music, Deezer, YouTube...</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-file-code"></i>
+                        <h3>DDEX ERN 4.3</h3>
+                        <p>Metadados oficiais para Meta/TikTok</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Rápido & Fácil</h3>
+                        <p>Upload em minutos, distribuição em horas</p>
                     </div>
                 </div>
             </div>
-
-            <div id="artistas" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-users"></i> Meus Artistas</h3>
-                    <button class="btn btn-add-artist" id="btnAddArtist" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
-                    <div id="artistas-container" class="item-list"></div>
+        </section>
+        
+        <!-- Home Section -->
+        <section id="home" class="section">
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                    <img id="home-user-photo" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover;">
+                    <div>
+                        <h3 style="margin: 0;">Olá, <span id="user-display-name">...</span>!</h3>
+                        <p style="color: var(--gray);"><span id="user-display-type">...</span> | <span id="user-display-country">...</span></p>
+                    </div>
+                    <span id="user-display-plan" class="status-pill status-active" style="margin-left: auto;">PLANO FREE</span>
+                    <span id="admin-pro-max-indicator" class="admin-pro-max-badge" style="display: none;">ADMIN PRO MAX</span>
                 </div>
             </div>
-
-            <div id="lancar" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-cloud-upload-alt"></i> Lançar Música/Álbum (DDEX ERN 4.3)</h3>
-                    <form id="lancamentoForm" onsubmit="return false;">
-                        <label>Tipo de Lançamento</label>
-                        <select id="release-type" onchange="toggleReleaseType()">
-                            <option value="single">Faixa/Single</option>
-                            <option value="album">Álbum</option>
+            
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <h4 id="stat-saldo">0 Kz</h4>
+                    <p>Saldo Atual</p>
+                </div>
+                <div class="stat-box">
+                    <h4 id="stat-artistas-count">0</h4>
+                    <p>Artistas</p>
+                </div>
+                <div class="stat-box">
+                    <h4 id="stat-musicas-count">0</h4>
+                    <p>Lançamentos</p>
+                </div>
+                <div class="stat-box">
+                    <h4 id="stat-streams">0</h4>
+                    <p>Total Streams</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-rss"></i> Feed de Lançamentos</h3>
+                <div id="feed-container" class="grid"></div>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-bullhorn"></i> Novidades</h3>
+                <p style="color: var(--gray);">🎵 Bem-vindo à nova era da MAM Distribuidora. Suporte DDEX ERN 4.3 para distribuição profissional.</p>
+            </div>
+        </section>
+        
+        <!-- Plans Section -->
+        <section id="planos" class="section">
+            <div class="card">
+                <h3><i class="fas fa-gem"></i> Nossos Planos</h3>
+                <p style="color: var(--gray); margin-bottom: 20px;">Escolha o plano perfeito para sua jornada musical</p>
+                <div class="plans-grid">
+                    <div class="plan-card">
+                        <div class="plan-name">FREE</div>
+                        <div class="plan-price">0 Kz</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> 1 Artista</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Até 3 lançamentos/mês</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> DDEX Standard</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte prioritário</li>
+                        </ul>
+                        <button class="btn" onclick="selectPlan('free')">Começar</button>
+                    </div>
+                    <div class="plan-card featured">
+                        <span class="status-pill status-active" style="margin-bottom: 10px;">MAIS POPULAR</span>
+                        <div class="plan-name">BÁSICO</div>
+                        <div class="plan-price">10.000 Kz</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> 10 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> DDEX Premium</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte prioritário</li>
+                        </ul>
+                        <button class="btn" onclick="selectPlan('basico')">Escolher Plano</button>
+                    </div>
+                    <div class="plan-card">
+                        <div class="plan-name">MÉDIO</div>
+                        <div class="plan-price">25.000 Kz</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> 30 Artistas</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Lançamentos ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Gestor dedicado</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Royalties em tempo real</li>
+                        </ul>
+                        <button class="btn" onclick="selectPlan('medio')">Escolher Plano</button>
+                    </div>
+                    <div class="plan-card">
+                        <div class="plan-name">PRO MAX</div>
+                        <div class="plan-price">50.000 Kz</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Artistas Ilimitados</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Distribuição prioritária</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Marketing incluso</li>
+                            <li><i class="fas fa-check" style="color: var(--gold);"></i> Suporte 24/7</li>
+                        </ul>
+                        <button class="btn" onclick="selectPlan('promax')">Escolher Plano</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Artists Section -->
+        <section id="artistas" class="section">
+            <div class="card">
+                <h3><i class="fas fa-users"></i> Meus Artistas</h3>
+                <button class="btn btn-sec" id="btnAddArtist" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Adicionar Artista</button>
+                <div id="artistas-container" class="item-list"></div>
+            </div>
+        </section>
+        
+        <!-- Release Section -->
+        <section id="lancar" class="section">
+            <div class="card">
+                <h3><i class="fas fa-upload"></i> Lançar Música/Álbum (DDEX ERN 4.3)</h3>
+                <form id="release-form">
+                    <label style="color: var(--gold); font-size: 0.85rem;">Tipo de Lançamento</label>
+                    <select id="release-type" onchange="toggleReleaseType()">
+                        <option value="single">Faixa/Single</option>
+                        <option value="album">Álbum</option>
+                    </select>
+                    
+                    <div id="single-fields">
+                        <input type="text" id="music-titulo" placeholder="Título *">
+                        <label style="color: var(--gold); font-size: 0.85rem;">Artista Principal *</label>
+                        <select id="music-artista-select">
+                            <option value="">Selecione um Artista</option>
                         </select>
                         
                         <div class="form-row">
                             <div>
-                                <label>Título *</label>
-                                <input type="text" id="music-titulo" placeholder="Título da Música/Álbum" required>
-                            </div>
-                            <div>
-                                <label>Artista Principal *</label>
-                                <select id="music-artista-select" required>
-                                    <option value="">Selecione um Artista</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div>
-                                <label>Género Principal (Primary Genre) *</label>
-                                <select id="music-estilo" required>
+                                <label style="color: var(--gold); font-size: 0.85rem;">Género Principal (Primary Genre) *</label>
+                                <select id="music-estilo">
                                     <option value="">Selecione</option>
                                 </select>
                             </div>
                             <div>
-                                <label>Data de Lançamento *</label>
-                                <input type="date" id="music-data" required>
-                                <small id="date-warning" style="color: var(--warning); display: none;">⚠️ Prazo necessário para inspeção e envio às lojas.</small>
+                                <label style="color: var(--gold); font-size: 0.85rem;">Data de Lançamento *</label>
+                                <input type="date" id="music-data">
+                                <span id="date-warning" style="color: var(--warning); font-size: 0.7rem; display: none;">⚠️ Prazo necessário para inspeção e envio às lojas.</span>
                             </div>
                         </div>
                         
-                        <label>Compositores * (separados por vírgula)</label>
-                        <input type="text" id="music-compositores" placeholder="Ex: João Silva, Maria Santos" required>
-                        
-                        <label>Produtores (separados por vírgula)</label>
-                        <input type="text" id="music-produtores" placeholder="Ex: Produtor 1, Produtor 2">
+                        <input type="text" id="music-compositores" placeholder="Compositores * (separados por vírgula)">
+                        <input type="text" id="music-produtores" placeholder="Produtores (separados por vírgula)">
                         
                         <div class="form-row">
-                            <div>
-                                <label>℗ Copyright Fonográfico (P-Line) *</label>
-                                <input type="text" id="music-pline" placeholder="℗ 2024 MAM Distribuidora" required>
-                            </div>
-                            <div>
-                                <label>© Copyright Editorial (C-Line) *</label>
-                                <input type="text" id="music-cline" placeholder="© 2024 MAM Distribuidora" required>
-                            </div>
+                            <input type="text" id="music-pline" placeholder="℗ Copyright Fonográfico (P-Line) *">
+                            <input type="text" id="music-cline" placeholder="© Copyright Editorial (C-Line) *">
                         </div>
                         
                         <div class="form-row">
                             <div>
-                                <label>ISRC</label>
-                                <div style="display: flex; gap: 10px;">
-                                    <input type="text" id="music-isrc" placeholder="Ex: AO-MAM-26-00001" style="flex:2;">
-                                    <button type="button" class="btn-small" onclick="generateValidISRC()" style="width: auto;">Gerar ISRC</button>
-                                </div>
+                                <label style="color: var(--gold); font-size: 0.85rem;">ISRC</label>
+                                <input type="text" id="music-isrc" placeholder="AO-MAM-26-XXXXX">
+                                <button type="button" class="btn btn-small btn-sec" onclick="generateValidISRC()"><i class="fas fa-magic"></i> Gerar ISRC</button>
                                 <small style="color: var(--gray);">Padrão: AO-MAM-26-XXXXX</small>
                             </div>
                             <div>
-                                <label>UPC/EAN</label>
-                                <div style="display: flex; gap: 10px;">
-                                    <input type="text" id="music-upc" placeholder="Código de Barras (12 ou 13 dígitos)" style="flex:2;">
-                                    <button type="button" class="btn-small" onclick="generateValidUPC()" style="width: auto;">Gerar UPC</button>
-                                </div>
+                                <label style="color: var(--gold); font-size: 0.85rem;">UPC/EAN</label>
+                                <input type="text" id="music-upc" placeholder="123456789012">
+                                <button type="button" class="btn btn-small btn-sec" onclick="generateValidUPC()"><i class="fas fa-barcode"></i> Gerar UPC</button>
                                 <small style="color: var(--gray);">12 ou 13 dígitos numéricos</small>
                             </div>
                         </div>
                         
-                        <label>Colaboradores (separados por vírgula)</label>
-                        <input type="text" id="music-colaboradores" placeholder="Ex: Artista Convidado 1, Artista Convidado 2">
+                        <input type="text" id="music-colaboradores" placeholder="Colaboradores (separados por vírgula)">
                         
-                        <label>Capa (JPG, PNG - máx 15MB) *</label>
-                        <div id="capa-upload-container">
-                            <button type="button" id="upload-capa-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Capa</button>
-                            <input type="hidden" id="music-capa-url">
-                            <div id="capa-preview" style="margin-top: 10px; display: none;">
-                                <img id="capa-preview-img" src="" style="max-width: 100px; border-radius: 8px;">
-                                <p style="font-size: 0.7rem; color: var(--gold);">Capa selecionada ✓</p>
-                            </div>
+                        <label style="color: var(--gold); font-size: 0.85rem;">Capa (JPG, PNG - máx 15MB) *</label>
+                        <input type="hidden" id="music-capa-url">
+                        <button type="button" class="btn btn-sec" id="upload-capa-btn"><i class="fas fa-image"></i> Selecionar Capa</button>
+                        <div id="capa-preview" style="display: none; margin: 10px 0;">
+                            <img id="capa-preview-img" src="" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--gold);">
+                            <p style="color: var(--success); font-size: 0.8rem;"><i class="fas fa-check"></i> Capa selecionada ✓</p>
                         </div>
                         
-                        <div id="single-fields">
-                            <label>Ficheiro de Áudio * (FORMATO OBRIGATÓRIO: WAV)</label>
-                            <div id="audio-upload-container">
-                                <button type="button" id="upload-audio-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Áudio WAV</button>
-                                <input type="hidden" id="music-audio-url">
-                                <div id="audio-preview" style="margin-top: 10px; display: none;">
-                                    <p style="font-size: 0.7rem; color: var(--gold);"><i class="fas fa-check-circle"></i> Áudio WAV carregado ✓</p>
-                                </div>
-                            </div>
-                            <small style="color: var(--gray);">A MAM Distribuidora apenas aceita formato WAV (16/24 bit) para garantir qualidade máxima nas lojas digitais.</small>
+                        <label style="color: var(--gold); font-size: 0.85rem;">Ficheiro de Áudio * (FORMATO OBRIGATÓRIO: WAV)</label>
+                        <input type="hidden" id="music-audio-url">
+                        <button type="button" class="btn btn-sec" id="upload-audio-btn"><i class="fas fa-file-audio"></i> Selecionar Áudio WAV</button>
+                        <div id="audio-preview" style="display: none; margin: 10px 0;">
+                            <p style="color: var(--success); font-size: 0.8rem;"><i class="fas fa-check"></i> Áudio WAV carregado ✓</p>
                         </div>
-                        
-                        <div id="album-fields" style="display: none;">
-                            <div class="track-adder">
-                                <label>Faixas do Álbum</label>
-                                <div id="tracks-container"></div>
-                                <button type="button" class="add-track-btn" onclick="addTrackField()"><i class="fas fa-plus"></i> Adicionar Faixa</button>
-                            </div>
-                        </div>
-                        
-                        <div class="ddex-info">
-                            <p><i class="fas fa-file-code"></i> <strong>Distribuição DDEX ERN 4.3</strong></p>
-                            <p>Os metadados serão embalados em XML compatível com Meta Rights Manager e TikTok.</p>
-                            <p>ISRC obrigatório para monetização em todas as plataformas.</p>
-                        </div>
-                        
-                        <button type="submit" id="btnEnviarLancamento" class="btn"><i class="fas fa-check"></i> Enviar Lançamento (DDEX)</button>
-                    </form>
-                </div>
-            </div>
-
-            <div id="minhas-musicas" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-music"></i> Minhas Músicas</h3>
-                    <div id="minhas-musicas-container" class="grid"></div>
-                </div>
-            </div>
-
-            <div id="carteira" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-wallet"></i> Carteira Oficial MAM</h3>
-                    
-                    <div class="currency-selector">
-                        <label><i class="fas fa-coins"></i> Visualizar em:</label>
-                        <select id="currency-select">
-                            <option value="Kz">🇦🇴 Kz (Kwanza)</option>
-                            <option value="USD">🇺🇸 USD (Dólar)</option>
-                            <option value="EUR">🇪🇺 EUR (Euro)</option>
-                        </select>
+                        <small style="color: var(--gray);">A MAM Distribuidora apenas aceita formato WAV (16/24 bit) para garantir qualidade máxima nas lojas digitais.</small>
                     </div>
                     
-                    <div class="visa-card-mam" style="width: 100%; max-width: 400px; height: 220px; margin: 20px auto; border-radius: 15px; position: relative; padding: 25px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); box-shadow: 0 15px 35px rgba(0,0,0,0.5); background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg') center/cover; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; border: 1px solid rgba(212,175,55,0.3);">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;">
-                            <div style="font-weight: bold; font-style: italic; font-size: 1.2rem; color: var(--gold);">MAM Distribuidora</div>
-                            <div style="width: 45px; height: 35px; background: linear-gradient(135deg, #f0d078 0%, #d4af37 100%); border-radius: 5px;"></div>
-                        </div>
-                        <div id="visa-number" style="font-size: 1.4rem; letter-spacing: 3px; font-family: 'Courier New', Courier, monospace; margin: 20px 0; z-index: 1;">**** **** **** ****</div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 1;">
-                            <div id="visa-holder" style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">NOME DO ARTISTA</div>
-                            <div id="visa-expiry" style="font-size: 0.8rem; text-align: right;">VAL: 00/00</div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: #fff;">VISA</div>
-                        </div>
+                    <div id="album-fields" style="display: none;">
+                        <h4 style="color: var(--gold); margin: 20px 0;">Faixas do Álbum</h4>
+                        <div id="tracks-container"></div>
+                        <button type="button" class="btn btn-sec" onclick="addTrackField()"><i class="fas fa-plus"></i> Adicionar Faixa</button>
                     </div>
-
-                    <div class="stat-grid">
-                        <div class="stat-box">
-                            <p>Saldo Real</p>
-                            <h4 id="carteira-saldo">0,00 Kz</h4>
-                        </div>
-                        <div class="stat-box">
-                            <p>Ganhos Este Mês</p>
-                            <h4 id="carteira-ganhos-mes">0,00 Kz</h4>
-                        </div>
-                        <div class="stat-box">
-                            <p>Total de Ganhos</p>
-                            <h4 id="carteira-total-ganhos">0,00 Kz</h4>
-                        </div>
+                    
+                    <div class="ddex-info">
+                        <p><i class="fas fa-file-code" style="color: var(--gold);"></i> <strong>Distribuição DDEX ERN 4.3</strong></p>
+                        <p>Os metadados serão embalados em XML compatível com Meta Rights Manager e TikTok.</p>
+                        <p>ISRC obrigatório para monetização em todas as plataformas.</p>
                     </div>
-                    <button class="btn" style="margin-top: 20px;" onclick="openSaqueModal()"><i class="fas fa-money-bill-wave"></i> Levantar Ganhos</button>
-                    <div id="historico-saques" class="item-list" style="margin-top: 30px;"></div>
-                </div>
+                    
+                    <button type="button" class="btn" id="btnEnviarLancamento" style="margin-top: 20px;"><i class="fas fa-rocket"></i> Enviar Lançamento (DDEX)</button>
+                </form>
             </div>
-
-            <div id="perfil" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-user-cog"></i> Meu Perfil</h3>
+        </section>
+        
+        <!-- My Music Section -->
+        <section id="minhas-musicas" class="section">
+            <div class="card">
+                <h3><i class="fas fa-music"></i> Minhas Músicas</h3>
+                <div id="minhas-musicas-container" class="grid"></div>
+            </div>
+        </section>
+        
+        <!-- Wallet Section -->
+        <section id="carteira" class="section">
+            <div class="card">
+                <h3><i class="fas fa-wallet"></i> Carteira Oficial MAM</h3>
+                
+                <div class="currency-selector">
+                    <label>Visualizar em:</label>
+                    <select id="currency-select">
+                        <option value="Kz">🇦🇴 Kz (Kwanza)</option>
+                        <option value="USD">🇺🇸 USD (Dólar)</option>
+                        <option value="EUR">🇪🇺 EUR (Euro)</option>
+                    </select>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #1a1a1a, #000); border: 2px solid var(--gold); border-radius: 15px; padding: 25px; margin-bottom: 20px;">
+                    <p style="font-size: 0.8rem; color: var(--gold); margin-bottom: 10px;">MAM Distribuidora</p>
+                    <p id="visa-number" style="font-size: 1.3rem; letter-spacing: 3px; margin-bottom: 15px;">**** **** **** ****</p>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span id="visa-holder" style="font-size: 0.8rem;">NOME DO ARTISTA</span>
+                        <span id="visa-expiry" style="font-size: 0.8rem;">VAL: 00/00</span>
+                        <span style="color: var(--gold); font-weight: bold;">VISA</span>
+                    </div>
+                </div>
+                
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <h4 id="carteira-saldo">0,00 Kz</h4>
+                        <p>Saldo Real</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4 id="carteira-ganhos-mes">0,00 Kz</h4>
+                        <p>Ganhos Este Mês</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4 id="carteira-total-ganhos">0,00 Kz</h4>
+                        <p>Total de Ganhos</p>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="openSaqueModal()"><i class="fas fa-money-bill-wave"></i> Levantar Ganhos</button>
+                
+                <div id="historico-saques" class="item-list" style="margin-top: 20px;"></div>
+            </div>
+        </section>
+        
+        <!-- Profile Section -->
+        <section id="perfil" class="section">
+            <div class="card">
+                <h3><i class="fas fa-user"></i> Meu Perfil</h3>
+                <form id="profile-form">
                     <div class="profile-upload" id="profile-upload-trigger">
-                        <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img">
-                        <div class="upload-overlay">
-                            <i class="fas fa-camera"></i>
-                        </div>
+                        <img id="perfil-foto-preview" src="https://via.placeholder.com/120" class="profile-img" alt="Foto de Perfil">
+                        <div class="upload-overlay"><i class="fas fa-camera"></i></div>
                     </div>
-                    <input type="hidden" id="perfil-foto-url">
                     <input type="text" id="perfil-nome" placeholder="Nome Completo">
-                    <div class="phone-group" style="margin-bottom: 15px;">
+                    <div class="phone-group">
                         <select id="perfil-phone-code">
                             <option value="+244">🇦🇴 +244 (Angola)</option>
                             <option value="+351">🇵🇹 +351 (Portugal)</option>
@@ -700,29 +659,33 @@
                             <option value="+33">🇫🇷 +33 (França)</option>
                             <option value="+34">🇪🇸 +34 (Espanha)</option>
                         </select>
-                        <input type="tel" id="perfil-telefone" placeholder="Número de telefone">
+                        <input type="tel" id="perfil-telefone" placeholder="Telefone">
                     </div>
                     <select id="perfil-pais">
                         <option value="">Selecione seu País</option>
                     </select>
-                    <button class="btn" id="btnUpdateProfile"><i class="fas fa-save"></i> Guardar Perfil</button>
+                    <button type="button" class="btn" id="btnUpdateProfile"><i class="fas fa-save"></i> Guardar Perfil</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Admin Section -->
+        <section id="admin" class="section">
+            <div class="card">
+                <h3><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</h3>
+                <p style="color: var(--gray); margin-bottom: 20px;">Controle Total da Plataforma</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-sec" onclick="openAdminUsersModal()"><i class="fas fa-users-cog"></i> Gerenciar Utilizadores</button>
+                    <button class="btn btn-sec" onclick="openAdminMusicsModal()"><i class="fas fa-compact-disc"></i> Gerenciar Músicas</button>
+                    <button class="btn btn-sec" onclick="openAdminDistribuicaoModal()"><i class="fas fa-share-alt"></i> Distribuição</button>
+                    <button class="btn btn-sec" onclick="generateDDEXReport()"><i class="fas fa-file-code"></i> Exportar DDEX XML</button>
+                    <button class="btn btn-sec" onclick="downloadPlatformReport()"><i class="fas fa-download"></i> Download Relatório</button>
                 </div>
             </div>
-
-            <div id="admin" class="section">
-                <div class="card">
-                    <h3><i class="fas fa-shield-alt"></i> ADMIN PRO MAX</h3>
-                    <p style="color: var(--gold); margin-bottom: 20px; font-weight: bold;">Controle Total da Plataforma</p>
-                    <button class="btn btn-danger" onclick="openAdminUsersModal()" style="margin-bottom: 10px;"><i class="fas fa-users"></i> Gerenciar Utilizadores</button>
-                    <button class="btn btn-danger" onclick="openAdminMusicsModal()" style="margin-bottom: 10px;"><i class="fas fa-music"></i> Gerenciar Músicas</button>
-                    <button class="btn btn-danger" onclick="openAdminDistribuicaoModal()" style="margin-bottom: 10px;"><i class="fas fa-globe"></i> Distribuição</button>
-                    <button class="btn btn-danger" onclick="generateDDEXReport()" style="margin-bottom: 10px;"><i class="fas fa-file-code"></i> Exportar DDEX XML</button>
-                    <button class="btn btn-danger" onclick="downloadPlatformReport()" style="margin-bottom: 10px;"><i class="fas fa-file-download"></i> Download Relatório</button>
-                </div>
-            </div>
-        </div>
+        </section>
     </div>
-
+    
+    <!-- Footer -->
     <footer>
         <div class="footer-links">
             <a onclick="showFooterContent('sobre')">Sobre</a>
@@ -731,23 +694,20 @@
             <a onclick="showFooterContent('suporte')">Suporte</a>
         </div>
         <p>MAM Distribuidora © 2024 | O Império da Música em Angola</p>
-        <p class="footer-founder">Fundado por <strong>Matias Arsénio Manuel</strong></p>
-        <div class="footer-security">
-            <i class="fas fa-lock"></i> Segurança de Nível Empresarial | DDEX ERN 4.3 Ready
-        </div>
+        <p class="footer-founder">Fundado por Matias Arsénio Manuel</p>
+        <p class="footer-security"><i class="fas fa-shield-alt"></i> Segurança de Nível Empresarial | DDEX ERN 4.3 Ready</p>
     </footer>
-
-    <div class="security-badge">
-        <i class="fas fa-shield-alt"></i> DDEX COMPATIBLE
-    </div>
-
+    
+    <!-- Security Badge -->
+    <div class="security-badge"><i class="fas fa-lock"></i> DDEX COMPATIBLE</div>
+    
+    <!-- Saque Modal -->
     <div id="saqueModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('saqueModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">Solicitar Saque</h2>
-            <label>Valor (Kz)</label>
-            <input type="number" id="saque-valor" placeholder="Valor a sacar">
-            <label>Método de Saque</label>
+            <h3><i class="fas fa-money-bill-wave"></i> Solicitar Saque</h3>
+            <input type="number" id="saque-valor" placeholder="Valor (Kz)">
+            <input type="text" id="saque-conta" placeholder="IBAN ou Número da Conta">
             <select id="saque-metodo">
                 <option value="">Selecione</option>
                 <option value="bfa">BFA</option>
@@ -758,155 +718,129 @@
                 <option value="paypal">PayPal</option>
                 <option value="pix">PIX</option>
             </select>
-            <input type="text" id="saque-conta" placeholder="Número da Conta/Chave">
             <button class="btn" onclick="solicitarSaque()"><i class="fas fa-paper-plane"></i> Solicitar</button>
         </div>
     </div>
-
+    
+    <!-- Plan Purchase Modal -->
     <div id="planPurchaseModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('planPurchaseModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">Finalizar Compra</h2>
-            <div id="plan-details" style="text-align: center; margin-bottom: 20px;"></div>
+            <h3><i class="fas fa-shopping-cart"></i> Finalizar Compra</h3>
+            <div id="plan-details"></div>
             <div class="payment-methods">
-                <div class="payment-method" onclick="selectPaymentMethod('wallet')">
-                    <i class="fas fa-wallet"></i>
-                    <p>Pagar com Carteira MAM</p>
-                </div>
-                <div class="payment-method" onclick="selectPaymentMethod('transfer')">
-                    <i class="fas fa-university"></i>
-                    <p>Transferência Bancária</p>
-                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i><span>Carteira MAM</span></div>
+                <div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i><span>Transferência Bancária</span></div>
             </div>
-            <div id="bank-info" style="display: none; background: #0a0a0a; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                <p><strong>BFA - Banco de Fomento Angola</strong></p>
-                <p>Titular: Matias Arsénio Manuel</p>
-                <p>IBAN: 0006 0000 86316866301 52</p>
-                <p>VISA: 4937242025023852</p>
-                <p>Multicaixa Express: 937881307</p>
-                <button class="btn-small" onclick="sendToWhatsApp()" style="margin-top: 10px;"><i class="fab fa-whatsapp"></i> Enviar Comprovativo</button>
+            <button id="pay-with-wallet-btn" class="btn" style="display: none;" onclick="payWithWallet()"><i class="fas fa-check"></i> Pagar com Carteira MAM</button>
+            <div id="bank-info" style="display: none; margin-top: 20px; padding: 15px; background: #111; border-radius: 8px; border-left: 3px solid var(--gold);">
+                <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">BFA - Banco de Fomento Angola</p>
+                <p style="color: var(--gray); font-size: 0.85rem;">Titular: Matias Arsénio Manuel</p>
+                <p style="color: var(--gray); font-size: 0.85rem;">IBAN: 0006 0000 86316866301 52</p>
+                <p style="color: var(--gray); font-size: 0.85rem;">VISA: 4937242025023852</p>
+                <p style="color: var(--gray); font-size: 0.85rem;">Multicaixa Express: 937881307</p>
+                <button class="btn btn-sec" style="margin-top: 15px;" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo</button>
             </div>
-            <button id="pay-with-wallet-btn" class="btn" style="display: none;" onclick="payWithWallet()"><i class="fas fa-check"></i> Confirmar Pagamento</button>
+            <button class="btn" style="margin-top: 15px;" onclick="closeModal('planPurchaseModal')">Confirmar Pagamento</button>
         </div>
     </div>
-
+    
+    <!-- Admin Users Modal -->
     <div id="adminUsersModal" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content">
             <button class="modal-close" onclick="closeModal('adminUsersModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Gerenciar Utilizadores</h2>
-            <input type="email" id="admin-search-email" placeholder="E-mail do utilizador">
-            <button class="btn" onclick="searchUser()"><i class="fas fa-search"></i> Buscar</button>
+            <h3><i class="fas fa-users-cog"></i> Gerenciar Utilizadores</h3>
+            <input type="email" id="admin-search-email" placeholder="Email do utilizador">
+            <button class="btn btn-sec" onclick="searchUser()"><i class="fas fa-search"></i> Buscar</button>
             <div id="user-manage-results" style="margin-top: 20px;"></div>
         </div>
     </div>
-
+    
+    <!-- Admin Musics Modal -->
     <div id="adminMusicsModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content">
             <button class="modal-close" onclick="closeModal('adminMusicsModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Gerenciar Músicas</h2>
+            <h3><i class="fas fa-compact-disc"></i> Gerenciar Músicas</h3>
             <div id="admin-musics-list" class="item-list"></div>
         </div>
     </div>
-
+    
+    <!-- Admin Distribution Modal -->
     <div id="adminDistribuicaoModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('adminDistribuicaoModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px;">Distribuição de Música</h2>
-            <select id="dist-music-select" style="margin-bottom: 20px;">
+            <h3><i class="fas fa-share-alt"></i> Distribuição de Música</h3>
+            <select id="dist-music-select">
                 <option value="">Selecione uma música</option>
             </select>
             <div id="platforms-list"></div>
-            <button class="btn" onclick="updateDistribution()"><i class="fas fa-save"></i> Atualizar Distribuição</button>
+            <button class="btn" onclick="updateDistribution()"><i class="fas fa-sync"></i> Atualizar Distribuição</button>
             <button class="btn btn-sec" style="margin-top: 10px;" onclick="exportSelectedDDEX()"><i class="fas fa-file-code"></i> Exportar DDEX XML</button>
         </div>
     </div>
-
+    
+    <!-- Add Artist Modal -->
     <div id="addArtistModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">Adicionar Artista</h2>
+            <h3><i class="fas fa-user-plus"></i> Adicionar Artista</h3>
             <div style="text-align: center; margin-bottom: 20px;">
-                <img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover;">
-                <div style="margin-top: 10px;">
-                    <button class="btn-small" id="upload-artist-photo-btn"><i class="fas fa-camera"></i> Escolher Foto</button>
-                    <input type="hidden" id="artist-photo-url">
-                </div>
+                <img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover;">
+                <br>
+                <button type="button" class="btn btn-small btn-sec" id="upload-artist-photo-btn" style="margin-top: 10px;"><i class="fas fa-camera"></i> Escolher Foto</button>
             </div>
-            <input type="text" id="artist-name" placeholder="Nome Artístico" required>
+            <input type="text" id="artist-name" placeholder="Nome Artístico *">
             <select id="artist-style">
                 <option value="">Estilo Musical</option>
             </select>
-            <textarea id="artist-bio" placeholder="Biografia do Artista" rows="3" style="resize: vertical;"></textarea>
-            <label style="color: var(--gold); margin-top: 10px;">Redes Sociais</label>
-            <input type="url" id="artist-instagram" placeholder="Instagram">
-            <input type="url" id="artist-facebook" placeholder="Facebook">
-            <input type="url" id="artist-youtube" placeholder="YouTube">
-            <input type="url" id="artist-tiktok" placeholder="TikTok">
-            <input type="url" id="artist-spotify" placeholder="Spotify">
-            <input type="url" id="artist-apple" placeholder="Apple Music">
-            <input type="url" id="artist-twitter" placeholder="Twitter/X">
-            <input type="url" id="artist-soundcloud" placeholder="SoundCloud">
-            <button class="btn" id="btnSaveArtist"><i class="fas fa-save"></i> Salvar Artista</button>
+            <textarea id="artist-bio" placeholder="Redes Sociais" rows="3"></textarea>
+            <button type="button" class="btn" id="btnSaveArtist"><i class="fas fa-save"></i> Salvar Artista</button>
         </div>
     </div>
-
+    
+    <!-- Edit Artist Modal -->
     <div id="editArtistModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('editArtistModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">Editar Artista</h2>
+            <h3><i class="fas fa-edit"></i> Editar Artista</h3>
             <input type="hidden" id="edit-artist-id">
             <div style="text-align: center; margin-bottom: 20px;">
-                <img id="edit-artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover;">
-                <div style="margin-top: 10px;">
-                    <button class="btn-small" id="edit-upload-artist-photo-btn"><i class="fas fa-camera"></i> Nova Foto</button>
-                    <input type="hidden" id="edit-artist-photo-url">
-                </div>
+                <img id="edit-artist-photo-preview" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover;">
+                <br>
+                <button type="button" class="btn btn-small btn-sec" id="edit-upload-artist-photo-btn" style="margin-top: 10px;"><i class="fas fa-camera"></i> Nova Foto</button>
             </div>
-            <input type="text" id="edit-artist-name" placeholder="Nome Artístico" required>
-            <select id="edit-artist-style"><option value="">Estilo Musical</option></select>
-            <textarea id="edit-artist-bio" placeholder="Biografia do Artista" rows="3" style="resize: vertical;"></textarea>
-            <input type="url" id="edit-artist-instagram" placeholder="Instagram">
-            <input type="url" id="edit-artist-facebook" placeholder="Facebook">
-            <input type="url" id="edit-artist-youtube" placeholder="YouTube">
-            <input type="url" id="edit-artist-tiktok" placeholder="TikTok">
-            <input type="url" id="edit-artist-spotify" placeholder="Spotify">
-            <input type="url" id="edit-artist-apple" placeholder="Apple Music">
-            <input type="url" id="edit-artist-twitter" placeholder="Twitter/X">
-            <input type="url" id="edit-artist-soundcloud" placeholder="SoundCloud">
-            <button class="btn" id="btnUpdateArtist"><i class="fas fa-save"></i> Atualizar Artista</button>
+            <input type="text" id="edit-artist-name" placeholder="Nome Artístico *">
+            <select id="edit-artist-style">
+                <option value="">Estilo Musical</option>
+            </select>
+            <textarea id="edit-artist-bio" placeholder="Redes Sociais" rows="3"></textarea>
+            <button type="button" class="btn" id="btnUpdateArtist"><i class="fas fa-save"></i> Atualizar Artista</button>
         </div>
     </div>
-
+    
+    <!-- Edit Release Modal -->
     <div id="editReleaseModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content">
             <button class="modal-close" onclick="closeModal('editReleaseModal')"><i class="fas fa-times"></i></button>
-            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">Editar Lançamento</h2>
+            <h3><i class="fas fa-edit"></i> Editar Lançamento</h3>
             <input type="hidden" id="edit-release-id">
-            <label>Título</label>
             <input type="text" id="edit-release-titulo" placeholder="Título">
-            <label>Estilo Musical</label>
-            <select id="edit-release-estilo"><option value="">Selecione</option></select>
-            <label>Colaboradores</label>
-            <input type="text" id="edit-release-colaboradores" placeholder="Ex: Artista 1, Artista 2">
-            <label>Produtores</label>
-            <input type="text" id="edit-release-produtores" placeholder="Ex: Produtor 1, Produtor 2">
-            <label>ISRC</label>
-            <input type="text" id="edit-release-isrc">
-            <label>UPC/EAN</label>
-            <input type="text" id="edit-release-upc">
-            <label>Data de Lançamento</label>
+            <select id="edit-release-estilo">
+                <option value="">Estilo Musical</option>
+            </select>
+            <input type="text" id="edit-release-colaboradores" placeholder="Colaboradores">
+            <input type="text" id="edit-release-produtores" placeholder="Produtores">
+            <input type="text" id="edit-release-isrc" placeholder="ISRC">
+            <input type="text" id="edit-release-upc" placeholder="UPC/EAN">
             <input type="date" id="edit-release-data">
-            <label>Nova Capa (opcional)</label>
-            <div id="edit-capa-upload-container">
-                <button type="button" id="edit-upload-capa-btn" class="btn-sec" style="width: auto; padding: 10px;"><i class="fas fa-cloud-upload-alt"></i> Nova Capa</button>
-                <input type="hidden" id="edit-release-capa-url">
-            </div>
-            <button class="btn" id="btnUpdateRelease"><i class="fas fa-save"></i> Atualizar Lançamento</button>
+            <input type="hidden" id="edit-release-capa-url">
+            <button type="button" class="btn btn-sec" id="edit-upload-capa-btn"><i class="fas fa-image"></i> Nova Capa</button>
+            <button type="button" class="btn" id="btnUpdateRelease" style="margin-top: 15px;"><i class="fas fa-save"></i> Atualizar Lançamento</button>
         </div>
     </div>
-
+    
     <script>
-        // ========== FIREBASE CONFIG ==========
+        // ========== FIREBASE CONFIG (ÚNICA INICIALIZAÇÃO) ==========
         const firebaseConfig = {
             apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
             authDomain: "mam-distribuidora-6043f.firebaseapp.com",
@@ -916,6 +850,7 @@
             appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"
         };
 
+        // Inicialização única do Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -1014,8 +949,8 @@
             div.className = 'success-animation';
             div.innerHTML = `
                 <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <h3 style="margin-bottom: 10px;">${message}</h3>
-                <p style="font-size: 0.9rem;">O lançamento será processado em até 48h</p>
+                <h3>${message}</h3>
+                <p style="margin-top: 10px; opacity: 0.8;">O lançamento será processado em até 48h</p>
             `;
             document.body.appendChild(div);
             setTimeout(() => { if (div && div.remove) div.remove(); }, 3000);
@@ -1025,42 +960,42 @@
         function generateDDEX(releaseData, artistName) {
             const releaseId = releaseData.id || Date.now().toString();
             return `<?xml version="1.0" encoding="UTF-8"?>
-<ERN:NewReleaseMessage xmlns:ERN="http://ddex.net/xml/ern/43" xmlns="http://ddex.net/xml/ern/43" LanguageAndScriptCode="pt">
+<ern:NewReleaseMessage xmlns:ern="http://ddex.net/xml/ern/43">
     <MessageHeader>
         <MessageId>${releaseId}-${Date.now()}</MessageId>
-        <MessageSender><PartyId>MAM-001</PartyId><PartyName>MAM Distribuidora</PartyName></MessageSender>
-        <MessageRecipient><PartyId>META-001</PartyId><PartyName>Meta Rights Manager</PartyName></MessageRecipient>
+        <MessageSender><PartyId>MAM-001</PartyId><PartyName><FullName>MAM Distribuidora</FullName></PartyName></MessageSender>
+        <MessageRecipient><PartyId>META-001</PartyId><PartyName><FullName>Meta Rights Manager</FullName></PartyName></MessageRecipient>
         <MessageCreatedDateTime>${new Date().toISOString()}</MessageCreatedDateTime>
     </MessageHeader>
     <ResourceList>
         <SoundRecording>
-            <ResourceId><ISRC>${releaseData.isrc || ''}</ISRC></ResourceId>
+            <SoundRecordingId><ISRC>${releaseData.isrc || ''}</ISRC></SoundRecordingId>
             <ResourceReference>SRC_${releaseId}</ResourceReference>
-            <ResourceTitle LanguageAndScriptCode="pt">${escapeXml(releaseData.titulo || '')}</ResourceTitle>
-            <DisplayArtist><ArtistName>${escapeXml(artistName)}</ArtistName><Role>MainArtist</Role></DisplayArtist>
-            <RightsController><RightsControllerRole>RightsController</RightsControllerRole><PartyName>MAM Distribuidora</PartyName><RightsControlType>Exclusive</RightsControlType></RightsController>
+            <Title><TitleText>${escapeXml(releaseData.titulo || '')}</TitleText></Title>
+            <DisplayArtist><PartyName><FullName>${escapeXml(artistName)}</FullName></PartyName><ArtistRole>MainArtist</ArtistRole></DisplayArtist>
+            <RightsController><PartyName><FullName>MAM Distribuidora</FullName></PartyName><RightsControllerRole>RightsController</RightsControllerRole><RightSharePercentage>Exclusive</RightSharePercentage></RightsController>
         </SoundRecording>
     </ResourceList>
     <ReleaseList>
         <Release>
-            <ReleaseId><UPC>${releaseData.upc || ''}</UPC></ReleaseId>
+            <ReleaseId><ICPN>${releaseData.upc || ''}</ICPN></ReleaseId>
             <ReleaseReference>REL_${releaseId}</ReleaseReference>
-            <ReferenceTitle LanguageAndScriptCode="pt">${escapeXml(releaseData.titulo || '')}</ReferenceTitle>
+            <Title><TitleText>${escapeXml(releaseData.titulo || '')}</TitleText></Title>
             <DisplayArtistName>${escapeXml(artistName)}</DisplayArtistName>
-            <ReleaseDate><Date>${releaseData.dataLancamento || new Date().toISOString().split('T')[0]}</Date></ReleaseDate>
+            <OriginalReleaseDate>${releaseData.dataLancamento || new Date().toISOString().split('T')[0]}</OriginalReleaseDate>
             <PLine><Year>${new Date().getFullYear()}</Year><PLineText>${escapeXml(releaseData.pline || '℗ 2024 MAM Distribuidora')}</PLineText></PLine>
             <CLine><Year>${new Date().getFullYear()}</Year><CLineText>${escapeXml(releaseData.cline || '© 2024 MAM Distribuidora')}</CLineText></CLine>
-            <Genre><GenreName>${escapeXml(releaseData.estilo || 'Pop')}</GenreName></Genre>
-            <DealList>
-                <Deal>
-                    <DealReference>DEAL_${releaseId}</DealReference>
-                    <DealTerms><TerritoryList><Territory>Worldwide</Territory></TerritoryList><CommercialModelType>PayAsYouGo</CommercialModelType><UseType>Stream</UseType><RoyaltyRate>70</RoyaltyRate></DealTerms>
-                </Deal>
-            </DealList>
-            <ResourceGroup><ResourceGroupType>MainAlbum</ResourceGroupType><ResourceReferenceList><ResourceReference>SRC_${releaseId}</ResourceReference></ResourceReferenceList></ResourceGroup>
+            <Genre><GenreText>${escapeXml(releaseData.estilo || 'Pop')}</GenreText></Genre>
         </Release>
     </ReleaseList>
-</ERN:NewReleaseMessage>`;
+    <DealList>
+        <ReleaseDeal>
+            <DealReference>DEAL_${releaseId}</DealReference>
+            <Deal><DealTerms><TerritoryCode>Worldwide</TerritoryCode><CommercialModelType>PayAsYouGo</CommercialModelType><UseType>Stream</UseType><PriceType><PriceRangeType>70</PriceRangeType></PriceType></DealTerms></Deal>
+        </ReleaseDeal>
+    </DealList>
+    <TrackRelease><ReleaseType>MainAlbum</ReleaseType><ReleaseResourceReference>SRC_${releaseId}</ReleaseResourceReference></TrackRelease>
+</ern:NewReleaseMessage>`;
         }
         
         function escapeXml(str) {
@@ -1196,7 +1131,7 @@
             if (sectionId === 'minhas-musicas') loadUserMusic();
             if (sectionId === 'carteira') loadWallet();
             if (sectionId === 'lancar') loadArtistSelect();
-            if (sectionId === 'home') { loadLatestRelease(); loadFeed(); }
+            if (sectionId === 'home') { loadFeed(); }
         }
 
         // ========== TEXTO LEGAL PROFISSIONAL ==========
@@ -1232,82 +1167,6 @@
             showAlert(`⬇️ Download: ${musicTitle}`);
         }
 
-        // ========== ÚLTIMO LANÇAMENTO GLOBAL ==========
-        async function loadLatestRelease() {
-            const latestContainer = document.getElementById('latest-release-container');
-            if (!latestContainer) return;
-            
-            latestContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando último lançamento...</div>';
-            
-            try {
-                const latestSnapshot = await db.collection('releases')
-                    .where('status', '==', 'approved')
-                    .orderBy('createdAt', 'desc')
-                    .limit(1)
-                    .get();
-                
-                if (latestSnapshot.empty) {
-                    latestContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Aguardando primeiro lançamento mundial.</p>';
-                    return;
-                }
-                
-                latestContainer.innerHTML = '';
-                
-                for (const doc of latestSnapshot.docs) {
-                    const release = doc.data();
-                    let artistName = 'Artista';
-                    let userName = '';
-                    if (release.artistaId) {
-                        const artistDoc = await db.collection('artists').doc(release.artistaId).get();
-                        if (artistDoc.exists) artistName = artistDoc.data().nome;
-                    }
-                    if (release.ownerEmail) {
-                        const userDoc = await db.collection('users').doc(release.ownerEmail).get();
-                        if (userDoc.exists) userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
-                    }
-                    
-                    const musicCard = document.createElement('div');
-                    musicCard.className = 'music-card';
-                    musicCard.innerHTML = `
-                        <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
-                        <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
-                        <div class="music-artist">${escapeHtml(artistName)}</div>
-                        <div class="music-user"><i class="fas fa-user"></i> ${escapeHtml(userName)}</div>
-                        <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
-                        <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
-                        <div class="music-actions">
-                            <button class="btn-small play-btn"><i class="fas fa-play"></i> Ouvir</button>
-                            <button class="btn-small download-btn"><i class="fas fa-download"></i> Download</button>
-                        </div>
-                        <audio class="music-audio" style="display: none;" controls preload="none">
-                            <source src="${release.audioURL || ''}" type="audio/wav">
-                        </audio>
-                    `;
-                    
-                    const playBtn = musicCard.querySelector('.play-btn');
-                    const downloadBtn = musicCard.querySelector('.download-btn');
-                    const audioElem = musicCard.querySelector('.music-audio');
-                    
-                    playBtn.onclick = () => {
-                        if (audioElem.paused) {
-                            audioElem.style.display = 'block';
-                            audioElem.play();
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-                        } else {
-                            audioElem.pause();
-                            playBtn.innerHTML = '<i class="fas fa-play"></i> Ouvir';
-                        }
-                    };
-                    downloadBtn.onclick = () => downloadAudio(release.audioURL, release.titulo);
-                    
-                    latestContainer.appendChild(musicCard);
-                }
-            } catch (error) {
-                console.error("Erro ao carregar último lançamento:", error);
-                latestContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar último lançamento.</p>';
-            }
-        }
-
         // ========== LOAD FEED COM PESQUISA GLOBAL ==========
         let allReleases = [];
         let filteredReleases = [];
@@ -1316,7 +1175,7 @@
             const feedContainer = document.getElementById('feed-container');
             if (!feedContainer) return;
             
-            feedContainer.innerHTML = '<div style="text-align:center; color:var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</div>';
+            feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center;"><i class="fas fa-spinner fa-spin"></i> Carregando lançamentos...</p>';
             
             try {
                 const feedSnapshot = await db.collection('releases')
@@ -1325,7 +1184,7 @@
                     .get();
                 
                 if (feedSnapshot.empty) {
-                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum lançamento disponível.</p>';
+                    feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum lançamento disponível.</p>';
                     return;
                 }
                 
@@ -1368,7 +1227,7 @@
                 }
             } catch (error) {
                 console.error("Erro ao carregar Feed:", error);
-                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 40px;">Erro ao carregar lançamentos.</p>';
+                feedContainer.innerHTML = '<p style="color: var(--danger); text-align: center;">Erro ao carregar lançamentos.</p>';
             }
         }
         
@@ -1377,36 +1236,26 @@
             if (!feedContainer) return;
             
             if (filteredReleases.length === 0) {
-                feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">Nenhum resultado encontrado.</p>';
+                feedContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhum resultado encontrado.</p>';
                 return;
             }
             
             feedContainer.innerHTML = '';
             
             for (const release of filteredReleases) {
-                let userName = '';
-                if (release.ownerEmail) {
-                    (async () => {
-                        const userDoc = await db.collection('users').doc(release.ownerEmail).get();
-                        if (userDoc.exists) userName = userDoc.data().nome || release.ownerEmail.split('@')[0];
-                    })();
-                }
-                
                 const musicCard = document.createElement('div');
                 musicCard.className = 'music-card';
                 musicCard.innerHTML = `
-                    <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
+                    <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" alt="${escapeHtml(release.titulo)}">
                     <div class="music-title">${escapeHtml(release.titulo || 'Sem título')}</div>
                     <div class="music-artist">${escapeHtml(release.artistName)}</div>
-                    <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
-                    <div style="margin-top: 8px; font-size: 0.7rem; color: var(--gold);"><i class="fas fa-headphones"></i> ${release.streams || 0} streams</div>
+                    <div class="music-isrc">ISRC: ${release.isrc || 'N/A'}</div>
+                    <div style="color: var(--gray); font-size: 0.75rem;">${release.streams || 0} streams</div>
                     <div class="music-actions">
-                        <button class="btn-small play-btn"><i class="fas fa-play"></i> Ouvir</button>
-                        <button class="btn-small download-btn"><i class="fas fa-download"></i> Download</button>
+                        <button class="btn btn-small btn-sec play-btn"><i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn btn-small btn-sec download-btn"><i class="fas fa-download"></i> Download</button>
                     </div>
-                    <audio class="music-audio" style="display: none;" controls preload="none">
-                        <source src="${release.audioURL || ''}" type="audio/wav">
-                    </audio>
+                    <audio class="music-audio" src="${release.audioURL || ''}" style="display: none;"></audio>
                 `;
                 
                 const playBtn = musicCard.querySelector('.play-btn');
@@ -1566,7 +1415,7 @@
             });
         }
 
-        // ========== CARREGAR PAÍSES E ESTILOS (EXPANDIDO) ==========
+        // ========== CARREGAR PAÍSES E ESTILOS ==========
         function carregarPaisesEEstilos() {
             const paises = ["Angola", "Brasil", "Portugal", "Moçambique", "Cabo Verde", "São Tomé e Príncipe", "Guiné-Bissau", "Timor-Leste", "África do Sul", "Estados Unidos", "Reino Unido", "França", "Espanha", "Alemanha", "Itália", "Outro"];
             
@@ -1718,14 +1567,14 @@
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'artist-item';
                         itemDiv.innerHTML = `
-                            <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" onerror="this.src='https://via.placeholder.com/70'">
+                            <img src="${artist.foto || 'https://via.placeholder.com/70'}" class="artist-avatar" alt="${escapeHtml(artist.nome)}">
                             <div class="artist-info">
                                 <h4>${escapeHtml(artist.nome)}</h4>
                                 <p>${escapeHtml(artist.bio || 'Sem biografia')} | ${escapeHtml(artist.estilo || '')}</p>
                             </div>
                             <div class="list-actions">
-                                <button class="btn-small" onclick="openEditArtistModal('${artistId}')"><i class="fas fa-edit"></i> Editar</button>
-                                <button class="btn-small btn-danger" onclick="deleteArtist('${artistId}')"><i class="fas fa-trash"></i> Eliminar</button>
+                                <button class="btn btn-small btn-sec" onclick="openEditArtistModal('${artistId}')"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn btn-small btn-danger" onclick="deleteArtist('${artistId}')"><i class="fas fa-trash"></i> Eliminar</button>
                             </div>
                         `;
                         container.appendChild(itemDiv);
@@ -1879,14 +1728,11 @@
             trackDiv.className = 'dynamic-track';
             const trackIndex = container.children.length;
             trackDiv.innerHTML = `
-                <input type="text" placeholder="Título da faixa" class="track-title-input" style="flex:2; margin-bottom:10px;">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <button type="button" class="upload-track-btn btn-small"><i class="fas fa-cloud-upload-alt"></i> Upload Áudio WAV</button>
-                    <input type="hidden" class="track-url-input">
-                    <button type="button" class="remove-track btn-small" onclick="this.closest('.dynamic-track').remove()" style="background:#dc3545; color:#fff;"><i class="fas fa-trash"></i> Remover</button>
-                </div>
-                <div class="track-preview" style="margin-top: 5px; display: none;">✓ Áudio WAV carregado</div>
-                <hr style="margin: 10px 0;">
+                <input type="text" class="track-title-input" placeholder="Título da Faixa ${trackIndex + 1}">
+                <input type="hidden" class="track-url-input">
+                <button type="button" class="btn btn-small btn-sec upload-track-btn"><i class="fas fa-file-audio"></i> Upload Áudio WAV</button>
+                <button type="button" class="btn btn-small btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i> Remover</button>
+                <div class="track-preview" style="display: none; color: var(--success); font-size: 0.75rem; margin-top: 5px;">✓ Áudio WAV carregado</div>
             `;
             const uploadBtn = trackDiv.querySelector('.upload-track-btn');
             uploadBtn.onclick = () => {
@@ -1932,18 +1778,6 @@
             const compositores = document.getElementById('music-compositores').value.trim();
             const pline = document.getElementById('music-pline').value.trim();
             const cline = document.getElementById('music-cline').value.trim();
-            
-            function isValidReleaseDate(dateString) {
-                if (!dateString) return false;
-                const selectedDate = new Date(dateString);
-                const today = new Date();
-                const minDate = new Date();
-                minDate.setDate(today.getDate() + 14);
-                minDate.setHours(0, 0, 0, 0);
-                selectedDate.setHours(0, 0, 0, 0);
-                return selectedDate >= minDate;
-            }
-            
             const audioUrl = document.getElementById('music-audio-url').value;
             
             if (!titulo || !artistaId || !releaseDate || !capaUrl) {
@@ -2046,13 +1880,12 @@
                 showSuccessAnimation(`Lançamento Registado! ISRC: ${finalIsrc}`);
                 showAlert(`✅ Lançamento enviado! ISRC: ${finalIsrc}`);
                 loadUserMusic();
-                loadLatestRelease();
                 loadFeed();
             } catch (error) {
                 showAlert('Erro: ' + error.message);
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-check"></i> Enviar Lançamento (DDEX)';
+                submitBtn.innerHTML = '<i class="fas fa-rocket"></i> Enviar Lançamento (DDEX)';
                 showLoading(false);
             }
         }
@@ -2081,17 +1914,17 @@
                         const musicCard = document.createElement('div');
                         musicCard.className = 'music-card';
                         musicCard.innerHTML = `
-                            <img src="${release.capaURL}" class="music-cover" onerror="this.src='https://via.placeholder.com/140'">
+                            <img src="${release.capaURL || 'https://via.placeholder.com/140'}" class="music-cover" alt="${escapeHtml(release.titulo)}">
                             <div class="music-title">${escapeHtml(release.titulo)}</div>
                             <div class="music-artist">${escapeHtml(artistName)}</div>
-                            <div class="music-isrc"><i class="fas fa-barcode"></i> ISRC: ${release.isrc || 'N/A'}</div>
-                            <div style="margin-top: 8px;"><span class="status-pill ${statusClass}">${statusText}</span></div>
-                            <div style="margin-top: 5px; font-size: 0.7rem; color: var(--gold);">${release.streams || 0} streams</div>
+                            <div class="music-isrc">ISRC: ${release.isrc || 'N/A'}</div>
+                            <span class="status-pill ${statusClass}">${statusText}</span>
+                            <div style="color: var(--gray); font-size: 0.75rem; margin-top: 5px;">${release.streams || 0} streams</div>
                             <div class="music-actions">
-                                <button class="btn-small" onclick="playMusic('${releaseId}')"><i class="fas fa-play"></i> Ouvir</button>
-                                <button class="btn-small" onclick="openEditReleaseModal('${releaseId}')"><i class="fas fa-edit"></i> Editar</button>
-                                <button class="btn-small btn-danger" onclick="deleteRelease('${releaseId}')"><i class="fas fa-trash"></i> Eliminar</button>
-                                <button class="btn-small" onclick="downloadMusicDDEX('${releaseId}')"><i class="fas fa-file-code"></i> DDEX</button>
+                                <button class="btn btn-small btn-sec" onclick="playMusic('${releaseId}')"><i class="fas fa-play"></i> Ouvir</button>
+                                <button class="btn btn-small btn-sec" onclick="openEditReleaseModal('${releaseId}')"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn btn-small btn-danger" onclick="deleteRelease('${releaseId}')"><i class="fas fa-trash"></i> Eliminar</button>
+                                <button class="btn btn-small btn-sec" onclick="downloadMusicDDEX('${releaseId}')"><i class="fas fa-file-code"></i> DDEX</button>
                             </div>
                         `;
                         container.appendChild(musicCard);
@@ -2260,7 +2093,7 @@
             const visaExpiry = document.getElementById('visa-expiry');
             if (visaExpiry) visaExpiry.textContent = 'VAL: ' + userData.cartao.validade;
             
-            // FIX: (userData.totalGanhos || 0).toFixed(2) para evitar NaN
+            // FIX: Evitar NaN
             const saldo = (userData.saldo || 0);
             const totalGanhos = (userData.totalGanhos || 0);
             
@@ -2366,7 +2199,7 @@
                 case 'promax': price = 50000; artistsLimit = 999999; planName = 'PRO MAX'; break;
                 default: return;
             }
-            document.getElementById('plan-details').innerHTML = `<h3 style="color: var(--gold);">Plano ${planName}</h3><p style="font-size: 1.5rem; color: var(--gold);">${price.toLocaleString()} Kz</p><p>${artistsLimit === 999999 ? 'Artistas Ilimitados' : `${artistsLimit} Artistas`}</p>`;
+            document.getElementById('plan-details').innerHTML = `<h4 style="color: var(--gold);">Plano ${planName}</h4><p style="font-size: 1.5rem; margin: 10px 0;">${price.toLocaleString()} Kz</p><p style="color: var(--gray);">${artistsLimit === 999999 ? 'Artistas Ilimitados' : `${artistsLimit} Artistas`}</p>`;
             openModal('planPurchaseModal');
         }
 
@@ -2433,7 +2266,7 @@
                 if (!container) return;
                 container.innerHTML = '';
                 if (snapshot.empty) {
-                    container.innerHTML = '<p style="color: var(--gray); text-align: center;">Nenhuma música encontrada.</p>';
+                    container.innerHTML = '<p style="color: var(--gray);">Nenhuma música encontrada.</p>';
                 } else {
                     for (const doc of snapshot.docs) {
                         const music = doc.data();
@@ -2444,12 +2277,14 @@
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'list-item';
                         itemDiv.innerHTML = `
-                            <img src="${music.capaURL}" onerror="this.src='https://via.placeholder.com/60'" style="width:60px;height:60px;border-radius:8px;">
-                            <div class="list-info"><h4>${escapeHtml(music.titulo)}</h4><p>${escapeHtml(artistName)}</p><p>ISRC: ${music.isrc || 'N/A'}</p><p>Status: <span class="status-pill ${statusClass}">${statusText}</span></p></div>
+                            <div class="list-info">
+                                <h4>${escapeHtml(music.titulo)}</h4>
+                                <p>${escapeHtml(artistName)} | ISRC: ${music.isrc || 'N/A'} | Status: <span class="status-pill ${statusClass}">${statusText}</span></p>
+                            </div>
                             <div class="list-actions">
-                                ${music.status !== 'approved' ? `<button class="btn-small" style="background:#28a745;color:#fff;" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
-                                ${music.status !== 'rejected' ? `<button class="btn-small" style="background:#dc3545;color:#fff;" onclick="rejectMusic('${doc.id}')"><i class="fas fa-times"></i> Reprovar</button>` : ''}
-                                <button class="btn-small" onclick="downloadMusicDDEX('${doc.id}')"><i class="fas fa-file-code"></i> DDEX</button>
+                                ${music.status !== 'approved' ? `<button class="btn btn-small" onclick="approveMusic('${doc.id}')"><i class="fas fa-check"></i> Aprovar</button>` : ''}
+                                ${music.status !== 'rejected' ? `<button class="btn btn-small btn-danger" onclick="rejectMusic('${doc.id}')"><i class="fas fa-times"></i> Reprovar</button>` : ''}
+                                <button class="btn btn-small btn-sec" onclick="downloadMusicDDEX('${doc.id}')"><i class="fas fa-file-code"></i> DDEX</button>
                             </div>
                         `;
                         container.appendChild(itemDiv);
@@ -2469,7 +2304,6 @@
                 await db.collection('releases').doc(musicId).update({ status: 'approved', approvedAt: new Date() });
                 showAlert('✅ Música aprovada!');
                 openAdminMusicsModal();
-                loadLatestRelease();
                 loadFeed();
             } catch (error) {
                 showAlert('Erro: ' + error.message);
@@ -2533,7 +2367,7 @@
                 let html = '';
                 platforms.forEach(platform => {
                     const isChecked = distributedTo[platform] === true;
-                    html += `<div class="platform-checkbox"><input type="checkbox" id="dist-${platform.replace(/ /g, '')}" ${isChecked ? 'checked' : ''}><label for="dist-${platform.replace(/ /g, '')}"><i class="fab fa-${platform.toLowerCase().replace(/ /g, '')}"></i> ${platform}</label></div>`;
+                    html += `<div class="platform-checkbox"><input type="checkbox" id="dist-${platform.replace(/ /g, '')}" ${isChecked ? 'checked' : ''}><label for="dist-${platform.replace(/ /g, '')}">${platform}</label></div>`;
                 });
                 const platformsList = document.getElementById('platforms-list');
                 if (platformsList) platformsList.innerHTML = html;
@@ -2612,7 +2446,27 @@
                     resultsDiv.innerHTML = '<p style="color: var(--danger);">Utilizador não encontrado!</p>';
                 } else {
                     const user = doc.data();
-                    resultsDiv.innerHTML = `<div class="list-item" style="flex-direction: column;"><div><strong>Nome:</strong> ${escapeHtml(user.nome || 'N/A')}</div><div><strong>Email:</strong> ${escapeHtml(email)}</div><div><strong>Plano:</strong> ${user.plano || 'FREE'}</div><div><strong>Saldo:</strong> ${(user.saldo || 0).toLocaleString()} Kz</div><div><strong>Artistas:</strong> ${user.artists?.length || 0}</div><div><strong>Músicas:</strong> ${user.releases?.length || 0}</div><select id="admin-plan-select"><option value="FREE" ${user.plano === 'FREE' ? 'selected' : ''}>FREE</option><option value="BÁSICO" ${user.plano === 'BÁSICO' ? 'selected' : ''}>BÁSICO</option><option value="MÉDIO" ${user.plano === 'MÉDIO' ? 'selected' : ''}>MÉDIO</option><option value="PRO MAX" ${user.plano === 'PRO MAX' ? 'selected' : ''}>PRO MAX</option></select><div style="display: flex; gap: 10px; margin-top: 10px;"><button class="btn-small" onclick="changeUserPlan('${email}')">Mudar Plano</button><button class="btn-small btn-danger" onclick="suspendUser('${email}')">Suspender</button><button class="btn-small btn-danger" onclick="deleteUserAccount('${email}')">Eliminar</button></div></div>`;
+                    resultsDiv.innerHTML = `
+                        <div class="list-item" style="flex-direction: column; align-items: flex-start;">
+                            <p><strong>Nome:</strong> ${escapeHtml(user.nome || 'N/A')}</p>
+                            <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+                            <p><strong>Plano:</strong> ${user.plano || 'FREE'}</p>
+                            <p><strong>Saldo:</strong> ${(user.saldo || 0).toLocaleString()} Kz</p>
+                            <p><strong>Artistas:</strong> ${user.artists?.length || 0}</p>
+                            <p><strong>Músicas:</strong> ${user.releases?.length || 0}</p>
+                            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                <select id="admin-plan-select">
+                                    <option value="FREE">FREE</option>
+                                    <option value="BÁSICO">BÁSICO</option>
+                                    <option value="MÉDIO">MÉDIO</option>
+                                    <option value="PRO MAX">PRO MAX</option>
+                                </select>
+                                <button class="btn btn-small" onclick="changeUserPlan('${email}')"><i class="fas fa-exchange-alt"></i> Mudar Plano</button>
+                                <button class="btn btn-small btn-sec" onclick="suspendUser('${email}')"><i class="fas fa-ban"></i> Suspender</button>
+                                <button class="btn btn-small btn-danger" onclick="deleteUserAccount('${email}')"><i class="fas fa-trash"></i> Eliminar</button>
+                            </div>
+                        </div>
+                    `;
                 }
             } catch (error) {
                 showAlert('Erro: ' + error.message);
@@ -2626,7 +2480,7 @@
             const artistsLimit = newPlan === 'BÁSICO' ? 10 : (newPlan === 'MÉDIO' ? 30 : (newPlan === 'PRO MAX' ? 999999 : 1));
             showLoading(true, 'A atualizar...');
             try {
-                await db.collection('users').doc(email).update({ plano: newPlan, artistasLimit });
+                await db.collection('users').doc(email).update({ plano: newPlan, artistasLimit: artistsLimit });
                 showAlert(`✅ Plano alterado para ${newPlan}!`);
                 searchUser();
             } catch (error) {
@@ -2788,7 +2642,6 @@
                     }
                     showMainApp();
                     updateUserDisplay();
-                    loadLatestRelease();
                     loadFeed();
                     loadArtistSelect();
                 } catch (error) {
@@ -2802,203 +2655,13 @@
             }
         });
 
+        // Inicializar EmailJS
         emailjs.init("vuAVZ5U4lRBZcsIon");
         
+        // Fechar modais ao clicar fora
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
         });
     </script>
-
-<script>
-// === PATCH PROFISSIONAL MAM ===
-
-const firebaseConfig = {
-    // MANTÉM AS TUAS CREDENCIAIS AQUI
-};
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-let currentUser = null;
-let saldoGlobal = 0;
-
-// AUTH
-auth.onAuthStateChanged(user => {
-    if (user) {
-        currentUser = user;
-        document.getElementById("auth-screen").style.display = "none";
-        document.getElementById("main-app").style.display = "block";
-        loadDashboard();
-    } else {
-        document.getElementById("auth-screen").style.display = "flex";
-        document.getElementById("main-app").style.display = "none";
-    }
-});
-
-// ISRC + UPC
-function generateISRC() {
-    const year = new Date().getFullYear().toString().slice(-2);
-    const rand = Math.floor(10000 + Math.random() * 90000);
-    return `AO-MAM-${year}-${rand}`;
-}
-
-function generateUPC() {
-    return Math.floor(100000000000 + Math.random() * 900000000000).toString();
-}
-
-// LANÇAMENTO
-document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btnEnviarLancamento");
-    if (btn) {
-        btn.addEventListener("click", async () => {
-            const titulo = document.getElementById("music-titulo").value.trim();
-            const artistaId = document.getElementById("music-artista-select").value;
-            const audioUrl = document.getElementById("music-audio-url").value;
-            const capaUrl = document.getElementById("music-capa-url").value;
-
-            if (!titulo || !artistaId || !audioUrl || !capaUrl) {
-                alert("Preencha todos os campos.");
-                return;
-            }
-
-            if (!audioUrl.toLowerCase().includes(".wav")) {
-                alert("Apenas WAV permitido.");
-                return;
-            }
-
-            await db.collection("releases").add({
-                userId: currentUser.uid,
-                titulo,
-                artistaId,
-                audioUrl,
-                capaUrl,
-                isrc: generateISRC(),
-                upc: generateUPC(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert("Lançamento enviado!");
-            loadFeed();
-        });
-    }
-});
-
-// FEED
-async function loadFeed() {
-    const snapshot = await db.collection("releases").orderBy("createdAt", "desc").get();
-
-    const feed = document.getElementById("feed-container");
-    const latest = document.getElementById("latest-release-container");
-
-    if (!feed || !latest) return;
-
-    feed.innerHTML = "";
-    latest.innerHTML = "";
-
-    snapshot.forEach((doc, index) => {
-        const data = doc.data();
-
-        const card = `
-        <div class="music-card">
-            <img src="${data.capaUrl}" class="music-cover">
-            <div class="music-title">${data.titulo}</div>
-            <audio controls src="${data.audioUrl}"></audio>
-        </div>`;
-
-        feed.innerHTML += card;
-        if (index === 0) latest.innerHTML = card;
-    });
-}
-
-// PESQUISA
-document.addEventListener("input", e => {
-    if (e.target.id === "global-search") {
-        const term = e.target.value.toLowerCase();
-        document.querySelectorAll(".music-card").forEach(c => {
-            c.style.display = c.innerText.toLowerCase().includes(term) ? "block" : "none";
-        });
-    }
-});
-
-// CARTEIRA
-async function loadWallet() {
-    const doc = await db.collection("users").doc(currentUser.uid).get();
-    const data = doc.data() || {};
-
-    const saldo = data.saldo || 0;
-    saldoGlobal = saldo;
-
-    const el = document.getElementById("carteira-saldo");
-    if (el) el.innerText = saldo + " Kz";
-}
-
-// MOEDA
-function convertCurrency(v, m) {
-    const r = {Kz:1, USD:0.0012, EUR:0.0011};
-    return (v * r[m]).toFixed(2);
-}
-
-document.addEventListener("change", e => {
-    if (e.target.id === "currency-select") {
-        const moeda = e.target.value;
-        document.getElementById("carteira-saldo").innerText =
-            convertCurrency(saldoGlobal, moeda) + " " + moeda;
-    }
-});
-
-// INIT
-function loadDashboard() {
-    loadFeed();
-    loadWallet();
-}
-</script>
-<script>
-// ===== NÃO QUEBRA TEU CÓDIGO =====
-
-// evita erro firebase duplicado
-try {
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-} catch(e) {}
-
-// referências globais seguras
-window.auth = firebase.auth();
-window.db = firebase.firestore();
-window.storage = firebase.storage();
-
-// evita conflito auth
-if (!window.__authFix) {
-  window.__authFix = true;
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      window.currentUser = user;
-    }
-  });
-}
-
-// cloudinary seguro
-async function uploadToCloudinary(file) {
-  try {
-    const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-    const res = await fetch(url, { method: "POST", body: formData });
-    const data = await res.json();
-
-    return data.secure_url;
-  } catch (e) {
-    alert("Erro upload");
-  }
-}
-</script>
 </body>
 </html>

@@ -74,17 +74,17 @@
         @keyframes glow { from { box-shadow: 0 0 5px rgba(212,175,55,0.5); } to { box-shadow: 0 0 20px rgba(212,175,55,0.8); } }
         .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; display: inline-block; }
         .status-active { background: rgba(40,167,69,0.2); color: #28a745; }
-        .status-pending { background: rgba(255,193,7,0.2); color: #ffc107; }
-        .status-rejected { background: rgba(220,53,69,0.2); color: #dc3545; }
-        .status-distributed { background: rgba(40,167,69,0.2); color: #28a745; }
+        .selo-badge { background: var(--gold); color: #000; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-left: 10px; }
         #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .music-card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; text-align: center; transition: 0.3s; }
         .music-card:hover { border-color: var(--gold); background: #151515; transform: translateY(-5px); }
         .music-cover { width: 140px; height: 140px; margin: 0 auto 15px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
-        .music-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        .music-artist { font-size: 0.85rem; color: var(--gray); }
+        .music-title { color: var(--gold); font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; cursor: pointer; }
+        .music-title:hover { text-decoration: underline; }
+        .music-artist { font-size: 0.85rem; color: var(--gray); cursor: pointer; }
+        .music-artist:hover { color: var(--gold); }
         audio { width: 100%; margin-top: 10px; border-radius: 8px; }
         .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
         .plan-card { background: var(--card); border: 2px solid #333; padding: 30px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; }
@@ -125,19 +125,11 @@
         .artist-profile-card .artist-style { color: var(--gray); font-size: 1rem; }
         .artist-profile-card .artist-bio { color: var(--gray); max-width: 600px; margin: 15px auto; }
         .artist-profile-card .social-links { justify-content: center; }
-        .artist-profile-card .followers { color: var(--gray); font-size: 0.9rem; margin: 10px 0; }
-        .artist-profile-card .followers i { color: var(--gold); margin-right: 5px; }
+        .artist-profile-card .follow-btn { margin-top: 15px; }
+        .artist-profile-card .seguidores { color: var(--gray); font-size: 0.9rem; margin-top: 5px; }
         #confirm-modal .modal-content { max-width: 450px; text-align: center; }
         #confirm-modal .btn-group { display: flex; gap: 15px; margin-top: 20px; justify-content: center; }
         #confirm-modal .btn-group .btn { width: auto; padding: 10px 30px; }
-        .platform-checkbox { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
-        .platform-checkbox input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--gold); }
-        .admin-music-item { background: #111; padding: 15px; border-radius: 10px; border: 1px solid #222; margin-bottom: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 15px; }
-        .admin-music-item .music-info { flex: 1; }
-        .admin-music-item .music-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .badge-status { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
-        .req-info { color: var(--gray); font-size: 0.8rem; margin: 5px 0 15px; padding: 8px 12px; background: rgba(212,175,55,0.05); border-radius: 8px; border-left: 3px solid var(--gold); }
-        .req-info i { color: var(--gold); margin-right: 5px; }
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .grid { grid-template-columns: 1fr; }
@@ -196,7 +188,6 @@
 
     <!-- Main App (logado) -->
     <div id="main-app" style="display:none;">
-        <!-- Secção Home -->
         <section id="home" class="section">
             <div class="card">
                 <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
@@ -272,23 +263,14 @@
                     <div class="form-row">
                         <input type="text" id="music-cline" placeholder="© Copyright">
                     </div>
-
-                    <!-- CAPA -->
-                    <label style="color:var(--gold);">Capa da Música *</label>
-                    <div class="req-info"><i class="fas fa-info-circle"></i> Requisitos: JPG ou PNG, mínimo 3000x3000px, 1:1, máximo 10MB, 300 DPI (recomendado)</div>
+                    <label>Capa da Música *</label>
                     <input type="hidden" id="music-capa-url">
-                    <input type="file" id="music-capa-file" accept="image/jpeg,image/png" style="display:none;">
                     <button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa</button>
                     <div id="capa-preview" style="display:none;"><img id="capa-preview-img" style="width:100px; border-radius:8px;"><p>Capa selecionada ✓</p></div>
-
-                    <!-- ÁUDIO -->
-                    <label style="color:var(--gold);">Áudio (WAV/MP3) *</label>
-                    <div class="req-info"><i class="fas fa-info-circle"></i> Requisitos: WAV (16-bit, 44.1kHz) ou MP3 (320 kbps, 44.1kHz). Máx 200MB.</div>
+                    <label>Áudio (formato WAV) *</label>
                     <input type="hidden" id="music-audio-url">
-                    <input type="file" id="music-audio-file" accept=".wav,.mp3" style="display:none;">
-                    <button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio</button>
-                    <div id="audio-preview" style="display:none;"><p>Áudio carregado ✓</p></div>
-
+                    <button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio WAV</button>
+                    <div id="audio-preview" style="display:none;"><p>Áudio WAV carregado ✓</p></div>
                     <div class="ddex-info"><p><i class="fas fa-share-alt"></i> Distribuição para 150+ plataformas: Spotify, Apple, TikTok, Instagram, YouTube Music, Amazon, Deezer, Tidal...</p></div>
                     <button type="button" class="btn" id="btnEnviarLancamento">Enviar para Distribuição</button>
                 </form>
@@ -301,10 +283,25 @@
 
         <section id="perfil" class="section"><div class="card"><h3>MAM Distribuidora - Perfil</h3><div class="profile-upload" id="profile-upload-trigger"><img id="perfil-foto-preview" class="profile-img" src="https://via.placeholder.com/120"><div class="upload-overlay"><i class="fas fa-camera"></i></div></div><input type="text" id="perfil-nome" placeholder="Nome"><div class="phone-group"><select id="perfil-phone-code"></select><input type="tel" id="perfil-telefone" placeholder="Telefone"></div><select id="perfil-pais"></select><button class="btn" id="btnUpdateProfile">Guardar</button></div></section>
 
-        <section id="admin" class="section"><div class="card"><h3>MAM Distribuidora - Administração</h3><div><input type="email" id="admin-search-email" placeholder="Email do utilizador"><button class="btn btn-sec" onclick="searchUser()">Buscar</button></div><div id="user-manage-results"></div><hr><button class="btn btn-sec" onclick="openAdminMusicManager()">Gerenciar Músicas</button><button class="btn btn-sec" onclick="generateDDEXReport()">Exportar DDEX</button></div></section>
+        <section id="admin" class="section">
+            <div class="card"><h3>MAM Distribuidora - Administração</h3>
+                <div><input type="email" id="admin-search-email" placeholder="Email do utilizador"><button class="btn btn-sec" onclick="searchUser()">Buscar</button></div>
+                <div id="user-manage-results"></div>
+                <hr>
+                <button class="btn btn-sec" onclick="openAdminMusicsModal()">Gerenciar Músicas</button>
+                <button class="btn btn-sec" onclick="generateDDEXReport()">Exportar DDEX</button>
+                <hr>
+                <h4 style="color:var(--gold); margin:15px 0;">Verificar Perfil (Selo)</h4>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <input type="text" id="admin-selo-artista" placeholder="Nome do Artista" style="flex:1;">
+                    <button class="btn btn-sec" onclick="buscarArtistaParaSelo()">Pesquisar</button>
+                </div>
+                <div id="admin-selo-results"></div>
+            </div>
+        </section>
     </div>
 
-    <!-- Secção de Resultado da Pesquisa (global, visível para todos) -->
+    <!-- Secção de Resultado da Pesquisa (global) -->
     <section id="resultado-pesquisa" class="section">
         <div class="card" id="resultado-artista-container">
             <!-- Preenchido dinamicamente -->
@@ -319,7 +316,10 @@
 </footer>
 
 <!-- Modais -->
-<div id="planPurchaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('planPurchaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Finalizar Compra</h3><div id="plan-details"></div><div class="payment-methods"><div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i>Carteira MAM</div><div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i>Transferência</div></div><button id="pay-with-wallet-btn" class="btn" style="display:none;" onclick="payWithWallet()">Pagar com Carteira</button><div id="bank-info" style="display:none;"><p><strong>BFA - Banco de Fomento Angola</strong></p><p>Titular: Matias Arsénio Manuel</p><p>IBAN: 0006 0000 86316866301 52</p><p>Multicaixa: +244937881307</p><p>Visa: 4937242025023852</p><button class="btn btn-sec" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo</button></div><button class="btn" onclick="closeModal('planPurchaseModal')">Fechar</button></div></div>
+<div id="planPurchaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('planPurchaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Finalizar Compra</h3><div id="plan-details"></div><div class="payment-methods"><div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i>Carteira MAM</div><div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i>Transferência</div></div><button id="pay-with-wallet-btn" class="btn" style="display:none;" onclick="payWithWallet()">Pagar com Carteira</button><div id="bank-info" style="display:none;"><p><strong>BFA - Banco de Fomento Angola</strong></p><p>Titular: Matias Arsénio Manuel</p><p>IBAN: 0006 0000 86316866301 52</p><p>Multicaixa: +244937881307</p><button class="btn btn-sec" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo</button></div><button class="btn" onclick="closeModal('planPurchaseModal')">Fechar</button></div></div>
+
+<!-- Modal de compra de Selo -->
+<div id="seloPurchaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('seloPurchaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Selo de Verificação</h3><p style="color:var(--gray);">Adquira o selo de verificação para o seu artista por <strong style="color:var(--gold);">1.500 Kz/mês</strong>.</p><p style="color:var(--gray);">O selo aumenta a credibilidade e visibilidade do seu perfil.</p><div class="payment-methods"><div class="payment-method" onclick="selectPaymentMethodSelo('wallet')"><i class="fas fa-wallet"></i>Carteira MAM</div><div class="payment-method" onclick="selectPaymentMethodSelo('transfer')"><i class="fas fa-university"></i>Transferência</div></div><button id="pay-selo-wallet-btn" class="btn" style="display:none;" onclick="pagarSelo()">Pagar com Carteira</button><div id="bank-info-selo" style="display:none;"><p><strong>BFA - Banco de Fomento Angola</strong></p><p>Titular: Matias Arsénio Manuel</p><p>IBAN: 0006 0000 86316866301 52</p><p>Multicaixa: +244937881307</p><button class="btn btn-sec" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo</button></div><button class="btn" onclick="closeModal('seloPurchaseModal')">Fechar</button></div></div>
 
 <div id="saqueModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('saqueModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Solicitar Saque</h3><input type="number" id="saque-valor" placeholder="Valor (Kz)"><input type="text" id="saque-conta" placeholder="IBAN ou conta"><select id="saque-metodo"><option value="">Método</option><option value="bfa">BFA</option><option value="multicaixa">Multicaixa</option></select><button class="btn" onclick="solicitarSaque()">Solicitar</button></div></div>
 
@@ -329,226 +329,10 @@
 
 <div id="editReleaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editReleaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Editar Lançamento</h3><input type="hidden" id="edit-release-id"><input type="text" id="edit-release-titulo"><select id="edit-release-estilo"></select><input type="text" id="edit-release-colaboradores"><input type="text" id="edit-release-isrc"><input type="text" id="edit-release-upc"><input type="date" id="edit-release-data"><button class="btn" id="btnUpdateRelease">Atualizar</button></div></div>
 
-<!-- Modal Gerenciar Músicas (Admin) -->
-<div id="adminMusicManagerModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('adminMusicManagerModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Gerenciar Músicas</h3><div id="admin-music-list"></div></div></div>
-
-<!-- Modal Lançar para Plataformas -->
-<div id="launchPlatformsModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('launchPlatformsModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Lançar para Plataformas</h3><div id="launch-music-info"></div><div id="platforms-list"></div><div style="display:flex; gap:10px; margin-top:20px;"><button class="btn" onclick="launchToSelected()">Lançar para Selecionadas</button><button class="btn btn-sec" onclick="launchToAll()">Lançar para Todas</button></div></div></div>
+<!-- Modal para configurar selo (ADMIN) -->
+<div id="adminSeloModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('adminSeloModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Configurar Selo</h3><input type="hidden" id="admin-selo-artist-id"><p><strong>Artista:</strong> <span id="admin-selo-artist-name"></span></p><div class="form-row"><div><label style="color:var(--gold);">Data de Início</label><input type="date" id="admin-selo-inicio"></div><div><label style="color:var(--gold);">Data de Fim</label><input type="date" id="admin-selo-fim"></div></div><div style="margin:10px 0;"><label><input type="checkbox" id="admin-selo-infinito"> Ativação Infinita</label></div><button class="btn" id="btnSalvarSelo">Salvar Selo</button></div></div>
 
 <script>
-    // ==================== LISTA COMPLETA DE CÓDIGOS TELEFÓNICOS ====================
-    const phoneCodes = [
-        { code: "+1", country: "EUA/Canadá" },
-        { code: "+7", country: "Rússia/Cazaquistão" },
-        { code: "+20", country: "Egito" },
-        { code: "+27", country: "África do Sul" },
-        { code: "+30", country: "Grécia" },
-        { code: "+31", country: "Países Baixos" },
-        { code: "+32", country: "Bélgica" },
-        { code: "+33", country: "França" },
-        { code: "+34", country: "Espanha" },
-        { code: "+36", country: "Hungria" },
-        { code: "+39", country: "Itália" },
-        { code: "+40", country: "Roménia" },
-        { code: "+41", country: "Suíça" },
-        { code: "+43", country: "Áustria" },
-        { code: "+44", country: "Reino Unido" },
-        { code: "+45", country: "Dinamarca" },
-        { code: "+46", country: "Suécia" },
-        { code: "+47", country: "Noruega" },
-        { code: "+48", country: "Polónia" },
-        { code: "+49", country: "Alemanha" },
-        { code: "+51", country: "Peru" },
-        { code: "+52", country: "México" },
-        { code: "+53", country: "Cuba" },
-        { code: "+54", country: "Argentina" },
-        { code: "+55", country: "Brasil" },
-        { code: "+56", country: "Chile" },
-        { code: "+57", country: "Colômbia" },
-        { code: "+58", country: "Venezuela" },
-        { code: "+60", country: "Malásia" },
-        { code: "+61", country: "Austrália" },
-        { code: "+62", country: "Indonésia" },
-        { code: "+63", country: "Filipinas" },
-        { code: "+64", country: "Nova Zelândia" },
-        { code: "+65", country: "Singapura" },
-        { code: "+66", country: "Tailândia" },
-        { code: "+81", country: "Japão" },
-        { code: "+82", country: "Coreia do Sul" },
-        { code: "+84", country: "Vietname" },
-        { code: "+86", country: "China" },
-        { code: "+90", country: "Turquia" },
-        { code: "+91", country: "Índia" },
-        { code: "+92", country: "Paquistão" },
-        { code: "+93", country: "Afeganistão" },
-        { code: "+94", country: "Sri Lanka" },
-        { code: "+95", country: "Myanmar" },
-        { code: "+98", country: "Irão" },
-        { code: "+211", country: "Sudão do Sul" },
-        { code: "+212", country: "Marrocos" },
-        { code: "+213", country: "Argélia" },
-        { code: "+216", country: "Tunísia" },
-        { code: "+218", country: "Líbia" },
-        { code: "+220", country: "Gâmbia" },
-        { code: "+221", country: "Senegal" },
-        { code: "+222", country: "Mauritânia" },
-        { code: "+223", country: "Mali" },
-        { code: "+224", country: "Guiné" },
-        { code: "+225", country: "Côte d'Ivoire" },
-        { code: "+226", country: "Burkina Faso" },
-        { code: "+227", country: "Níger" },
-        { code: "+228", country: "Togo" },
-        { code: "+229", country: "Benim" },
-        { code: "+230", country: "Maurícia" },
-        { code: "+231", country: "Libéria" },
-        { code: "+232", country: "Serra Leoa" },
-        { code: "+233", country: "Gana" },
-        { code: "+234", country: "Nigéria" },
-        { code: "+235", country: "Chade" },
-        { code: "+236", country: "República Centro-Africana" },
-        { code: "+237", country: "Camarões" },
-        { code: "+238", country: "Cabo Verde" },
-        { code: "+239", country: "São Tomé e Príncipe" },
-        { code: "+240", country: "Guiné Equatorial" },
-        { code: "+241", country: "Gabão" },
-        { code: "+242", country: "Congo" },
-        { code: "+243", country: "RD Congo" },
-        { code: "+244", country: "Angola" },
-        { code: "+245", country: "Guiné-Bissau" },
-        { code: "+246", country: "Diego Garcia" },
-        { code: "+247", country: "Ascensão" },
-        { code: "+248", country: "Seicheles" },
-        { code: "+249", country: "Sudão" },
-        { code: "+250", country: "Ruanda" },
-        { code: "+251", country: "Etiópia" },
-        { code: "+252", country: "Somália" },
-        { code: "+253", country: "Djibouti" },
-        { code: "+254", country: "Quénia" },
-        { code: "+255", country: "Tanzânia" },
-        { code: "+256", country: "Uganda" },
-        { code: "+257", country: "Burundi" },
-        { code: "+258", country: "Moçambique" },
-        { code: "+260", country: "Zâmbia" },
-        { code: "+261", country: "Madagáscar" },
-        { code: "+262", country: "Reunião" },
-        { code: "+263", country: "Zimbabwe" },
-        { code: "+264", country: "Namíbia" },
-        { code: "+265", country: "Malawi" },
-        { code: "+266", country: "Lesoto" },
-        { code: "+267", country: "Botsuana" },
-        { code: "+268", country: "Eswatini" },
-        { code: "+269", country: "Comores" },
-        { code: "+290", country: "Santa Helena" },
-        { code: "+291", country: "Eritreia" },
-        { code: "+297", country: "Aruba" },
-        { code: "+298", country: "Ilhas Faroé" },
-        { code: "+299", country: "Gronelândia" },
-        { code: "+350", country: "Gibraltar" },
-        { code: "+351", country: "Portugal" },
-        { code: "+352", country: "Luxemburgo" },
-        { code: "+353", country: "Irlanda" },
-        { code: "+354", country: "Islândia" },
-        { code: "+355", country: "Albânia" },
-        { code: "+356", country: "Malta" },
-        { code: "+357", country: "Chipre" },
-        { code: "+358", country: "Finlândia" },
-        { code: "+359", country: "Bulgária" },
-        { code: "+370", country: "Lituânia" },
-        { code: "+371", country: "Letónia" },
-        { code: "+372", country: "Estónia" },
-        { code: "+373", country: "Moldávia" },
-        { code: "+374", country: "Arménia" },
-        { code: "+375", country: "Bielorrússia" },
-        { code: "+376", country: "Andorra" },
-        { code: "+377", country: "Mónaco" },
-        { code: "+378", country: "San Marino" },
-        { code: "+380", country: "Ucrânia" },
-        { code: "+381", country: "Sérvia" },
-        { code: "+382", country: "Montenegro" },
-        { code: "+383", country: "Kosovo" },
-        { code: "+385", country: "Croácia" },
-        { code: "+386", country: "Eslovénia" },
-        { code: "+387", country: "Bósnia e Herzegovina" },
-        { code: "+389", country: "Macedónia" },
-        { code: "+420", country: "República Checa" },
-        { code: "+421", country: "Eslováquia" },
-        { code: "+423", country: "Liechtenstein" },
-        { code: "+500", country: "Ilhas Malvinas" },
-        { code: "+501", country: "Belize" },
-        { code: "+502", country: "Guatemala" },
-        { code: "+503", country: "El Salvador" },
-        { code: "+504", country: "Honduras" },
-        { code: "+505", country: "Nicarágua" },
-        { code: "+506", country: "Costa Rica" },
-        { code: "+507", country: "Panamá" },
-        { code: "+508", country: "Saint-Pierre e Miquelon" },
-        { code: "+509", country: "Haiti" },
-        { code: "+590", country: "Guadalupe" },
-        { code: "+591", country: "Bolívia" },
-        { code: "+592", country: "Guiana" },
-        { code: "+593", country: "Equador" },
-        { code: "+594", country: "Guiana Francesa" },
-        { code: "+595", country: "Paraguai" },
-        { code: "+596", country: "Martinica" },
-        { code: "+597", country: "Suriname" },
-        { code: "+598", country: "Uruguai" },
-        { code: "+599", country: "Curaçau" },
-        { code: "+670", country: "Timor-Leste" },
-        { code: "+672", country: "Antártida" },
-        { code: "+673", country: "Brunei" },
-        { code: "+674", country: "Nauru" },
-        { code: "+675", country: "Papua-Nova Guiné" },
-        { code: "+676", country: "Tonga" },
-        { code: "+677", country: "Ilhas Salomão" },
-        { code: "+678", country: "Vanuatu" },
-        { code: "+679", country: "Fiji" },
-        { code: "+680", country: "Palau" },
-        { code: "+681", country: "Wallis e Futuna" },
-        { code: "+682", country: "Ilhas Cook" },
-        { code: "+683", country: "Niue" },
-        { code: "+685", country: "Samoa" },
-        { code: "+686", country: "Kiribati" },
-        { code: "+687", country: "Nova Caledónia" },
-        { code: "+688", country: "Tuvalu" },
-        { code: "+689", country: "Polinésia Francesa" },
-        { code: "+690", country: "Tokelau" },
-        { code: "+691", country: "Micronésia" },
-        { code: "+692", country: "Ilhas Marshall" },
-        { code: "+850", country: "Coreia do Norte" },
-        { code: "+852", country: "Hong Kong" },
-        { code: "+853", country: "Macau" },
-        { code: "+855", country: "Camboja" },
-        { code: "+856", country: "Laos" },
-        { code: "+880", country: "Bangladesh" },
-        { code: "+886", country: "Taiwan" },
-        { code: "+960", country: "Maldivas" },
-        { code: "+961", country: "Líbano" },
-        { code: "+962", country: "Jordânia" },
-        { code: "+963", country: "Síria" },
-        { code: "+964", country: "Iraque" },
-        { code: "+965", country: "Kuwait" },
-        { code: "+966", country: "Arábia Saudita" },
-        { code: "+967", country: "Iémen" },
-        { code: "+968", country: "Omã" },
-        { code: "+969", country: "Palestina" },
-        { code: "+970", country: "Palestina" },
-        { code: "+971", country: "Emirados Árabes Unidos" },
-        { code: "+972", country: "Israel" },
-        { code: "+973", country: "Bahrein" },
-        { code: "+974", country: "Catar" },
-        { code: "+975", country: "Butão" },
-        { code: "+976", country: "Mongólia" },
-        { code: "+977", country: "Nepal" },
-        { code: "+978", country: "Nepal" },
-        { code: "+979", country: "Nepal" },
-        { code: "+992", country: "Tajiquistão" },
-        { code: "+993", country: "Turquemenistão" },
-        { code: "+994", country: "Azerbaijão" },
-        { code: "+995", country: "Geórgia" },
-        { code: "+996", country: "Quirguistão" },
-        { code: "+998", country: "Uzbequistão" }
-    ];
-
     // ==================== FIREBASE CONFIG ====================
     const firebaseConfig = {
         apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
@@ -593,12 +377,121 @@
         "Punk": ["Punk Rock", "Hardcore", "Pop Punk"]
     };
 
-    const allCountries = ["Angola", "Portugal", "Brasil", "África do Sul", "Moçambique", "Cabo Verde", "EUA", "Reino Unido", "França", "Alemanha"];
+    // ==================== PAÍSES E CÓDIGOS DE TELEFONE (TODOS) ====================
+    const phoneCodes = [
+        { code: "+244", name: "Angola" },
+        { code: "+351", name: "Portugal" },
+        { code: "+55", name: "Brasil" },
+        { code: "+27", name: "África do Sul" },
+        { code: "+258", name: "Moçambique" },
+        { code: "+238", name: "Cabo Verde" },
+        { code: "+1", name: "EUA" },
+        { code: "+44", name: "Reino Unido" },
+        { code: "+33", name: "França" },
+        { code: "+49", name: "Alemanha" },
+        { code: "+34", name: "Espanha" },
+        { code: "+39", name: "Itália" },
+        { code: "+7", name: "Rússia" },
+        { code: "+86", name: "China" },
+        { code: "+81", name: "Japão" },
+        { code: "+91", name: "Índia" },
+        { code: "+61", name: "Austrália" },
+        { code: "+55", name: "Brasil" },
+        { code: "+52", name: "México" },
+        { code: "+54", name: "Argentina" },
+        { code: "+57", name: "Colômbia" },
+        { code: "+56", name: "Chile" },
+        { code: "+51", name: "Peru" },
+        { code: "+58", name: "Venezuela" },
+        { code: "+53", name: "Cuba" },
+        { code: "+1", name: "Canadá" },
+        { code: "+31", name: "Holanda" },
+        { code: "+32", name: "Bélgica" },
+        { code: "+41", name: "Suíça" },
+        { code: "+46", name: "Suécia" },
+        { code: "+47", name: "Noruega" },
+        { code: "+45", name: "Dinamarca" },
+        { code: "+358", name: "Finlândia" },
+        { code: "+30", name: "Grécia" },
+        { code: "+90", name: "Turquia" },
+        { code: "+966", name: "Arábia Saudita" },
+        { code: "+971", name: "Emirados Árabes" },
+        { code: "+972", name: "Israel" },
+        { code: "+962", name: "Jordânia" },
+        { code: "+961", name: "Líbano" },
+        { code: "+20", name: "Egito" },
+        { code: "+234", name: "Nigéria" },
+        { code: "+254", name: "Quênia" },
+        { code: "+255", name: "Tanzânia" },
+        { code: "+256", name: "Uganda" },
+        { code: "+263", name: "Zimbábue" },
+        { code: "+260", name: "Zâmbia" },
+        { code: "+265", name: "Malawi" },
+        { code: "+267", name: "Botsuana" },
+        { code: "+264", name: "Namíbia" },
+        { code: "+268", name: "Eswatini" },
+        { code: "+266", name: "Lesoto" },
+        { code: "+211", name: "Sudão do Sul" },
+        { code: "+249", name: "Sudão" },
+        { code: "+218", name: "Líbia" },
+        { code: "+216", name: "Tunísia" },
+        { code: "+213", name: "Argélia" },
+        { code: "+212", name: "Marrocos" },
+        { code: "+222", name: "Mauritânia" },
+        { code: "+223", name: "Mali" },
+        { code: "+226", name: "Burkina Faso" },
+        { code: "+227", name: "Níger" },
+        { code: "+229", name: "Benin" },
+        { code: "+228", name: "Togo" },
+        { code: "+233", name: "Gana" },
+        { code: "+231", name: "Libéria" },
+        { code: "+232", name: "Serra Leoa" },
+        { code: "+245", name: "Guiné-Bissau" },
+        { code: "+224", name: "Guiné" },
+        { code: "+220", name: "Gâmbia" },
+        { code: "+221", name: "Senegal" },
+        { code: "+230", name: "Maurícia" },
+        { code: "+262", name: "Reunião" },
+        { code: "+269", name: "Comores" },
+        { code: "+261", name: "Madagascar" },
+        { code: "+257", name: "Burundi" },
+        { code: "+250", name: "Ruanda" },
+        { code: "+242", name: "Congo" },
+        { code: "+243", name: "Congo (RDC)" },
+        { code: "+237", name: "Camarões" },
+        { code: "+235", name: "Chade" },
+        { code: "+236", name: "República Centro-Africana" },
+        { code: "+239", name: "São Tomé e Príncipe" },
+        { code: "+240", name: "Guiné Equatorial" },
+        { code: "+241", name: "Gabão" },
+        { code: "+244", name: "Angola" } // já incluído, mas manteremos a ordem com Angola primeiro
+    ];
+    // Ordenar: Angola primeiro, depois os outros por nome
+    const sortedPhoneCodes = phoneCodes.sort((a, b) => {
+        if (a.name === "Angola") return -1;
+        if (b.name === "Angola") return 1;
+        return a.name.localeCompare(b.name);
+    });
+
+    const allCountries = sortedPhoneCodes.map(p => p.name);
+    // Remover duplicados (caso existam)
+    const uniqueCountries = [...new Set(allCountries)];
+    // Reconstruir phoneCodes com base nos países únicos mantendo Angola primeiro
+    const finalPhoneCodes = [];
+    let angola = null;
+    sortedPhoneCodes.forEach(p => {
+        if (p.name === "Angola") angola = p;
+        else if (!finalPhoneCodes.find(f => f.code === p.code)) {
+            finalPhoneCodes.push(p);
+        }
+    });
+    if (angola) finalPhoneCodes.unshift(angola);
 
     let currentUser = null, userData = null, selectedPlan = null;
     let pendingArtistPhotoUrl = null, pendingEditArtistPhotoUrl = null;
     let confirmCallback = null;
-    let currentLaunchMusicId = null;
+    let selectedPaymentMethod = null;
+    let seloArtistId = null; // para compra de selo
 
     // ==================== FUNÇÕES AUXILIARES ====================
     function showLoading(show) { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; }
@@ -633,30 +526,12 @@
         if(sectionId === 'perfil') loadPerfil();
     }
 
-    // Preencher selects de códigos telefónicos
-    function preencherPhoneCodes() {
-        const selects = ['reg-phone-code', 'perfil-phone-code'];
-        selects.forEach(id => {
-            const sel = document.getElementById(id);
-            if(sel) {
-                sel.innerHTML = '';
-                phoneCodes.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.code;
-                    opt.textContent = `${p.code} (${p.country})`;
-                    sel.appendChild(opt);
-                });
-                // Definir valor padrão (Angola)
-                sel.value = '+244';
-            }
-        });
-    }
-
     // ==================== AUTH ====================
     async function handleRegister() {
         const nome = document.getElementById('reg-nome').value;
         const email = document.getElementById('reg-email').value;
-        const telefone = document.getElementById('reg-phone-code').value + document.getElementById('reg-telefone').value;
+        const phoneCode = document.getElementById('reg-phone-code').value;
+        const telefone = document.getElementById('reg-telefone').value;
         const pass = document.getElementById('reg-pass').value;
         const confirm = document.getElementById('reg-pass-confirm').value;
         if(!nome || !email || !telefone || !pass) { showAlert('Preencha tudo'); return; }
@@ -665,7 +540,7 @@
         try {
             const userCred = await auth.createUserWithEmailAndPassword(email, pass);
             await db.collection('users').doc(userCred.user.uid).set({
-                nome, email, telefone, pais: "Angola", tipo: "artista", plano: "free",
+                nome, email, telefone: phoneCode + telefone, pais: "Angola", tipo: "artista", plano: "free",
                 saldo: 0, totalGanhos: 0, ganhosMes: 0, fotoPerfil: "https://res.cloudinary.com/drtm5p0sc/image/upload/v1/default_avatar.jpg"
             });
             showAlert('Conta criada! Faça login.');
@@ -727,7 +602,28 @@
         const feed = await db.collection('releases').orderBy('createdAt','desc').limit(12).get();
         const container = document.getElementById('feed-container');
         container.innerHTML = '';
-        feed.forEach(d => { const r = d.data(); container.innerHTML += `<div class="music-card"><img src="${r.capaUrl}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artistaNome}</div><audio controls src="${r.audioUrl}"></audio></div>`; });
+        for(const doc of feed.docs) {
+            const r = doc.data();
+            // Buscar dados do artista para saber se tem selo
+            let artistaData = null;
+            let seguidores = 0;
+            if(r.artistaId) {
+                const artDoc = await db.collection('artists').doc(r.artistaId).get();
+                if(artDoc.exists) {
+                    artistaData = artDoc.data();
+                    // Contar seguidores
+                    const followsSnap = await db.collection('follows').where('artistId','==',r.artistaId).get();
+                    seguidores = followsSnap.size;
+                }
+            }
+            const temSelo = artistaData && artistaData.seloAtivo && (!artistaData.seloFim || new Date(artistaData.seloFim.toDate()) > new Date());
+            container.innerHTML += `<div class="music-card">
+                <img src="${r.capaUrl}" class="music-cover">
+                <div class="music-title" onclick="abrirPerfilArtista('${r.artistaId}')">${r.titulo}</div>
+                <div class="music-artist" onclick="abrirPerfilArtista('${r.artistaId}')">${r.artistaNome} ${temSelo ? '<span class="selo-badge"><i class="fas fa-check-circle"></i> Verificado</span>' : ''}</div>
+                <audio controls src="${r.audioUrl}"></audio>
+            </div>`;
+        }
     }
 
     // ==================== PESQUISA GLOBAL ====================
@@ -771,32 +667,7 @@
                 return;
             }
 
-            const followsSnap = await db.collection('follows').where('artistId', '==', artistaEncontrado.id).get();
-            const followersCount = followsSnap.size;
-
-            let musicas = [];
-            try {
-                const snapMusicas = await db.collection('releases')
-                    .where('artistaId', '==', artistaEncontrado.id)
-                    .orderBy('createdAt', 'desc')
-                    .get();
-                snapMusicas.forEach(doc => musicas.push({ id: doc.id, ...doc.data() }));
-            } catch(e) { console.warn('Erro ao buscar músicas:', e); }
-
-            let isFollowing = false;
-            let followId = null;
-            if(currentUser) {
-                const followSnap = await db.collection('follows')
-                    .where('userId', '==', currentUser.uid)
-                    .where('artistId', '==', artistaEncontrado.id)
-                    .get();
-                if(!followSnap.empty) {
-                    isFollowing = true;
-                    followId = followSnap.docs[0].id;
-                }
-            }
-
-            exibirResultadoPesquisa(artistaEncontrado, followersCount, musicas, isFollowing, followId);
+            await exibirResultadoPesquisa(artistaEncontrado);
             showSection('resultado-pesquisa', null);
         } catch(e) {
             showAlert('Erro na pesquisa: '+e.message);
@@ -804,8 +675,57 @@
         finally { showLoading(false); }
     };
 
-    function exibirResultadoPesquisa(artista, followersCount, musicas, isFollowing, followId) {
+    // Função para abrir perfil a partir do clique no nome da música
+    window.abrirPerfilArtista = async function(artistId) {
+        if(!artistId) { showAlert('Artista não identificado.'); return; }
+        showLoading(true);
+        try {
+            const doc = await db.collection('artists').doc(artistId).get();
+            if(!doc.exists) { showAlert('Artista não encontrado.'); return; }
+            const artista = { id: doc.id, ...doc.data() };
+            await exibirResultadoPesquisa(artista);
+            showSection('resultado-pesquisa', null);
+        } catch(e) { showAlert('Erro: '+e.message); }
+        finally { showLoading(false); }
+    };
+
+    async function exibirResultadoPesquisa(artista) {
         const container = document.getElementById('resultado-artista-container');
+        // Buscar músicas
+        let musicas = [];
+        try {
+            const snapMusicas = await db.collection('releases')
+                .where('artistaId', '==', artista.id)
+                .orderBy('createdAt', 'desc')
+                .get();
+            snapMusicas.forEach(doc => musicas.push({ id: doc.id, ...doc.data() }));
+        } catch(e) { console.warn(e); }
+
+        // Contar seguidores
+        let seguidores = 0;
+        try {
+            const followsSnap = await db.collection('follows').where('artistId','==',artista.id).get();
+            seguidores = followsSnap.size;
+        } catch(e) { console.warn(e); }
+
+        // Verificar se o utilizador logado segue
+        let isFollowing = false;
+        let followId = null;
+        if(currentUser) {
+            const followSnap = await db.collection('follows')
+                .where('userId', '==', currentUser.uid)
+                .where('artistId', '==', artista.id)
+                .get();
+            if(!followSnap.empty) {
+                isFollowing = true;
+                followId = followSnap.docs[0].id;
+            }
+        }
+
+        // Verificar selo
+        const temSelo = artista.seloAtivo && (!artista.seloFim || new Date(artista.seloFim.toDate()) > new Date());
+
+        // Montar HTML
         let socialHtml = '';
         if(artista.spotify) socialHtml += `<a href="${artista.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>`;
         if(artista.apple) socialHtml += `<a href="${artista.apple}" target="_blank" class="social-link"><i class="fab fa-apple"></i> Apple</a>`;
@@ -814,10 +734,17 @@
         if(artista.facebook) socialHtml += `<a href="${artista.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>`;
 
         let followBtnHtml = '';
+        let seloBtnHtml = '';
         if(currentUser) {
             followBtnHtml = `<button class="btn btn-small btn-follow ${isFollowing ? 'following' : ''}" onclick="toggleFollow('${artista.id}', '${followId}', ${isFollowing})">
                 ${isFollowing ? '<i class="fas fa-check"></i> Seguindo' : '<i class="fas fa-plus"></i> Seguir'}
             </button>`;
+            // Se o artista pertence ao usuário logado, mostrar opção de comprar selo
+            if(artista.userId === currentUser.uid) {
+                seloBtnHtml = `<button class="btn btn-small" style="background:var(--gold); color:#000; margin-top:10px;" onclick="abrirCompraSelo('${artista.id}')">
+                    <i class="fas fa-certificate"></i> ${temSelo ? 'Renovar Selo' : 'Comprar Selo'}
+                </button>`;
+            }
         }
 
         let musicasHtml = '';
@@ -839,12 +766,13 @@
         container.innerHTML = `
             <div class="artist-profile-card">
                 <img src="${artista.fotoUrl || 'https://via.placeholder.com/120'}" class="artist-avatar">
-                <div class="artist-name">${artista.nome}</div>
+                <div class="artist-name">${artista.nome} ${temSelo ? '<span class="selo-badge"><i class="fas fa-check-circle"></i> Verificado</span>' : ''}</div>
                 <div class="artist-style">${artista.estilo || 'Artista'}</div>
-                <div class="followers"><i class="fas fa-users"></i> ${followersCount} seguidores</div>
+                <div class="seguidores"><i class="fas fa-users"></i> ${seguidores} seguidores</div>
                 ${artista.bio ? `<div class="artist-bio">${artista.bio}</div>` : ''}
                 <div class="social-links">${socialHtml}</div>
                 <div class="follow-btn">${followBtnHtml}</div>
+                ${seloBtnHtml}
             </div>
             ${musicasHtml}
         `;
@@ -869,25 +797,14 @@
                 });
                 showAlert('Agora segues este artista!');
             }
+            // Atualizar visualização
             const termo = document.getElementById('global-search').value.trim();
             if(termo) {
                 await pesquisarArtistaGlobal();
             } else {
                 const doc = await db.collection('artists').doc(artistId).get();
                 if(doc.exists) {
-                    const a = doc.data();
-                    const followsSnap = await db.collection('follows').where('artistId', '==', artistId).get();
-                    const followersCount = followsSnap.size;
-                    let musicas = [];
-                    const snapMusicas = await db.collection('releases').where('artistaId', '==', artistId).orderBy('createdAt','desc').get();
-                    snapMusicas.forEach(d => musicas.push({ id: d.id, ...d.data() }));
-                    let isFollowingNow = false;
-                    let followIdNow = null;
-                    if(currentUser) {
-                        const fs = await db.collection('follows').where('userId','==',currentUser.uid).where('artistId','==',artistId).get();
-                        if(!fs.empty) { isFollowingNow = true; followIdNow = fs.docs[0].id; }
-                    }
-                    exibirResultadoPesquisa({ id: doc.id, ...a }, followersCount, musicas, isFollowingNow, followIdNow);
+                    await exibirResultadoPesquisa({ id: doc.id, ...doc.data() });
                 }
             }
         } catch(e) {
@@ -896,6 +813,140 @@
         finally { showLoading(false); }
     };
 
+    // ==================== COMPRA DE SELO ====================
+    window.abrirCompraSelo = function(artistId) {
+        seloArtistId = artistId;
+        openModal('seloPurchaseModal');
+    };
+
+    function selectPaymentMethodSelo(method) {
+        selectedPaymentMethod = method;
+        document.querySelectorAll('#seloPurchaseModal .payment-method').forEach(el => el.classList.remove('selected'));
+        // O evento currentTarget não está disponível, usar o parâmetro
+        const btns = document.querySelectorAll('#seloPurchaseModal .payment-method');
+        btns.forEach(el => {
+            if(el.onclick && el.onclick.toString().includes(method)) {
+                el.classList.add('selected');
+            }
+        });
+        if(method === 'wallet') {
+            document.getElementById('pay-selo-wallet-btn').style.display = 'block';
+            document.getElementById('bank-info-selo').style.display = 'none';
+        } else {
+            document.getElementById('pay-selo-wallet-btn').style.display = 'none';
+            document.getElementById('bank-info-selo').style.display = 'block';
+        }
+    }
+
+    window.pagarSelo = async function() {
+        if(!currentUser) { showAlert('Faça login.'); return; }
+        const preco = 1500;
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        const saldo = userDoc.data().saldo || 0;
+        if(saldo < preco) { showAlert('Saldo insuficiente. Recarregue a carteira.'); return; }
+        showLoading(true);
+        try {
+            // Descontar saldo
+            await db.collection('users').doc(currentUser.uid).update({
+                saldo: firebase.firestore.FieldValue.increment(-preco)
+            });
+            // Ativar selo no artista (1 mês a partir de hoje)
+            const inicio = new Date();
+            const fim = new Date();
+            fim.setMonth(fim.getMonth() + 1);
+            await db.collection('artists').doc(seloArtistId).update({
+                seloAtivo: true,
+                seloInicio: inicio,
+                seloFim: fim,
+                seloInfinito: false
+            });
+            showAlert('✅ Selo de verificação ativado por 1 mês!');
+            closeModal('seloPurchaseModal');
+            // Atualizar perfil
+            const doc = await db.collection('artists').doc(seloArtistId).get();
+            if(doc.exists) {
+                await exibirResultadoPesquisa({ id: doc.id, ...doc.data() });
+            }
+            loadHome();
+        } catch(e) { showAlert('Erro: '+e.message); }
+        finally { showLoading(false); }
+    };
+
+    // ==================== ADMIN: VERIFICAR PERFIL (SELO) ====================
+    window.buscarArtistaParaSelo = async function() {
+        const nome = document.getElementById('admin-selo-artista').value.trim();
+        if(!nome) { showAlert('Digite o nome do artista.'); return; }
+        showLoading(true);
+        try {
+            const snap = await db.collection('artists')
+                .where('nome', '>=', nome)
+                .where('nome', '<=', nome + '\uf8ff')
+                .limit(10)
+                .get();
+            const container = document.getElementById('admin-selo-results');
+            container.innerHTML = '';
+            if(snap.empty) { container.innerHTML = '<p>Artista não encontrado.</p>'; return; }
+            snap.forEach(doc => {
+                const a = doc.data();
+                const temSelo = a.seloAtivo ? '✅' : '❌';
+                container.innerHTML += `<div class="list-item">
+                    <img src="${a.fotoUrl || 'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:50%;">
+                    <div><strong>${a.nome}</strong> - ${a.estilo || ''} ${temSelo}</div>
+                    <button class="btn btn-small" onclick="abrirConfigSelo('${doc.id}')">Configurar Selo</button>
+                </div>`;
+            });
+        } catch(e) { showAlert('Erro: '+e.message); }
+        finally { showLoading(false); }
+    };
+
+    window.abrirConfigSelo = async function(artistId) {
+        const doc = await db.collection('artists').doc(artistId).get();
+        const a = doc.data();
+        document.getElementById('admin-selo-artist-id').value = artistId;
+        document.getElementById('admin-selo-artist-name').innerText = a.nome;
+        if(a.seloInicio) {
+            const inicio = a.seloInicio.toDate().toISOString().split('T')[0];
+            document.getElementById('admin-selo-inicio').value = inicio;
+        } else {
+            document.getElementById('admin-selo-inicio').value = '';
+        }
+        if(a.seloFim) {
+            const fim = a.seloFim.toDate().toISOString().split('T')[0];
+            document.getElementById('admin-selo-fim').value = fim;
+        } else {
+            document.getElementById('admin-selo-fim').value = '';
+        }
+        document.getElementById('admin-selo-infinito').checked = a.seloInfinito || false;
+        openModal('adminSeloModal');
+    };
+
+    document.getElementById('btnSalvarSelo')?.addEventListener('click', async function() {
+        const artistId = document.getElementById('admin-selo-artist-id').value;
+        if(!artistId) { showAlert('ID do artista não encontrado.'); return; }
+        const inicio = document.getElementById('admin-selo-inicio').value;
+        const fim = document.getElementById('admin-selo-fim').value;
+        const infinito = document.getElementById('admin-selo-infinito').checked;
+        if(!infinito && (!inicio || !fim)) {
+            showAlert('Preencha as datas ou active a opção infinita.');
+            return;
+        }
+        showLoading(true);
+        try {
+            const updateData = {
+                seloAtivo: true,
+                seloInfinito: infinito
+            };
+            if(inicio) updateData.seloInicio = new Date(inicio + 'T00:00:00');
+            if(fim) updateData.seloFim = new Date(fim + 'T23:59:59');
+            await db.collection('artists').doc(artistId).update(updateData);
+            showAlert('Selo configurado com sucesso!');
+            closeModal('adminSeloModal');
+            document.getElementById('admin-selo-results').innerHTML = '';
+        } catch(e) { showAlert('Erro: '+e.message); }
+        finally { showLoading(false); }
+    });
+
+    // Capturar Enter na barra de pesquisa
     document.getElementById('global-search').addEventListener('keypress', function(e) {
         if(e.key === 'Enter') {
             e.preventDefault();
@@ -921,13 +972,32 @@
         }
         for(const doc of snap.docs) {
             const a = doc.data();
+            // Contar seguidores
+            let seguidores = 0;
+            try {
+                const followsSnap = await db.collection('follows').where('artistId','==',doc.id).get();
+                seguidores = followsSnap.size;
+            } catch(e) {}
+            const temSelo = a.seloAtivo && (!a.seloFim || new Date(a.seloFim.toDate()) > new Date());
             let socialHtml = '';
             if(a.spotify) socialHtml += `<a href="${a.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>`;
             if(a.apple) socialHtml += `<a href="${a.apple}" target="_blank" class="social-link"><i class="fab fa-apple"></i> Apple</a>`;
             if(a.instagram) socialHtml += `<a href="${a.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>`;
             if(a.tiktok) socialHtml += `<a href="${a.tiktok}" target="_blank" class="social-link"><i class="fab fa-tiktok"></i> TikTok</a>`;
             if(a.facebook) socialHtml += `<a href="${a.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>`;
-            container.innerHTML += `<div class="artist-item"><img src="${a.fotoUrl || 'https://via.placeholder.com/70'}" class="artist-avatar"><div class="artist-info"><h4>${a.nome}</h4><p>${a.estilo || 'Artista'}</p><div class="social-links">${socialHtml}</div></div><div class="list-actions"><button class="btn btn-small" onclick="editArtist('${doc.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-small btn-danger" onclick="deleteArtist('${doc.id}')"><i class="fas fa-trash"></i></button></div></div>`;
+            container.innerHTML += `<div class="artist-item">
+                <img src="${a.fotoUrl || 'https://via.placeholder.com/70'}" class="artist-avatar">
+                <div class="artist-info">
+                    <h4>${a.nome} ${temSelo ? '<span class="selo-badge"><i class="fas fa-check-circle"></i> Verificado</span>' : ''}</h4>
+                    <p>${a.estilo || 'Artista'} · <i class="fas fa-users"></i> ${seguidores} seguidores</p>
+                    <div class="social-links">${socialHtml}</div>
+                </div>
+                <div class="list-actions">
+                    <button class="btn btn-small" onclick="editArtist('${doc.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-small btn-danger" onclick="deleteArtist('${doc.id}')"><i class="fas fa-trash"></i></button>
+                    <button class="btn btn-small" style="background:var(--gold);color:#000;" onclick="abrirCompraSelo('${doc.id}')"><i class="fas fa-certificate"></i> Selo</button>
+                </div>
+            </div>`;
         }
     }
 
@@ -960,7 +1030,9 @@
                 facebook: document.getElementById('artist-facebook').value,
                 bio: document.getElementById('artist-bio').value,
                 fotoUrl: pendingArtistPhotoUrl || 'https://res.cloudinary.com/drtm5p0sc/image/upload/v1/default_artist.jpg',
-                createdAt: new Date()
+                createdAt: new Date(),
+                seloAtivo: false,
+                seloInfinito: false
             });
             showAlert('✅ Artista criado com sucesso!');
             closeModal('addArtistModal');
@@ -1004,7 +1076,6 @@
                     editStyleSelect.innerHTML += `<option value="${a.estilo}" selected>${a.estilo}</option>`;
                 }
             }
-
             openModal('editArtistModal');
         } catch(error) {
             showAlert('Erro ao carregar artista: ' + error.message);
@@ -1065,125 +1136,10 @@
 
     function gerarUPC() {
         let upc = '';
-        for(let i=0; i<12; i++) {
-            upc += Math.floor(Math.random() * 10);
-        }
+        for(let i=0; i<12; i++) upc += Math.floor(Math.random() * 10);
         document.getElementById('music-upc').value = upc;
         showAlert('UPC gerado: ' + upc);
     }
-
-    // VALIDAÇÃO PROFISSIONAL DE CAPA E ÁUDIO
-    function validarCapa(file) {
-        return new Promise((resolve, reject) => {
-            const allowedTypes = ['image/jpeg', 'image/png'];
-            if(!allowedTypes.includes(file.type)) {
-                reject('Formato de capa não permitido. Use JPG ou PNG.');
-                return;
-            }
-            if(file.size > 10 * 1024 * 1024) {
-                reject('A capa deve ter no máximo 10MB.');
-                return;
-            }
-            const img = new Image();
-            img.onload = function() {
-                if(this.width < 3000 || this.height < 3000) {
-                    reject('A capa deve ter no mínimo 3000x3000 pixels.');
-                } else if(this.width !== this.height) {
-                    reject('A capa deve ser quadrada (proporção 1:1).');
-                } else {
-                    resolve(true);
-                }
-            };
-            img.onerror = function() { reject('Erro ao carregar imagem.'); };
-            img.src = URL.createObjectURL(file);
-        });
-    }
-
-    function validarAudio(file) {
-        return new Promise((resolve, reject) => {
-            const allowedTypes = ['audio/wav', 'audio/mpeg', 'audio/mp3'];
-            if(!allowedTypes.includes(file.type)) {
-                reject('Formato de áudio não permitido. Use WAV ou MP3.');
-                return;
-            }
-            // Verificar extensão
-            const ext = file.name.split('.').pop().toLowerCase();
-            if(!['wav', 'mp3'].includes(ext)) {
-                reject('Extensão de áudio não permitida. Use .wav ou .mp3.');
-                return;
-            }
-            // Verificar tamanho (máx 200MB)
-            if(file.size > 200 * 1024 * 1024) {
-                reject('O áudio deve ter no máximo 200MB.');
-                return;
-            }
-            // Nota: Para verificar bitrate e frequência, precisaríamos de bibliotecas externas.
-            // Vamos apenas avisar que o sistema aceita, mas recomendamos as especificações.
-            resolve(true);
-        });
-    }
-
-    // Upload com validação
-    document.getElementById('upload-capa-btn')?.addEventListener('click', function() {
-        document.getElementById('music-capa-file').click();
-    });
-
-    document.getElementById('music-capa-file')?.addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if(!file) return;
-        try {
-            await validarCapa(file);
-            showLoading(true);
-            const widget = cloudinary.createUploadWidget(
-                { cloudName: CLOUDINARY_CONFIG.cloudName, uploadPreset: CLOUDINARY_CONFIG.uploadPreset, sources: ['local'], multiple: false },
-                (error, result) => {
-                    if(error) { showAlert('Erro no upload: ' + error.message); showLoading(false); return; }
-                    if(result && result.event === 'success') {
-                        const url = result.info.secure_url;
-                        document.getElementById('music-capa-url').value = url;
-                        document.getElementById('capa-preview').style.display = 'block';
-                        document.getElementById('capa-preview-img').src = url;
-                        showAlert('Capa carregada com sucesso!');
-                        showLoading(false);
-                    }
-                }
-            );
-            widget.open();
-        } catch(err) {
-            showAlert('Erro na validação: ' + err);
-            e.target.value = '';
-        }
-    });
-
-    document.getElementById('upload-audio-btn')?.addEventListener('click', function() {
-        document.getElementById('music-audio-file').click();
-    });
-
-    document.getElementById('music-audio-file')?.addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if(!file) return;
-        try {
-            await validarAudio(file);
-            showLoading(true);
-            const widget = cloudinary.createUploadWidget(
-                { cloudName: CLOUDINARY_CONFIG.cloudName, uploadPreset: CLOUDINARY_CONFIG.uploadPreset, sources: ['local'], multiple: false },
-                (error, result) => {
-                    if(error) { showAlert('Erro no upload: ' + error.message); showLoading(false); return; }
-                    if(result && result.event === 'success') {
-                        const url = result.info.secure_url;
-                        document.getElementById('music-audio-url').value = url;
-                        document.getElementById('audio-preview').style.display = 'block';
-                        showAlert('Áudio carregado com sucesso!');
-                        showLoading(false);
-                    }
-                }
-            );
-            widget.open();
-        } catch(err) {
-            showAlert('Erro na validação: ' + err);
-            e.target.value = '';
-        }
-    });
 
     async function carregarSelects() {
         if(!currentUser) return;
@@ -1197,22 +1153,93 @@
         const artistStyle = document.getElementById('artist-style');
         artistStyle.innerHTML = '<option value="">Estilo Musical *</option>';
         Object.keys(musicGenres).forEach(g => artistStyle.innerHTML += `<option value="${g}">${g}</option>`);
-        const countrySelect = document.getElementById('perfil-pais');
-        countrySelect.innerHTML = '<option value="">País</option>';
-        allCountries.forEach(c => countrySelect.innerHTML += `<option value="${c}">${c}</option>`);
+        // País e telefone
+        const phoneSelects = ['reg-phone-code', 'perfil-phone-code'];
+        phoneSelects.forEach(id => {
+            const sel = document.getElementById(id);
+            if(sel) {
+                sel.innerHTML = '';
+                finalPhoneCodes.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.code;
+                    opt.text = p.name + ' (' + p.code + ')';
+                    if(p.name === 'Angola') opt.selected = true;
+                    sel.appendChild(opt);
+                });
+            }
+        });
+        const paisSelect = document.getElementById('perfil-pais');
+        if(paisSelect) {
+            paisSelect.innerHTML = '<option value="">País</option>';
+            uniqueCountries.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.text = c;
+                if(c === 'Angola') opt.selected = true;
+                paisSelect.appendChild(opt);
+            });
+        }
     }
+
+    // Cloudinary Upload (áudio apenas WAV)
+    function initUpload(btnId, hiddenId, previewId, isArtist = false, isEdit = false, isAudio = false) {
+        document.getElementById(btnId)?.addEventListener('click', () => {
+            const widget = cloudinary.createUploadWidget(
+                {
+                    cloudName: CLOUDINARY_CONFIG.cloudName,
+                    uploadPreset: CLOUDINARY_CONFIG.uploadPreset,
+                    sources: ['local'],
+                    multiple: false,
+                    resourceType: isAudio ? 'video' : 'image',
+                    clientAllowedFormats: isAudio ? ['wav'] : ['jpg', 'png', 'jpeg', 'gif']
+                },
+                (error, result) => {
+                    if(error) { showAlert('Erro no upload: ' + error.message); return; }
+                    if(result && result.event === 'success') {
+                        const url = result.info.secure_url;
+                        if(hiddenId) document.getElementById(hiddenId).value = url;
+                        if(previewId) {
+                            document.getElementById(previewId).style.display = 'block';
+                            if(previewId === 'capa-preview') document.getElementById('capa-preview-img').src = url;
+                            if(previewId === 'audio-preview') document.getElementById('audio-preview').innerHTML = '<p>Áudio WAV carregado ✓</p>';
+                        }
+                        if(isArtist) { pendingArtistPhotoUrl = url; document.getElementById('artist-photo-preview').src = url; }
+                        if(isEdit) { pendingEditArtistPhotoUrl = url; document.getElementById('edit-artist-photo-preview').src = url; }
+                        showAlert('Upload concluído!');
+                    }
+                }
+            );
+            widget.open();
+        });
+    }
+    initUpload('upload-capa-btn', 'music-capa-url', 'capa-preview');
+    initUpload('upload-audio-btn', 'music-audio-url', 'audio-preview', false, false, true);
+    initUpload('upload-artist-photo-btn', null, null, true);
+    initUpload('edit-upload-artist-photo-btn', null, null, false, true);
+
+    document.getElementById('profile-upload-trigger')?.addEventListener('click', () => {
+        const widget = cloudinary.createUploadWidget(
+            { cloudName: CLOUDINARY_CONFIG.cloudName, uploadPreset: CLOUDINARY_CONFIG.uploadPreset },
+            (err, res) => {
+                if(!err && res.event === 'success') {
+                    document.getElementById('perfil-foto-preview').src = res.info.secure_url;
+                    db.collection('users').doc(currentUser.uid).update({ fotoPerfil: res.info.secure_url });
+                    showAlert('Foto atualizada');
+                }
+            });
+        widget.open();
+    });
 
     document.getElementById('btnEnviarLancamento')?.addEventListener('click', async () => {
         const titulo = document.getElementById('music-titulo').value;
         const artistaId = document.getElementById('music-artista-select').value;
         const estilo = document.getElementById('music-estilo').value;
         const subEstilo = document.getElementById('music-sub-estilo').value;
-        const capaUrl = document.getElementById('music-capa-url').value;
-        const audioUrl = document.getElementById('music-audio-url').value;
-        if(!titulo || !artistaId || !estilo || !subEstilo || !capaUrl || !audioUrl) {
-            showAlert('Preencha todos os campos obrigatórios * e aguarde o upload de capa e áudio.');
-            return;
-        }
+        const capa = document.getElementById('music-capa-url').value;
+        const audio = document.getElementById('music-audio-url').value;
+        if(!titulo || !artistaId || !estilo || !subEstilo || !capa || !audio) { showAlert('Preencha todos os campos obrigatórios *'); return; }
+        // Verificar se o áudio é WAV (pela extensão ou pelo nome do arquivo)
+        // Como usamos Cloudinary, confiamos que o widget só aceita WAV
         const artistDoc = await db.collection('artists').doc(artistaId).get();
         const artistaNome = artistDoc.data().nome;
         showLoading(true);
@@ -1226,13 +1253,12 @@
                 pline: document.getElementById('music-pline').value,
                 cline: document.getElementById('music-cline').value,
                 data: document.getElementById('music-data').value,
-                capaUrl: capaUrl,
-                audioUrl: audioUrl,
-                status: 'pendente',
-                plataformas: [],
+                capaUrl: capa,
+                audioUrl: audio,
+                status: 'distribuido',
                 createdAt: new Date()
             });
-            showAlert('✅ Música enviada para aprovação!');
+            showAlert('✅ Música enviada para distribuição em 150+ plataformas!');
             document.getElementById('form-lancamento').reset();
             document.getElementById('capa-preview').style.display = 'none';
             document.getElementById('audio-preview').style.display = 'none';
@@ -1248,8 +1274,7 @@
         container.innerHTML = '';
         snap.forEach(doc => {
             const r = doc.data();
-            const statusClass = r.status === 'distribuido' ? 'status-distributed' : (r.status === 'rejeitado' ? 'status-rejected' : 'status-pending');
-            container.innerHTML += `<div class="music-card"><img src="${r.capaUrl}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artistaNome}</div><span class="badge-status ${statusClass}">${r.status.toUpperCase()}</span><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button class="btn btn-small btn-danger" onclick="deleteRelease('${doc.id}')">Excluir</button></div></div>`;
+            container.innerHTML += `<div class="music-card"><img src="${r.capaUrl}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artistaNome}</div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button class="btn btn-small btn-danger" onclick="deleteRelease('${doc.id}')">Excluir</button></div></div>`;
         });
     }
     window.deleteRelease = async (id) => {
@@ -1262,111 +1287,6 @@
             }
         });
     };
-
-    // ==================== ADMIN - GERENCIAR MÚSICAS ====================
-    window.openAdminMusicManager = async function() {
-        if(!currentUser || currentUser.email !== "mamfilhos29@gmail.com") {
-            showAlert('Acesso restrito a administradores.');
-            return;
-        }
-        showLoading(true);
-        try {
-            const snap = await db.collection('releases').orderBy('createdAt','desc').get();
-            const container = document.getElementById('admin-music-list');
-            container.innerHTML = '';
-            if(snap.empty) {
-                container.innerHTML = '<p>Nenhuma música encontrada.</p>';
-            } else {
-                snap.forEach(doc => {
-                    const r = doc.data();
-                    const statusClass = r.status === 'distribuido' ? 'status-distributed' : (r.status === 'rejeitado' ? 'status-rejected' : 'status-pending');
-                    container.innerHTML += `
-                        <div class="admin-music-item">
-                            <div class="music-info">
-                                <strong>${r.titulo}</strong> - ${r.artistaNome}
-                                <span class="badge-status ${statusClass}">${r.status.toUpperCase()}</span>
-                                ${r.plataformas && r.plataformas.length > 0 ? `<br><small style="color:var(--gray);">Plataformas: ${r.plataformas.join(', ')}</small>` : ''}
-                            </div>
-                            <div class="music-actions">
-                                ${r.status === 'pendente' ? `
-                                    <button class="btn btn-small btn-sec" onclick="approveMusic('${doc.id}')">Aprovar</button>
-                                    <button class="btn btn-small btn-danger" onclick="rejectMusic('${doc.id}')">Rejeitar</button>
-                                ` : ''}
-                                ${r.status === 'aprovado' || r.status === 'pendente' ? `
-                                    <button class="btn btn-small" onclick="openLaunchModal('${doc.id}')">Lançar</button>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            openModal('adminMusicManagerModal');
-        } catch(e) {
-            showAlert('Erro: '+e.message);
-        } finally { showLoading(false); }
-    };
-
-    window.approveMusic = async function(id) {
-        await db.collection('releases').doc(id).update({ status: 'aprovado' });
-        showAlert('Música aprovada! Pode lançar para plataformas.');
-        openAdminMusicManager();
-    };
-
-    window.rejectMusic = async function(id) {
-        await db.collection('releases').doc(id).update({ status: 'rejeitado' });
-        showAlert('Música rejeitada.');
-        openAdminMusicManager();
-    };
-
-    window.openLaunchModal = function(id) {
-        currentLaunchMusicId = id;
-        db.collection('releases').doc(id).get().then(doc => {
-            if(doc.exists) {
-                const r = doc.data();
-                document.getElementById('launch-music-info').innerHTML = `<p><strong>${r.titulo}</strong> - ${r.artistaNome}</p>`;
-                const platforms = ['Spotify', 'Apple Music', 'TikTok', 'Instagram', 'YouTube Music', 'Amazon', 'Deezer', 'Tidal'];
-                let html = '';
-                platforms.forEach(p => {
-                    html += `<div class="platform-checkbox"><input type="checkbox" id="plat-${p}" value="${p}" checked> <label for="plat-${p}">${p}</label></div>`;
-                });
-                document.getElementById('platforms-list').innerHTML = html;
-                openModal('launchPlatformsModal');
-            }
-        });
-    };
-
-    window.launchToSelected = function() {
-        const checkboxes = document.querySelectorAll('#platforms-list input[type="checkbox"]:checked');
-        const selected = Array.from(checkboxes).map(cb => cb.value);
-        if(selected.length === 0) {
-            showAlert('Selecione pelo menos uma plataforma.');
-            return;
-        }
-        realizarLancamento(selected);
-    };
-
-    window.launchToAll = function() {
-        const checkboxes = document.querySelectorAll('#platforms-list input[type="checkbox"]');
-        const all = Array.from(checkboxes).map(cb => cb.value);
-        realizarLancamento(all);
-    };
-
-    async function realizarLancamento(plataformas) {
-        if(!currentLaunchMusicId) return;
-        showLoading(true);
-        try {
-            await db.collection('releases').doc(currentLaunchMusicId).update({
-                status: 'distribuido',
-                plataformas: plataformas,
-                dataLancamento: new Date()
-            });
-            showAlert(`✅ Música lançada para: ${plataformas.join(', ')}`);
-            closeModal('launchPlatformsModal');
-            openAdminMusicManager();
-        } catch(e) {
-            showAlert('Erro: '+e.message);
-        } finally { showLoading(false); }
-    }
 
     // ==================== CARTEIRA ====================
     async function loadWallet() {
@@ -1413,8 +1333,14 @@
     };
     window.selectPaymentMethod = (method) => {
         selectedPaymentMethod = method;
-        document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
-        event.currentTarget.classList.add('selected');
+        document.querySelectorAll('#planPurchaseModal .payment-method').forEach(el => el.classList.remove('selected'));
+        // Selecionar o clicado
+        const btns = document.querySelectorAll('#planPurchaseModal .payment-method');
+        btns.forEach(el => {
+            if(el.onclick && el.onclick.toString().includes(method)) {
+                el.classList.add('selected');
+            }
+        });
         if(method === 'wallet') { document.getElementById('pay-with-wallet-btn').style.display = 'block'; document.getElementById('bank-info').style.display = 'none'; }
         else { document.getElementById('pay-with-wallet-btn').style.display = 'none'; document.getElementById('bank-info').style.display = 'block'; }
     };
@@ -1433,7 +1359,7 @@
     async function updateUserPlan(plan) { await db.collection('users').doc(currentUser.uid).update({ plano: plan }); showAlert(`Plano alterado para ${plan}`); loadHome(); }
     window.sendToWhatsApp = () => window.open('https://wa.me/244937881307?text=Comprovativo%20de%20pagamento%20MAM', '_blank');
 
-    // ==================== ADMIN - GESTÃO DE USUÁRIOS ====================
+    // ==================== ADMIN ====================
     window.searchUser = async () => {
         const email = document.getElementById('admin-search-email').value;
         const snap = await db.collection('users').where('email','==',email).get();
@@ -1449,88 +1375,69 @@
         await db.collection('users').doc(userId).update({ plano: plan });
         showAlert('Plano atualizado');
     };
-
+    window.openAdminMusicsModal = async () => {
+        openModal('adminMusicsModal');
+        const snap = await db.collection('releases').get();
+        const container = document.getElementById('admin-musics-list');
+        container.innerHTML = '';
+        snap.forEach(doc => { const r = doc.data(); container.innerHTML += `<div class="list-item"><img src="${r.capaUrl}" width="50"><div>${r.titulo} - ${r.artistaNome}</div><button class="btn btn-small btn-danger" onclick="deleteRelease('${doc.id}')">Excluir</button></div>`; });
+    };
     window.generateDDEXReport = () => showAlert('Relatório DDEX ERN 4.3 gerado.');
 
-    // ==================== PERFIL (CORRIGIDO) ====================
+    // ==================== PERFIL ====================
     async function loadPerfil() {
         if(!currentUser) return;
         const doc = await db.collection('users').doc(currentUser.uid).get();
         const u = doc.data();
         document.getElementById('perfil-nome').value = u.nome || '';
-        const telefone = u.telefone || '';
-        let codigo = '+244';
-        let numero = telefone;
-        const match = telefone.match(/^(\+\d+)(.*)/);
-        if(match) {
-            codigo = match[1];
-            numero = match[2];
+        // Telefone: separar código e número
+        let phoneCode = '+244';
+        let telefone = '';
+        if(u.telefone) {
+            // Procurar o código na lista
+            for(const p of finalPhoneCodes) {
+                if(u.telefone.startsWith(p.code)) {
+                    phoneCode = p.code;
+                    telefone = u.telefone.replace(p.code, '');
+                    break;
+                }
+            }
+            if(!telefone) {
+                telefone = u.telefone;
+            }
         }
-        document.getElementById('perfil-phone-code').value = codigo;
-        document.getElementById('perfil-telefone').value = numero;
-        document.getElementById('perfil-pais').value = u.pais || '';
+        const phoneSel = document.getElementById('perfil-phone-code');
+        if(phoneSel) {
+            phoneSel.value = phoneCode;
+        }
+        document.getElementById('perfil-telefone').value = telefone;
+        const paisSel = document.getElementById('perfil-pais');
+        if(paisSel && u.pais) {
+            paisSel.value = u.pais;
+        }
         document.getElementById('perfil-foto-preview').src = u.fotoPerfil || 'https://via.placeholder.com/120';
     }
 
     document.getElementById('btnUpdateProfile')?.addEventListener('click', async () => {
-        const nome = document.getElementById('perfil-nome').value;
+        if(!currentUser) return;
         const phoneCode = document.getElementById('perfil-phone-code').value;
         const telefone = document.getElementById('perfil-telefone').value;
         const pais = document.getElementById('perfil-pais').value;
-        const telefoneCompleto = phoneCode + telefone;
-        await db.collection('users').doc(currentUser.uid).update({
-            nome: nome,
-            telefone: telefoneCompleto,
-            pais: pais
-        });
-        showAlert('Perfil atualizado!');
-        loadHome();
-        loadPerfil();
-    });
-
-    // Upload de foto de perfil
-    document.getElementById('profile-upload-trigger')?.addEventListener('click', () => {
-        const widget = cloudinary.createUploadWidget(
-            { cloudName: CLOUDINARY_CONFIG.cloudName, uploadPreset: CLOUDINARY_CONFIG.uploadPreset },
-            (err, res) => {
-                if(!err && res.event === 'success') {
-                    document.getElementById('perfil-foto-preview').src = res.info.secure_url;
-                    db.collection('users').doc(currentUser.uid).update({ fotoPerfil: res.info.secure_url });
-                    showAlert('Foto atualizada');
-                }
+        const nome = document.getElementById('perfil-nome').value;
+        if(!nome || !telefone) { showAlert('Preencha nome e telefone.'); return; }
+        showLoading(true);
+        try {
+            await db.collection('users').doc(currentUser.uid).update({
+                nome: nome,
+                telefone: phoneCode + telefone,
+                pais: pais
             });
-        widget.open();
+            showAlert('Perfil atualizado!');
+            loadHome();
+            loadPerfil();
+        } catch(e) { showAlert('Erro: '+e.message); }
+        finally { showLoading(false); }
     });
-
-    function initUpload(btnId, hiddenId, previewId, isArtist = false, isEdit = false) {
-        document.getElementById(btnId)?.addEventListener('click', () => {
-            const widget = cloudinary.createUploadWidget(
-                {
-                    cloudName: CLOUDINARY_CONFIG.cloudName,
-                    uploadPreset: CLOUDINARY_CONFIG.uploadPreset,
-                    sources: ['local'],
-                    multiple: false
-                },
-                (error, result) => {
-                    if(error) { showAlert('Erro no upload: ' + error.message); return; }
-                    if(result && result.event === 'success') {
-                        const url = result.info.secure_url;
-                        if(hiddenId) document.getElementById(hiddenId).value = url;
-                        if(previewId) {
-                            document.getElementById(previewId).style.display = 'block';
-                            if(previewId === 'capa-preview') document.getElementById('capa-preview-img').src = url;
-                        }
-                        if(isArtist) { pendingArtistPhotoUrl = url; document.getElementById('artist-photo-preview').src = url; }
-                        if(isEdit) { pendingEditArtistPhotoUrl = url; document.getElementById('edit-artist-photo-preview').src = url; }
-                        showAlert('Upload concluído!');
-                    }
-                }
-            );
-            widget.open();
-        });
-    }
-    initUpload('upload-artist-photo-btn', null, null, true);
-    initUpload('edit-upload-artist-photo-btn', null, null, false, true);
 
     // ==================== FOOTER ====================
     window.showFooterContent = (type) => {
@@ -1544,9 +1451,6 @@
     };
 
     // ==================== INICIALIZAÇÃO ====================
-    // Preencher códigos telefónicos
-    preencherPhoneCodes();
-
     auth.onAuthStateChanged(async (user) => {
         if(user) {
             currentUser = user;

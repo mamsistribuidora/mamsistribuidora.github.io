@@ -53,6 +53,8 @@
         .btn:hover { background: #e5c04a; transform: translateY(-2px); }
         .btn-sec { background: #222; color: var(--gold); border: 1px solid var(--gold); }
         .btn-small { padding: 8px 12px; font-size: 0.7rem; width: auto; }
+        .btn-follow { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+        .btn-follow.following { background: var(--gold); color: #000; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.3); padding: 20px; border-radius: 10px; text-align: center; }
@@ -114,7 +116,14 @@
         .info-card { text-align: center; padding: 20px; background: rgba(212,175,55,0.05); border-radius: 12px; border: 1px solid rgba(212,175,55,0.2); }
         .info-card i { font-size: 2rem; color: var(--gold); margin-bottom: 10px; display: block; }
         .ddex-info { background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 3px solid var(--gold); }
-        /* Estilos para o modal de confirmação personalizado */
+        /* Estilos para o perfil do artista na pesquisa */
+        .artist-profile-card { text-align: center; padding: 30px; }
+        .artist-profile-card .artist-avatar { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
+        .artist-profile-card .artist-name { font-size: 1.8rem; color: var(--gold); margin: 10px 0 5px; }
+        .artist-profile-card .artist-style { color: var(--gray); font-size: 1rem; }
+        .artist-profile-card .artist-bio { color: var(--gray); max-width: 600px; margin: 15px auto; }
+        .artist-profile-card .social-links { justify-content: center; }
+        .artist-profile-card .follow-btn { margin-top: 15px; }
         #confirm-modal .modal-content { max-width: 450px; text-align: center; }
         #confirm-modal .btn-group { display: flex; gap: 15px; margin-top: 20px; justify-content: center; }
         #confirm-modal .btn-group .btn { width: auto; padding: 10px 30px; }
@@ -142,7 +151,7 @@
     <p style="color: var(--gray); font-size: 0.75rem;">O Império da Música em Angola | Distribuição para 150+ Plataformas</p>
     <div class="search-bar-container">
         <input type="text" id="global-search" class="search-bar" placeholder="Pesquisar artista pelo nome...">
-        <button class="search-btn" onclick="pesquisarArtista()"><i class="fas fa-search"></i></button>
+        <button class="search-btn" onclick="pesquisarArtistaGlobal()"><i class="fas fa-search"></i></button>
     </div>
 </header>
 
@@ -176,6 +185,7 @@
 
     <!-- Main App (logado) -->
     <div id="main-app" style="display:none;">
+        <!-- Secção Home -->
         <section id="home" class="section">
             <div class="card">
                 <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
@@ -215,7 +225,55 @@
 
         <section id="artistas" class="section"><div class="card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3>MAM Distribuidora - Meus Artistas</h3><button class="btn btn-small" onclick="openAddArtistModal()">+ Novo Artista</button></div><div id="artistas-container" class="item-list"></div></div></section>
 
-        <section id="lancar" class="section"><div class="card"><h3>MAM Distribuidora - Lançar Música (DDEX ERN 4.3)</h3><form id="form-lancamento"><input type="text" id="music-titulo" placeholder="Título da Música *"><select id="music-artista-select"><option value="">Selecione o Artista</option></select><div class="form-row"><select id="music-estilo" onchange="carregarSubGeneros()"><option value="">Género Principal *</option></select><select id="music-sub-estilo"><option value="">Sub-Género *</option></select></div><div class="form-row"><input type="date" id="music-data"><input type="text" id="music-isrc" placeholder="ISRC (opcional)"><button type="button" class="btn btn-small btn-sec" onclick="gerarISRC()">Gerar ISRC</button></div><div class="form-row"><input type="text" id="music-upc" placeholder="UPC"><button type="button" class="btn btn-small btn-sec" onclick="gerarUPC()">Gerar UPC</button><input type="text" id="music-compositores" placeholder="Compositores"></div><div class="form-row"><input type="text" id="music-produtores" placeholder="Produtores"><input type="text" id="music-colaboradores" placeholder="Colaboradores"></div><div class="form-row"><input type="text" id="music-pline" placeholder="℗ Copyright"><input type="text" id="music-cline" placeholder="© Copyright"></div><label>Capa da Música *</label><input type="hidden" id="music-capa-url"><button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa</button><div id="capa-preview" style="display:none;"><img id="capa-preview-img" style="width:100px; border-radius:8px;"><p>Capa selecionada ✓</p></div><label>Áudio (WAV/MP3) *</label><input type="hidden" id="music-audio-url"><button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio</button><div id="audio-preview" style="display:none;"><p>Áudio carregado ✓</p></div><div class="ddex-info"><p><i class="fas fa-share-alt"></i> Distribuição para 150+ plataformas: Spotify, Apple, TikTok, Instagram, YouTube Music, Amazon, Deezer, Tidal...</p></div><button type="button" class="btn" id="btnEnviarLancamento">Enviar para Distribuição</button></form></div></section>
+        <section id="lancar" class="section">
+            <div class="card">
+                <h3>MAM Distribuidora - Lançar Música (DDEX ERN 4.3)</h3>
+                <form id="form-lancamento">
+                    <input type="text" id="music-titulo" placeholder="Título da Música *">
+                    <select id="music-artista-select"><option value="">Selecione o Artista</option></select>
+                    <div class="form-row">
+                        <select id="music-estilo" onchange="carregarSubGeneros()"><option value="">Género Principal *</option></select>
+                        <select id="music-sub-estilo"><option value="">Sub-Género *</option></select>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label style="color:var(--gold);">Data de lançamento</label>
+                            <input type="date" id="music-data">
+                        </div>
+                        <div>
+                            <input type="text" id="music-isrc" placeholder="ISRC (opcional)">
+                            <button type="button" class="btn btn-small btn-sec" onclick="gerarISRC()">Gerar ISRC</button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <input type="text" id="music-upc" placeholder="UPC">
+                            <button type="button" class="btn btn-small btn-sec" onclick="gerarUPC()">Gerar UPC</button>
+                        </div>
+                        <div>
+                            <input type="text" id="music-compositores" placeholder="Compositores">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="music-colaboradores" placeholder="Colaboradores (separados por vírgula)">
+                        <input type="text" id="music-pline" placeholder="℗ Copyright">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="music-cline" placeholder="© Copyright">
+                    </div>
+                    <label>Capa da Música *</label>
+                    <input type="hidden" id="music-capa-url">
+                    <button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa</button>
+                    <div id="capa-preview" style="display:none;"><img id="capa-preview-img" style="width:100px; border-radius:8px;"><p>Capa selecionada ✓</p></div>
+                    <label>Áudio (WAV/MP3) *</label>
+                    <input type="hidden" id="music-audio-url">
+                    <button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio</button>
+                    <div id="audio-preview" style="display:none;"><p>Áudio carregado ✓</p></div>
+                    <div class="ddex-info"><p><i class="fas fa-share-alt"></i> Distribuição para 150+ plataformas: Spotify, Apple, TikTok, Instagram, YouTube Music, Amazon, Deezer, Tidal...</p></div>
+                    <button type="button" class="btn" id="btnEnviarLancamento">Enviar para Distribuição</button>
+                </form>
+            </div>
+        </section>
 
         <section id="minhas-musicas" class="section"><div class="card"><h3>MAM Distribuidora - Minhas Músicas</h3><div id="minhas-musicas-container" class="grid"></div></div></section>
 
@@ -225,6 +283,13 @@
 
         <section id="admin" class="section"><div class="card"><h3>MAM Distribuidora - Administração</h3><div><input type="email" id="admin-search-email" placeholder="Email do utilizador"><button class="btn btn-sec" onclick="searchUser()">Buscar</button></div><div id="user-manage-results"></div><hr><button class="btn btn-sec" onclick="openAdminMusicsModal()">Gerenciar Músicas</button><button class="btn btn-sec" onclick="generateDDEXReport()">Exportar DDEX</button></div></section>
     </div>
+
+    <!-- Secção de Resultado da Pesquisa (global, visível para todos) -->
+    <section id="resultado-pesquisa" class="section">
+        <div class="card" id="resultado-artista-container">
+            <!-- Preenchido dinamicamente -->
+        </div>
+    </section>
 </div>
 
 <footer>
@@ -242,7 +307,7 @@
 
 <div id="editArtistModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editArtistModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Editar Artista</h3><input type="hidden" id="edit-artist-id"><div style="text-align:center;"><img id="edit-artist-photo-preview" style="width:100px; border-radius:50%;"><button class="btn btn-small" id="edit-upload-artist-photo-btn">Nova Foto</button></div><input type="text" id="edit-artist-name" placeholder="Nome"><select id="edit-artist-style"></select><input type="url" id="edit-artist-spotify" placeholder="Spotify"><input type="url" id="edit-artist-apple" placeholder="Apple Music"><input type="url" id="edit-artist-instagram" placeholder="Instagram"><input type="url" id="edit-artist-tiktok" placeholder="TikTok"><input type="url" id="edit-artist-facebook" placeholder="Facebook"><textarea id="edit-artist-bio" placeholder="Biografia"></textarea><button class="btn" id="btnUpdateArtist">Atualizar</button></div></div>
 
-<div id="editReleaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editReleaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Editar Lançamento</h3><input type="hidden" id="edit-release-id"><input type="text" id="edit-release-titulo"><select id="edit-release-estilo"></select><input type="text" id="edit-release-colaboradores"><input type="text" id="edit-release-produtores"><input type="text" id="edit-release-isrc"><input type="text" id="edit-release-upc"><input type="date" id="edit-release-data"><button class="btn" id="btnUpdateRelease">Atualizar</button></div></div>
+<div id="editReleaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editReleaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Editar Lançamento</h3><input type="hidden" id="edit-release-id"><input type="text" id="edit-release-titulo"><select id="edit-release-estilo"></select><input type="text" id="edit-release-colaboradores"><input type="text" id="edit-release-isrc"><input type="text" id="edit-release-upc"><input type="date" id="edit-release-data"><button class="btn" id="btnUpdateRelease">Atualizar</button></div></div>
 
 <script>
     // ==================== FIREBASE CONFIG ====================
@@ -293,7 +358,7 @@
 
     let currentUser = null, userData = null, selectedPlan = null;
     let pendingArtistPhotoUrl = null, pendingEditArtistPhotoUrl = null;
-    let confirmCallback = null; // para o modal de confirmação
+    let confirmCallback = null;
 
     // ==================== FUNÇÕES AUXILIARES ====================
     function showLoading(show) { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; }
@@ -303,7 +368,6 @@
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     function togglePassword(id) { const f = document.getElementById(id); f.type = f.type === 'password' ? 'text' : 'password'; }
 
-    // Confirmação personalizada
     function confirmAction(mensagem, callback) {
         document.getElementById('confirm-message').innerHTML = mensagem;
         confirmCallback = callback;
@@ -327,7 +391,8 @@
         if(sectionId === 'minhas-musicas') loadMinhasMusicas();
         if(sectionId === 'carteira') loadWallet();
         if(sectionId === 'perfil') loadPerfil();
-        document.getElementById('global-search').value = '';
+        // Limpar pesquisa ao mudar de secção (opcional)
+        // Não limpar para manter o resultado visível se o utilizador voltar
     }
 
     // ==================== AUTH ====================
@@ -408,7 +473,181 @@
         feed.forEach(d => { const r = d.data(); container.innerHTML += `<div class="music-card"><img src="${r.capaUrl}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artistaNome}</div><audio controls src="${r.audioUrl}"></audio></div>`; });
     }
 
-    // ==================== ARTISTAS ====================
+    // ==================== PESQUISA GLOBAL ====================
+    window.pesquisarArtistaGlobal = async function() {
+        const termo = document.getElementById('global-search').value.trim();
+        if(!termo) {
+            showAlert('Digite o nome do artista para pesquisar.');
+            return;
+        }
+        showLoading(true);
+        try {
+            // Buscar artistas que contenham o termo (case insensitive) - usando firestore query com prefixo
+            const termoLower = termo.toLowerCase();
+            // Como não temos search full-text, faremos uma busca com '>=' e '<=' para prefixo, e depois filtramos por nome contendo o termo
+            const end = termo + '\uf8ff';
+            const snap = await db.collection('artists')
+                .where('nome', '>=', termo)
+                .where('nome', '<=', end)
+                .limit(5) // limitar para performance
+                .get();
+            
+            let artistaEncontrado = null;
+            snap.forEach(doc => {
+                const data = doc.data();
+                if(data.nome.toLowerCase().includes(termoLower)) {
+                    artistaEncontrado = { id: doc.id, ...data };
+                }
+            });
+
+            // Se não encontrou, tenta busca por todos e filtra manualmente (fallback)
+            if(!artistaEncontrado) {
+                const allSnap = await db.collection('artists').get();
+                allSnap.forEach(doc => {
+                    const data = doc.data();
+                    if(data.nome.toLowerCase().includes(termoLower)) {
+                        artistaEncontrado = { id: doc.id, ...data };
+                    }
+                });
+            }
+
+            if(!artistaEncontrado) {
+                showAlert('Artista não encontrado.');
+                showLoading(false);
+                return;
+            }
+
+            // Exibir o resultado na secção de pesquisa
+            exibirResultadoPesquisa(artistaEncontrado);
+            // Navegar para a secção de resultado
+            showSection('resultado-pesquisa', null);
+        } catch(e) {
+            showAlert('Erro na pesquisa: '+e.message);
+        }
+        finally { showLoading(false); }
+    };
+
+    async function exibirResultadoPesquisa(artista) {
+        const container = document.getElementById('resultado-artista-container');
+        // Buscar músicas deste artista (releases onde artistaId == artista.id)
+        let musicas = [];
+        try {
+            const snapMusicas = await db.collection('releases')
+                .where('artistaId', '==', artista.id)
+                .orderBy('createdAt', 'desc')
+                .get();
+            snapMusicas.forEach(doc => musicas.push({ id: doc.id, ...doc.data() }));
+        } catch(e) {
+            console.warn('Erro ao buscar músicas:', e);
+        }
+
+        // Verificar se o utilizador logado segue este artista
+        let isFollowing = false;
+        let followId = null;
+        if(currentUser) {
+            const followSnap = await db.collection('follows')
+                .where('userId', '==', currentUser.uid)
+                .where('artistId', '==', artista.id)
+                .get();
+            if(!followSnap.empty) {
+                isFollowing = true;
+                followId = followSnap.docs[0].id;
+            }
+        }
+
+        // Montar HTML
+        let socialHtml = '';
+        if(artista.spotify) socialHtml += `<a href="${artista.spotify}" target="_blank" class="social-link"><i class="fab fa-spotify"></i> Spotify</a>`;
+        if(artista.apple) socialHtml += `<a href="${artista.apple}" target="_blank" class="social-link"><i class="fab fa-apple"></i> Apple</a>`;
+        if(artista.instagram) socialHtml += `<a href="${artista.instagram}" target="_blank" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>`;
+        if(artista.tiktok) socialHtml += `<a href="${artista.tiktok}" target="_blank" class="social-link"><i class="fab fa-tiktok"></i> TikTok</a>`;
+        if(artista.facebook) socialHtml += `<a href="${artista.facebook}" target="_blank" class="social-link"><i class="fab fa-facebook"></i> Facebook</a>`;
+
+        let followBtnHtml = '';
+        if(currentUser) {
+            followBtnHtml = `<button class="btn btn-small btn-follow ${isFollowing ? 'following' : ''}" onclick="toggleFollow('${artista.id}', '${followId}', ${isFollowing})">
+                ${isFollowing ? '<i class="fas fa-check"></i> Seguindo' : '<i class="fas fa-plus"></i> Seguir'}
+            </button>`;
+        }
+
+        let musicasHtml = '';
+        if(musicas.length > 0) {
+            musicasHtml = '<h4 style="color:var(--gold); margin-top:30px;">Músicas Lançadas</h4><div class="grid">';
+            musicas.forEach(m => {
+                musicasHtml += `<div class="music-card">
+                    <img src="${m.capaUrl}" class="music-cover">
+                    <div class="music-title">${m.titulo}</div>
+                    <div class="music-artist">${m.artistaNome}</div>
+                    <audio controls src="${m.audioUrl}"></audio>
+                </div>`;
+            });
+            musicasHtml += '</div>';
+        } else {
+            musicasHtml = '<p style="color:var(--gray); margin-top:20px;">Este artista ainda não tem músicas lançadas.</p>';
+        }
+
+        container.innerHTML = `
+            <div class="artist-profile-card">
+                <img src="${artista.fotoUrl || 'https://via.placeholder.com/120'}" class="artist-avatar">
+                <div class="artist-name">${artista.nome}</div>
+                <div class="artist-style">${artista.estilo || 'Artista'}</div>
+                ${artista.bio ? `<div class="artist-bio">${artista.bio}</div>` : ''}
+                <div class="social-links">${socialHtml}</div>
+                <div class="follow-btn">${followBtnHtml}</div>
+            </div>
+            ${musicasHtml}
+        `;
+    }
+
+    // ==================== SEGUIR ARTISTA ====================
+    window.toggleFollow = async function(artistId, followId, isFollowing) {
+        if(!currentUser) {
+            showAlert('Faça login para seguir artistas.');
+            return;
+        }
+        showLoading(true);
+        try {
+            if(isFollowing) {
+                // Deixar de seguir
+                await db.collection('follows').doc(followId).delete();
+                showAlert('Deixaste de seguir este artista.');
+            } else {
+                // Seguir
+                await db.collection('follows').add({
+                    userId: currentUser.uid,
+                    artistId: artistId,
+                    createdAt: new Date()
+                });
+                showAlert('Agora segues este artista!');
+            }
+            // Atualizar a visualização
+            // Reexecutar a pesquisa com o mesmo termo
+            const termo = document.getElementById('global-search').value.trim();
+            if(termo) {
+                await pesquisarArtistaGlobal();
+            } else {
+                // Se não tiver termo, recarregar o perfil do artista atual
+                // Obter dados do artista novamente
+                const doc = await db.collection('artists').doc(artistId).get();
+                if(doc.exists) {
+                    exibirResultadoPesquisa({ id: doc.id, ...doc.data() });
+                }
+            }
+        } catch(e) {
+            showAlert('Erro: '+e.message);
+        }
+        finally { showLoading(false); }
+    };
+
+    // Capturar Enter na barra de pesquisa
+    document.getElementById('global-search').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            pesquisarArtistaGlobal();
+        }
+    });
+
+    // ==================== ARTISTAS (gestão) ====================
     async function loadArtistas(filtro = '') {
         if(!currentUser) return;
         let query = db.collection('artists').where('userId','==',currentUser.uid);
@@ -435,28 +674,6 @@
             container.innerHTML += `<div class="artist-item"><img src="${a.fotoUrl || 'https://via.placeholder.com/70'}" class="artist-avatar"><div class="artist-info"><h4>${a.nome}</h4><p>${a.estilo || 'Artista'}</p><div class="social-links">${socialHtml}</div></div><div class="list-actions"><button class="btn btn-small" onclick="editArtist('${doc.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-small btn-danger" onclick="deleteArtist('${doc.id}')"><i class="fas fa-trash"></i></button></div></div>`;
         }
     }
-
-    window.pesquisarArtista = function() {
-        const termo = document.getElementById('global-search').value.trim();
-        if(!termo) {
-            showAlert('Digite o nome do artista para pesquisar.');
-            return;
-        }
-        const btnArtistas = document.getElementById('nav-artistas');
-        if(btnArtistas) {
-            showSection('artistas', btnArtistas);
-            loadArtistas(termo);
-        } else {
-            showAlert('Faça login para pesquisar artistas.');
-        }
-    };
-
-    document.getElementById('global-search').addEventListener('keypress', function(e) {
-        if(e.key === 'Enter') {
-            e.preventDefault();
-            pesquisarArtista();
-        }
-    });
 
     window.openAddArtistModal = () => {
         pendingArtistPhotoUrl = null;
@@ -497,7 +714,6 @@
         finally { showLoading(false); }
     });
 
-    // Editar artista - CORRIGIDO
     window.editArtist = async (id) => {
         try {
             const doc = await db.collection('artists').doc(id).get();
@@ -506,7 +722,6 @@
                 return;
             }
             const a = doc.data();
-            // Preencher o ID e os campos
             const setVal = (id, val) => {
                 const el = document.getElementById(id);
                 if(el) el.value = val || '';
@@ -519,11 +734,9 @@
             setVal('edit-artist-tiktok', a.tiktok);
             setVal('edit-artist-facebook', a.facebook);
             setVal('edit-artist-bio', a.bio);
-            // Foto
             const fotoEl = document.getElementById('edit-artist-photo-preview');
             if(fotoEl) fotoEl.src = a.fotoUrl || 'https://via.placeholder.com/100';
 
-            // Recarregar estilos no select
             const editStyleSelect = document.getElementById('edit-artist-style');
             if(editStyleSelect) {
                 editStyleSelect.innerHTML = '<option value="">Estilo Musical</option>';
@@ -566,7 +779,6 @@
         finally { showLoading(false); }
     });
 
-    // Eliminar artista - com confirmação personalizada
     window.deleteArtist = async (id) => {
         confirmAction('Tens a certeza que pretendes eliminar este artista?', async (resposta) => {
             if(resposta) {
@@ -585,8 +797,26 @@
         subSelect.innerHTML = '<option value="">Sub-Género *</option>';
         if(musicGenres[genero]) musicGenres[genero].forEach(sg => subSelect.innerHTML += `<option value="${sg}">${sg}</option>`);
     }
-    function gerarISRC() { const ano = new Date().getFullYear().toString().slice(-2); const rand = Math.floor(Math.random()*90000+10000); document.getElementById('music-isrc').value = `AO-MAM-${ano}-${rand}`; showAlert('ISRC gerado'); }
-    function gerarUPC() { const upc = Math.floor(Math.random()*1000000000000).toString().padStart(12,'0'); document.getElementById('music-upc').value = upc; showAlert('UPC gerado'); }
+
+    // Gerar ISRC realista (AO-MAM-AA-NNNNN)
+    function gerarISRC() {
+        const pais = 'AO';
+        const codigo = 'MAM';
+        const ano = new Date().getFullYear().toString().slice(-2);
+        const random = Math.floor(Math.random() * 90000 + 10000);
+        document.getElementById('music-isrc').value = `${pais}-${codigo}-${ano}-${random}`;
+        showAlert('ISRC gerado: ' + document.getElementById('music-isrc').value);
+    }
+
+    // Gerar UPC realista (12 dígitos)
+    function gerarUPC() {
+        let upc = '';
+        for(let i=0; i<12; i++) {
+            upc += Math.floor(Math.random() * 10);
+        }
+        document.getElementById('music-upc').value = upc;
+        showAlert('UPC gerado: ' + upc);
+    }
 
     async function carregarSelects() {
         if(!currentUser) return;
@@ -665,13 +895,17 @@
         try {
             await db.collection('releases').add({
                 userId: currentUser.uid, artistaId, artistaNome, titulo, estilo: `${estilo} / ${subEstilo}`,
-                isrc: document.getElementById('music-isrc').value, upc: document.getElementById('music-upc').value,
+                isrc: document.getElementById('music-isrc').value,
+                upc: document.getElementById('music-upc').value,
                 compositores: document.getElementById('music-compositores').value,
-                produtores: document.getElementById('music-produtores').value,
                 colaboradores: document.getElementById('music-colaboradores').value,
-                pline: document.getElementById('music-pline').value, cline: document.getElementById('music-cline').value,
-                data: document.getElementById('music-data').value, capaUrl: capa, audioUrl: audio,
-                status: 'distribuido', createdAt: new Date()
+                pline: document.getElementById('music-pline').value,
+                cline: document.getElementById('music-cline').value,
+                data: document.getElementById('music-data').value,
+                capaUrl: capa,
+                audioUrl: audio,
+                status: 'distribuido',
+                createdAt: new Date()
             });
             showAlert('✅ Música enviada para distribuição em 150+ plataformas!');
             document.getElementById('form-lancamento').reset();

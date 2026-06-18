@@ -161,7 +161,41 @@
 
     <!-- Main App (logado) -->
     <div id="main-app" style="display:none;">
-        <section id="home" class="section"><div class="card"><div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;"><img id="home-user-photo" style="width:80px; height:80px; border-radius:50%; border:3px solid var(--gold);"><div><h3>Olá, <span id="user-display-name"></span>!</h3><p><span id="user-display-type"></span> | <span id="user-display-country"></span></p></div><span id="user-display-plan" class="status-pill status-active"></span><span id="admin-pro-max-indicator" style="display:none;" class="admin-pro-max-badge">ADMIN</span></div></div><div class="stat-grid"><div class="stat-box"><h4 id="stat-saldo">0 Kz</h4><p>Saldo</p></div><div class="stat-box"><h4 id="stat-artistas-count">0</h4><p>Artistas</p></div><div class="stat-box"><h4 id="stat-musicas-count">0</h4><p>Músicas</p></div></div><div class="card"><h3><i class="fas fa-rss"></i> Feed de Lançamentos</h3><div id="feed-container" class="grid"></div></div></section>
+        <section id="home" class="section">
+            <div class="card">
+                <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                    <img id="home-user-photo" style="width:80px; height:80px; border-radius:50%; border:3px solid var(--gold);">
+                    <div>
+                        <h3>Olá, <span id="user-display-name"></span>!</h3>
+                        <p><span id="user-display-type"></span> | <span id="user-display-country"></span></p>
+                    </div>
+                    <span id="user-display-plan" class="status-pill status-active"></span>
+                    <span id="admin-pro-max-indicator" style="display:none;" class="admin-pro-max-badge">ADMIN</span>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-box"><h4 id="stat-saldo">0 Kz</h4><p>Saldo</p></div>
+                <div class="stat-box"><h4 id="stat-artistas-count">0</h4><p>Artistas</p></div>
+                <div class="stat-box"><h4 id="stat-musicas-count">0</h4><p>Músicas</p></div>
+            </div>
+
+            <!-- Conteúdo promocional (antes presente apenas na tela de login) -->
+            <div class="card" style="text-align:center;">
+                <h2 style="color:var(--gold); font-size:2rem;">O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
+                <p style="color:var(--gray); max-width:700px; margin:0 auto 30px;">Distribua sua música para Spotify, Apple Music, TikTok, Instagram, YouTube Music e mais de 150 plataformas globais. Receba 100% dos royalties.</p>
+                <div class="info-grid">
+                    <div class="info-card"><i class="fas fa-globe"></i><h3>150+ PLATAFORMAS</h3><p>Spotify, Apple, TikTok, Instagram, YouTube, Amazon, Deezer, Tidal...</p></div>
+                    <div class="info-card"><i class="fas fa-coins"></i><h3>100% ROYALTIES</h3><p>Você fica com tudo.</p></div>
+                    <div class="info-card"><i class="fas fa-shield-alt"></i><h3>DDEX ERN 4.3</h3><p>Padrão internacional.</p></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-rss"></i> Feed de Lançamentos</h3>
+                <div id="feed-container" class="grid"></div>
+            </div>
+        </section>
 
         <section id="planos" class="section"><div class="card"><h3>Planos</h3><div class="plans-grid"><div class="plan-card" onclick="selectPlan('free')"><div class="plan-name">FREE</div><div class="plan-price">0 Kz</div><ul class="plan-features"><li>1 Artista</li><li>3 lançamentos/mês</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('free')">Começar</button></div><div class="plan-card featured" onclick="selectPlan('basico')"><div class="plan-name">BÁSICO</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>5 Artistas</li><li>Lançamentos ilimitados</li><li>Monetização TikTok/Instagram</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('basico')">Assinar Agora</button></div><div class="plan-card" onclick="selectPlan('premium')"><div class="plan-name">PREMIUM</div><div class="plan-price">25.000 Kz</div><ul class="plan-features"><li>Artistas ilimitados</li><li>Selo personalizado</li><li>Content ID YouTube</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('premium')">Seja Premium</button></div></div></div></section>
 
@@ -319,9 +353,16 @@
         const doc = await db.collection('users').doc(currentUser.uid).get();
         userData = doc.data();
         document.getElementById('user-display-name').innerText = userData.nome;
-        document.getElementById('user-display-plan').innerHTML = `PLANO ${userData.plano.toUpperCase()}`;
+        // Força plano Premium para o admin
+        let planoExibido = userData.plano.toUpperCase();
+        if(currentUser.email === "mamfilhos29@gmail.com") {
+            planoExibido = "PREMIUM";
+            document.getElementById('admin-pro-max-indicator').style.display = 'inline-block';
+        } else {
+            document.getElementById('admin-pro-max-indicator').style.display = 'none';
+        }
+        document.getElementById('user-display-plan').innerHTML = `PLANO ${planoExibido}`;
         document.getElementById('home-user-photo').src = userData.fotoPerfil;
-        if(currentUser.email === "mamfilhos29@gmail.com") document.getElementById('admin-pro-max-indicator').style.display = 'inline-block';
         const artistas = await db.collection('artists').where('userId','==',currentUser.uid).get();
         const musicas = await db.collection('releases').where('userId','==',currentUser.uid).get();
         document.getElementById('stat-artistas-count').innerText = artistas.size;

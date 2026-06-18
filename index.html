@@ -14,7 +14,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- Cloudinary Widget (corrigido com suas credenciais) -->
+    <!-- Cloudinary Widget -->
     <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
 
     <!-- Firebase SDKs -->
@@ -30,8 +30,10 @@
         .logo { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
         .logo-text { color: var(--gold); font-size: 1.4rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
-        .search-bar-container { max-width: 600px; margin: 10px auto; padding: 0 15px; }
-        .search-bar { width: 100%; padding: 12px 20px; background: #111; border: 1px solid #333; border-radius: 50px; color: white; }
+        .search-bar-container { max-width: 600px; margin: 10px auto; padding: 0 15px; display: flex; gap: 8px; }
+        .search-bar { flex: 1; padding: 12px 20px; background: #111; border: 1px solid #333; border-radius: 50px; color: white; }
+        .search-btn { background: var(--gold); border: none; border-radius: 50px; padding: 0 18px; color: #000; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .search-btn:hover { background: #e5c04a; }
         nav { display: flex; gap: 5px; padding: 10px; background: #050505; position: sticky; top: 82px; z-index: 999; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid #222; }
         .nav-btn { background: #111; border: 1px solid #333; color: var(--gray); padding: 10px 15px; font-size: 0.75rem; cursor: pointer; border-radius: 4px; transition: 0.3s; }
         .nav-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
@@ -117,6 +119,7 @@
             .grid { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
             .phone-group { flex-direction: column; }
+            .search-bar-container { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -128,7 +131,10 @@
 <header>
     <div class="logo"><img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg" alt="MAM Logo"><span class="logo-text">MAM DISTRIBUIDORA</span></div>
     <p style="color: var(--gray); font-size: 0.75rem;">O Império da Música em Angola | Distribuição para 150+ Plataformas</p>
-    <div class="search-bar-container"><input type="text" id="global-search" class="search-bar" placeholder="Pesquisar músicas, artistas..."></div>
+    <div class="search-bar-container">
+        <input type="text" id="global-search" class="search-bar" placeholder="Pesquisar artista pelo nome...">
+        <button class="search-btn" onclick="pesquisarArtista()"><i class="fas fa-search"></i></button>
+    </div>
 </header>
 
 <nav>
@@ -147,9 +153,9 @@
 <div class="container">
     <!-- Auth Section -->
     <section id="auth-screen" class="section active">
-        <div id="modal-login" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button><h3>ENTRAR</h3><input type="email" id="login-email" placeholder="Email"><div class="password-container" style="position:relative;"><input type="password" id="login-pass" placeholder="Senha"><button type="button" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gold); cursor:pointer;" onclick="togglePassword('login-pass')"><i class="fas fa-eye"></i></button></div><button class="btn" onclick="handleLogin()">Entrar</button><p style="text-align:center; margin-top:15px;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login'); openModal('modal-esqueci-senha');">Esqueci a senha</a></p><p style="text-align:center;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login'); openModal('modal-registro');">Criar conta grátis</a></p></div></div>
-        <div id="modal-registro" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('modal-registro')"><i class="fas fa-times"></i></button><h3>CRIAR CONTA</h3><input type="text" id="reg-nome" placeholder="Nome Completo"><input type="email" id="reg-email" placeholder="Email"><div class="phone-group"><select id="reg-phone-code"><option value="+244">🇦🇴 +244 (Angola)</option><option value="+351">🇵🇹 +351 (Portugal)</option><option value="+55">🇧🇷 +55 (Brasil)</option></select><input type="tel" id="reg-telefone" placeholder="Telefone"></div><div class="password-container" style="position:relative;"><input type="password" id="reg-pass" placeholder="Senha (min 6)"><button type="button" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gold);" onclick="togglePassword('reg-pass')"><i class="fas fa-eye"></i></button></div><div class="password-container" style="position:relative;"><input type="password" id="reg-pass-confirm" placeholder="Confirmar senha"><button type="button" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gold);" onclick="togglePassword('reg-pass-confirm')"><i class="fas fa-eye"></i></button></div><button class="btn" onclick="handleRegister()">Criar Conta</button></div></div>
-        <div id="modal-esqueci-senha" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('modal-esqueci-senha')"><i class="fas fa-times"></i></button><h3>Recuperar Senha</h3><input type="email" id="reset-email" placeholder="Seu e-mail"><button class="btn" onclick="resetPassword()">Enviar Link</button></div></div>
+        <div id="modal-login" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - ENTRAR</h3><input type="email" id="login-email" placeholder="Email"><div class="password-container" style="position:relative;"><input type="password" id="login-pass" placeholder="Senha"><button type="button" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gold); cursor:pointer;" onclick="togglePassword('login-pass')"><i class="fas fa-eye"></i></button></div><button class="btn" onclick="handleLogin()">Entrar</button><p style="text-align:center; margin-top:15px;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login'); openModal('modal-esqueci-senha');">Esqueci a senha</a></p><p style="text-align:center;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login'); openModal('modal-registro');">Criar conta grátis</a></p></div></div>
+        <div id="modal-registro" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('modal-registro')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - CRIAR CONTA</h3><input type="text" id="reg-nome" placeholder="Nome Completo"><input type="email" id="reg-email" placeholder="Email"><div class="phone-group"><select id="reg-phone-code"><option value="+244">🇦🇴 +244 (Angola)</option><option value="+351">🇵🇹 +351 (Portugal)</option><option value="+55">🇧🇷 +55 (Brasil)</option></select><input type="tel" id="reg-telefone" placeholder="Telefone"></div><div class="password-container" style="position:relative;"><input type="password" id="reg-pass" placeholder="Senha (min 6)"><button type="button" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gold);" onclick="togglePassword('reg-pass')"><i class="fas fa-eye"></i></button></div><div class="password-container" style="position:relative;"><input type="password" id="reg-pass-confirm" placeholder="Confirmar senha"><button type="button" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gold);" onclick="togglePassword('reg-pass-confirm')"><i class="fas fa-eye"></i></button></div><button class="btn" onclick="handleRegister()">Criar Conta</button></div></div>
+        <div id="modal-esqueci-senha" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('modal-esqueci-senha')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Recuperar Senha</h3><input type="email" id="reset-email" placeholder="Seu e-mail"><button class="btn" onclick="resetPassword()">Enviar Link</button></div></div>
 
         <div class="card" style="text-align:center; padding:50px 20px;">
             <h2 style="color:var(--gold); font-size:2rem;">O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
@@ -197,19 +203,19 @@
             </div>
         </section>
 
-        <section id="planos" class="section"><div class="card"><h3>Planos</h3><div class="plans-grid"><div class="plan-card" onclick="selectPlan('free')"><div class="plan-name">FREE</div><div class="plan-price">0 Kz</div><ul class="plan-features"><li>1 Artista</li><li>3 lançamentos/mês</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('free')">Começar</button></div><div class="plan-card featured" onclick="selectPlan('basico')"><div class="plan-name">BÁSICO</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>5 Artistas</li><li>Lançamentos ilimitados</li><li>Monetização TikTok/Instagram</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('basico')">Assinar Agora</button></div><div class="plan-card" onclick="selectPlan('premium')"><div class="plan-name">PREMIUM</div><div class="plan-price">25.000 Kz</div><ul class="plan-features"><li>Artistas ilimitados</li><li>Selo personalizado</li><li>Content ID YouTube</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('premium')">Seja Premium</button></div></div></div></section>
+        <section id="planos" class="section"><div class="card"><h3>MAM Distribuidora - Planos</h3><div class="plans-grid"><div class="plan-card" onclick="selectPlan('free')"><div class="plan-name">FREE</div><div class="plan-price">0 Kz</div><ul class="plan-features"><li>1 Artista</li><li>3 lançamentos/mês</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('free')">Começar</button></div><div class="plan-card featured" onclick="selectPlan('basico')"><div class="plan-name">BÁSICO</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>5 Artistas</li><li>Lançamentos ilimitados</li><li>Monetização TikTok/Instagram</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('basico')">Assinar Agora</button></div><div class="plan-card" onclick="selectPlan('premium')"><div class="plan-name">PREMIUM</div><div class="plan-price">25.000 Kz</div><ul class="plan-features"><li>Artistas ilimitados</li><li>Selo personalizado</li><li>Content ID YouTube</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('premium')">Seja Premium</button></div></div></div></section>
 
-        <section id="artistas" class="section"><div class="card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3>Meus Artistas</h3><button class="btn btn-small" onclick="openAddArtistModal()">+ Novo Artista</button></div><div id="artistas-container" class="item-list"></div></div></section>
+        <section id="artistas" class="section"><div class="card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3>MAM Distribuidora - Meus Artistas</h3><button class="btn btn-small" onclick="openAddArtistModal()">+ Novo Artista</button></div><div id="artistas-container" class="item-list"></div></div></section>
 
-        <section id="lancar" class="section"><div class="card"><h3>Lançar Música (DDEX ERN 4.3)</h3><form id="form-lancamento"><input type="text" id="music-titulo" placeholder="Título da Música *"><select id="music-artista-select"><option value="">Selecione o Artista</option></select><div class="form-row"><select id="music-estilo" onchange="carregarSubGeneros()"><option value="">Género Principal *</option></select><select id="music-sub-estilo"><option value="">Sub-Género *</option></select></div><div class="form-row"><input type="date" id="music-data"><input type="text" id="music-isrc" placeholder="ISRC (opcional)"><button type="button" class="btn btn-small btn-sec" onclick="gerarISRC()">Gerar ISRC</button></div><div class="form-row"><input type="text" id="music-upc" placeholder="UPC"><button type="button" class="btn btn-small btn-sec" onclick="gerarUPC()">Gerar UPC</button><input type="text" id="music-compositores" placeholder="Compositores"></div><div class="form-row"><input type="text" id="music-produtores" placeholder="Produtores"><input type="text" id="music-colaboradores" placeholder="Colaboradores"></div><div class="form-row"><input type="text" id="music-pline" placeholder="℗ Copyright"><input type="text" id="music-cline" placeholder="© Copyright"></div><label>Capa da Música *</label><input type="hidden" id="music-capa-url"><button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa</button><div id="capa-preview" style="display:none;"><img id="capa-preview-img" style="width:100px; border-radius:8px;"><p>Capa selecionada ✓</p></div><label>Áudio (WAV/MP3) *</label><input type="hidden" id="music-audio-url"><button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio</button><div id="audio-preview" style="display:none;"><p>Áudio carregado ✓</p></div><div class="ddex-info"><p><i class="fas fa-share-alt"></i> Distribuição para 150+ plataformas: Spotify, Apple, TikTok, Instagram, YouTube Music, Amazon, Deezer, Tidal...</p></div><button type="button" class="btn" id="btnEnviarLancamento">Enviar para Distribuição</button></form></div></section>
+        <section id="lancar" class="section"><div class="card"><h3>MAM Distribuidora - Lançar Música (DDEX ERN 4.3)</h3><form id="form-lancamento"><input type="text" id="music-titulo" placeholder="Título da Música *"><select id="music-artista-select"><option value="">Selecione o Artista</option></select><div class="form-row"><select id="music-estilo" onchange="carregarSubGeneros()"><option value="">Género Principal *</option></select><select id="music-sub-estilo"><option value="">Sub-Género *</option></select></div><div class="form-row"><input type="date" id="music-data"><input type="text" id="music-isrc" placeholder="ISRC (opcional)"><button type="button" class="btn btn-small btn-sec" onclick="gerarISRC()">Gerar ISRC</button></div><div class="form-row"><input type="text" id="music-upc" placeholder="UPC"><button type="button" class="btn btn-small btn-sec" onclick="gerarUPC()">Gerar UPC</button><input type="text" id="music-compositores" placeholder="Compositores"></div><div class="form-row"><input type="text" id="music-produtores" placeholder="Produtores"><input type="text" id="music-colaboradores" placeholder="Colaboradores"></div><div class="form-row"><input type="text" id="music-pline" placeholder="℗ Copyright"><input type="text" id="music-cline" placeholder="© Copyright"></div><label>Capa da Música *</label><input type="hidden" id="music-capa-url"><button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa</button><div id="capa-preview" style="display:none;"><img id="capa-preview-img" style="width:100px; border-radius:8px;"><p>Capa selecionada ✓</p></div><label>Áudio (WAV/MP3) *</label><input type="hidden" id="music-audio-url"><button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio</button><div id="audio-preview" style="display:none;"><p>Áudio carregado ✓</p></div><div class="ddex-info"><p><i class="fas fa-share-alt"></i> Distribuição para 150+ plataformas: Spotify, Apple, TikTok, Instagram, YouTube Music, Amazon, Deezer, Tidal...</p></div><button type="button" class="btn" id="btnEnviarLancamento">Enviar para Distribuição</button></form></div></section>
 
-        <section id="minhas-musicas" class="section"><div class="card"><h3>Minhas Músicas</h3><div id="minhas-musicas-container" class="grid"></div></div></section>
+        <section id="minhas-musicas" class="section"><div class="card"><h3>MAM Distribuidora - Minhas Músicas</h3><div id="minhas-musicas-container" class="grid"></div></div></section>
 
-        <section id="carteira" class="section"><div class="card"><h3>Carteira</h3><div class="currency-selector"><label>Moeda:</label><select id="currency-select" onchange="updateWalletDisplay()"><option value="Kz">Kz (Kwanza)</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div><div class="stat-grid"><div class="stat-box"><h4 id="carteira-saldo">0 Kz</h4><p>Saldo</p></div><div class="stat-box"><h4 id="carteira-ganhos-mes">0 Kz</h4><p>Ganhos este mês</p></div></div><button class="btn" onclick="openSaqueModal()">Levantar Ganhos</button><div id="historico-saques" class="item-list"></div></div></section>
+        <section id="carteira" class="section"><div class="card"><h3>MAM Distribuidora - Carteira</h3><div class="currency-selector"><label>Moeda:</label><select id="currency-select" onchange="updateWalletDisplay()"><option value="Kz">Kz (Kwanza)</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div><div class="stat-grid"><div class="stat-box"><h4 id="carteira-saldo">0 Kz</h4><p>Saldo</p></div><div class="stat-box"><h4 id="carteira-ganhos-mes">0 Kz</h4><p>Ganhos este mês</p></div></div><button class="btn" onclick="openSaqueModal()">Levantar Ganhos</button><div id="historico-saques" class="item-list"></div></div></section>
 
-        <section id="perfil" class="section"><div class="card"><h3>Perfil</h3><div class="profile-upload" id="profile-upload-trigger"><img id="perfil-foto-preview" class="profile-img" src="https://via.placeholder.com/120"><div class="upload-overlay"><i class="fas fa-camera"></i></div></div><input type="text" id="perfil-nome" placeholder="Nome"><div class="phone-group"><select id="perfil-phone-code"><option value="+244">+244 (Angola)</option><option value="+351">+351 (Portugal)</option></select><input type="tel" id="perfil-telefone" placeholder="Telefone"></div><select id="perfil-pais"></select><button class="btn" id="btnUpdateProfile">Guardar</button></div></section>
+        <section id="perfil" class="section"><div class="card"><h3>MAM Distribuidora - Perfil</h3><div class="profile-upload" id="profile-upload-trigger"><img id="perfil-foto-preview" class="profile-img" src="https://via.placeholder.com/120"><div class="upload-overlay"><i class="fas fa-camera"></i></div></div><input type="text" id="perfil-nome" placeholder="Nome"><div class="phone-group"><select id="perfil-phone-code"><option value="+244">+244 (Angola)</option><option value="+351">+351 (Portugal)</option></select><input type="tel" id="perfil-telefone" placeholder="Telefone"></div><select id="perfil-pais"></select><button class="btn" id="btnUpdateProfile">Guardar</button></div></section>
 
-        <section id="admin" class="section"><div class="card"><h3>Administração</h3><div><input type="email" id="admin-search-email" placeholder="Email do utilizador"><button class="btn btn-sec" onclick="searchUser()">Buscar</button></div><div id="user-manage-results"></div><hr><button class="btn btn-sec" onclick="openAdminMusicsModal()">Gerenciar Músicas</button><button class="btn btn-sec" onclick="generateDDEXReport()">Exportar DDEX</button></div></section>
+        <section id="admin" class="section"><div class="card"><h3>MAM Distribuidora - Administração</h3><div><input type="email" id="admin-search-email" placeholder="Email do utilizador"><button class="btn btn-sec" onclick="searchUser()">Buscar</button></div><div id="user-manage-results"></div><hr><button class="btn btn-sec" onclick="openAdminMusicsModal()">Gerenciar Músicas</button><button class="btn btn-sec" onclick="generateDDEXReport()">Exportar DDEX</button></div></section>
     </div>
 </div>
 
@@ -220,15 +226,15 @@
 </footer>
 
 <!-- Modais -->
-<div id="planPurchaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('planPurchaseModal')"><i class="fas fa-times"></i></button><h3>Finalizar Compra</h3><div id="plan-details"></div><div class="payment-methods"><div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i>Carteira MAM</div><div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i>Transferência</div></div><button id="pay-with-wallet-btn" class="btn" style="display:none;" onclick="payWithWallet()">Pagar com Carteira</button><div id="bank-info" style="display:none;"><p><strong>BFA - Banco de Fomento Angola</strong></p><p>Titular: Matias Arsénio Manuel</p><p>IBAN: 0006 0000 86316866301 52</p><p>Multicaixa: +244937881307</p><p>Visa: 4937242025023852</p><button class="btn btn-sec" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo</button></div><button class="btn" onclick="closeModal('planPurchaseModal')">Fechar</button></div></div>
+<div id="planPurchaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('planPurchaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Finalizar Compra</h3><div id="plan-details"></div><div class="payment-methods"><div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i>Carteira MAM</div><div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i>Transferência</div></div><button id="pay-with-wallet-btn" class="btn" style="display:none;" onclick="payWithWallet()">Pagar com Carteira</button><div id="bank-info" style="display:none;"><p><strong>BFA - Banco de Fomento Angola</strong></p><p>Titular: Matias Arsénio Manuel</p><p>IBAN: 0006 0000 86316866301 52</p><p>Multicaixa: +244937881307</p><p>Visa: 4937242025023852</p><button class="btn btn-sec" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Comprovativo</button></div><button class="btn" onclick="closeModal('planPurchaseModal')">Fechar</button></div></div>
 
-<div id="saqueModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('saqueModal')"><i class="fas fa-times"></i></button><h3>Solicitar Saque</h3><input type="number" id="saque-valor" placeholder="Valor (Kz)"><input type="text" id="saque-conta" placeholder="IBAN ou conta"><select id="saque-metodo"><option value="">Método</option><option value="bfa">BFA</option><option value="multicaixa">Multicaixa</option></select><button class="btn" onclick="solicitarSaque()">Solicitar</button></div></div>
+<div id="saqueModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('saqueModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Solicitar Saque</h3><input type="number" id="saque-valor" placeholder="Valor (Kz)"><input type="text" id="saque-conta" placeholder="IBAN ou conta"><select id="saque-metodo"><option value="">Método</option><option value="bfa">BFA</option><option value="multicaixa">Multicaixa</option></select><button class="btn" onclick="solicitarSaque()">Solicitar</button></div></div>
 
-<div id="addArtistModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button><h3>Adicionar Artista</h3><div style="text-align:center; margin-bottom:20px;"><img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--gold); object-fit:cover;"><br><button type="button" class="btn btn-small btn-sec" id="upload-artist-photo-btn"><i class="fas fa-camera"></i> Escolher Foto</button></div><input type="text" id="artist-name" placeholder="Nome Artístico *"><select id="artist-style"><option value="">Estilo Musical *</option></select><div><label style="color:var(--gold);">Redes Sociais (links completos)</label><input type="url" id="artist-spotify" placeholder="Spotify - https://open.spotify.com/artist/..."><input type="url" id="artist-apple" placeholder="Apple Music - https://music.apple.com/..."><input type="url" id="artist-instagram" placeholder="Instagram - https://instagram.com/..."><input type="url" id="artist-tiktok" placeholder="TikTok - https://tiktok.com/@..."><input type="url" id="artist-facebook" placeholder="Facebook - https://facebook.com/..."></div><textarea id="artist-bio" placeholder="Biografia do Artista" rows="3"></textarea><button class="btn" id="btnSaveArtist">Salvar Artista</button></div></div>
+<div id="addArtistModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Adicionar Artista</h3><div style="text-align:center; margin-bottom:20px;"><img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--gold); object-fit:cover;"><br><button type="button" class="btn btn-small btn-sec" id="upload-artist-photo-btn"><i class="fas fa-camera"></i> Escolher Foto</button></div><input type="text" id="artist-name" placeholder="Nome Artístico *"><select id="artist-style"><option value="">Estilo Musical *</option></select><div><label style="color:var(--gold);">Redes Sociais (links completos)</label><input type="url" id="artist-spotify" placeholder="Spotify - https://open.spotify.com/artist/..."><input type="url" id="artist-apple" placeholder="Apple Music - https://music.apple.com/..."><input type="url" id="artist-instagram" placeholder="Instagram - https://instagram.com/..."><input type="url" id="artist-tiktok" placeholder="TikTok - https://tiktok.com/@..."><input type="url" id="artist-facebook" placeholder="Facebook - https://facebook.com/..."></div><textarea id="artist-bio" placeholder="Biografia do Artista" rows="3"></textarea><button class="btn" id="btnSaveArtist">Salvar Artista</button></div></div>
 
-<div id="editArtistModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editArtistModal')"><i class="fas fa-times"></i></button><h3>Editar Artista</h3><input type="hidden" id="edit-artist-id"><div style="text-align:center;"><img id="edit-artist-photo-preview" style="width:100px; border-radius:50%;"><button class="btn btn-small" id="edit-upload-artist-photo-btn">Nova Foto</button></div><input type="text" id="edit-artist-name" placeholder="Nome"><select id="edit-artist-style"></select><input type="url" id="edit-artist-spotify" placeholder="Spotify"><input type="url" id="edit-artist-instagram" placeholder="Instagram"><input type="url" id="edit-artist-tiktok" placeholder="TikTok"><textarea id="edit-artist-bio" placeholder="Biografia"></textarea><button class="btn" id="btnUpdateArtist">Atualizar</button></div></div>
+<div id="editArtistModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editArtistModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Editar Artista</h3><input type="hidden" id="edit-artist-id"><div style="text-align:center;"><img id="edit-artist-photo-preview" style="width:100px; border-radius:50%;"><button class="btn btn-small" id="edit-upload-artist-photo-btn">Nova Foto</button></div><input type="text" id="edit-artist-name" placeholder="Nome"><select id="edit-artist-style"></select><input type="url" id="edit-artist-spotify" placeholder="Spotify"><input type="url" id="edit-artist-instagram" placeholder="Instagram"><input type="url" id="edit-artist-tiktok" placeholder="TikTok"><textarea id="edit-artist-bio" placeholder="Biografia"></textarea><button class="btn" id="btnUpdateArtist">Atualizar</button></div></div>
 
-<div id="editReleaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editReleaseModal')"><i class="fas fa-times"></i></button><h3>Editar Lançamento</h3><input type="hidden" id="edit-release-id"><input type="text" id="edit-release-titulo"><select id="edit-release-estilo"></select><input type="text" id="edit-release-colaboradores"><input type="text" id="edit-release-produtores"><input type="text" id="edit-release-isrc"><input type="text" id="edit-release-upc"><input type="date" id="edit-release-data"><button class="btn" id="btnUpdateRelease">Atualizar</button></div></div>
+<div id="editReleaseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('editReleaseModal')"><i class="fas fa-times"></i></button><h3>MAM Distribuidora - Editar Lançamento</h3><input type="hidden" id="edit-release-id"><input type="text" id="edit-release-titulo"><select id="edit-release-estilo"></select><input type="text" id="edit-release-colaboradores"><input type="text" id="edit-release-produtores"><input type="text" id="edit-release-isrc"><input type="text" id="edit-release-upc"><input type="date" id="edit-release-data"><button class="btn" id="btnUpdateRelease">Atualizar</button></div></div>
 
 <script>
     // ==================== FIREBASE CONFIG ====================
@@ -244,10 +250,10 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ==================== CLOUDINARY (CORRIGIDO) ====================
+    // ==================== CLOUDINARY ====================
     const CLOUDINARY_CONFIG = {
-        cloudName: 'dbjhwnhoq',      // Seu cloud name
-        uploadPreset: 'mam_preset'   // Você precisa criar este preset no dashboard do Cloudinary (unsigned)
+        cloudName: 'dbjhwnhoq',
+        uploadPreset: 'mam_preset'
     };
 
     // ==================== TODOS OS ESTILOS MUSICAIS DO MUNDO ====================
@@ -267,7 +273,12 @@
         "Gospel": ["Gospel Contemporâneo", "Louvor", "Música Cristã"],
         "Country": ["Country Clássico", "Outlaw Country", "Country Pop", "Bluegrass"],
         "Blues": ["Delta Blues", "Chicago Blues", "Electric Blues", "Blues Rock"],
-        "Reggae": ["Roots Reggae", "Dub", "Dancehall", "Ska"]
+        "Reggae": ["Roots Reggae", "Dub", "Dancehall", "Ska"],
+        "Folk": ["Folk Tradicional", "Folk Rock", "Indie Folk"],
+        "World Music": ["Música do Mundo", "Fusion", "Etno"],
+        "New Age": ["Ambient", "Meditação", "Instrumental"],
+        "Soul": ["Soul Clássico", "Neo Soul", "Funk Soul"],
+        "Punk": ["Punk Rock", "Hardcore", "Pop Punk"]
     };
 
     const allCountries = ["Angola", "Portugal", "Brasil", "África do Sul", "Moçambique", "Cabo Verde", "EUA", "Reino Unido", "França", "Alemanha"];
@@ -293,6 +304,7 @@
         if(sectionId === 'minhas-musicas') loadMinhasMusicas();
         if(sectionId === 'carteira') loadWallet();
         if(sectionId === 'perfil') loadPerfil();
+        document.getElementById('global-search').value = '';
     }
 
     // ==================== AUTH ====================
@@ -353,7 +365,6 @@
         const doc = await db.collection('users').doc(currentUser.uid).get();
         userData = doc.data();
         document.getElementById('user-display-name').innerText = userData.nome;
-        // Força plano Premium para o admin
         let planoExibido = userData.plano.toUpperCase();
         if(currentUser.email === "mamfilhos29@gmail.com") {
             planoExibido = "PREMIUM";
@@ -375,10 +386,21 @@
     }
 
     // ==================== ARTISTAS ====================
-    async function loadArtistas() {
-        const snap = await db.collection('artists').where('userId','==',currentUser.uid).get();
+    async function loadArtistas(filtro = '') {
+        if(!currentUser) return;
+        let query = db.collection('artists').where('userId','==',currentUser.uid);
+        if(filtro) {
+            const termo = filtro.trim();
+            const end = termo + '\uf8ff';
+            query = query.where('nome', '>=', termo).where('nome', '<=', end);
+        }
+        const snap = await query.get();
         const container = document.getElementById('artistas-container');
         container.innerHTML = '';
+        if(snap.empty) {
+            container.innerHTML = '<p style="color:var(--gray);">Nenhum artista encontrado.</p>';
+            return;
+        }
         for(const doc of snap.docs) {
             const a = doc.data();
             let socialHtml = '';
@@ -390,6 +412,28 @@
             container.innerHTML += `<div class="artist-item"><img src="${a.fotoUrl || 'https://via.placeholder.com/70'}" class="artist-avatar"><div class="artist-info"><h4>${a.nome}</h4><p>${a.estilo || 'Artista'}</p><div class="social-links">${socialHtml}</div></div><div class="list-actions"><button class="btn btn-small" onclick="editArtist('${doc.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-small btn-danger" onclick="deleteArtist('${doc.id}')"><i class="fas fa-trash"></i></button></div></div>`;
         }
     }
+
+    window.pesquisarArtista = function() {
+        const termo = document.getElementById('global-search').value.trim();
+        if(!termo) {
+            showAlert('Digite o nome do artista para pesquisar.');
+            return;
+        }
+        const btnArtistas = document.getElementById('nav-artistas');
+        if(btnArtistas) {
+            showSection('artistas', btnArtistas);
+            loadArtistas(termo);
+        } else {
+            showAlert('Faça login para pesquisar artistas.');
+        }
+    };
+
+    document.getElementById('global-search').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            pesquisarArtista();
+        }
+    });
 
     window.openAddArtistModal = () => {
         pendingArtistPhotoUrl = null;
@@ -430,24 +474,47 @@
         finally { showLoading(false); }
     });
 
+    // CORREÇÃO: função de editar artista (agora com recarregamento dos selects e melhor tratamento)
     window.editArtist = async (id) => {
-        const doc = await db.collection('artists').doc(id).get();
-        const a = doc.data();
-        document.getElementById('edit-artist-id').value = id;
-        document.getElementById('edit-artist-name').value = a.nome;
-        document.getElementById('edit-artist-style').value = a.estilo || '';
-        document.getElementById('edit-artist-spotify').value = a.spotify || '';
-        document.getElementById('edit-artist-apple').value = a.apple || '';
-        document.getElementById('edit-artist-instagram').value = a.instagram || '';
-        document.getElementById('edit-artist-tiktok').value = a.tiktok || '';
-        document.getElementById('edit-artist-facebook').value = a.facebook || '';
-        document.getElementById('edit-artist-bio').value = a.bio || '';
-        document.getElementById('edit-artist-photo-preview').src = a.fotoUrl || 'https://via.placeholder.com/100';
-        openModal('editArtistModal');
+        try {
+            const doc = await db.collection('artists').doc(id).get();
+            if(!doc.exists) {
+                showAlert('Artista não encontrado.');
+                return;
+            }
+            const a = doc.data();
+            document.getElementById('edit-artist-id').value = id;
+            document.getElementById('edit-artist-name').value = a.nome || '';
+            document.getElementById('edit-artist-spotify').value = a.spotify || '';
+            document.getElementById('edit-artist-apple').value = a.apple || '';
+            document.getElementById('edit-artist-instagram').value = a.instagram || '';
+            document.getElementById('edit-artist-tiktok').value = a.tiktok || '';
+            document.getElementById('edit-artist-facebook').value = a.facebook || '';
+            document.getElementById('edit-artist-bio').value = a.bio || '';
+            document.getElementById('edit-artist-photo-preview').src = a.fotoUrl || 'https://via.placeholder.com/100';
+
+            // Recarregar os estilos no select de edição
+            const editStyleSelect = document.getElementById('edit-artist-style');
+            editStyleSelect.innerHTML = '<option value="">Estilo Musical</option>';
+            Object.keys(musicGenres).forEach(g => {
+                const selected = (g === a.estilo) ? 'selected' : '';
+                editStyleSelect.innerHTML += `<option value="${g}" ${selected}>${g}</option>`;
+            });
+            // Se o estilo atual não estiver na lista, adicionar como opção
+            if(a.estilo && !musicGenres[a.estilo]) {
+                editStyleSelect.innerHTML += `<option value="${a.estilo}" selected>${a.estilo}</option>`;
+            }
+
+            // Abrir o modal
+            openModal('editArtistModal');
+        } catch(error) {
+            showAlert('Erro ao carregar artista: ' + error.message);
+        }
     };
 
     document.getElementById('btnUpdateArtist')?.addEventListener('click', async () => {
         const id = document.getElementById('edit-artist-id').value;
+        if(!id) { showAlert('ID do artista não encontrado.'); return; }
         showLoading(true);
         try {
             await db.collection('artists').doc(id).update({
@@ -469,7 +536,13 @@
         finally { showLoading(false); }
     });
 
-    window.deleteArtist = async (id) => { if(confirm('Remover artista?')) { await db.collection('artists').doc(id).delete(); loadArtistas(); carregarSelects(); } };
+    window.deleteArtist = async (id) => {
+        if(confirm('Tens a certeza que pretendes eliminar este artista?')) {
+            await db.collection('artists').doc(id).delete();
+            loadArtistas();
+            carregarSelects();
+        }
+    };
 
     // ==================== LANÇAMENTOS ====================
     function carregarSubGeneros() {
@@ -487,21 +560,20 @@
         const artistas = await db.collection('artists').where('userId','==',currentUser.uid).get();
         artistSelect.innerHTML = '<option value="">Selecione o Artista</option>';
         artistas.forEach(d => artistSelect.innerHTML += `<option value="${d.id}">${d.data().nome}</option>`);
+        // Popula todos os estilos nos selects
         const styleSelect = document.getElementById('music-estilo');
         styleSelect.innerHTML = '<option value="">Género Principal *</option>';
         Object.keys(musicGenres).forEach(g => styleSelect.innerHTML += `<option value="${g}">${g}</option>`);
         const artistStyle = document.getElementById('artist-style');
         artistStyle.innerHTML = '<option value="">Estilo Musical *</option>';
         Object.keys(musicGenres).forEach(g => artistStyle.innerHTML += `<option value="${g}">${g}</option>`);
-        const editArtistStyle = document.getElementById('edit-artist-style');
-        editArtistStyle.innerHTML = '<option value="">Estilo Musical</option>';
-        Object.keys(musicGenres).forEach(g => editArtistStyle.innerHTML += `<option value="${g}">${g}</option>`);
+        // O select de edição será preenchido na abertura do modal
         const countrySelect = document.getElementById('perfil-pais');
         countrySelect.innerHTML = '<option value="">País</option>';
         allCountries.forEach(c => countrySelect.innerHTML += `<option value="${c}">${c}</option>`);
     }
 
-    // Cloudinary Upload (CORRIGIDO)
+    // Cloudinary Upload
     function initUpload(btnId, hiddenId, previewId, isArtist = false, isEdit = false) {
         document.getElementById(btnId)?.addEventListener('click', () => {
             const widget = cloudinary.createUploadWidget(
@@ -588,7 +660,13 @@
             container.innerHTML += `<div class="music-card"><img src="${r.capaUrl}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artistaNome}</div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button class="btn btn-small btn-danger" onclick="deleteRelease('${doc.id}')">Excluir</button></div></div>`;
         });
     }
-    window.deleteRelease = async (id) => { if(confirm('Remover música?')) { await db.collection('releases').doc(id).delete(); loadMinhasMusicas(); loadHome(); } };
+    window.deleteRelease = async (id) => {
+        if(confirm('Tens a certeza que pretendes eliminar esta música?')) {
+            await db.collection('releases').doc(id).delete();
+            loadMinhasMusicas();
+            loadHome();
+        }
+    };
 
     // ==================== CARTEIRA ====================
     async function loadWallet() {

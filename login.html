@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MAM Distribuidora - Login</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="logo">
+
+        <h1>MAM Distribuidora</h1>
+        <p>Entrar na sua conta</p>
+
+    </div>
+
+    <form id="loginForm">
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Seu email"
+            required
+        >
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Sua palavra-passe"
+            required
+        >
+
+        <button type="submit">
+
+            Entrar
+
+        </button>
+
+    </form>
+
+    <p id="error"></p>
+
+    <a href="register.html">
+
+        Criar conta
+
+    </a>
+
+</div>
+
+<script type="module">
+
+import { login } from "./auth.js";
+
+const form=document.getElementById("loginForm");
+
+const error=document.getElementById("error");
+
+form.addEventListener("submit",async(e)=>{
+
+e.preventDefault();
+
+try{
+
+await login(
+
+document.getElementById("email").value,
+
+document.getElementById("password").value
+
+);
+
+window.location.href="dashboard.html";
+
+}catch(err){
+
+error.innerHTML=err.message;
+
+}
+
+});
+
+</script>
+
+</body>
+
+</html>

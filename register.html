@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Criar Conta - MAM Distribuidora</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+<h1>MAM Distribuidora</h1>
+
+<h2>Criar Conta</h2>
+
+<form id="registerForm">
+
+<input
+type="text"
+id="name"
+placeholder="Nome artístico"
+required>
+
+<input
+type="email"
+id="email"
+placeholder="Email"
+required>
+
+<input
+type="password"
+id="password"
+placeholder="Palavra-passe"
+required>
+
+<button type="submit">
+
+Criar Conta
+
+</button>
+
+</form>
+
+<p id="error"></p>
+
+<p>
+
+Já possui conta?
+
+<a href="login.html">
+
+Entrar
+
+</a>
+
+</p>
+
+</div>
+
+<script type="module">
+
+import { register } from "./auth.js";
+
+const form=document.getElementById("registerForm");
+
+const error=document.getElementById("error");
+
+form.addEventListener("submit",async(e)=>{
+
+e.preventDefault();
+
+try{
+
+await register(
+
+document.getElementById("name").value,
+
+document.getElementById("email").value,
+
+document.getElementById("password").value
+
+);
+
+window.location.href="dashboard.html";
+
+}catch(err){
+
+error.innerHTML=err.message;
+
+}
+
+});
+
+</script>
+
+</body>
+
+</html>

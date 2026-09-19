@@ -37,7 +37,7 @@ label{display:block;color:var(--gold);font-size:.8rem;margin-bottom:6px;font-wei
 input,select,textarea{width:100%;padding:14px;background:#000;border:1px solid #333;color:var(--text);border-radius:8px;margin-bottom:15px;font-size:.95rem}
 input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none;box-shadow:0 0 10px rgba(212,175,55,.2)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px}
-.phone-group{display:grid;grid-template-columns:120px 1fr;gap:10px;margin-bottom:15px}
+.phone-group{display:grid;grid-template-columns:140px 1fr;gap:10px;margin-bottom:15px}
 .phone-group select{margin-bottom:0}
 .phone-group input{margin-bottom:0}
 .btn{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:.9rem;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:8px}
@@ -134,18 +134,51 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 .chat-msg.admin{background:rgba(33,150,243,.15);border-left:3px solid var(--info)}
 .chat-msg .who{font-size:.65rem;color:var(--gray);margin-bottom:3px;font-weight:bold}
 .help-text{font-size:.75rem;color:var(--gray);margin-top:-10px;margin-bottom:15px;font-style:italic}
-@media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
+/* CARROSSEL */
+.carousel{position:relative;width:100%;height:320px;overflow:hidden;border-radius:12px;border:2px solid var(--gold);margin-bottom:20px;background:#000}
+.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity 1s ease;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;color:#fff}
+.carousel-slide.active{opacity:1}
+.carousel-slide.s1{background:linear-gradient(135deg,rgba(212,175,55,.9),rgba(255,107,53,.85)),url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg') center/cover}
+.carousel-slide.s2{background:linear-gradient(135deg,rgba(0,0,0,.85),rgba(212,175,55,.6)),url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200') center/cover}
+.carousel-slide.s3{background:linear-gradient(135deg,rgba(20,20,20,.9),rgba(212,175,55,.7)),url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200') center/cover}
+.carousel-slide.s4{background:linear-gradient(135deg,rgba(0,0,0,.85),rgba(255,107,53,.7)),url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200') center/cover}
+.carousel-slide h2{font-size:2rem;color:#fff;margin-bottom:15px;text-shadow:2px 2px 8px #000}
+.carousel-slide p{font-size:1rem;color:#f0f0f0;text-shadow:1px 1px 4px #000;max-width:700px}
+.carousel-slide .btn{width:auto;padding:12px 30px;margin-top:15px;display:inline-block}
+.carousel-dots{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:5}
+.carousel-dots span{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:.3s}
+.carousel-dots span.active{background:var(--gold);width:32px;border-radius:6px}
+/* LANG FLOAT */
+.lang-float{position:fixed;bottom:20px;right:20px;z-index:9998;background:var(--gold);color:#000;border-radius:50%;width:55px;height:55px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(212,175,55,.5);font-size:1.5rem;border:2px solid #000}
+.lang-float:hover{transform:scale(1.1)}
+.lang-menu{position:fixed;bottom:85px;right:20px;background:#111;border:2px solid var(--gold);border-radius:10px;padding:10px;z-index:9998;display:none}
+.lang-menu.active{display:block}
+.lang-menu button{display:block;width:100%;padding:10px 20px;background:transparent;border:none;color:#fff;cursor:pointer;text-align:left;border-radius:6px;font-size:.9rem}
+.lang-menu button:hover{background:rgba(212,175,55,.2);color:var(--gold)}
+/* VIDEO */
+.video-container{position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;border:2px solid var(--gold);margin-bottom:20px}
+.video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+@media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}}
 </style>
 </head>
 <body>
 
 <div id="loading-overlay"><div class="spinner"></div><span id="loading-text">Processando...</span></div>
 
+<!-- Botão flutuante de idioma (fora do login) -->
+<div id="lang-float" class="lang-float" onclick="toggleLangMenu()" title="Mudar idioma" style="display:none;"><i class="fas fa-globe"></i></div>
+<div id="lang-menu" class="lang-menu">
+<button onclick="setLang('pt')">🇵🇹 Português</button>
+<button onclick="setLang('en')">🇬🇧 English</button>
+<button onclick="setLang('es')">🇪🇸 Español</button>
+<button onclick="setLang('fr')">🇫🇷 Français</button>
+</div>
+
 <div id="custom-alert" style="position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:20000;display:none;align-items:center;justify-content:center;">
 <div style="background:var(--card);border:2px solid var(--gold);border-radius:12px;max-width:450px;width:90%;text-align:center;">
 <div style="background:rgba(212,175,55,.15);padding:20px;"><h3 style="color:var(--gold);"><i class="fas fa-crown"></i> MAM Distribuidora</h3></div>
 <div style="padding:30px 20px;" id="alert-message"></div>
-<div style="padding:20px;"><button style="background:var(--gold);color:#000;border:none;padding:12px 30px;border-radius:8px;font-weight:bold;cursor:pointer;" onclick="closeAlert()">Entendi</button></div>
+<div style="padding:20px;"><button style="background:var(--gold);color:#000;border:none;padding:12px 30px;border-radius:8px;font-weight:bold;cursor:pointer;" onclick="closeAlert()" data-i18n="understood">Entendi</button></div>
 </div></div>
 
 <div id="confirm-modal" class="modal" style="z-index:20001;">
@@ -153,9 +186,42 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div style="background:rgba(212,175,55,.15);padding:20px;"><h3 style="color:var(--gold);"><i class="fas fa-crown"></i> Confirmar</h3></div>
 <div style="padding:30px 20px;" id="confirm-message"></div>
 <div style="display:flex;gap:15px;justify-content:center;margin-top:20px;">
-<button class="btn btn-sec" onclick="confirmResposta(false)" style="width:auto;padding:10px 30px;">Não</button>
-<button class="btn" onclick="confirmResposta(true)" style="width:auto;padding:10px 30px;">Sim</button>
+<button class="btn btn-sec" onclick="confirmResposta(false)" style="width:auto;padding:10px 30px;" data-i18n="no">Não</button>
+<button class="btn" onclick="confirmResposta(true)" style="width:auto;padding:10px 30px;" data-i18n="yes">Sim</button>
 </div></div></div>
+
+<!-- MODAL SUSPENSÃO COM PRAZO -->
+<div id="modal-suspender" class="modal"><div class="modal-content" style="max-width:500px;">
+<button class="modal-close" onclick="closeModal('modal-suspender')"><i class="fas fa-times"></i></button>
+<h3 data-i18n="admin_suspend">Suspender Artista</h3>
+<input type="hidden" id="susp-artist-id">
+<p id="susp-artist-nome" style="color:var(--gray);margin-bottom:15px;"></p>
+<label data-i18n="suspend_days">Duração da suspensão (dias)</label>
+<select id="susp-dias">
+<option value="1">1 dia</option>
+<option value="3">3 dias</option>
+<option value="7">7 dias</option>
+<option value="14">14 dias</option>
+<option value="30" selected>30 dias</option>
+<option value="90">90 dias</option>
+<option value="0">Permanente</option>
+</select>
+<label data-i18n="suspend_reason">Motivo (opcional)</label>
+<textarea id="susp-motivo" rows="2" placeholder="Ex: violação de direitos autorais"></textarea>
+<button class="btn btn-danger" onclick="confirmarSuspensao()" data-i18n="admin_suspend_confirm">Suspender</button>
+</div></div>
+
+<!-- MODAL ATRIBUIR OFICIAL -->
+<div id="modal-oficial" class="modal"><div class="modal-content" style="max-width:600px;">
+<button class="modal-close" onclick="closeModal('modal-oficial')"><i class="fas fa-times"></i></button>
+<h3 data-i18n="admin_official">Atribuir como Perfil Oficial</h3>
+<input type="hidden" id="oficial-artist-id">
+<p id="oficial-artist-nome" style="color:var(--gray);margin-bottom:10px;"></p>
+<p style="color:#ccc;font-size:.85rem;margin-bottom:15px;" data-i18n="admin_official_desc">Ao marcar como oficial, TODAS as músicas lançadas por artistas com o mesmo nome serão direcionadas para este perfil. Outros perfis ficarão associados a este como dono legítimo dos direitos.</p>
+<label data-i18n="oficial_proof">Comprovativo de propriedade (link ou texto)</label>
+<textarea id="oficial-prova" rows="3" placeholder="Ex: Link do Instagram oficial, contrato, etc."></textarea>
+<button class="btn btn-success" onclick="confirmarOficial()" data-i18n="admin_official_confirm">Marcar como Oficial</button>
+</div></div>
 
 <header>
 <div class="logo"><img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg"><span class="logo-text">MAM DISTRIBUIDORA</span></div>
@@ -185,6 +251,50 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="container">
 
 <section id="auth-screen" class="section active">
+
+<!-- CARROSSEL PUBLICITÁRIO -->
+<div class="carousel" id="carousel">
+<div class="carousel-slide s1 active">
+<div>
+<h2 data-i18n="adv1_title">🎵 O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
+<p data-i18n="adv1_desc">Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv1_btn">COMEÇAR AGORA</button>
+</div>
+</div>
+<div class="carousel-slide s2">
+<div>
+<h2 data-i18n="adv2_title">💰 100% DOS ROYALTIES SÃO SEUS</h2>
+<p data-i18n="adv2_desc">Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv2_btn">CRIAR CONTA GRÁTIS</button>
+</div>
+</div>
+<div class="carousel-slide s3">
+<div>
+<h2 data-i18n="adv3_title">🌍 CHEGUE AO MUNDO INTEIRO</h2>
+<p data-i18n="adv3_desc">A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv3_btn">DISTRIBUIR AGORA</button>
+</div>
+</div>
+<div class="carousel-slide s4">
+<div>
+<h2 data-i18n="adv4_title">🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3</h2>
+<p data-i18n="adv4_desc">Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv4_btn">SABER MAIS</button>
+</div>
+</div>
+<div class="carousel-dots" id="carousel-dots">
+<span class="active" onclick="goToSlide(0)"></span>
+<span onclick="goToSlide(1)"></span>
+<span onclick="goToSlide(2)"></span>
+<span onclick="goToSlide(3)"></span>
+</div>
+</div>
+
+<!-- VÍDEO PROMOCIONAL -->
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1" title="MAM Distribuidora" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 <div id="modal-login" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button>
 <h3 data-i18n="login_title">ENTRAR</h3>
@@ -225,6 +335,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <h3 data-i18n="recover_title">Recuperar Senha</h3>
 <label data-i18n="lbl_email">Email</label>
 <input type="email" id="reset-email" placeholder="O seu email">
+<p class="help-text" data-i18n="recover_help">Enviaremos um link para o seu email. Ao clicar, será redirecionado para criar uma nova senha.</p>
 <button class="btn" onclick="resetPassword()" data-i18n="btn_send_link">Enviar Link</button>
 </div></div>
 
@@ -242,6 +353,16 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div id="main-app" style="display:none;">
 
 <section id="home" class="section">
+<!-- CARROSSEL DENTRO DO APP -->
+<div class="carousel" id="carousel-in" style="height:200px;">
+<div class="carousel-slide s1 active" style="padding:20px;">
+<div><h2 style="font-size:1.3rem;" data-i18n="adv1_title_small">🎵 DISTRIBUA A SUA MÚSICA</h2><p data-i18n="adv1_desc_small">Chegue a 150+ plataformas globais com um clique.</p></div>
+</div>
+<div class="carousel-slide s3" style="padding:20px;">
+<div><h2 style="font-size:1.3rem;" data-i18n="adv3_title_small">🌍 ALCANCE MUNDIAL</h2><p data-i18n="adv3_desc_small">A sua música ouvida em todo o mundo.</p></div>
+</div>
+</div>
+
 <div class="card">
 <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
 <img id="home-user-photo" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);">
@@ -283,7 +404,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <label data-i18n="lbl_select_artist">Artista *</label><select id="music-artista-select"><option value="">-- Escolha --</option></select>
 <div class="form-row">
 <div><label data-i18n="lbl_genre">Género Principal *</label><select id="music-estilo"><option value="">-- Escolha --</option></select></div>
-<div><label data-i18n="lbl_subgenre">Sub-Género *</label><select id="music-sub-estilo"><option value="">-- Escolha o género primeiro --</option></select></div>
+<div><label data-i18n="lbl_subgenre">Sub-Género *</label><select id="music-sub-estilo"><option value="">-- Escolha --</option></select></div>
 </div>
 <div class="form-row">
 <div><label data-i18n="lbl_release_date">Data de lançamento</label><input type="date" id="music-data"></div>
@@ -303,6 +424,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <li><i class="fas fa-check-circle"></i> <span data-i18n="cover_req1">Formato: JPG ou PNG</span></li>
 <li><i class="fas fa-check-circle"></i> <span data-i18n="cover_req2">Mínimo 1400x1400 px, 1:1</span></li>
 <li><i class="fas fa-check-circle"></i> <span data-i18n="cover_req3">Máximo 20 MB</span></li>
+<li><i class="fas fa-check-circle"></i> <span data-i18n="cover_req4">Sem logos, links ou preços</span></li>
 </ul></div>
 <input type="hidden" id="music-capa-url">
 <input type="file" id="music-capa-file" accept="image/jpeg,image/png" style="display:none;">
@@ -310,9 +432,9 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div id="capa-preview" style="display:none;margin-top:15px;text-align:center;"><img id="capa-preview-img" style="width:150px;height:150px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);"><p id="capa-status" style="color:var(--success);margin-top:10px;font-size:.85rem;"></p></div>
 <label style="margin-top:15px;" data-i18n="lbl_audio">Áudio (WAV) *</label>
 <div class="requirements-box"><ul>
-<li><i class="fas fa-check-circle"></i> <span data-i18n="audio_req1">Formato: WAV</span></li>
+<li><i class="fas fa-check-circle"></i> <span data-i18n="audio_req1">Formato: WAV (obrigatório pelas plataformas)</span></li>
 <li><i class="fas fa-check-circle"></i> <span data-i18n="audio_req2">44.1/48 kHz, 16/24-bit</span></li>
-<li><i class="fas fa-check-circle"></i> <span data-i18n="audio_req3">Máximo 500 MB</span></li>
+<li><i class="fas fa-check-circle"></i> <span data-i18n="audio_req3">Estéreo, máximo 500 MB</span></li>
 </ul></div>
 <input type="hidden" id="music-audio-url">
 <input type="file" id="music-audio-file" accept=".wav,audio/wav" style="display:none;">
@@ -488,9 +610,24 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <h3 data-i18n="withdraw_title">Solicitar Saque</h3>
 <div class="ddex-info"><p><i class="fas fa-info-circle"></i> <span data-i18n="withdraw_min_info">Saque mínimo: 10.000 Kz.</span></p></div>
 <label data-i18n="lbl_amount">Valor (Kz)</label><input type="number" id="saque-valor" min="10000">
-<label data-i18n="lbl_method">Método</label>
-<select id="saque-metodo"><option value="">-- Escolha --</option><option value="bfa">BFA</option><option value="bai">BAI</option><option value="bic">BIC</option><option value="millennium">Millennium</option><option value="multicaixa">Multicaixa Express</option><option value="paypal">PayPal</option><option value="payoneer">Payoneer</option></select>
-<label data-i18n="lbl_account">Conta/IBAN/email</label><input type="text" id="saque-conta">
+<label data-i18n="lbl_fullname">Nome Completo (titular da conta)</label><input type="text" id="saque-nome" placeholder="Ex: João Silva Santos">
+<label data-i18n="lbl_method">Método / Banco</label>
+<select id="saque-metodo">
+<option value="">-- Escolha --</option>
+<option value="bfa">BFA - Banco de Fomento Angola</option>
+<option value="bai">BAI - Banco Angolano de Investimentos</option>
+<option value="bic">BIC - Banco BIC</option>
+<option value="millennium">Millennium Atlântico</option>
+<option value="sol">Banco Sol</option>
+<option value="bic">Banco BIC</option>
+<option value="standard">Standard Bank</option>
+<option value="multicaixa">Multicaixa Express</option>
+<option value="paypal">PayPal</option>
+<option value="payoneer">Payoneer</option>
+</select>
+<label data-i18n="lbl_iban">IBAN / Número de Conta</label>
+<input type="text" id="saque-conta" placeholder="AO06 0000 0000 0000 0000 0">
+<p class="help-text" data-i18n="withdraw_help">⚠️ Verifique bem o IBAN. Transferências para contas erradas não podem ser revertidas.</p>
 <button class="btn" onclick="solicitarSaque()" data-i18n="btn_request">Solicitar</button>
 </div></div>
 
@@ -558,13 +695,16 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 </div></div>
 
 <script>
-// ============ TRADUÇÕES COMPLETAS ============
+// ==================== TRADUÇÕES ====================
 const translations = {
     pt: {
         subtitle:"O Império da Música em Angola | Distribuição para 150+ Plataformas",
         nav_home:"Início",nav_plans:"Planos",nav_artists:"Artistas",nav_release:"Lançar",nav_my_music:"Minhas Músicas",nav_wallet:"Carteira",nav_profile:"Perfil",nav_messages:"Mensagens",nav_settings:"Definições",nav_login:"Entrar",nav_logout:"Sair",
         login_title:"ENTRAR",lbl_email:"Email",lbl_password:"Senha",btn_login:"Entrar",forgot_pass:"Esqueci a senha",create_account:"Criar conta grátis",
-        register_title:"CRIAR CONTA",lbl_fullname:"Nome Completo",lbl_birth:"Data de Nascimento",lbl_phone:"Telefone",email_help:"Será enviado um email de confirmação. Só poderá entrar após confirmar.",phone_help:"Escolha o código do país e escreva apenas o número (sem o +244)",
+        register_title:"CRIAR CONTA",lbl_fullname:"Nome Completo",lbl_birth:"Data de Nascimento",lbl_phone:"Telefone",
+        email_help:"Será enviado um email de confirmação. Só poderá entrar após confirmar.",
+        phone_help:"Escolha o código do país e escreva apenas o número",
+        recover_help:"Enviaremos um link para o seu email. Ao clicar, será redirecionado para criar uma nova senha.",
         lbl_confirm_password:"Confirmar Senha",btn_register:"Criar Conta",
         recover_title:"Recuperar Senha",btn_send_link:"Enviar Link",
         welcome_title:"O IMPÉRIO DA MÚSICA EM ANGOLA",welcome_desc:"Distribua a sua música para 150+ plataformas globais.",btn_create_free:"CRIAR CONTA GRÁTIS",
@@ -574,34 +714,44 @@ const translations = {
         my_artists:"Meus Artistas",btn_new_artist:"+ Novo Artista",
         release_title:"Lançar Música (DDEX ERN 4.3)",lbl_track:"Título da Música *",lbl_select_artist:"Artista *",lbl_genre:"Género Principal *",lbl_subgenre:"Sub-Género *",
         lbl_release_date:"Data de lançamento",lbl_isrc:"ISRC",lbl_upc:"UPC",lbl_composers:"Compositores",lbl_collab:"Colaboradores",lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
-        lbl_cover:"Capa da Música *",cover_req1:"Formato: JPG ou PNG",cover_req2:"Mínimo 1400x1400 px, 1:1",cover_req3:"Máximo 20 MB",btn_select_cover:"Selecionar Capa",
-        lbl_audio:"Áudio (WAV) *",audio_req1:"Formato: WAV",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Máximo 500 MB",btn_select_audio:"Selecionar Áudio WAV",
+        lbl_cover:"Capa da Música *",cover_req1:"Formato: JPG ou PNG",cover_req2:"Mínimo 1400x1400 px, 1:1",cover_req3:"Máximo 20 MB",cover_req4:"Sem logos, links ou preços",btn_select_cover:"Selecionar Capa",
+        lbl_audio:"Áudio (WAV) *",audio_req1:"Formato: WAV (obrigatório pelas plataformas)",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Estéreo, máximo 500 MB",btn_select_audio:"Selecionar Áudio WAV",
         ddex_info:"Sistema gera pacote DDEX ERN 4.3 e converte WAV conforme exigido pelas plataformas.",btn_submit:"Enviar para Distribuição",
         my_music:"Minhas Músicas",wallet_title:"Carteira",lbl_currency:"Moeda",lbl_rate:"Taxa",wallet_month:"Ganhos do mês",wallet_total:"Ganhos totais",
         withdraw_min_info:"Saque mínimo: 10.000 Kz.",btn_withdraw:"Levantar Ganhos",
+        withdraw_help:"⚠️ Verifique bem o IBAN. Transferências para contas erradas não podem ser revertidas.",
         profile_title:"Meu Perfil",btn_edit_profile:"Editar Perfil",my_releases:"Meus Lançamentos",
         messages_title:"Mensagens com a MAM",loading_msgs:"A carregar...",btn_send:"Enviar",
         admin_title:"Administração",admin_releases:"Lançamentos",admin_artists:"Artistas",admin_users:"Utilizadores",admin_withdrawals:"Saques",admin_royalties:"Royalties",admin_messages:"Mensagens",admin_verifications:"Verificações",admin_streams:"Streams",admin_manual:"Manual PDF",admin_select:"Selecione uma opção.",
+        admin_suspend:"Suspender Artista",suspend_days:"Duração da suspensão (dias)",suspend_reason:"Motivo (opcional)",admin_suspend_confirm:"Suspender",
+        admin_official:"Atribuir como Perfil Oficial",admin_official_desc:"Ao marcar como oficial, TODAS as músicas lançadas por artistas com o mesmo nome serão direcionadas para este perfil. Outros perfis ficarão associados a este como dono legítimo dos direitos.",oficial_proof:"Comprovativo de propriedade (link ou texto)",admin_official_confirm:"Marcar como Oficial",
         footer_about:"Sobre",footer_aboutus:"Sobre Nós",footer_privacy:"Privacidade",footer_terms:"Termos",footer_support:"Suporte",footer_founder:"Fundado por Matias Arsénio Manuel",
         settings_title:"Definições",tab_profile:"Perfil",tab_password:"Senha",tab_language:"🌐 Idioma",tab_delete:"Eliminar",
         lbl_country:"País",btn_save:"Guardar",lbl_current_pass:"Senha atual",lbl_new_pass:"Nova senha",btn_change_pass:"Alterar",
         lbl_language_choose:"🌐 Escolha o Idioma do Site",lang_help:"O idioma será aplicado em todo o site imediatamente",btn_apply_lang:"Aplicar Idioma",
         delete_warning:"Ação irreversível.",btn_delete_account:"Eliminar Conta",
         notifications:"Notificações",admin_add_balance:"Adicionar Saldo",lbl_amount:"Valor (Kz)",lbl_reason:"Motivo (opcional)",btn_add_balance:"Adicionar Saldo",
-        withdraw_title:"Solicitar Saque",lbl_method:"Método",lbl_account:"Conta/IBAN/email",btn_request:"Solicitar",
+        withdraw_title:"Solicitar Saque",lbl_method:"Método / Banco",lbl_iban:"IBAN / Número de Conta",lbl_account:"Conta/IBAN/email",btn_request:"Solicitar",
         plan_purchase:"Finalizar Compra",lbl_wallet:"Carteira",lbl_transfer:"Transferência",btn_pay_wallet:"Pagar com Carteira",btn_send_proof:"Enviar Comprovativo",btn_close:"Fechar",
         add_artist_title:"Adicionar Artista",btn_choose_photo:"Escolher Foto",lbl_stage_name:"Nome Artístico *",lbl_music_style:"Estilo Musical Principal *",
         style_help:"Mais de 300 géneros musicais",lbl_social:"Redes Sociais",lbl_bio:"Biografia",btn_save_artist:"Salvar",
         edit_artist_title:"Editar Artista",btn_new_photo:"Nova Foto",btn_update:"Atualizar",
-        email_verify_title:"Confirme o seu Email",
-        email_verify_msg:"Enviámos um email de confirmação para o seu endereço. Por favor, verifique a caixa de entrada e clique no link para ativar a sua conta antes de fazer login.",
-        email_sent:"Foi enviado um email de confirmação para "
+        adv1_title:"🎵 O IMPÉRIO DA MÚSICA EM ANGOLA",adv1_desc:"Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.",adv1_btn:"COMEÇAR AGORA",
+        adv2_title:"💰 100% DOS ROYALTIES SÃO SEUS",adv2_desc:"Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.",adv2_btn:"CRIAR CONTA GRÁTIS",
+        adv3_title:"🌍 CHEGUE AO MUNDO INTEIRO",adv3_desc:"A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.",adv3_btn:"DISTRIBUIR AGORA",
+        adv4_title:"🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3",adv4_desc:"Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.",adv4_btn:"SABER MAIS",
+        adv1_title_small:"🎵 DISTRIBUA A SUA MÚSICA",adv1_desc_small:"Chegue a 150+ plataformas globais com um clique.",
+        adv3_title_small:"🌍 ALCANCE MUNDIAL",adv3_desc_small:"A sua música ouvida em todo o mundo.",
+        yes:"Sim",no:"Não",understood:"Entendi"
     },
     en: {
         subtitle:"The Empire of Music in Angola | Distribution to 150+ Platforms",
         nav_home:"Home",nav_plans:"Plans",nav_artists:"Artists",nav_release:"Release",nav_my_music:"My Music",nav_wallet:"Wallet",nav_profile:"Profile",nav_messages:"Messages",nav_settings:"Settings",nav_login:"Login",nav_logout:"Logout",
         login_title:"LOGIN",lbl_email:"Email",lbl_password:"Password",btn_login:"Login",forgot_pass:"Forgot password",create_account:"Create free account",
-        register_title:"CREATE ACCOUNT",lbl_fullname:"Full Name",lbl_birth:"Date of Birth",lbl_phone:"Phone",email_help:"A confirmation email will be sent. You can only login after confirming.",phone_help:"Choose the country code and enter only the number (without +244)",
+        register_title:"CREATE ACCOUNT",lbl_fullname:"Full Name",lbl_birth:"Date of Birth",lbl_phone:"Phone",
+        email_help:"A confirmation email will be sent. You can only login after confirming.",
+        phone_help:"Choose country code and enter only the number",
+        recover_help:"We will send a link to your email. Clicking it will redirect to create a new password.",
         lbl_confirm_password:"Confirm Password",btn_register:"Create Account",
         recover_title:"Recover Password",btn_send_link:"Send Link",
         welcome_title:"THE EMPIRE OF MUSIC IN ANGOLA",welcome_desc:"Distribute your music to 150+ global platforms.",btn_create_free:"CREATE FREE ACCOUNT",
@@ -611,34 +761,44 @@ const translations = {
         my_artists:"My Artists",btn_new_artist:"+ New Artist",
         release_title:"Release Music (DDEX ERN 4.3)",lbl_track:"Track Title *",lbl_select_artist:"Artist *",lbl_genre:"Main Genre *",lbl_subgenre:"Sub-Genre *",
         lbl_release_date:"Release Date",lbl_isrc:"ISRC",lbl_upc:"UPC",lbl_composers:"Composers",lbl_collab:"Collaborators",lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
-        lbl_cover:"Cover Art *",cover_req1:"Format: JPG or PNG",cover_req2:"Minimum 1400x1400 px, 1:1",cover_req3:"Maximum 20 MB",btn_select_cover:"Select Cover",
-        lbl_audio:"Audio (WAV) *",audio_req1:"Format: WAV",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Maximum 500 MB",btn_select_audio:"Select WAV Audio",
+        lbl_cover:"Cover Art *",cover_req1:"Format: JPG or PNG",cover_req2:"Minimum 1400x1400 px, 1:1",cover_req3:"Maximum 20 MB",cover_req4:"No logos, links or prices",btn_select_cover:"Select Cover",
+        lbl_audio:"Audio (WAV) *",audio_req1:"Format: WAV (required by platforms)",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Stereo, maximum 500 MB",btn_select_audio:"Select WAV Audio",
         ddex_info:"System generates DDEX ERN 4.3 package and converts WAV as required by platforms.",btn_submit:"Send for Distribution",
         my_music:"My Music",wallet_title:"Wallet",lbl_currency:"Currency",lbl_rate:"Rate",wallet_month:"Month earnings",wallet_total:"Total earnings",
         withdraw_min_info:"Minimum withdrawal: 10,000 Kz.",btn_withdraw:"Withdraw",
+        withdraw_help:"⚠️ Verify the IBAN carefully. Transfers to wrong accounts cannot be reversed.",
         profile_title:"My Profile",btn_edit_profile:"Edit Profile",my_releases:"My Releases",
         messages_title:"Messages with MAM",loading_msgs:"Loading...",btn_send:"Send",
         admin_title:"Administration",admin_releases:"Releases",admin_artists:"Artists",admin_users:"Users",admin_withdrawals:"Withdrawals",admin_royalties:"Royalties",admin_messages:"Messages",admin_verifications:"Verifications",admin_streams:"Streams",admin_manual:"PDF Manual",admin_select:"Select an option.",
+        admin_suspend:"Suspend Artist",suspend_days:"Suspension duration (days)",suspend_reason:"Reason (optional)",admin_suspend_confirm:"Suspend",
+        admin_official:"Assign as Official Profile",admin_official_desc:"By marking as official, ALL songs released by artists with the same name will be redirected to this profile. Other profiles will be associated with this one as the legitimate rights holder.",oficial_proof:"Ownership proof (link or text)",admin_official_confirm:"Mark as Official",
         footer_about:"About",footer_aboutus:"About Us",footer_privacy:"Privacy",footer_terms:"Terms",footer_support:"Support",footer_founder:"Founded by Matias Arsénio Manuel",
         settings_title:"Settings",tab_profile:"Profile",tab_password:"Password",tab_language:"🌐 Language",tab_delete:"Delete",
         lbl_country:"Country",btn_save:"Save",lbl_current_pass:"Current password",lbl_new_pass:"New password",btn_change_pass:"Change",
         lbl_language_choose:"🌐 Choose Site Language",lang_help:"Language will be applied throughout the site immediately",btn_apply_lang:"Apply Language",
         delete_warning:"Irreversible action.",btn_delete_account:"Delete Account",
         notifications:"Notifications",admin_add_balance:"Add Balance",lbl_amount:"Amount (Kz)",lbl_reason:"Reason (optional)",btn_add_balance:"Add Balance",
-        withdraw_title:"Request Withdrawal",lbl_method:"Method",lbl_account:"Account/IBAN/email",btn_request:"Request",
+        withdraw_title:"Request Withdrawal",lbl_method:"Method / Bank",lbl_iban:"IBAN / Account Number",lbl_account:"Account/IBAN/email",btn_request:"Request",
         plan_purchase:"Complete Purchase",lbl_wallet:"Wallet",lbl_transfer:"Transfer",btn_pay_wallet:"Pay with Wallet",btn_send_proof:"Send Proof",btn_close:"Close",
         add_artist_title:"Add Artist",btn_choose_photo:"Choose Photo",lbl_stage_name:"Stage Name *",lbl_music_style:"Main Music Style *",
         style_help:"Over 300 music genres",lbl_social:"Social Media",lbl_bio:"Biography",btn_save_artist:"Save",
         edit_artist_title:"Edit Artist",btn_new_photo:"New Photo",btn_update:"Update",
-        email_verify_title:"Confirm your Email",
-        email_verify_msg:"We've sent a confirmation email to your address. Please check your inbox and click the link to activate your account before logging in.",
-        email_sent:"Confirmation email sent to "
+        adv1_title:"🎵 THE EMPIRE OF MUSIC IN ANGOLA",adv1_desc:"Distribute your music to over 150 digital platforms: Spotify, Apple Music, TikTok, Instagram, YouTube and more.",adv1_btn:"START NOW",
+        adv2_title:"💰 100% OF ROYALTIES ARE YOURS",adv2_desc:"Unlike other distributors, MAM gives you all earnings. No hidden fees, no abusive commissions.",adv2_btn:"CREATE FREE ACCOUNT",
+        adv3_title:"🌍 REACH THE ENTIRE WORLD",adv3_desc:"Your music on 150+ global platforms. Reach millions of listeners in Africa, Europe, America and Asia.",adv3_btn:"DISTRIBUTE NOW",
+        adv4_title:"🚀 PROFESSIONAL DDEX ERN 4.3 STANDARD",adv4_desc:"We use the same standard as major labels. ISRC, UPC, DDEX — all generated automatically.",adv4_btn:"LEARN MORE",
+        adv1_title_small:"🎵 DISTRIBUTE YOUR MUSIC",adv1_desc_small:"Reach 150+ global platforms with one click.",
+        adv3_title_small:"🌍 GLOBAL REACH",adv3_desc_small:"Your music heard worldwide.",
+        yes:"Yes",no:"No",understood:"Understood"
     },
     es: {
         subtitle:"El Imperio de la Música en Angola | Distribución a 150+ Plataformas",
         nav_home:"Inicio",nav_plans:"Planes",nav_artists:"Artistas",nav_release:"Lanzar",nav_my_music:"Mis Canciones",nav_wallet:"Cartera",nav_profile:"Perfil",nav_messages:"Mensajes",nav_settings:"Ajustes",nav_login:"Entrar",nav_logout:"Salir",
         login_title:"ENTRAR",lbl_email:"Email",lbl_password:"Contraseña",btn_login:"Entrar",forgot_pass:"Olvidé mi contraseña",create_account:"Crear cuenta gratis",
-        register_title:"CREAR CUENTA",lbl_fullname:"Nombre Completo",lbl_birth:"Fecha de Nacimiento",lbl_phone:"Teléfono",email_help:"Se enviará un email de confirmación. Solo podrá entrar después de confirmar.",phone_help:"Elija el código del país y escriba solo el número (sin +244)",
+        register_title:"CREAR CUENTA",lbl_fullname:"Nombre Completo",lbl_birth:"Fecha de Nacimiento",lbl_phone:"Teléfono",
+        email_help:"Se enviará un email de confirmación. Solo podrá entrar después de confirmar.",
+        phone_help:"Elija el código del país y escriba solo el número",
+        recover_help:"Enviaremos un enlace a su email. Al hacer clic, será redirigido para crear una nueva contraseña.",
         lbl_confirm_password:"Confirmar Contraseña",btn_register:"Crear Cuenta",
         recover_title:"Recuperar Contraseña",btn_send_link:"Enviar Enlace",
         welcome_title:"EL IMPERIO DE LA MÚSICA EN ANGOLA",welcome_desc:"Distribuya su música a más de 150 plataformas.",btn_create_free:"CREAR CUENTA GRATIS",
@@ -648,34 +808,44 @@ const translations = {
         my_artists:"Mis Artistas",btn_new_artist:"+ Nuevo Artista",
         release_title:"Lanzar Música (DDEX ERN 4.3)",lbl_track:"Título *",lbl_select_artist:"Artista *",lbl_genre:"Género Principal *",lbl_subgenre:"Sub-Género *",
         lbl_release_date:"Fecha de lanzamiento",lbl_isrc:"ISRC",lbl_upc:"UPC",lbl_composers:"Compositores",lbl_collab:"Colaboradores",lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
-        lbl_cover:"Portada *",cover_req1:"Formato: JPG o PNG",cover_req2:"Mínimo 1400x1400 px, 1:1",cover_req3:"Máximo 20 MB",btn_select_cover:"Seleccionar Portada",
-        lbl_audio:"Audio (WAV) *",audio_req1:"Formato: WAV",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Máximo 500 MB",btn_select_audio:"Seleccionar Audio WAV",
+        lbl_cover:"Portada *",cover_req1:"Formato: JPG o PNG",cover_req2:"Mínimo 1400x1400 px, 1:1",cover_req3:"Máximo 20 MB",cover_req4:"Sin logos, enlaces o precios",btn_select_cover:"Seleccionar Portada",
+        lbl_audio:"Audio (WAV) *",audio_req1:"Formato: WAV (obligatorio)",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Estéreo, máximo 500 MB",btn_select_audio:"Seleccionar Audio WAV",
         ddex_info:"El sistema genera paquete DDEX ERN 4.3 y convierte WAV según exigido.",btn_submit:"Enviar a Distribución",
         my_music:"Mis Canciones",wallet_title:"Cartera",lbl_currency:"Moneda",lbl_rate:"Tipo",wallet_month:"Ganancias del mes",wallet_total:"Ganancias totales",
         withdraw_min_info:"Retiro mínimo: 10.000 Kz.",btn_withdraw:"Retirar",
+        withdraw_help:"⚠️ Verifique bien el IBAN. Transferencias a cuentas equivocadas no pueden revertirse.",
         profile_title:"Mi Perfil",btn_edit_profile:"Editar Perfil",my_releases:"Mis Lanzamientos",
         messages_title:"Mensajes con MAM",loading_msgs:"Cargando...",btn_send:"Enviar",
         admin_title:"Administración",admin_releases:"Lanzamientos",admin_artists:"Artistas",admin_users:"Usuarios",admin_withdrawals:"Retiros",admin_royalties:"Regalías",admin_messages:"Mensajes",admin_verifications:"Verificaciones",admin_streams:"Streams",admin_manual:"Manual PDF",admin_select:"Seleccione una opción.",
+        admin_suspend:"Suspender Artista",suspend_days:"Duración de suspensión (días)",suspend_reason:"Motivo (opcional)",admin_suspend_confirm:"Suspender",
+        admin_official:"Asignar como Perfil Oficial",admin_official_desc:"Al marcar como oficial, TODAS las canciones lanzadas por artistas con el mismo nombre se dirigirán a este perfil.",oficial_proof:"Prueba de propiedad",admin_official_confirm:"Marcar como Oficial",
         footer_about:"Acerca",footer_aboutus:"Sobre Nosotros",footer_privacy:"Privacidad",footer_terms:"Términos",footer_support:"Soporte",footer_founder:"Fundado por Matias Arsénio Manuel",
         settings_title:"Ajustes",tab_profile:"Perfil",tab_password:"Contraseña",tab_language:"🌐 Idioma",tab_delete:"Eliminar",
         lbl_country:"País",btn_save:"Guardar",lbl_current_pass:"Contraseña actual",lbl_new_pass:"Nueva contraseña",btn_change_pass:"Cambiar",
         lbl_language_choose:"🌐 Elija el Idioma del Sitio",lang_help:"El idioma se aplicará en todo el sitio inmediatamente",btn_apply_lang:"Aplicar Idioma",
         delete_warning:"Acción irreversible.",btn_delete_account:"Eliminar Cuenta",
         notifications:"Notificaciones",admin_add_balance:"Añadir Saldo",lbl_amount:"Cantidad (Kz)",lbl_reason:"Razón (opcional)",btn_add_balance:"Añadir Saldo",
-        withdraw_title:"Solicitar Retiro",lbl_method:"Método",lbl_account:"Cuenta/IBAN/email",btn_request:"Solicitar",
+        withdraw_title:"Solicitar Retiro",lbl_method:"Método / Banco",lbl_iban:"IBAN / Número de Cuenta",lbl_account:"Cuenta/IBAN/email",btn_request:"Solicitar",
         plan_purchase:"Completar Compra",lbl_wallet:"Cartera",lbl_transfer:"Transferencia",btn_pay_wallet:"Pagar con Cartera",btn_send_proof:"Enviar Comprobante",btn_close:"Cerrar",
         add_artist_title:"Añadir Artista",btn_choose_photo:"Elegir Foto",lbl_stage_name:"Nombre Artístico *",lbl_music_style:"Estilo Musical *",
         style_help:"Más de 300 géneros musicales",lbl_social:"Redes Sociales",lbl_bio:"Biografía",btn_save_artist:"Guardar",
         edit_artist_title:"Editar Artista",btn_new_photo:"Nueva Foto",btn_update:"Actualizar",
-        email_verify_title:"Confirma tu Email",
-        email_verify_msg:"Hemos enviado un email de confirmación. Por favor revise su bandeja de entrada y haga clic en el enlace para activar su cuenta antes de iniciar sesión.",
-        email_sent:"Email de confirmación enviado a "
+        adv1_title:"🎵 EL IMPERIO DE LA MÚSICA EN ANGOLA",adv1_desc:"Distribuya su música a más de 150 plataformas digitales.",adv1_btn:"COMENZAR AHORA",
+        adv2_title:"💰 100% DE REGALÍAS SON SUYAS",adv2_desc:"A diferencia de otras distribuidoras, MAM le da todas las ganancias.",adv2_btn:"CREAR CUENTA GRATIS",
+        adv3_title:"🌍 LLEGUE AL MUNDO ENTERO",adv3_desc:"Su música en 150+ plataformas globales.",adv3_btn:"DISTRIBUIR AHORA",
+        adv4_title:"🚀 ESTÁNDAR PROFESIONAL DDEX ERN 4.3",adv4_desc:"Usamos el mismo estándar que los grandes sellos.",adv4_btn:"SABER MÁS",
+        adv1_title_small:"🎵 DISTRIBUYA SU MÚSICA",adv1_desc_small:"Llegue a 150+ plataformas con un clic.",
+        adv3_title_small:"🌍 ALCANCE MUNDIAL",adv3_desc_small:"Su música escuchada en todo el mundo.",
+        yes:"Sí",no:"No",understood:"Entendido"
     },
     fr: {
         subtitle:"L'Empire de la Musique en Angola | Distribution vers 150+ Plateformes",
         nav_home:"Accueil",nav_plans:"Forfaits",nav_artists:"Artistes",nav_release:"Publier",nav_my_music:"Mes Musiques",nav_wallet:"Portefeuille",nav_profile:"Profil",nav_messages:"Messages",nav_settings:"Paramètres",nav_login:"Connexion",nav_logout:"Déconnexion",
         login_title:"CONNEXION",lbl_email:"Email",lbl_password:"Mot de passe",btn_login:"Connexion",forgot_pass:"Mot de passe oublié",create_account:"Créer un compte",
-        register_title:"CRÉER UN COMPTE",lbl_fullname:"Nom Complet",lbl_birth:"Date de Naissance",lbl_phone:"Téléphone",email_help:"Un email de confirmation sera envoyé. Vous ne pourrez vous connecter qu'après confirmation.",phone_help:"Choisissez le code pays et entrez uniquement le numéro (sans +244)",
+        register_title:"CRÉER UN COMPTE",lbl_fullname:"Nom Complet",lbl_birth:"Date de Naissance",lbl_phone:"Téléphone",
+        email_help:"Un email de confirmation sera envoyé. Vous ne pourrez vous connecter qu'après confirmation.",
+        phone_help:"Choisissez le code pays et entrez uniquement le numéro",
+        recover_help:"Nous enverrons un lien à votre email. En cliquant, vous serez redirigé pour créer un nouveau mot de passe.",
         lbl_confirm_password:"Confirmer le Mot de Passe",btn_register:"Créer le Compte",
         recover_title:"Récupérer Mot de Passe",btn_send_link:"Envoyer le Lien",
         welcome_title:"L'EMPIRE DE LA MUSIQUE EN ANGOLA",welcome_desc:"Distribuez votre musique à 150+ plateformes.",btn_create_free:"CRÉER UN COMPTE",
@@ -685,32 +855,38 @@ const translations = {
         my_artists:"Mes Artistes",btn_new_artist:"+ Nouvel Artiste",
         release_title:"Publier Musique (DDEX ERN 4.3)",lbl_track:"Titre *",lbl_select_artist:"Artiste *",lbl_genre:"Genre Principal *",lbl_subgenre:"Sous-Genre *",
         lbl_release_date:"Date de sortie",lbl_isrc:"ISRC",lbl_upc:"UPC",lbl_composers:"Compositeurs",lbl_collab:"Collaborateurs",lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
-        lbl_cover:"Pochette *",cover_req1:"Format: JPG ou PNG",cover_req2:"Minimum 1400x1400 px, 1:1",cover_req3:"Maximum 20 MB",btn_select_cover:"Choisir Pochette",
-        lbl_audio:"Audio (WAV) *",audio_req1:"Format: WAV",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Maximum 500 MB",btn_select_audio:"Choisir Audio WAV",
+        lbl_cover:"Pochette *",cover_req1:"Format: JPG ou PNG",cover_req2:"Minimum 1400x1400 px, 1:1",cover_req3:"Maximum 20 MB",cover_req4:"Sans logos, liens ou prix",btn_select_cover:"Choisir Pochette",
+        lbl_audio:"Audio (WAV) *",audio_req1:"Format: WAV (obligatoire)",audio_req2:"44.1/48 kHz, 16/24-bit",audio_req3:"Stéréo, maximum 500 MB",btn_select_audio:"Choisir Audio WAV",
         ddex_info:"Le système génère un paquet DDEX ERN 4.3 et convertit WAV selon exigences.",btn_submit:"Envoyer pour Distribution",
         my_music:"Mes Musiques",wallet_title:"Portefeuille",lbl_currency:"Devise",lbl_rate:"Taux",wallet_month:"Gains du mois",wallet_total:"Gains totaux",
         withdraw_min_info:"Retrait minimum: 10 000 Kz.",btn_withdraw:"Retirer",
+        withdraw_help:"⚠️ Vérifiez bien l'IBAN. Les virements vers de mauvais comptes ne peuvent pas être annulés.",
         profile_title:"Mon Profil",btn_edit_profile:"Modifier Profil",my_releases:"Mes Sorties",
         messages_title:"Messages avec MAM",loading_msgs:"Chargement...",btn_send:"Envoyer",
         admin_title:"Administration",admin_releases:"Sorties",admin_artists:"Artistes",admin_users:"Utilisateurs",admin_withdrawals:"Retraits",admin_royalties:"Redevances",admin_messages:"Messages",admin_verifications:"Vérifications",admin_streams:"Streams",admin_manual:"Manuel PDF",admin_select:"Sélectionnez une option.",
+        admin_suspend:"Suspendre Artiste",suspend_days:"Durée de suspension (jours)",suspend_reason:"Raison (facultatif)",admin_suspend_confirm:"Suspendre",
+        admin_official:"Attribuer comme Profil Officiel",admin_official_desc:"En marquant comme officiel, TOUTES les chansons publiées par des artistes du même nom seront redirigées vers ce profil.",oficial_proof:"Preuve de propriété",admin_official_confirm:"Marquer comme Officiel",
         footer_about:"À propos",footer_aboutus:"À Propos",footer_privacy:"Confidentialité",footer_terms:"Conditions",footer_support:"Support",footer_founder:"Fondé par Matias Arsénio Manuel",
         settings_title:"Paramètres",tab_profile:"Profil",tab_password:"Mot de passe",tab_language:"🌐 Langue",tab_delete:"Supprimer",
         lbl_country:"Pays",btn_save:"Enregistrer",lbl_current_pass:"Mot de passe actuel",lbl_new_pass:"Nouveau mot de passe",btn_change_pass:"Changer",
         lbl_language_choose:"🌐 Choisissez la Langue du Site",lang_help:"La langue sera appliquée sur tout le site immédiatement",btn_apply_lang:"Appliquer la Langue",
         delete_warning:"Action irréversible.",btn_delete_account:"Supprimer Compte",
         notifications:"Notifications",admin_add_balance:"Ajouter Solde",lbl_amount:"Montant (Kz)",lbl_reason:"Raison (facultatif)",btn_add_balance:"Ajouter Solde",
-        withdraw_title:"Demander Retrait",lbl_method:"Méthode",lbl_account:"Compte/IBAN/email",btn_request:"Demander",
+        withdraw_title:"Demander Retrait",lbl_method:"Méthode / Banque",lbl_iban:"IBAN / Numéro de Compte",lbl_account:"Compte/IBAN/email",btn_request:"Demander",
         plan_purchase:"Finaliser l'Achat",lbl_wallet:"Portefeuille",lbl_transfer:"Virement",btn_pay_wallet:"Payer avec Portefeuille",btn_send_proof:"Envoyer Preuve",btn_close:"Fermer",
         add_artist_title:"Ajouter Artiste",btn_choose_photo:"Choisir Photo",lbl_stage_name:"Nom de Scène *",lbl_music_style:"Style Musical *",
         style_help:"Plus de 300 genres musicaux",lbl_social:"Réseaux Sociaux",lbl_bio:"Biographie",btn_save_artist:"Enregistrer",
         edit_artist_title:"Modifier Artiste",btn_new_photo:"Nouvelle Photo",btn_update:"Mettre à jour",
-        email_verify_title:"Confirmez votre Email",
-        email_verify_msg:"Nous avons envoyé un email de confirmation. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour activer votre compte avant de vous connecter.",
-        email_sent:"Email de confirmation envoyé à "
+        adv1_title:"🎵 L'EMPIRE DE LA MUSIQUE EN ANGOLA",adv1_desc:"Distribuez votre musique à plus de 150 plateformes numériques.",adv1_btn:"COMMENCER",
+        adv2_title:"💰 100% DES REDEVANCES SONT À VOUS",adv2_desc:"Contrairement à d'autres distributeurs, MAM vous donne tous les gains.",adv2_btn:"CRÉER UN COMPTE",
+        adv3_title:"🌍 ATTEIGNEZ LE MONDE ENTIER",adv3_desc:"Votre musique sur 150+ plateformes mondiales.",adv3_btn:"DISTRIBUER",
+        adv4_title:"🚀 STANDARD PROFESSIONNEL DDEX ERN 4.3",adv4_desc:"Nous utilisons le même standard que les grandes maisons de disques.",adv4_btn:"EN SAVOIR PLUS",
+        adv1_title_small:"🎵 DISTRIBUEZ VOTRE MUSIQUE",adv1_desc_small:"Atteignez 150+ plateformes en un clic.",
+        adv3_title_small:"🌍 PORTÉE MONDIALE",adv3_desc_small:"Votre musique écoutée dans le monde entier.",
+        yes:"Oui",no:"Non",understood:"Compris"
     }
 };
 let currentLang=localStorage.getItem('mam_lang')||'pt';
-
 function aplicarIdioma(lang){
     currentLang=lang;
     const t=translations[lang]||translations.pt;
@@ -722,21 +898,15 @@ function aplicarIdioma(lang){
             else el.innerText=t[k];
         }
     });
-    // Traduzir também placeholders específicos
-    document.querySelectorAll('input[placeholder]').forEach(el=>{
-        const ph=el.getAttribute('placeholder');
-        if(t[ph])el.placeholder=t[ph];
-    });
     localStorage.setItem('mam_lang',lang);
     document.documentElement.lang=lang;
 }
-function mudarIdioma(){
-    const lang=document.getElementById('settings-idioma').value;
-    aplicarIdioma(lang);
-    showAlert(`✅ ${translations[lang].btn_apply_lang}`);
-}
+function setLang(lang){aplicarIdioma(lang);closeLangMenu();}
+function mudarIdioma(){const lang=document.getElementById('settings-idioma').value;aplicarIdioma(lang);showAlert('✅ Idioma alterado');}
+function toggleLangMenu(){const m=document.getElementById('lang-menu');m.classList.toggle('active');}
+function closeLangMenu(){document.getElementById('lang-menu').classList.remove('active');}
 
-// ============ FIREBASE ============
+// ==================== FIREBASE ====================
 const firebaseConfig = {
     apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",
     authDomain: "mam-distribuidora-6043f.firebaseapp.com",
@@ -750,7 +920,6 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const CLOUDINARY_CONFIG={cloudName:'dbjhwnhoq',uploadPreset:'mam_preset'};
 
-// ============ CÓDIGOS DE PAÍS ============
 const PHONE_CODES=[
     {code:"+244",name:"🇦🇴 Angola"},{code:"+55",name:"🇧🇷 Brasil"},{code:"+351",name:"🇵🇹 Portugal"},
     {code:"+1",name:"🇺🇸 EUA"},{code:"+44",name:"🇬🇧 Reino Unido"},{code:"+33",name:"🇫🇷 França"},
@@ -758,15 +927,9 @@ const PHONE_CODES=[
     {code:"+238",name:"🇨🇻 Cabo Verde"},{code:"+239",name:"🇸🇹 São Tomé"},{code:"+240",name:"🇬🇶 Guiné Eq."},
     {code:"+245",name:"🇬🇼 Guiné-Bissau"},{code:"+49",name:"🇩🇪 Alemanha"},{code:"+39",name:"🇮🇹 Itália"},
     {code:"+31",name:"🇳🇱 Holanda"},{code:"+32",name:"🇧🇪 Bélgica"},{code:"+41",name:"🇨🇭 Suíça"},
-    {code:"+43",name:"🇦🇹 Áustria"},{code:"+48",name:"🇵🇱 Polónia"},{code:"+30",name:"🇬🇷 Grécia"},
-    {code:"+81",name:"🇯🇵 Japão"},{code:"+86",name:"🇨🇳 China"},{code:"+91",name:"🇮🇳 Índia"},
-    {code:"+61",name:"🇦🇺 Austrália"},{code:"+64",name:"🇳🇿 Nova Zelândia"},{code:"+234",name:"🇳🇬 Nigéria"},
-    {code:"+254",name:"🇰🇪 Quénia"},{code:"+233",name:"🇬🇭 Gana"},{code:"+20",name:"🇪🇬 Egito"},
-    {code:"+212",name:"🇲🇦 Marrocos"},{code:"+213",name:"🇩🇿 Argélia"},{code:"+216",name:"🇹🇳 Tunísia"},
-    {code:"+971",name:"🇦🇪 EAU"},{code:"+966",name:"🇸🇦 Arábia Saudita"},{code:"+972",name:"🇮🇱 Israel"},
-    {code:"+90",name:"🇹🇷 Turquia"},{code:"+7",name:"🇷🇺 Rússia"},{code:"+52",name:"🇲🇽 México"},
-    {code:"+54",name:"🇦🇷 Argentina"},{code:"+56",name:"🇨🇱 Chile"},{code:"+57",name:"🇨🇴 Colômbia"},
-    {code:"+51",name:"🇵🇪 Peru"},{code:"+58",name:"🇻🇪 Venezuela"},{code:"+593",name:"🇪🇨 Equador"}
+    {code:"+48",name:"🇵🇱 Polónia"},{code:"+30",name:"🇬🇷 Grécia"},{code:"+81",name:"🇯🇵 Japão"},
+    {code:"+86",name:"🇨🇳 China"},{code:"+91",name:"🇮🇳 Índia"},{code:"+61",name:"🇦🇺 Austrália"},
+    {code:"+234",name:"🇳🇬 Nigéria"},{code:"+254",name:"🇰🇪 Quénia"},{code:"+233",name:"🇬🇭 Gana"}
 ];
 
 const CURRENCIES={
@@ -782,53 +945,32 @@ const CURRENCIES={
 
 const musicGenres={
     "Afrobeat":["Afrobeat Clássico","Afrofusion","Afropop","Highlife","Afro Soul"],
-    "Afrohouse":["Afrohouse","Afro Tech","Deep Afro"],
-    "Afro Jazz":["Afro Jazz","Ethio Jazz"],
-    "Amapiano":["Amapiano","Piano","Bass Amapiano"],
-    "Kizomba":["Kizomba","Tarrachinha","Semba","Zouk Love"],
-    "Kuduro":["Kuduro Clássico","Kuduro Batida","Kuduro Afro"],
-    "Semba":["Semba","Semba Moderno"],
-    "Zouk":["Zouk","Zouk Love"],
-    "Soukous":["Soukous","Ndombolo"],
-    "Marrabenta":["Marrabenta","Marrabenta Moderno"],
-    "Bachata":["Bachata Clássica","Bachata Urbana"],
-    "Salsa":["Salsa Dura","Salsa Cubana"],
-    "Reggaeton":["Reggaeton","Latin Trap","Dembow"],
-    "Cumbia":["Cumbia Colombiana","Cumbia Mexicana"],
-    "Tango":["Tango","Tango Nuevo"],
-    "Bossa Nova":["Bossa Nova"],
-    "Samba":["Samba Enredo","Samba Pagode","Samba Rock"],
-    "MPB":["MPB","Tropicália"],
-    "Forró":["Forró Pé de Serra","Forró Eletrônico","Xote"],
-    "Funk Carioca":["Funk Ostentação","Funk Melody"],
+    "Afrohouse":["Afrohouse","Afro Tech","Deep Afro"],"Afro Jazz":["Afro Jazz","Ethio Jazz"],
+    "Amapiano":["Amapiano","Piano","Bass Amapiano"],"Kizomba":["Kizomba","Tarrachinha","Semba","Zouk Love"],
+    "Kuduro":["Kuduro Clássico","Kuduro Batida","Kuduro Afro"],"Semba":["Semba","Semba Moderno"],
+    "Zouk":["Zouk","Zouk Love"],"Soukous":["Soukous","Ndombolo"],"Marrabenta":["Marrabenta","Marrabenta Moderno"],
+    "Bachata":["Bachata Clássica","Bachata Urbana"],"Salsa":["Salsa Dura","Salsa Cubana"],
+    "Reggaeton":["Reggaeton","Latin Trap","Dembow"],"Cumbia":["Cumbia Colombiana","Cumbia Mexicana"],
+    "Tango":["Tango","Tango Nuevo"],"Bossa Nova":["Bossa Nova"],
+    "Samba":["Samba Enredo","Samba Pagode","Samba Rock"],"MPB":["MPB","Tropicália"],
+    "Forró":["Forró Pé de Serra","Forró Eletrônico","Xote"],"Funk Carioca":["Funk Ostentação","Funk Melody"],
     "Sertanejo":["Sertanejo Raiz","Sertanejo Universitário"],
     "Pop":["Pop Rock","Synth-pop","Dance Pop","Indie Pop","Electropop","K-Pop","J-Pop"],
     "Rock":["Rock Clássico","Hard Rock","Punk Rock","Alternativo","Grunge","Indie Rock"],
     "Metal":["Heavy Metal","Thrash Metal","Death Metal","Metalcore"],
     "Punk":["Punk Rock","Hardcore Punk","Pop Punk"],
     "Electronic":["Electronica","IDM","Ambient","Techno","Trance","House"],
-    "EDM":["EDM","Electro House","Future Bass"],
-    "House":["Deep House","Tech House","Soulful House","Afro House"],
-    "Techno":["Techno","Minimal Techno","Acid Techno"],
-    "Trance":["Trance","Psytrance"],
+    "EDM":["EDM","Electro House","Future Bass"],"House":["Deep House","Tech House","Soulful House","Afro House"],
+    "Techno":["Techno","Minimal Techno","Acid Techno"],"Trance":["Trance","Psytrance"],
     "Hip Hop":["Trap","Old School","Conscious Hip Hop","Drill","Gangsta Rap"],
-    "Trap":["Trap","Latin Trap","Drill"],
-    "Rap":["Rap Consciente","Rap Gangsta","Rap Melódico"],
-    "R&B":["Contemporary R&B","Neo Soul","Funk","Soul"],
-    "Soul":["Soul Clássico","Neo Soul"],
-    "Gospel":["Gospel Contemporâneo","Louvor","Worship"],
-    "Jazz":["Swing","Bebop","Cool Jazz","Fusion","Smooth Jazz"],
-    "Blues":["Delta Blues","Chicago Blues"],
-    "Reggae":["Roots Reggae","Dub","Dancehall","Ska"],
-    "World Music":["World Fusion","World Beat"],
-    "Fado":["Fado Tradicional","Fado Contemporâneo"],
-    "Flamenco":["Flamenco","Nuevo Flamenco"],
-    "Folk":["Folk Tradicional","Folk Rock","Indie Folk"],
-    "Country":["Country Clássico","Country Pop"],
-    "Classical":["Orquestra","Sinfonia","Ópera"],
-    "Instrumental":["Instrumental","Piano Solo"],
-    "Soundtrack":["Trilha Sonora","Score"],
-    "Experimental":["Experimental","Avant-Garde"]
+    "Trap":["Trap","Latin Trap","Drill"],"Rap":["Rap Consciente","Rap Gangsta","Rap Melódico"],
+    "R&B":["Contemporary R&B","Neo Soul","Funk","Soul"],"Soul":["Soul Clássico","Neo Soul"],
+    "Gospel":["Gospel Contemporâneo","Louvor","Worship"],"Jazz":["Swing","Bebop","Cool Jazz","Fusion","Smooth Jazz"],
+    "Blues":["Delta Blues","Chicago Blues"],"Reggae":["Roots Reggae","Dub","Dancehall","Ska"],
+    "World Music":["World Fusion","World Beat"],"Fado":["Fado Tradicional","Fado Contemporâneo"],
+    "Flamenco":["Flamenco","Nuevo Flamenco"],"Folk":["Folk Tradicional","Folk Rock","Indie Folk"],
+    "Country":["Country Clássico","Country Pop"],"Classical":["Orquestra","Sinfonia","Ópera"],
+    "Instrumental":["Instrumental","Piano Solo"],"Soundtrack":["Trilha Sonora","Score"]
 };
 
 let currentUser=null,userData=null,selectedPlan=null;
@@ -837,8 +979,9 @@ let confirmCallback=null,selectedPaymentMethod=null;
 let notifUnsubscribe=null,chatUserUnsubscribe=null,chatAdminUnsubscribe=null;
 let todasNotificacoes=[],pendingCoverFile=null,pendingAudioFile=null;
 let currentCurrency=localStorage.getItem('mam_currency')||'AOA';
+let carouselIndex=0,carouselTimer=null;
 
-// ============ AUXILIARES ============
+// ==================== AUXILIARES ====================
 function showLoading(s){document.getElementById('loading-overlay').style.display=s?'flex':'none';}
 function showAlert(m){document.getElementById('alert-message').innerHTML=m;document.getElementById('custom-alert').style.display='flex';}
 function closeAlert(){document.getElementById('custom-alert').style.display='none';}
@@ -849,7 +992,6 @@ function confirmAction(m,cb){document.getElementById('confirm-message').innerHTM
 function confirmResposta(r){closeModal('confirm-modal');if(confirmCallback)confirmCallback(r);confirmCallback=null;}
 function mostrarTab(t){['perfil','senha','idioma','eliminar'].forEach(x=>{const e=document.getElementById('settings-tab-'+x);if(e)e.style.display='none';});const e=document.getElementById('settings-tab-'+t);if(e)e.style.display='block';}
 function formatMoney(kz){const c=CURRENCIES[currentCurrency]||CURRENCIES['AOA'];return `${(kz/c.rateToKz).toFixed(2)} ${c.symbol}`;}
-
 function showSection(id,btn){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     const t=document.getElementById(id);if(t)t.classList.add('active');
@@ -863,7 +1005,23 @@ function showSection(id,btn){
     else if(id==='mensagens')loadUserChat();
 }
 
-// ============ ISRC/UPC ============
+// ==================== CARROSSEL ====================
+function goToSlide(n){
+    const slides=document.querySelectorAll('#carousel .carousel-slide');
+    const dots=document.querySelectorAll('#carousel-dots span');
+    if(slides.length===0)return;
+    slides.forEach(s=>s.classList.remove('active'));
+    dots.forEach(d=>d.classList.remove('active'));
+    carouselIndex=n%slides.length;
+    slides[carouselIndex].classList.add('active');
+    dots[carouselIndex].classList.add('active');
+}
+function startCarousel(){
+    if(carouselTimer)clearInterval(carouselTimer);
+    carouselTimer=setInterval(()=>goToSlide(carouselIndex+1),5000);
+}
+
+// ==================== ISRC/UPC ====================
 async function getNextISRC(){
     const ano=new Date().getFullYear().toString().slice(-2);
     try{const r=await db.runTransaction(async t=>{const ref=db.collection('isrc_counter').doc('global');const d=await t.get(ref);if(!d.exists){t.set(ref,{counter:1});return 1;}const n=(d.data().counter||0)+1;t.update(ref,{counter:n});return n;});return `AOMAM${ano}${String(r).padStart(5,'0')}`;}
@@ -875,7 +1033,7 @@ async function getNextUPC(){
     catch(e){return calcUPC(('789'+String(Date.now()).slice(-8)).slice(0,11));}
 }
 
-// ============ DDEX ============
+// ==================== DDEX ====================
 function gerarDDEX(r,a){
     const m='MAM-'+Date.now();
     return `<?xml version="1.0" encoding="UTF-8"?>
@@ -883,7 +1041,7 @@ function gerarDDEX(r,a){
 }
 function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';}
 
-// ============ NOTIFICAÇÕES ============
+// ==================== NOTIFICAÇÕES ====================
 function carregarNotificacoes(){
     if(!currentUser)return;
     if(notifUnsubscribe)notifUnsubscribe();
@@ -909,7 +1067,7 @@ window.fecharNotificacoes=function(){document.getElementById('notif-dropdown').s
 window.marcarNotificacaoLida=async function(id){try{await db.collection('notifications').doc(id).update({lida:true});}catch(e){}};
 async function enviarNotificacao(uid,t,m){try{await db.collection('notifications').add({userId:uid,titulo:t,mensagem:m,lida:false,createdAt:new Date()});}catch(e){}}
 
-// ============ AUTH COM CONFIRMAÇÃO DE EMAIL ============
+// ==================== AUTH ====================
 async function handleRegister(){
     const nome=document.getElementById('reg-nome').value.trim();
     const email=document.getElementById('reg-email').value.trim();
@@ -924,33 +1082,17 @@ async function handleRegister(){
     showLoading(true);
     try{
         const cred=await auth.createUserWithEmailAndPassword(email,pass);
-        // Enviar email de confirmação
         await cred.user.sendEmailVerification();
-        // Guardar dados
         await db.collection('users').doc(cred.user.uid).set({
-            nome,email,telefone:pc+tel,telefoneCodigo:pc,telefoneNumero:tel,
+            nome,email,telefone:pc+' '+tel,telefoneCodigo:pc,telefoneNumero:tel,
             pais:"Angola",tipo:"artista",plano:"free",
             dataNascimento:dn,saldo:0,ganhosMes:0,ganhosTotal:0,
-            fotoPerfil:null,role:'user',emailVerificado:false,
-            createdAt:new Date()
+            fotoPerfil:null,role:'user',emailVerificado:false,createdAt:new Date()
         });
-        // Mensagem de boas-vindas
-        await db.collection('notifications').add({
-            userId:cred.user.uid,
-            titulo:'🎉 Bem-vindo à MAM Distribuidora!',
-            mensagem:`Olá ${nome}! A sua conta foi criada. Confirme o seu email para ativar. Depois pode criar artistas, lançar músicas e receber royalties.`,
-            lida:false,createdAt:new Date()
-        });
-        await db.collection('messages').add({
-            userId:cred.user.uid,userName:nome,userEmail:email,
-            from:'admin',adminName:'MAM Distribuidora',
-            texto:`Bem-vindo(a) à MAM Distribuidora, ${nome}! Estamos aqui para ajudar.`,
-            createdAt:new Date(),lida:false
-        });
-        // Deslogar até confirmar
+        await db.collection('notifications').add({userId:cred.user.uid,titulo:'🎉 Bem-vindo à MAM Distribuidora!',mensagem:`Olá ${nome}! A sua conta foi criada. Confirme o email para ativar.`,lida:false,createdAt:new Date()});
+        await db.collection('messages').add({userId:cred.user.uid,userName:nome,userEmail:email,from:'admin',adminName:'MAM Distribuidora',texto:`Bem-vindo(a) à MAM Distribuidora, ${nome}!`,createdAt:new Date(),lida:false});
         await auth.signOut();
-        const t=translations[currentLang];
-        showAlert(`📧 <strong>${t.email_verify_title}</strong><br><br>${t.email_sent}<strong>${email}</strong>.<br><br>${t.email_verify_msg}`);
+        showAlert(`📧 <strong>Conta criada!</strong><br><br>Foi enviado um email de confirmação para <strong>${email}</strong>.<br><br>Verifique a caixa de entrada e a pasta de spam. Clique no link para ativar a sua conta.<br><br>Só poderá entrar depois de confirmar.`);
         closeModal('modal-registro');
     }catch(e){showAlert('Erro: '+e.message);}
     finally{showLoading(false);}
@@ -962,17 +1104,14 @@ async function handleLogin(){
     showLoading(true);
     try{
         const cred=await auth.signInWithEmailAndPassword(email,pass);
-        // Verificar se email foi confirmado
-        if(!cred.user.emailVerified){
+        if(!cred.user.emailVerified && cred.user.email!=='mamfilhos29@gmail.com'){
             await auth.signOut();
-            const t=translations[currentLang];
-            showAlert(`⚠️ <strong>${t.email_verify_title}</strong><br><br>${t.email_verify_msg}<br><br><a href="#" style="color:var(--gold);" onclick="reenviarVerificacao('${email}','${pass}')">Reenviar email de confirmação</a>`);
+            showAlert(`⚠️ <strong>Email não confirmado</strong><br><br>Verifique a sua caixa de entrada e clique no link de confirmação.<br><br><a href="#" style="color:var(--gold);" onclick="reenviarVerificacao('${email}','${pass}')">Reenviar email</a>`);
             return;
         }
         currentUser=cred.user;
         const doc=await db.collection('users').doc(currentUser.uid).get();
         userData=doc.exists?doc.data():null;
-        // Marcar como verificado
         if(userData && !userData.emailVerificado){
             await db.collection('users').doc(currentUser.uid).update({emailVerificado:true});
             userData.emailVerificado=true;
@@ -987,7 +1126,7 @@ window.reenviarVerificacao=async function(email,pass){
         const cred=await auth.signInWithEmailAndPassword(email,pass);
         await cred.user.sendEmailVerification();
         await auth.signOut();
-        showAlert('✅ Email de confirmação reenviado! Verifique a sua caixa de entrada e pasta de spam.');
+        showAlert('✅ Email de confirmação reenviado! Verifique a caixa de entrada e spam.');
     }catch(e){showAlert('Erro: '+e.message);}
     finally{showLoading(false);}
 };
@@ -996,6 +1135,7 @@ async function setupUI(){
     document.getElementById('main-app').style.display='block';
     document.getElementById('nav-login').style.display='none';
     document.getElementById('nav-logout').style.display='inline-block';
+    document.getElementById('lang-float').style.display='none';
     ['artistas','lancar','minhas-musicas','carteira','perfil','config','notifications','mensagens'].forEach(id=>{
         const e=document.getElementById('nav-'+id);if(e)e.style.display='inline-block';
     });
@@ -1012,6 +1152,7 @@ async function setupUI(){
     carregarNotificacoes();
     carregarDefinicoes();
     initUpload();
+    startCarousel();
 }
 async function handleLogout(){
     await auth.signOut();
@@ -1022,11 +1163,11 @@ async function handleLogout(){
 async function resetPassword(){
     const email=document.getElementById('reset-email').value.trim();
     if(!email){showAlert('Insira o email.');return;}
-    try{await auth.sendPasswordResetEmail(email);showAlert('✅ Email de recuperação enviado! Verifique a caixa de entrada.');closeModal('modal-esqueci-senha');}
+    try{await auth.sendPasswordResetEmail(email);showAlert('✅ Email enviado! Verifique a caixa de entrada e clique no link para criar nova senha.');closeModal('modal-esqueci-senha');}
     catch(e){showAlert(e.message);}
 }
 
-// ============ DEFINIÇÕES ============
+// ==================== DEFINIÇÕES ====================
 function carregarDefinicoes(){
     if(!userData)return;
     document.getElementById('settings-nome').value=userData.nome||'';
@@ -1034,9 +1175,6 @@ function carregarDefinicoes(){
     if(userData.telefoneCodigo){
         document.getElementById('settings-phone-code').value=userData.telefoneCodigo;
         document.getElementById('settings-telefone').value=userData.telefoneNumero||'';
-    } else if(userData.telefone){
-        const m=userData.telefone.match(/^(\+\d+)\s?(.*)$/);
-        if(m){document.getElementById('settings-phone-code').value=m[1];document.getElementById('settings-telefone').value=m[2];}
     }
     document.getElementById('settings-pais').value=userData.pais||'Angola';
     document.getElementById('settings-foto-preview').src=userData.fotoPerfil||'https://via.placeholder.com/120';
@@ -1052,10 +1190,8 @@ window.salvarConfiguracoesPerfil=async function(){
     if(!nome){showAlert('Nome obrigatório.');return;}
     showLoading(true);
     try{
-        await db.collection('users').doc(currentUser.uid).update({
-            nome,dataNascimento:dn,telefoneCodigo:pc,telefoneNumero:tel,telefone:pc+tel,pais,fotoPerfil:foto
-        });
-        userData={...userData,nome,dataNascimento:dn,telefoneCodigo:pc,telefoneNumero:tel,telefone:pc+tel,pais,fotoPerfil:foto};
+        await db.collection('users').doc(currentUser.uid).update({nome,dataNascimento:dn,telefoneCodigo:pc,telefoneNumero:tel,telefone:pc+' '+tel,pais,fotoPerfil:foto});
+        userData={...userData,nome,dataNascimento:dn,telefoneCodigo:pc,telefoneNumero:tel,telefone:pc+' '+tel,pais,fotoPerfil:foto};
         showAlert('Perfil atualizado!');loadHome();loadPerfil();
     }catch(e){showAlert('Erro: '+e.message);}
     finally{showLoading(false);}
@@ -1080,7 +1216,7 @@ window.confirmarEliminarConta=function(){
     });
 };
 
-// ============ HOME ============
+// ==================== HOME ====================
 async function loadHome(){
     if(!currentUser)return;
     try{
@@ -1112,7 +1248,7 @@ async function renderFeed(){
         if(rel.length===0){cont.innerHTML='<p style="color:var(--gray);">Ainda não há músicas.</p>';return;}
         for(const r of rel){
             let artName=r.artista,artId=r.artistaId;
-            if(r.artistaId){try{const ad=await db.collection('artists').doc(r.artistaId).get();if(ad.exists){const a=ad.data();if(a.suspenso&&currentUser.email!=='mamfilhos29@gmail.com')continue;if(a.officialArtistId){const off=await db.collection('artists').doc(a.officialArtistId).get();if(off.exists){artName=off.data().nome;artId=a.officialArtistId;}}}}catch(e){}}
+            if(r.artistaId){try{const ad=await db.collection('artists').doc(r.artistaId).get();if(ad.exists){const a=ad.data();if(a.suspenso&&(!a.suspensoAte||a.suspensoAte.toDate()>new Date())&&currentUser.email!=='mamfilhos29@gmail.com')continue;if(a.officialArtistId){const off=await db.collection('artists').doc(a.officialArtistId).get();if(off.exists){artName=off.data().nome;artId=a.officialArtistId;}}}}catch(e){}}
             cont.innerHTML+=`<div class="music-card">
                 <div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div>
                 <img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover">
@@ -1182,13 +1318,13 @@ async function addID3(mp3Blob,r){
     }catch(e){return mp3Blob;}
 }
 
-// ============ ARTISTAS ============
+// ==================== ARTISTAS ====================
 window.loadArtistas=async function(){
     if(!currentUser)return;
     const container=document.getElementById('artistas-container');
     container.innerHTML='<p style="color:var(--gray);">A carregar...</p>';
     let artistas=[];
-    try{const snap=await db.collection('artists').where('ownerId','==',currentUser.uid).get();snap.forEach(d=>artistas.push({id:d.id,...d.data()}));}catch(e){console.warn(e);}
+    try{const snap=await db.collection('artists').where('ownerId','==',currentUser.uid).get();snap.forEach(d=>artistas.push({id:d.id,...d.data()}));}catch(e){}
     if(artistas.length===0){try{const all=await db.collection('artists').get();all.forEach(d=>{const a=d.data();if(a.ownerId===currentUser.uid)artistas.push({id:d.id,...a});});}catch(e){}}
     if(artistas.length===0){container.innerHTML='<p style="color:var(--gray);">Nenhum artista.</p>';return;}
     artistas.sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));
@@ -1266,7 +1402,7 @@ window.eliminarArtista=function(id){
     });
 };
 
-// ============ PESQUISA ============
+// ==================== PESQUISA ====================
 window.pesquisarArtistaGlobal=async function(){
     const termo=document.getElementById('global-search').value.trim();
     if(!termo){showAlert('Digite o nome.');return;}
@@ -1304,12 +1440,12 @@ async function exibirResultadoPesquisa(art){
     cont.innerHTML=`<div class="artist-profile-card"><img src="${art.foto||'https://via.placeholder.com/120'}" class="artist-avatar-lg"><div style="font-size:1.8rem;color:var(--gold);margin:10px 0 5px;">${art.nome} ${art.seloVerificado?'<span class="selo-badge">✓</span>':''} ${art.isOfficial?'<span class="oficial-badge">OFICIAL</span>':''}</div><div style="color:var(--gray);">${art.estilo||''}</div>${art.bio?`<div style="color:var(--gray);max-width:600px;margin:15px auto;">${art.bio}</div>`:''}<div style="margin-top:10px;">${soc}</div></div>${mh}`;
 }
 
-// ============ VALIDAÇÕES ============
+// ==================== VALIDAÇÕES ====================
 function validarCapa(f,cb){const e=[],ok=['image/jpeg','image/jpg','image/png'];if(!ok.includes(f.type))e.push('Use JPG/PNG.');if(f.size>20*1024*1024)e.push('Máx 20MB.');
     if(e.length){cb(e);return;}const i=new Image(),u=URL.createObjectURL(f);i.onload=()=>{URL.revokeObjectURL(u);if(i.width<1400||i.height<1400)e.push(`Mín 1400x1400. Sua: ${i.width}x${i.height}.`);if(Math.abs(i.width-i.height)>10)e.push('Deve ser quadrada.');cb(e,i.width,i.height);};i.onerror=()=>{URL.revokeObjectURL(u);cb(['Imagem inválida.']);};i.src=u;}
 function validarAudio(f,cb){const e=[],ext=f.name.toLowerCase().split('.').pop();if(ext!=='wav')e.push('Apenas WAV.');if(f.size>500*1024*1024)e.push('Máx 500MB.');cb(e);}
 
-// ============ UPLOADS ============
+// ==================== UPLOADS ====================
 function initUpload(){
     const cb=document.getElementById('upload-capa-btn'),cf=document.getElementById('music-capa-file');
     cb?.addEventListener('click',()=>cf.click());
@@ -1332,7 +1468,7 @@ function initUpload(){
     document.getElementById('edit-upload-artist-photo-btn')?.addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=(e)=>{const f=e.target.files[0];if(!f)return;const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.secure_url){document.getElementById('edit-artist-photo-preview').src=d.secure_url;pendingEditArtistPhotoUrl=d.secure_url;}});};i.click();});
 }
 
-// ============ LANÇAMENTO ============
+// ==================== LANÇAMENTO ====================
 document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){
     const titulo=document.getElementById('music-titulo').value.trim();
     const aid=document.getElementById('music-artista-select').value;
@@ -1369,30 +1505,36 @@ document.getElementById('btnEnviarLancamento')?.addEventListener('click',async f
     }catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}
 });
 
-// ============ SAQUES ============
+// ==================== SAQUES ====================
 window.solicitarSaque=async function(){
     const v=parseFloat(document.getElementById('saque-valor').value);
+    const nome=document.getElementById('saque-nome').value.trim();
     const m=document.getElementById('saque-metodo').value;
     const c=document.getElementById('saque-conta').value.trim();
     if(!v||v<=0){showAlert('Valor inválido.');return;}
-    if(v<10000){showAlert(`❌ Saque mínimo: 10.000 Kz.`);return;}
-    if(!m){showAlert('Método obrigatório.');return;}
-    if(!c){showAlert('Conta obrigatória.');return;}
+    if(v<10000){showAlert('❌ Saque mínimo: 10.000 Kz.');return;}
+    if(!nome){showAlert('Nome completo obrigatório.');return;}
+    if(!m){showAlert('Método/Banco obrigatório.');return;}
+    if(!c){showAlert('IBAN/Conta obrigatório.');return;}
     if(v>(userData.saldo||0)){showAlert('Saldo insuficiente.');return;}
     showLoading(true);
     try{
-        await db.collection('withdrawals').add({userId:currentUser.uid,userNome:userData.nome,userEmail:userData.email,valor:v,moeda:'AOA',metodo:m,conta:c,status:'aguardando_aprovacao',createdAt:new Date()});
+        await db.collection('withdrawals').add({
+            userId:currentUser.uid,userNome:userData.nome,userEmail:userData.email,
+            titularNome:nome,valor:v,moeda:'AOA',metodo:m,conta:c,
+            status:'aguardando_aprovacao',createdAt:new Date()
+        });
         const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();
-        adm.forEach(d=>enviarNotificacao(d.id,'Saque pendente',`${userData.nome}: ${v.toLocaleString()} Kz.`));
+        adm.forEach(d=>enviarNotificacao(d.id,'Saque pendente',`${userData.nome}: ${v.toLocaleString()} Kz via ${m}.`));
         await enviarNotificacao(currentUser.uid,'Saque solicitado',`O seu saque de ${v.toLocaleString()} Kz aguarda aprovação.`);
         await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v)});
-        showAlert(`✅ Saque solicitado! Aguarda aprovação.`);
+        showAlert(`✅ Saque solicitado!<br>Titular: ${nome}<br>Banco: ${m}<br>Valor: ${v.toLocaleString()} Kz<br><br>Aguarda aprovação.`);
         closeModal('saqueModal');loadWallet();
     }catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}
 };
-window.openSaqueModal=function(){document.getElementById('saque-valor').value='';document.getElementById('saque-metodo').value='';document.getElementById('saque-conta').value='';openModal('saqueModal');};
+window.openSaqueModal=function(){document.getElementById('saque-valor').value='';document.getElementById('saque-nome').value=userData.nome||'';document.getElementById('saque-metodo').value='';document.getElementById('saque-conta').value='';openModal('saqueModal');};
 
-// ============ PLANOS ============
+// ==================== PLANOS ====================
 window.selectPlan=function(p){selectedPlan=p;const pr={free:0,basico:10000,premium:25000};document.getElementById('plan-details').innerHTML=`<p>Plano: <strong>${p.toUpperCase()}</strong></p><p>Valor: ${pr[p]} Kz</p>`;document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='none';openModal('planPurchaseModal');};
 window.selectPaymentMethod=function(m){selectedPaymentMethod=m;if(m==='wallet'){document.getElementById('pay-with-wallet-btn').style.display='block';document.getElementById('bank-info').style.display='none';}else{document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='block';}};
 window.payWithWallet=async function(){
@@ -1407,7 +1549,7 @@ window.payWithWallet=async function(){
 };
 window.sendToWhatsApp=function(){window.open('https://wa.me/244937881307','_blank');};
 
-// ============ CHAT USER ============
+// ==================== CHAT USER ====================
 function loadUserChat(){
     if(!currentUser)return;
     if(chatUserUnsubscribe)chatUserUnsubscribe();
@@ -1432,7 +1574,7 @@ window.enviarMensagemUser=async function(){
     }catch(e){showAlert('Erro: '+e.message);}
 };
 
-// ============ ADMIN ============
+// ==================== ADMIN ====================
 function isAdmin(){return currentUser&&(currentUser.email==='mamfilhos29@gmail.com'||(userData&&(userData.role==='admin'||userData.role==='admin_adjunto')));}
 function isSuperAdmin(){return currentUser&&currentUser.email==='mamfilhos29@gmail.com';}
 
@@ -1452,10 +1594,7 @@ window.adminTab=async function(tab,btn){
         else if(tab==='verifications')await renderAdminVerifications();
         else if(tab==='streams')await renderAdminStreams();
         else if(tab==='manual')await adminGerarManualPDF();
-    }catch(e){
-        console.error('adminTab erro:',e);
-        box.innerHTML=`<p style="color:var(--danger);">❌ Erro ao carregar: ${e.message}</p>`;
-    }
+    }catch(e){console.error(e);box.innerHTML=`<p style="color:var(--danger);">❌ Erro: ${e.message}</p>`;}
 };
 
 async function renderAdminReleases(){
@@ -1476,12 +1615,12 @@ async function renderAdminReleases(){
 }
 window.addStreams=async function(id){
     if(!isAdmin())return;
-    const qtd=parseInt(prompt('Quantidade de streams a adicionar:'));
+    const qtd=parseInt(prompt('Quantidade de streams:'));
     if(isNaN(qtd)||qtd<=0)return;
     const doc=await db.collection('releases').doc(id).get();
     const current=doc.data().streams||0;
     await db.collection('releases').doc(id).update({streams:current+qtd});
-    showAlert(`✅ +${qtd} streams. Total: ${current+qtd}`);
+    showAlert(`✅ +${qtd} streams.`);
     adminTab('releases',document.querySelector('.admin-tab-btn.active'));
 };
 window.adminAprovarLancamento=async function(id){
@@ -1519,23 +1658,113 @@ async function renderAdminArtists(){
         h+='<div class="item-list">';
         arr.forEach(a=>{
             const meu=a.ownerId===currentUser.uid;
-            h+=`<div class="list-item"><img src="${a.foto||'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:50%;"><div style="flex:1;min-width:200px;"><strong>${a.nome}</strong> (${a.estilo||''})${a.isOfficial?' <span class="oficial-badge">OFICIAL</span>':''}${meu?' <span class="selo-badge">Meu</span>':''}<br><small>ownerId: ${a.ownerId||'?'}</small><br>${a.suspenso?'<span class="status-suspended">Suspenso</span>':'<span class="status-active">Ativo</span>'}</div><div style="display:flex;gap:5px;flex-wrap:wrap;">${!meu?`<button class="btn btn-small" onclick="adminAtribuirArtista('${a.id}')">Atribuir a mim</button>`:''}<button class="btn btn-small btn-sec" onclick="adminSuspenderArtista('${a.id}',${!!a.suspenso})">${a.suspenso?'Reativar':'Suspender'}</button>${isSuperAdmin()?`<button class="btn btn-small btn-danger" onclick="adminEliminarArtista('${a.id}')">Eliminar</button>`:''}</div></div>`;
+            const suspAtivo=a.suspenso&&(!a.suspensoAte||a.suspensoAte.toDate()>new Date());
+            h+=`<div class="list-item"><img src="${a.foto||'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:50%;"><div style="flex:1;min-width:220px;"><strong>${a.nome}</strong> (${a.estilo||''})${a.isOfficial?' <span class="oficial-badge">OFICIAL</span>':''}${meu?' <span class="selo-badge">Meu</span>':''}<br><small>ownerId: ${a.ownerId||'?'}</small><br>${suspAtivo?'<span class="status-suspended">Suspenso até '+a.suspensoAte.toDate().toLocaleDateString()+'</span>':'<span class="status-active">Ativo</span>'}</div><div style="display:flex;gap:5px;flex-wrap:wrap;">
+            <button class="btn btn-small btn-success" onclick="abrirVerificar('${a.id}')">✓ Verificar</button>
+            <button class="btn btn-small" style="background:linear-gradient(135deg,#d4af37,#ff6b35);color:#000;" onclick="abrirOficial('${a.id}')">⭐ Oficial</button>
+            <button class="btn btn-small btn-sec" onclick="abrirSuspender('${a.id}')">⏸️ Suspender</button>
+            ${isSuperAdmin()?`<button class="btn btn-small btn-danger" onclick="adminEliminarArtista('${a.id}')">Eliminar</button>`:''}
+            </div></div>`;
         });
         h+='</div>';
     }
     document.getElementById('admin-content').innerHTML=h;
 }
-window.adminAtribuirArtista=async function(id){
-    if(!isSuperAdmin()){showAlert('Só super admin.');return;}
-    showLoading(true);
-    try{await db.collection('artists').doc(id).update({ownerId:currentUser.uid});showAlert('✅ Atribuído!');adminTab('artists',document.querySelector('.admin-tab-btn.active'));}
-    catch(e){showAlert('❌ '+e.message);}finally{showLoading(false);}
-};
-window.adminSuspenderArtista=async function(id,s){
+
+window.abrirVerificar=async function(id){
     if(!isAdmin())return;
-    await db.collection('artists').doc(id).update({suspenso:!s});
-    adminTab('artists',document.querySelector('.admin-tab-btn.active'));
+    const doc=await db.collection('artists').doc(id).get();
+    if(!doc.exists)return;
+    const a=doc.data();
+    confirmAction(`Marcar <strong>${a.nome}</strong> como verificado (✓ selo dourado)?`,async r=>{
+        if(r){
+            await db.collection('artists').doc(id).update({seloVerificado:!a.seloVerificado});
+            showAlert(a.seloVerificado?'Selo removido.':'✅ Verificado!');
+            adminTab('artists',document.querySelector('.admin-tab-btn.active'));
+        }
+    });
 };
+
+window.abrirOficial=function(id){
+    if(!isAdmin())return;
+    document.getElementById('oficial-artist-id').value=id;
+    document.getElementById('oficial-prova').value='';
+    db.collection('artists').doc(id).get().then(d=>{
+        if(d.exists){
+            document.getElementById('oficial-artist-nome').innerText='Artista: '+d.data().nome;
+        }
+    });
+    openModal('modal-oficial');
+};
+window.confirmarOficial=async function(){
+    if(!isAdmin())return;
+    const id=document.getElementById('oficial-artist-id').value;
+    const prova=document.getElementById('oficial-prova').value.trim();
+    const doc=await db.collection('artists').doc(id).get();
+    if(!doc.exists)return;
+    const nome=doc.data().nome;
+    showLoading(true);
+    try{
+        // Procurar todos os artistas com o mesmo nome
+        const snap=await db.collection('artists').where('nome','==',nome).get();
+        const batch=db.batch();
+        snap.forEach(d=>{
+            if(d.id===id){
+                batch.update(d.ref,{isOfficial:true,provaPropriedade:prova||null,oficialDesde:new Date()});
+            } else {
+                batch.update(d.ref,{isOfficial:false,officialArtistId:id});
+            }
+        });
+        await batch.commit();
+        showAlert(`✅ <strong>${nome}</strong> agora é o Perfil Oficial!<br><br>Todas as músicas com este nome serão direcionadas para este perfil.`);
+        closeModal('modal-oficial');
+        adminTab('artists',document.querySelector('.admin-tab-btn.active'));
+    }catch(e){showAlert('Erro: '+e.message);}
+    finally{showLoading(false);}
+};
+
+window.abrirSuspender=function(id){
+    if(!isAdmin())return;
+    document.getElementById('susp-artist-id').value=id;
+    document.getElementById('susp-motivo').value='';
+    document.getElementById('susp-dias').value='30';
+    db.collection('artists').doc(id).get().then(d=>{
+        if(d.exists){
+            document.getElementById('susp-artist-nome').innerText='Artista: '+d.data().nome;
+        }
+    });
+    openModal('modal-suspender');
+};
+window.confirmarSuspensao=async function(){
+    if(!isAdmin())return;
+    const id=document.getElementById('susp-artist-id').value;
+    const dias=parseInt(document.getElementById('susp-dias').value);
+    const motivo=document.getElementById('susp-motivo').value.trim();
+    const doc=await db.collection('artists').doc(id).get();
+    if(!doc.exists)return;
+    const a=doc.data();
+    let suspensoAte=null;
+    if(dias>0){
+        const d=new Date();
+        d.setDate(d.getDate()+dias);
+        suspensoAte=d;
+    }
+    showLoading(true);
+    try{
+        await db.collection('artists').doc(id).update({
+            suspenso:true,suspensoAte:suspensoAte?firebase.firestore.Timestamp.fromDate(suspensoAte):null,
+            suspensoMotivo:motivo,suspensoPor:currentUser.email,suspensoEm:new Date()
+        });
+        if(a.ownerId){
+            await enviarNotificacao(a.ownerId,'⚠️ Perfil suspenso',`O perfil "${a.nome}" foi suspenso ${dias>0?'por '+dias+' dia(s)':'permanentemente'}. Motivo: ${motivo||'não especificado'}`);
+        }
+        showAlert(`✅ Perfil suspenso ${dias>0?'até '+suspensoAte.toLocaleDateString():'permanentemente'}.`);
+        closeModal('modal-suspender');
+        adminTab('artists',document.querySelector('.admin-tab-btn.active'));
+    }catch(e){showAlert('Erro: '+e.message);}
+    finally{showLoading(false);}
+};
+
 window.adminEliminarArtista=async function(id){
     if(!isSuperAdmin())return;
     confirmAction('Eliminar este artista?',async r=>{if(r){await db.collection('artists').doc(id).delete();adminTab('artists',document.querySelector('.admin-tab-btn.active'));}});
@@ -1552,14 +1781,14 @@ async function renderAdminUsers(){
             <img src="${u.fotoPerfil||'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:50%;">
             <div style="flex:1;min-width:200px;">
                 <strong>${u.nome}</strong> (${u.email})<br>
-                <small>Plano: ${u.plano||'free'} | Saldo: ${(u.saldo||0).toFixed(0)} Kz | Role: ${u.role||'user'}</small>
+                <small>Plano: ${u.plano||'free'} | Saldo: ${(u.saldo||0).toFixed(0)} Kz | Role: ${u.role||'user'} | Email verif.: ${u.emailVerificado?'✅':'❌'}</small>
                 ${u.suspenso?' <span class="status-suspended">Suspenso</span>':''}
             </div>
             <div style="display:flex;gap:5px;flex-wrap:wrap;">
                 <button class="btn btn-small btn-success" data-action="addsaldo" data-uid="${doc.id}"><i class="fas fa-plus-circle"></i> Saldo</button>
                 <button class="btn btn-small btn-info" data-action="streams" data-uid="${doc.id}"><i class="fas fa-headphones"></i> Streams</button>
                 <button class="btn btn-small" data-action="chat" data-uid="${doc.id}"><i class="fas fa-comments"></i></button>
-                ${!sup&&u.role!=='admin'?`<button class="btn btn-small btn-sec" data-action="toggle" data-uid="${doc.id}" data-susp="${!!u.suspenso}">${u.suspenso?'Reativar':'Suspender'}</button>${u.role==='admin_adjunto'?`<button class="btn btn-small" data-action="demote" data-uid="${doc.id}">Remover Adj</button>`:`<button class="btn btn-small" data-action="promote" data-uid="${doc.id}">Tornar Adj</button>`}`:''}
+                ${!sup&&u.role!=='admin'?`<button class="btn btn-small btn-sec" data-action="toggle" data-uid="${doc.id}">${u.suspenso?'Reativar':'Suspender'}</button>${u.role==='admin_adjunto'?`<button class="btn btn-small" data-action="demote" data-uid="${doc.id}">Remover Adj</button>`:`<button class="btn btn-small" data-action="promote" data-uid="${doc.id}">Tornar Adj</button>`}`:''}
                 ${isSuperAdmin()&&!sup?`<button class="btn btn-small btn-danger" data-action="delete" data-uid="${doc.id}"><i class="fas fa-trash"></i></button>`:''}
             </div>
         </div>`;
@@ -1659,7 +1888,7 @@ async function renderAdminWithdrawals(){
         h+='<div class="item-list">';
         arr.forEach(s=>{
             const sc=s.status==='pago'?'status-active':(s.status==='aguardando_aprovacao'||s.status==='pendente')?'status-pending':'status-suspended';
-            h+=`<div class="list-item"><div style="flex:1;min-width:250px;"><strong>${(s.valor||0).toLocaleString()} Kz</strong> via ${s.metodo}<br><small>👤 ${s.userNome||'?'} (${s.userEmail||''})<br>🏦 ${s.conta||'-'}<br>Status: <span class="status-pill ${sc}">${s.status}</span></small></div><div style="display:flex;gap:5px;">${s.status==='aguardando_aprovacao'||s.status==='pendente'?`<button class="btn btn-small btn-success" onclick="adminPagarSaque('${s.id}')">✅ Pagar</button><button class="btn btn-small btn-danger" onclick="adminCancelarSaque('${s.id}')">❌ Rejeitar</button>`:''}</div></div>`;
+            h+=`<div class="list-item"><div style="flex:1;min-width:280px;"><strong>${(s.valor||0).toLocaleString()} Kz</strong> via ${s.metodo}<br><small>👤 Conta: ${s.userNome||'?'}<br>🏦 Titular: ${s.titularNome||'-'}<br>💳 IBAN: ${s.conta||'-'}<br>📧 ${s.userEmail||''}<br>Status: <span class="status-pill ${sc}">${s.status}</span></small></div><div style="display:flex;gap:5px;">${s.status==='aguardando_aprovacao'||s.status==='pendente'?`<button class="btn btn-small btn-success" onclick="adminPagarSaque('${s.id}')">✅ Pagar</button><button class="btn btn-small btn-danger" onclick="adminCancelarSaque('${s.id}')">❌ Rejeitar</button>`:''}</div></div>`;
         });
         h+='</div>';
     }
@@ -1834,7 +2063,7 @@ async function renderAdminStreams(){
     document.getElementById('admin-content').innerHTML=h;
 }
 
-// ============ PDF ============
+// ==================== PDF ====================
 window.adminGerarManualPDF=async function(){
     if(!isAdmin())return;
     const {jsPDF}=window.jspdf;
@@ -1846,28 +2075,24 @@ window.adminGerarManualPDF=async function(){
     doc.setFontSize(16);doc.text('Manual de Instrução',pw/2,135,{align:'center'});
     doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text('Fundado por Matias Arsénio Manuel',pw/2,270,{align:'center'});
     doc.addPage();y=20;
-    h1('1. INTRODUÇÃO');p('MAM Distribuidora: plataforma angolana de distribuição digital para 150+ plataformas.');
-    h1('2. REGISTO');p('Crie conta com nome, email, data de nascimento, telefone (com código do país separado) e senha. Receberá um email de confirmação no seu endereço - só poderá entrar após clicar no link.');
-    h1('3. IDIOMAS');p('Definições > Idioma. Suporta: Português, Inglês, Espanhol, Francês. Aplica-se a todo o site.');
-    h1('4. ARTISTAS');p('Crie artistas com nome, estilo (300+ géneros), redes sociais, foto.');
-    h1('5. LANÇAMENTO');p('Título, artista, género, capa (JPG/PNG 1400x1400, 1:1, max 20MB), áudio WAV. Sistema converte para formatos das plataformas.');
-    h1('6. ISRC/UPC');p('Gerados automaticamente. ISRC formato AOMAM25XXXXX. UPC com dígito verificador GS1.');
-    h1('7. STREAMS');p('Cada música tem contador. Total visível no painel.');
-    h1('8. CARTEIRA');p('Split: 30% plataforma / 15% MAM / 55% artista. 8 moedas.');
-    h1('9. SAQUES');p('Mínimo 10.000 Kz. Aguarda aprovação do admin.');
-    h1('10. DOWNLOAD MP3');p('Clique em "Download MP3" - converte com capa e metadados ID3.');
-    h1('11. ADMIN');p('Painel: Lançamentos, Artistas, Utilizadores, Saques, Royalties, Mensagens, Verificações, Streams, Manual PDF.');
-    h1('12. SUPORTE');p('Email: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307');
-    doc.save('MAM_Manual.pdf');showAlert('✅ Manual PDF gerado!');
+    h1('1. INTRODUÇÃO');p('MAM Distribuidora: plataforma angolana de distribuição digital.');
+    h1('2. REGISTO');p('Crie conta com nome, email, data, telefone (código separado) e senha. Receberá email de confirmação.');
+    h1('3. IDIOMAS');p('Disponível em Português, Inglês, Espanhol, Francês.');
+    h1('4. ARTISTAS');p('Crie com nome, estilo (300+ géneros), redes sociais, foto.');
+    h1('5. LANÇAMENTO');p('Capa JPG/PNG min 1400x1400 1:1 max 20MB. Áudio WAV 44.1/48kHz max 500MB.');
+    h1('6. ADMINISTRAÇÃO');p('Verificar, Atribuir Oficial, Suspender com prazo, gerir utilizadores, saques, royalties, mensagens.');
+    h1('7. SAQUES');p('Mínimo 10.000 Kz. Requer nome completo do titular, banco e IBAN.');
+    h1('8. SUPORTE');p('Email: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307');
+    doc.save('MAM_Manual.pdf');showAlert('✅ PDF gerado!');
 };
 
-// ============ RODAPÉ ============
+// ==================== RODAPÉ ====================
 window.showFooterContent=function(t){
     const c={
-        'sobre':`<div class="legal-content"><h2>Sobre</h2><p>MAM Distribuidora — empresa angolana de distribuição digital fundada por <strong>Matias Arsénio Manuel</strong>.</p><h3>Missão</h3><p>Empoderar artistas independentes com tecnologia acessível.</p></div>`,
-        'sobre-nos':`<div class="legal-content"><h2>Sobre Nós</h2><p>Equipa angolana dedicada à distribuição musical profissional.</p><h3>Fundador</h3><div class="contact-box"><p><i class="fas fa-user"></i> Matias Arsénio Manuel</p><p><i class="fas fa-map-marker-alt"></i> Luanda, Angola</p><p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p><p><i class="fab fa-whatsapp"></i> +244 937 881 307</p></div></div>`,
-        'privacidade':`<div class="legal-content"><h2>Privacidade</h2><h3>Dados Recolhidos</h3><ul><li>Nome, nascimento, país</li><li>Email, telefone</li><li>Dados bancários</li><li>Ficheiros de música</li></ul><h3>Segurança</h3><p>Firebase SSL/TLS, Firestore restrito.</p></div>`,
-        'termos':`<div class="legal-content"><h2>Termos</h2><h3>Requisitos</h3><ul><li>Maior de 18 anos</li><li>Informação verdadeira</li><li>Titular dos direitos</li></ul><h3>Royalties</h3><p>Split: 55% artista / 15% MAM / 30% plataforma.</p></div>`,
+        'sobre':`<div class="legal-content"><h2>Sobre</h2><p>MAM Distribuidora — empresa angolana fundada por <strong>Matias Arsénio Manuel</strong>.</p></div>`,
+        'sobre-nos':`<div class="legal-content"><h2>Sobre Nós</h2><div class="contact-box"><p><i class="fas fa-user"></i> Matias Arsénio Manuel</p><p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p><p><i class="fab fa-whatsapp"></i> +244 937 881 307</p></div></div>`,
+        'privacidade':`<div class="legal-content"><h2>Privacidade</h2><p>Firebase SSL/TLS, Firestore restrito.</p></div>`,
+        'termos':`<div class="legal-content"><h2>Termos</h2><p>Split: 55% artista / 15% MAM / 30% plataforma.</p></div>`,
         'suporte':`<div class="legal-content"><h2>Suporte</h2><div class="contact-box"><p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p><p><i class="fab fa-whatsapp"></i> +244 937 881 307</p></div></div>`
     };
     document.getElementById('genericModalBody').innerHTML=c[t]||'';
@@ -1875,7 +2100,7 @@ window.showFooterContent=function(t){
     openModal('genericModal');
 };
 
-// ============ CARTEIRA / PERFIL / MÚSICAS ============
+// ==================== CARTEIRA / PERFIL / MÚSICAS ====================
 window.loadWallet=async function(){
     if(!currentUser)return;
     const doc=await db.collection('users').doc(currentUser.uid).get();
@@ -1893,7 +2118,7 @@ window.loadWallet=async function(){
     else{
         const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));
         arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});
-        arr.forEach(s=>{const st=s.status==='pago'?'status-active':(s.status==='aguardando_aprovacao'||s.status==='pendente')?'status-pending':'status-suspended';cn.innerHTML+=`<div class="list-item"><div style="flex:1;"><strong>${(s.valor||0).toLocaleString()} Kz</strong> - ${s.metodo}<br><small>Status: <span class="status-pill ${st}">${s.status}</span></small></div></div>`;});
+        arr.forEach(s=>{const st=s.status==='pago'?'status-active':(s.status==='aguardando_aprovacao'||s.status==='pendente')?'status-pending':'status-suspended';cn.innerHTML+=`<div class="list-item"><div style="flex:1;"><strong>${(s.valor||0).toLocaleString()} Kz</strong> - ${s.metodo}<br><small>Titular: ${s.titularNome||'-'}<br>Status: <span class="status-pill ${st}">${s.status}</span></small></div></div>`;});
     }
 };
 window.updateWalletDisplay=function(){currentCurrency=document.getElementById('currency-select').value;localStorage.setItem('mam_currency',currentCurrency);loadWallet();loadHome();};
@@ -1944,9 +2169,8 @@ window.loadMinhasMusicas=async function(){
     });
 };
 
-// ============ SELECTS ============
+// ==================== SELECTS ====================
 function carregarSelects(){
-    // Códigos de telefone
     ['reg-phone-code','settings-phone-code'].forEach(id=>{
         const sel=document.getElementById(id);
         if(sel){
@@ -1959,11 +2183,8 @@ function carregarSelects(){
             });
         }
     });
-    // País
     const ps=document.getElementById('settings-pais');
     if(ps)ps.innerHTML='<option value="Angola">🇦🇴 Angola</option><option value="Brasil">🇧🇷 Brasil</option><option value="Portugal">🇵🇹 Portugal</option><option value="EUA">🇺🇸 EUA</option><option value="Moçambique">🇲🇿 Moçambique</option><option value="Cabo Verde">🇨🇻 Cabo Verde</option>';
-    
-    // Géneros principais
     ['music-estilo','artist-style','edit-artist-style'].forEach(id=>{
         const sel=document.getElementById(id);
         if(sel){
@@ -1971,29 +2192,15 @@ function carregarSelects(){
             Object.keys(musicGenres).sort().forEach(g=>{const o=document.createElement('option');o.value=g;o.text=g;sel.appendChild(o);});
         }
     });
-    
-    // Lista COMPLETA de todos os géneros e subgéneros
     const allGenres=[];
-    Object.keys(musicGenres).forEach(g=>{
-        allGenres.push(g);
-        musicGenres[g].forEach(s=>{if(!allGenres.includes(s))allGenres.push(s);});
-    });
+    Object.keys(musicGenres).forEach(g=>{allGenres.push(g);musicGenres[g].forEach(s=>{if(!allGenres.includes(s))allGenres.push(s);});});
     allGenres.sort();
-    
-    // Encher sub-género com lista COMPLETA sempre
     function preencherSubGeneroCompleto(){
-        const sub=document.getElementById('music-sub-estilo');
-        if(!sub)return;
+        const sub=document.getElementById('music-sub-estilo');if(!sub)return;
         sub.innerHTML='<option value="">-- Escolha (lista completa) --</option>';
-        allGenres.forEach(x=>{
-            const o=document.createElement('option');
-            o.value=x;o.text=x;
-            sub.appendChild(o);
-        });
+        allGenres.forEach(x=>{const o=document.createElement('option');o.value=x;o.text=x;sub.appendChild(o);});
     }
     preencherSubGeneroCompleto();
-    
-    // Ao mudar género, filtra + mostra lista completa
     const estSel=document.getElementById('music-estilo');
     if(estSel){
         estSel.addEventListener('change',()=>{
@@ -2004,12 +2211,9 @@ function carregarSelects(){
                 musicGenres[g].forEach(x=>{const o=document.createElement('option');o.value=x;o.text='↳ '+x;sub.appendChild(o);});
                 const opt=document.createElement('option');opt.disabled=true;opt.text='─── Outros géneros ───';sub.appendChild(opt);
                 allGenres.forEach(x=>{if(!musicGenres[g].includes(x)){const o=document.createElement('option');o.value=x;o.text=x;sub.appendChild(o);}});
-            } else {
-                preencherSubGeneroCompleto();
-            }
+            } else { preencherSubGeneroCompleto(); }
         });
     }
-    
     const asel=document.getElementById('music-artista-select');
     if(asel&&currentUser){
         db.collection('artists').where('ownerId','==',currentUser.uid).get().then(snap=>{
@@ -2023,11 +2227,12 @@ function carregarSelects(){
     }
 }
 
-// ============ INIT ============
+// ==================== INIT ====================
 aplicarIdioma(currentLang);
+startCarousel();
+
 auth.onAuthStateChanged(async user=>{
     if(user){
-        // Verificar se email foi confirmado
         if(!user.emailVerified && user.email!=='mamfilhos29@gmail.com'){
             await auth.signOut();
             return;
@@ -2043,12 +2248,14 @@ auth.onAuthStateChanged(async user=>{
         document.getElementById('nav-login').style.display='inline-block';
         document.getElementById('nav-logout').style.display='none';
         document.getElementById('btn-admin-global').style.display='none';
+        document.getElementById('lang-float').style.display='flex';
         if(notifUnsubscribe){notifUnsubscribe();notifUnsubscribe=null;}
         if(chatUserUnsubscribe){chatUserUnsubscribe();chatUserUnsubscribe=null;}
+        startCarousel();
     }
 });
 
-console.log('🚀 MAM Distribuidora v6.0 — Email confirm + phone split + i18n full');
+console.log('🚀 MAM Distribuidora v7.0 — Carrossel + Vídeo + Suspensão com prazo + Perfil Oficial');
 </script>
 </body>
 </html>

@@ -181,14 +181,12 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 .registro-aviso p{color:#ccc;font-size:.9rem;margin-bottom:8px}
 .registro-aviso a{color:var(--gold);font-weight:bold;cursor:pointer;text-decoration:underline;font-size:.95rem}
 .registro-aviso a:hover{color:#e5c04a}
-/* ✅ NOVO: barra de progresso do upload */
 .upload-progress{background:#0a0a0a;border:1px solid var(--gold);border-radius:8px;padding:15px;margin-top:15px;display:none}
 .upload-progress.active{display:block}
 .upload-progress-label{color:var(--gold);font-size:.85rem;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .upload-progress-bar{width:100%;height:12px;background:#222;border-radius:6px;overflow:hidden;position:relative}
 .upload-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#ff6b35);width:0%;transition:width .3s;border-radius:6px}
 .upload-progress-status{margin-top:8px;font-size:.75rem;color:var(--gray);text-align:center}
-/* ✅ NOVO: preview TikTok de 1 minuto */
 .tiktok-preview{background:linear-gradient(135deg,#000,#0a0a0a);border:2px solid #dc3545;border-radius:12px;padding:20px;margin-top:15px;display:none}
 .tiktok-preview.active{display:block}
 .tiktok-preview h4{color:#dc3545;font-size:.95rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
@@ -456,16 +454,12 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div><label>℗ Copyright</label><input type="text" id="music-pline" placeholder="℗ 2025 MAM"></div>
 <div><label>© Copyright</label><input type="text" id="music-cline" placeholder="© 2025 MAM"></div>
 </div>
-
 <label style="margin-top:15px;">Capa da Música *</label>
-<div class="platform-req"><h4>🎨 Exigências de todas as plataformas digitais (Spotify, Apple, TikTok, Instagram, YouTube, Amazon, Deezer, Tidal):</h4><ul>
-<li><strong>Formato:</strong> JPG ou PNG (não aceita WebP, GIF, BMP)</li>
+<div class="platform-req"><h4>🎨 Exigências de todas as plataformas digitais:</h4><ul>
+<li><strong>Formato:</strong> JPG ou PNG</li>
 <li><strong>Dimensão mínima:</strong> 1400 x 1400 pixels</li>
-<li><strong>Dimensão recomendada:</strong> 3000 x 3000 pixels</li>
-<li><strong>Proporção:</strong> 1:1 (exatamente quadrada)</li>
+<li><strong>Proporção:</strong> 1:1 (quadrada)</li>
 <li><strong>Tamanho máximo:</strong> 20 MB</li>
-<li><strong>Espaço de cor:</strong> RGB (não CMYK)</li>
-<li><strong>Proibido:</strong> Logotipos de redes sociais, preços, links, marcas de água, texto promocional</li>
 </ul></div>
 <input type="hidden" id="music-capa-url">
 <input type="file" id="music-capa-file" accept="image/jpeg,image/png" style="display:none;">
@@ -474,20 +468,18 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 
 <label style="margin-top:15px;">Áudio (WAV) *</label>
 <div class="platform-req"><h4>🎧 Exigências de todas as plataformas digitais:</h4><ul>
-<li><strong>Formato obrigatório:</strong> WAV (PCM Linear)</li>
-<li><strong>NÃO aceites:</strong> MP3, M4A, FLAC, AAC, OGG</li>
-<li><strong>Taxa de amostragem:</strong> 44.1 kHz ou 48 kHz (recomendado 44.1)</li>
-<li><strong>Profundidade de bits:</strong> 16-bit ou 24-bit (recomendado 24-bit)</li>
-<li><strong>Canais:</strong> Estéreo (2 canais)</li>
+<li><strong>Formato obrigatório:</strong> WAV</li>
+<li><strong>NÃO aceites:</strong> MP3, M4A, FLAC</li>
+<li><strong>Taxa:</strong> 44.1 kHz ou 48 kHz</li>
+<li><strong>Profundidade:</strong> 16-bit ou 24-bit</li>
+<li><strong>Canais:</strong> Estéreo</li>
 <li><strong>Tamanho máximo:</strong> 500 MB</li>
-<li><strong>Duração mínima:</strong> 30 segundos</li>
-<li><strong>Nível de volume:</strong> -14 LUFS (padrão streaming)</li>
 </ul></div>
 <input type="hidden" id="music-audio-url">
 <input type="file" id="music-audio-file" accept=".wav,audio/wav" style="display:none;">
 <button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio WAV</button>
 
-<!-- ✅ NOVO: BARRA DE PROGRESSO DO UPLOAD -->
+<!-- BARRA DE PROGRESSO DO UPLOAD -->
 <div id="audio-upload-progress" class="upload-progress">
 <div class="upload-progress-label">
 <span><i class="fas fa-cloud-upload-alt"></i> A carregar áudio...</span>
@@ -497,7 +489,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div id="audio-upload-status" class="upload-progress-status">Preparando ficheiro...</div>
 </div>
 
-<!-- ✅ NOVO: PREVIEW TIKTOK DE 1 MINUTO -->
+<!-- PREVIEW TIKTOK DE 1 MINUTO -->
 <div id="tiktok-preview" class="tiktok-preview">
 <h4><i class="fab fa-tiktok"></i> Preview TikTok <span class="tiktok-badge">1:00 MIN</span></h4>
 <p>Este é o trecho de 1 minuto que será usado como preview no TikTok e Instagram Reels. Toque para ouvir.</p>
@@ -776,8 +768,56 @@ const CLOUDINARY_CONFIG = {cloudName:'dbjhwnhoq', uploadPreset:'mam_preset'};
 const PHONE_CODES = [{code:"+244",name:"🇦🇴 Angola"},{code:"+55",name:"🇧🇷 Brasil"},{code:"+351",name:"🇵🇹 Portugal"},{code:"+1",name:"🇺🇸 EUA"},{code:"+44",name:"🇬🇧 Reino Unido"},{code:"+33",name:"🇫🇷 França"},{code:"+34",name:"🇪🇸 Espanha"},{code:"+27",name:"🇿🇦 África do Sul"},{code:"+258",name:"🇲🇿 Moçambique"},{code:"+238",name:"🇨🇻 Cabo Verde"},{code:"+239",name:"🇸🇹 São Tomé"},{code:"+240",name:"🇬🇶 Guiné Eq."},{code:"+245",name:"🇬🇼 Guiné-Bissau"},{code:"+49",name:"🇩🇪 Alemanha"},{code:"+39",name:"🇮🇹 Itália"},{code:"+31",name:"🇳🇱 Holanda"},{code:"+32",name:"🇧🇪 Bélgica"},{code:"+41",name:"🇨🇭 Suíça"},{code:"+48",name:"🇵🇱 Polónia"},{code:"+30",name:"🇬🇷 Grécia"},{code:"+81",name:"🇯🇵 Japão"},{code:"+86",name:"🇨🇳 China"},{code:"+91",name:"🇮🇳 Índia"},{code:"+61",name:"🇦🇺 Austrália"},{code:"+234",name:"🇳🇬 Nigéria"},{code:"+254",name:"🇰🇪 Quénia"},{code:"+233",name:"🇬🇭 Gana"},{code:"+7",name:"🇷🇺 Rússia"},{code:"+52",name:"🇲🇽 México"},{code:"+54",name:"🇦🇷 Argentina"},{code:"+56",name:"🇨🇱 Chile"},{code:"+57",name:"🇨🇴 Colômbia"},{code:"+51",name:"🇵🇪 Peru"},{code:"+58",name:"🇻🇪 Venezuela"},{code:"+593",name:"🇪🇨 Equador"},{code:"+20",name:"🇪🇬 Egito"},{code:"+212",name:"🇲🇦 Marrocos"},{code:"+216",name:"🇹🇳 Tunísia"},{code:"+213",name:"🇩🇿 Argélia"},{code:"+971",name:"🇦🇪 EAU"},{code:"+966",name:"🇸🇦 Arábia Saudita"},{code:"+90",name:"🇹🇷 Turquia"},{code:"+972",name:"🇮🇱 Israel"},{code:"+82",name:"🇰🇷 Coreia Sul"},{code:"+65",name:"🇸🇬 Singapura"},{code:"+60",name:"🇲🇾 Malásia"},{code:"+66",name:"🇹🇭 Tailândia"},{code:"+62",name:"🇮🇩 Indonésia"},{code:"+63",name:"🇵🇭 Filipinas"},{code:"+64",name:"🇳🇿 Nova Zelândia"}];
 const CURRENCIES = {'AOA':{name:'Kwanza Angolano',symbol:'Kz',rateToKz:1},'USD':{name:'Dólar Americano',symbol:'$',rateToKz:912},'EUR':{name:'Euro',symbol:'€',rateToKz:990},'BRL':{name:'Real Brasileiro',symbol:'R$',rateToKz:165},'GBP':{name:'Libra',symbol:'£',rateToKz:1150},'ZAR':{name:'Rand',symbol:'R',rateToKz:50},'MZN':{name:'Metical',symbol:'MT',rateToKz:14},'CVE':{name:'Escudo CV',symbol:'$',rateToKz:9}};
 
-// ✅ CORREÇÃO 3: REMOVIDA a opção DJ — só "Electronic", "House", "Techno", "Trance" (sem DJ)
-const musicGenres = {"Afrobeat":["Afrobeat Clássico","Afrofusion","Afropop","Highlife","Afro Soul"],"Afrohouse":["Afrohouse","Afro Tech","Deep Afro"],"Afro Jazz":["Afro Jazz","Ethio Jazz"],"Amapiano":["Amapiano","Piano","Bass Amapiano"],"Kizomba":["Kizomba","Tarrachinha","Semba","Zouk Love"],"Kuduro":["Kuduro Clássico","Kuduro Batida","Kuduro Afro"],"Semba":["Semba","Semba Moderno"],"Zouk":["Zouk","Zouk Love"],"Soukous":["Soukous","Ndombolo"],"Marrabenta":["Marrabenta","Marrabenta Moderno"],"Bachata":["Bachata Clássica","Bachata Urbana"],"Salsa":["Salsa Dura","Salsa Cubana"],"Reggaeton":["Reggaeton","Latin Trap","Dembow"],"Cumbia":["Cumbia Colombiana","Cumbia Mexicana"],"Tango":["Tango","Tango Nuevo"],"Bossa Nova":["Bossa Nova"],"Samba":["Samba Enredo","Samba Pagode","Samba Rock"],"MPB":["MPB","Tropicália"],"Forró":["Forró Pé de Serra","Forró Eletrônico","Xote"],"Funk Carioca":["Funk Ostentação","Funk Melody"],"Sertanejo":["Sertanejo Raiz","Sertanejo Universitário"],"Pop":["Pop Rock","Synth-pop","Dance Pop","Indie Pop","Electropop","K-Pop","J-Pop"],"Rock":["Rock Clássico","Hard Rock","Punk Rock","Alternativo","Grunge","Indie Rock"],"Metal":["Heavy Metal","Thrash Metal","Death Metal","Metalcore"],"Punk":["Punk Rock","Hardcore Punk","Pop Punk"],"Electronic":["Electronica","IDM","Ambient","Techno","Trance","House"],"EDM":["EDM","Electro House","Future Bass"],"House":["Deep House","Tech House","Soulful House","Afro House"],"Techno":["Techno","Minimal Techno","Acid Techno"],"Trance":["Trance","Psytrance"],"Hip Hop":["Trap","Old School","Conscious Hip Hop","Drill","Gangsta Rap"],"Trap":["Trap","Latin Trap","Drill"],"Rap":["Rap Consciente","Rap Gangsta","Rap Melódico"],"R&B":["Contemporary R&B","Neo Soul","Funk","Soul"],"Soul":["Soul Clássico","Neo Soul"],"Gospel":["Gospel Contemporâneo","Louvor","Worship"],"Jazz":["Swing","Bebop","Cool Jazz","Fusion","Smooth Jazz"],"Blues":["Delta Blues","Chicago Blues"],"Reggae":["Roots Reggae","Dub","Dancehall","Ska"],"World Music":["World Fusion","World Beat"],"Fado":["Fado Tradicional","Fado Contemporâneo"],"Flamenco":["Flamenco","Nuevo Flamenco"],"Folk":["Folk Tradicional","Folk Rock","Indie Folk"],"Country":["Country Clássico","Country Pop"],"Classical":["Orquestra","Sinfonia","Ópera"],"Instrumental":["Instrumental","Piano Solo"],"Soundtrack":["Trilha Sonora","Score"]};
+// ✅ DJ REMOVIDO — categorias mantidas: Electronic, House, Techno, Trance (sem DJ)
+const musicGenres = {
+"Afrobeat":["Afrobeat Clássico","Afrofusion","Afropop","Highlife","Afro Soul"],
+"Afrohouse":["Afrohouse","Afro Tech","Deep Afro"],
+"Afro Jazz":["Afro Jazz","Ethio Jazz"],
+"Amapiano":["Amapiano","Piano","Bass Amapiano"],
+"Kizomba":["Kizomba","Tarrachinha","Semba","Zouk Love"],
+"Kuduro":["Kuduro Clássico","Kuduro Batida","Kuduro Afro"],
+"Semba":["Semba","Semba Moderno"],
+"Zouk":["Zouk","Zouk Love"],
+"Soukous":["Soukous","Ndombolo"],
+"Marrabenta":["Marrabenta","Marrabenta Moderno"],
+"Bachata":["Bachata Clássica","Bachata Urbana"],
+"Salsa":["Salsa Dura","Salsa Cubana"],
+"Reggaeton":["Reggaeton","Latin Trap","Dembow"],
+"Cumbia":["Cumbia Colombiana","Cumbia Mexicana"],
+"Tango":["Tango","Tango Nuevo"],
+"Bossa Nova":["Bossa Nova"],
+"Samba":["Samba Enredo","Samba Pagode","Samba Rock"],
+"MPB":["MPB","Tropicália"],
+"Forró":["Forró Pé de Serra","Forró Eletrônico","Xote"],
+"Funk Carioca":["Funk Ostentação","Funk Melody"],
+"Sertanejo":["Sertanejo Raiz","Sertanejo Universitário"],
+"Pop":["Pop Rock","Synth-pop","Dance Pop","Indie Pop","Electropop","K-Pop","J-Pop"],
+"Rock":["Rock Clássico","Hard Rock","Punk Rock","Alternativo","Grunge","Indie Rock"],
+"Metal":["Heavy Metal","Thrash Metal","Death Metal","Metalcore"],
+"Punk":["Punk Rock","Hardcore Punk","Pop Punk"],
+"Electronic":["Electronica","IDM","Ambient","Techno","Trance","House"],
+"EDM":["EDM","Electro House","Future Bass"],
+"House":["Deep House","Tech House","Soulful House","Afro House"],
+"Techno":["Techno","Minimal Techno","Acid Techno"],
+"Trance":["Trance","Psytrance"],
+"Hip Hop":["Trap","Old School","Conscious Hip Hop","Drill","Gangsta Rap"],
+"Trap":["Trap","Latin Trap","Drill"],
+"Rap":["Rap Consciente","Rap Gangsta","Rap Melódico"],
+"R&B":["Contemporary R&B","Neo Soul","Funk","Soul"],
+"Soul":["Soul Clássico","Neo Soul"],
+"Gospel":["Gospel Contemporâneo","Louvor","Worship"],
+"Jazz":["Swing","Bebop","Cool Jazz","Fusion","Smooth Jazz"],
+"Blues":["Delta Blues","Chicago Blues"],
+"Reggae":["Roots Reggae","Dub","Dancehall","Ska"],
+"World Music":["World Fusion","World Beat"],
+"Fado":["Fado Tradicional","Fado Contemporâneo"],
+"Flamenco":["Flamenco","Nuevo Flamenco"],
+"Folk":["Folk Tradicional","Folk Rock","Indie Folk"],
+"Country":["Country Clássico","Country Pop"],
+"Classical":["Orquestra","Sinfonia","Ópera"],
+"Instrumental":["Instrumental","Piano Solo"],
+"Soundtrack":["Trilha Sonora","Score"]
+};
 
 let currentUser=null,userData=null,selectedPlan=null;
 let pendingArtistPhotoUrl=null,pendingEditArtistPhotoUrl=null;
@@ -955,7 +995,6 @@ function initUpload(){
     cf?.addEventListener('change',(e)=>{const f=e.target.files[0];if(!f)return;validarCapa(f,(erros,w,h)=>{if(erros.length){showAlert('❌ '+erros.join('<br>• '));return;}pendingCoverFile=f;const r=new FileReader();r.onload=ev=>{document.getElementById('capa-preview-img').src=ev.target.result;document.getElementById('capa-preview').style.display='block';document.getElementById('capa-status').innerHTML=`✅ Validada (${w}x${h})`;};r.readAsDataURL(f);const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.secure_url){document.getElementById('music-capa-url').value=d.secure_url;document.getElementById('capa-status').innerHTML='✅ Enviada!';}});});});
     const ab=document.getElementById('upload-audio-btn'),af=document.getElementById('music-audio-file');
     ab?.addEventListener('click',()=>af.click());
-    // ✅ NOVO: upload de áudio com XMLHttpRequest + barra de progresso + preview TikTok
     af?.addEventListener('change',(e)=>{
         const f=e.target.files[0];if(!f)return;
         validarAudio(f,(erros)=>{
@@ -963,7 +1002,6 @@ function initUpload(){
             pendingAudioFile=f;
             document.getElementById('audio-preview').style.display='block';
             document.getElementById('audio-status').innerHTML=`✅ Validado (${(f.size/1024/1024).toFixed(2)}MB) — a enviar...`;
-            // barra de progresso
             const progDiv=document.getElementById('audio-upload-progress');
             const fill=document.getElementById('audio-upload-fill');
             const pct=document.getElementById('audio-upload-percent');
@@ -989,7 +1027,6 @@ function initUpload(){
                         document.getElementById('audio-status').innerHTML='✅ Áudio enviado com sucesso!';
                         fill.style.width='100%';pct.innerText='100%';
                         st.innerHTML='<span style="color:var(--success);">✅ Upload concluído!</span>';
-                        // ✅ Gerar preview TikTok de 1:00 minuto
                         gerarPreviewTikTok(f);
                         setTimeout(()=>progDiv.classList.remove('active'),2000);
                     }
@@ -1006,7 +1043,7 @@ function initUpload(){
     document.getElementById('edit-upload-artist-photo-btn')?.addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=(e)=>{const f=e.target.files[0];if(!f)return;const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.secure_url){document.getElementById('edit-artist-photo-preview').src=d.secure_url;pendingEditArtistPhotoUrl=d.secure_url;}});};i.click();});
 }
 
-// ✅ NOVO: gerar preview TikTok de 1 minuto
+// ✅ Gerar preview TikTok de 1 minuto (trecho central)
 async function gerarPreviewTikTok(file){
     try{
         const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
@@ -1016,7 +1053,7 @@ async function gerarPreviewTikTok(file){
         const canais=decoded.numberOfChannels;
         const duracaoTotal=decoded.duration;
         const duracaoPreview=Math.min(60,duracaoTotal);
-        const inicio=Math.max(0,(duracaoTotal/2)-(duracaoPreview/2)); // centro da música
+        const inicio=Math.max(0,(duracaoTotal/2)-(duracaoPreview/2));
         const offsetInicio=Math.floor(inicio*sampleRate);
         const numAmostras=Math.floor(duracaoPreview*sampleRate);
         const bufferPreview=audioCtx.createBuffer(canais,numAmostras,sampleRate);
@@ -1025,15 +1062,12 @@ async function gerarPreviewTikTok(file){
             const canalDest=bufferPreview.getChannelData(c);
             for(let i=0;i<numAmostras;i++){canalDest[i]=canalOrig[offsetInicio+i]||0;}
         }
-        // Codificar para WAV (Blob) para reproduzir no browser
         const wavBlob=bufferParaWav(bufferPreview);
         const url=URL.createObjectURL(wavBlob);
         document.getElementById('tiktok-audio-player').src=url;
         document.getElementById('tiktok-preview').classList.add('active');
         document.getElementById('tiktok-preview').scrollIntoView({behavior:'smooth',block:'nearest'});
-    }catch(e){
-        console.warn('Erro ao gerar preview TikTok:',e);
-    }
+    }catch(e){console.warn('Erro ao gerar preview TikTok:',e);}
 }
 function bufferParaWav(buffer){
     const numCanais=buffer.numberOfChannels;
@@ -1072,7 +1106,7 @@ function bufferParaWav(buffer){
     return new Blob([bufferArray],{type:'audio/wav'});
 }
 
-document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){const titulo=document.getElementById('music-titulo').value.trim();const aid=document.getElementById('music-artista-select').value;const est=document.getElementById('music-estilo').value;const sub=document.getElementById('music-sub-estilo').value;const cov=document.getElementById('music-capa-url').value;const aud=document.getElementById('music-audio-url').value;if(!titulo||!aid||!est||!sub){showAlert('Preencha todos os campos *');return;}if(!cov){showAlert('❌ Capa obrigatória.');return;}if(!aud){showAlert('❌ Áudio obrigatório.');return;}showLoading(true);try{const isrc=await getNextISRC(),upc=await getNextUPC();document.getElementById('music-isrc').value=isrc;document.getElementById('music-upc').value=upc;const ad=await db.collection('artists').doc(aid).get();if(!ad.exists){showAlert('Artista inválido.');return;}const anome=ad.data().nome;const rd={userId:currentUser.uid,artistaId:aid,artista:anome,titulo,estilo:est+' / '+sub,isrc,upc,idioma:document.getElementById('music-idioma').value||'Português',compositores:document.getElementById('music-compositores').value||'',produtor:document.getElementById('music-produtor').value||'',colaboradores:document.getElementById('music-colaboradores').value||'',explicit:document.getElementById('music-explicit').value||'Não',pline:document.getElementById('music-pline').value||'℗ 2025 MAM',cline:document.getElementById('music-cline').value||'© 2025 MAM',dataLancamento:document.getElementById('music-data').value||new Date().toISOString().split('T')[0],coverUrl:cov,audioUrl:aud,status:'pendente_plataformas',streams:0,createdAt:new Date(),distribuido:false};rd.ddexXml=gerarDDEX(rd,{nome:anome});const ref=await db.collection('releases').add(rd);const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Novo lançamento',`${anome} lançou "${titulo}".`));await enviarNotificacao(currentUser.uid,'Lançamento submetido',`"${titulo}" enviada. ISRC: ${isrc} | UPC: ${upc}`);showAlert(`✅ Lançamento submetido!<br>ISRC: ${isrc}<br>UPC: ${upc}`);document.getElementById('form-lancamento').reset();document.getElementById('capa-preview').style.display='none';document.getElementById('audio-preview').style.display='none';document.getElementById('audio-upload-progress').classList.remove('active');document.getElementById('tiktok-preview').classList.remove('active');pendingCoverFile=null;pendingAudioFile=null;loadMinhasMusicas();loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
+document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){const titulo=document.getElementById('music-titulo').value.trim();const aid=document.getElementById('music-artista-select').value;const est=document.getElementById('music-estilo').value;const sub=document.getElementById('music-sub-estilo').value;const cov=document.getElementById('music-capa-url').value;const aud=document.getElementById('music-audio-url').value;if(!titulo||!aid||!est||!sub){showAlert('Preencha todos os campos *');return;}if(!cov){showAlert('❌ Capa obrigatória.');return;}if(!aud){showAlert('❌ Áudio obrigatório. Selecione o WAV e aguarde o upload concluir.');return;}showLoading(true);try{const isrc=await getNextISRC(),upc=await getNextUPC();document.getElementById('music-isrc').value=isrc;document.getElementById('music-upc').value=upc;const ad=await db.collection('artists').doc(aid).get();if(!ad.exists){showAlert('Artista inválido.');return;}const anome=ad.data().nome;const rd={userId:currentUser.uid,artistaId:aid,artista:anome,titulo,estilo:est+' / '+sub,isrc,upc,idioma:document.getElementById('music-idioma').value||'Português',compositores:document.getElementById('music-compositores').value||'',produtor:document.getElementById('music-produtor').value||'',colaboradores:document.getElementById('music-colaboradores').value||'',explicit:document.getElementById('music-explicit').value||'Não',pline:document.getElementById('music-pline').value||'℗ 2025 MAM',cline:document.getElementById('music-cline').value||'© 2025 MAM',dataLancamento:document.getElementById('music-data').value||new Date().toISOString().split('T')[0],coverUrl:cov,audioUrl:aud,status:'pendente_plataformas',streams:0,createdAt:new Date(),distribuido:false};rd.ddexXml=gerarDDEX(rd,{nome:anome});const ref=await db.collection('releases').add(rd);const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Novo lançamento',`${anome} lançou "${titulo}".`));await enviarNotificacao(currentUser.uid,'Lançamento submetido',`"${titulo}" enviada. ISRC: ${isrc} | UPC: ${upc}`);showAlert(`✅ Lançamento submetido!<br>ISRC: ${isrc}<br>UPC: ${upc}`);document.getElementById('form-lancamento').reset();document.getElementById('capa-preview').style.display='none';document.getElementById('audio-preview').style.display='none';document.getElementById('audio-upload-progress').classList.remove('active');document.getElementById('tiktok-preview').classList.remove('active');pendingCoverFile=null;pendingAudioFile=null;loadMinhasMusicas();loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
 
 window.solicitarSaque=async function(){const v=parseFloat(document.getElementById('saque-valor').value);const nome=document.getElementById('saque-nome').value.trim();const m=document.getElementById('saque-metodo').value;const c=document.getElementById('saque-conta').value.trim();if(!v||v<=0){showAlert('Valor inválido.');return;}if(v<10000){showAlert('❌ Saque mínimo: 10.000 Kz.');return;}if(!nome){showAlert('Nome completo obrigatório.');return;}if(!m){showAlert('Método/Banco obrigatório.');return;}if(!c){showAlert('IBAN/Conta obrigatório.');return;}if(v>(userData.saldo||0)){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('withdrawals').add({userId:currentUser.uid,userNome:userData.nome,userEmail:userData.email,titularNome:nome,valor:v,moeda:'AOA',metodo:m,conta:c,status:'aguardando_aprovacao',createdAt:new Date()});const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Saque pendente',`${userData.nome}: ${v.toLocaleString()} Kz via ${m}.`));await enviarNotificacao(currentUser.uid,'Saque solicitado',`O seu saque de ${v.toLocaleString()} Kz aguarda aprovação.`);await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v)});showAlert(`✅ Saque solicitado!<br>Titular: ${nome}<br>Banco: ${m}<br>Valor: ${v.toLocaleString()} Kz<br><br>Aguarda aprovação.`);closeModal('saqueModal');loadWallet();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.openSaqueModal=function(){document.getElementById('saque-valor').value='';document.getElementById('saque-nome').value=userData.nome||'';document.getElementById('saque-metodo').value='';document.getElementById('saque-conta').value='';openModal('saqueModal');};
@@ -1130,19 +1164,16 @@ async function renderAdminStreams(){const snap=await db.collection('releases').g
 
 window.adminGerarManualPDF=async function(){if(!isAdmin())return;const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});const pw=210,m=15;let y=20;const h1=t=>{if(y+15>280){doc.addPage();y=20;}doc.setFontSize(18);doc.setTextColor(212,175,55);doc.text(t,m,y);y+=10;};const p=t=>{if(y+8>280){doc.addPage();y=20;}doc.setFontSize(10);doc.setTextColor(60,60,60);const l=doc.splitTextToSize(t,pw-m*2);doc.text(l,m,y);y+=l.length*5+3;};doc.setFillColor(0,0,0);doc.rect(0,0,pw,297,'F');doc.setTextColor(212,175,55);doc.setFontSize(32);doc.text('MAM DISTRIBUIDORA',pw/2,120,{align:'center'});doc.setFontSize(16);doc.text('Manual de Instrução',pw/2,135,{align:'center'});doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text('Fundado por Matias Arsénio Manuel',pw/2,270,{align:'center'});doc.addPage();y=20;h1('1. INTRODUÇÃO');p('MAM Distribuidora: plataforma angolana de distribuição digital para 150+ plataformas.');h1('2. REGISTO');p('Nome, email, data, telefone, senha. Confirmação por email obrigatória.');h1('3. LANÇAMENTO');p('Capa: JPG/PNG min 1400x1400 px 1:1 máx 20MB. Áudio: WAV 44.1/48kHz 16/24-bit estéreo máx 500MB.');h1('4. ISRC/UPC');p('ISRC: formato IFPI AOMAM25XXXXX. UPC: formato GS1 12 dígitos com check digit.');h1('5. ADMIN');p('Verificar artistas, Atribuir como Oficial, Suspender com prazo, Mudar Plano de utilizadores.');h1('6. SAQUES');p('Mínimo 10.000 Kz. Requer nome titular, banco e IBAN.');h1('7. SUPORTE');p('Email: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307');doc.save('MAM_Manual.pdf');showAlert('✅ PDF gerado!');};
 
-// ==================== RODAPÉ PROFISSIONAL COMPLETO ====================
+// ==================== RODAPÉ PROFISSIONAL (INALTERADO) ====================
 window.showFooterContent=function(t){
     const c={
         'sobre': `<div class="legal-content">
 <h2>🏢 Sobre a MAM Distribuidora</h2>
 <p>A <strong>MAM Distribuidora</strong> é uma empresa angolana dedicada à distribuição digital de música, fundada por <strong>Matias Arsénio Manuel</strong>, com o objetivo de conectar artistas independentes africanos ao mercado musical global. Operamos com tecnologia de ponta e processos alinhados com os padrões internacionais da indústria fonográfica.</p>
-
 <h3>🎯 Missão</h3>
 <p>Oferecer aos artistas independentes uma plataforma profissional, transparente e acessível para distribuir a sua música às maiores plataformas digitais do mundo, garantindo retorno justo pelos seus direitos autorais.</p>
-
 <h3>👁️ Visão</h3>
 <p>Ser a distribuidora digital de referência da África Austral, reconhecida pela excelência técnica, integridade comercial e compromisso com o sucesso dos artistas que representamos.</p>
-
 <h3>💎 Valores</h3>
 <ul>
 <li><strong>Transparência</strong> — relatórios claros, splits auditáveis e sem taxas escondidas.</li>
@@ -1150,14 +1181,12 @@ window.showFooterContent=function(t){
 <li><strong>Compromisso</strong> — apoio contínuo ao artista antes, durante e após cada lançamento.</li>
 <li><strong>Inovação</strong> — infraestrutura cloud moderna, interface em 4 idiomas, carteira multi-moeda.</li>
 </ul>
-
 <h3>📊 Números</h3>
 <div class="stat-row">
 <div><strong>150+</strong><span>Plataformas</span></div>
 <div><strong>100%</strong><span>Royalties</span></div>
 <div><strong>24/7</strong><span>Suporte</span></div>
 </div>
-
 <div class="highlight-box">
 <strong>⚠️ Nota técnica:</strong> A MAM Distribuidora opera como agregadora tecnológica. A entrega efetiva dos conteúdos às plataformas (Spotify, Apple Music, TikTok, Deezer, Amazon Music, Tidal, etc.) é realizada através de contratos com distribuidores licenciados internacionalmente. Esta arquitetura garante conformidade total com os requisitos legais de cada plataforma.
 </div>
@@ -1165,7 +1194,6 @@ window.showFooterContent=function(t){
         'sobre-nos': `<div class="legal-content">
 <h2>👥 Sobre Nós</h2>
 <p>A <strong>MAM Distribuidora</strong> nasceu da visão de um jovem empreendedor angolano que decidiu transformar a forma como a música africana chega ao mundo. Operamos a partir de Luanda, com infraestrutura cloud global e uma equipa dedicada a servir artistas, produtores e selos independentes.</p>
-
 <h3>🏆 Diferenciais Competitivos</h3>
 <ul>
 <li><strong>Interface em 4 idiomas</strong> — Português, Inglês, Espanhol e Francês.</li>
@@ -1175,7 +1203,6 @@ window.showFooterContent=function(t){
 <li><strong>Splits transparentes</strong> — 55% artista / 15% MAM / 30% plataforma, com relatórios detalhados.</li>
 <li><strong>Suporte dedicado</strong> — por email e WhatsApp, em português, inglês e espanhol.</li>
 </ul>
-
 <h3>👤 Fundador</h3>
 <div class="contact-box">
 <p><i class="fas fa-user"></i> <strong>Matias Arsénio Manuel</strong></p>
@@ -1183,19 +1210,15 @@ window.showFooterContent=function(t){
 <p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p>
 <p><i class="fab fa-whatsapp"></i> +244 937 881 307</p>
 </div>
-
 <h3>🌍 Cobertura Geográfica</h3>
 <p>Operamos em toda a África Austral e países lusófonos, com capacidade de entrega a artistas de qualquer parte do mundo. As nossas parcerias de distribuição cobrem os 5 continentes.</p>
-
 <h3>🤝 Parcerias</h3>
 <p>Se representa um selo discográfico, agregador internacional ou plataforma de streaming, contacte-nos para explorar colaborações que beneficiem os artistas africanos. Estamos abertos a acordos de distribuição, sincronização e licenciamento.</p>
 </div>`,
         'privacidade': `<div class="legal-content">
 <h2>🔒 Política de Privacidade</h2>
 <p><em>Última atualização: 2025 | Versão 2.0</em></p>
-
 <p>A <strong>MAM Distribuidora</strong> compromete-se a proteger a privacidade e os dados pessoais dos seus utilizadores. Esta política descreve como recolhemos, usamos, armazenamos e protegemos a sua informação, em conformidade com as melhores práticas internacionais de proteção de dados.</p>
-
 <h3>1. Dados Recolhidos</h3>
 <ul>
 <li><strong>Identificação:</strong> nome completo, data de nascimento, país, foto de perfil;</li>
@@ -1204,7 +1227,6 @@ window.showFooterContent=function(t){
 <li><strong>Financeiros:</strong> dados bancários para saques, histórico de royalties;</li>
 <li><strong>Conteúdo musical:</strong> ficheiros WAV, capas, metadados das músicas (ISRC, UPC, DDEX).</li>
 </ul>
-
 <h3>2. Finalidade do Tratamento</h3>
 <ul>
 <li>Autenticação e gestão de conta de utilizador;</li>
@@ -1214,7 +1236,6 @@ window.showFooterContent=function(t){
 <li>Envio de notificações sobre lançamentos, royalties e saques;</li>
 <li>Cumprimento de obrigações legais e fiscais.</li>
 </ul>
-
 <h3>3. Partilha com Terceiros</h3>
 <p>Os seus dados <strong>nunca são vendidos</strong> a terceiros. Podem ser partilhados apenas com:</p>
 <ul>
@@ -1222,7 +1243,6 @@ window.showFooterContent=function(t){
 <li>Processadores de pagamento — para efetuar saques;</li>
 <li>Autoridades legais — quando exigido por lei.</li>
 </ul>
-
 <h3>4. Medidas de Segurança</h3>
 <ul>
 <li>Autenticação Firebase com encriptação SSL/TLS em todas as comunicações;</li>
@@ -1231,7 +1251,6 @@ window.showFooterContent=function(t){
 <li>Palavras-passe encriptadas com algoritmo bcrypt e nunca acessíveis em texto simples;</li>
 <li>Confirmação de email obrigatória para ativação de conta.</li>
 </ul>
-
 <h3>5. Direitos do Utilizador</h3>
 <p>Pode, a qualquer momento, através do painel de perfil:</p>
 <ul>
@@ -1240,10 +1259,8 @@ window.showFooterContent=function(t){
 <li>Eliminar permanentemente a conta em "Definições > Eliminar Conta";</li>
 <li>Solicitar a portabilidade dos dados via email.</li>
 </ul>
-
 <h3>6. Retenção de Dados</h3>
 <p>Os dados são mantidos enquanto a conta estiver ativa. Ao eliminar a conta, todos os dados pessoais são apagados em até 30 dias, exceto registos fiscais que devam ser conservados por obrigação legal.</p>
-
 <h3>7. Contacto do Encarregado de Proteção de Dados</h3>
 <div class="contact-box">
 <p><i class="fas fa-envelope"></i> privacidade@mamdistribuidora.com</p>
@@ -1254,12 +1271,9 @@ window.showFooterContent=function(t){
         'termos': `<div class="legal-content">
 <h2>📜 Termos e Condições de Uso</h2>
 <p><em>Última atualização: 2025 | Versão 2.0</em></p>
-
 <p>Ao criar conta e utilizar a plataforma <strong>MAM Distribuidora</strong>, o utilizador declara ter lido, compreendido e aceite integralmente os presentes Termos e Condições.</p>
-
 <h3>1. Objeto do Serviço</h3>
 <p>A MAM Distribuidora presta serviços de distribuição digital de música para plataformas como Spotify, Apple Music, TikTok, Instagram, YouTube Music, Amazon Music, Deezer, Tidal, Boomplay e mais de 150 outras, através de acordos com agregadores licenciados internacionalmente.</p>
-
 <h3>2. Requisitos do Utilizador</h3>
 <ul>
 <li>Ser maior de 18 anos ou possuir autorização legal de representante;</li>
@@ -1268,7 +1282,6 @@ window.showFooterContent=function(t){
 <li>Manter as credenciais de acesso em segurança;</li>
 <li>Confirmar o endereço de email antes de aceder à conta.</li>
 </ul>
-
 <h3>3. Direitos de Autor e Propriedade Intelectual</h3>
 <p>O utilizador garante expressamente que:</p>
 <ul>
@@ -1277,7 +1290,6 @@ window.showFooterContent=function(t){
 <li>Assume total responsabilidade civil e criminal por qualquer violação.</li>
 </ul>
 <p><strong>A MAM Distribuidora atua como intermediária técnica</strong> e não se responsabiliza por plágios, uso indevido ou reivindicações de terceiros, salvo quando notificada e comprovada violação.</p>
-
 <h3>4. Conteúdo Proibido</h3>
 <p>É estritamente proibido distribuir conteúdo que:</p>
 <ul>
@@ -1287,7 +1299,6 @@ window.showFooterContent=function(t){
 <li>Contenha áudio com qualidade inferior aos padrões técnicos exigidos (WAV 44.1kHz mínimo);</li>
 <li>Use capas com marcas registadas, links, preços ou informação promocional.</li>
 </ul>
-
 <h3>5. Royalties e Split Financeiro</h3>
 <ul>
 <li>Os royalties são calculados com base em relatórios oficiais das plataformas;</li>
@@ -1297,7 +1308,6 @@ window.showFooterContent=function(t){
 <li>É responsabilidade do utilizador fornecer dados bancários corretos (nome completo do titular, IBAN);</li>
 <li>A MAM não se responsabiliza por transferências para contas bancárias erradas indicadas pelo utilizador.</li>
 </ul>
-
 <h3>6. Suspensão e Eliminação de Conta</h3>
 <p>A MAM Distribuidora reserva-se o direito de suspender ou eliminar contas que violem os presentes termos, com ou sem aviso prévio, incluindo casos de:</p>
 <ul>
@@ -1307,7 +1317,6 @@ window.showFooterContent=function(t){
 <li>Comportamento abusivo com a equipa de suporte.</li>
 </ul>
 <p>Perfis de artista suspensos com prazo definido são automaticamente reativados após o término do período.</p>
-
 <h3>7. Limitação de Responsabilidade</h3>
 <p>A MAM Distribuidora não se responsabiliza por:</p>
 <ul>
@@ -1316,20 +1325,16 @@ window.showFooterContent=function(t){
 <li>Alterações unilaterais nas políticas das plataformas;</li>
 <li>Perdas indiretas resultantes do uso do serviço.</li>
 </ul>
-
 <h3>8. Propriedade Intelectual da Plataforma</h3>
 <p>A marca, logótipo, sistema, código-fonte e interface da MAM Distribuidora são propriedade exclusiva do fundador. É proibida a reprodução total ou parcial sem autorização escrita.</p>
-
 <h3>9. Modificações</h3>
 <p>Estes termos podem ser atualizados a qualquer momento. Notificaremos os utilizadores sobre alterações significativas por email ou notificação interna.</p>
-
 <h3>10. Lei Aplicável e Foro</h3>
 <p>Estes termos regem-se pelas leis da República de Angola. Quaisquer litígios serão resolvidos nos tribunais da comarca de Luanda, com expressa renúncia a qualquer outro foro.</p>
 </div>`,
         'suporte': `<div class="legal-content">
 <h2>💬 Suporte ao Cliente</h2>
 <p>A equipa da MAM Distribuidora está disponível para o ajudar em todas as etapas da sua jornada musical. Seja para dúvidas técnicas, questões sobre royalties, problemas com lançamentos ou sugestões de melhoria, estamos aqui.</p>
-
 <h3>📞 Contactos Diretos</h3>
 <div class="contact-box">
 <p><i class="fas fa-envelope"></i> <strong>Email geral:</strong> <a href="mailto:mamfilhos29@gmail.com" style="color:var(--gold);">mamfilhos29@gmail.com</a></p>
@@ -1339,7 +1344,6 @@ window.showFooterContent=function(t){
 <p><i class="fas fa-clock"></i> <strong>Horário de atendimento:</strong> Segunda a Sexta, 8h — 17h (WAT — Horário de Angola)</p>
 <p><i class="fas fa-map-marker-alt"></i> <strong>Localização:</strong> Luanda, Angola</p>
 </div>
-
 <h3>🎯 Áreas de Assistência</h3>
 <ul>
 <li><strong>Problemas técnicos</strong> — dificuldades de login, confirmação de email, uploads, erros na plataforma;</li>
@@ -1350,14 +1354,12 @@ window.showFooterContent=function(t){
 <li><strong>Distribuição</strong> — informações sobre as 150+ plataformas disponíveis e prazos médios de entrega;</li>
 <li><strong>Parcerias comerciais</strong> — propostas de selos, agregadores e colaborações.</li>
 </ul>
-
 <h3>⏱️ Tempos de Resposta Garantidos</h3>
 <ul>
 <li><strong>WhatsApp:</strong> resposta em até 2 horas (dentro do horário útil);</li>
 <li><strong>Email:</strong> resposta em até 24 horas úteis;</li>
 <li><strong>Casos urgentes</strong> (conta suspensa indevidamente, pagamento em falta): prioridade máxima via WhatsApp.</li>
 </ul>
-
 <h3>📚 Recursos Antes de Contactar</h3>
 <p>Recomendamos consultar primeiro:</p>
 <ul>
@@ -1366,13 +1368,10 @@ window.showFooterContent=function(t){
 <li>As dicas técnicas no formulário "Lançar Música";</li>
 <li>O nosso canal YouTube para tutoriais em vídeo.</li>
 </ul>
-
 <h3>🚨 Suporte Prioritário</h3>
 <p>Para situações urgentes (música removida indevidamente, problemas de pagamento, conta suspensa sem justificação), envie mensagem via WhatsApp com o assunto <strong>[URGENTE]</strong> no início da mensagem. Estes casos são atendidos em até 1 hora durante o horário útil.</p>
-
 <h3>🌍 Idiomas de Suporte</h3>
 <p>Português, Inglês e Espanhol. Francês disponível por email.</p>
-
 <div class="highlight-box">
 <strong>💡 Dica profissional:</strong> Ao reportar um problema, inclua sempre:<br>
 • O email de registo da sua conta;<br>
@@ -1430,7 +1429,7 @@ auth.onAuthStateChanged(async user=>{
     }
 });
 
-console.log('🚀 MAM Distribuidora — Upload com progresso + TikTok preview + DJ removido');
+console.log('🚀 MAM v13 — Upload com progresso + Preview TikTok 1:00 + DJ removido');
 </script>
 </body>
 </html>

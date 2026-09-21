@@ -179,9 +179,6 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 .channel-cta i{font-size:2rem;color:#fff}
 .channel-cta .btn-red{background:#dc3545;color:#fff;padding:10px 24px;border-radius:24px;text-decoration:none;font-weight:bold;font-size:.9rem;border:none;cursor:pointer}
 .channel-cta .btn-red:hover{background:#b81f2d}
-/* Video embed responsivo */
-.video-embed-wrap{position:relative;width:100%;padding-bottom:56.25%;border-radius:8px;overflow:hidden;background:#000}
-.video-embed-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 @media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}.legal-content .stat-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -201,7 +198,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div style="background:var(--card);border:2px solid var(--gold);border-radius:12px;max-width:450px;width:90%;text-align:center;">
 <div style="background:rgba(212,175,55,.15);padding:20px;"><h3 style="color:var(--gold);"><i class="fas fa-crown"></i> MAM Distribuidora</h3></div>
 <div style="padding:30px 20px;" id="alert-message"></div>
-<div style="padding:20px;"><button style="background:var(--gold);color:#000;border:none;padding:12px 30px;border-radius:8px;font-weight:bold;cursor:pointer;" onclick="closeAlert()">Entendi</button></div>
+<div style="padding:20px;"><button style="background:var(--gold);color:#000;border:none;padding:12px 30px;border-radius:8px;font-weight:bold;cursor:pointer;" onclick="closeAlert()" data-i18n="understood">Entendi</button></div>
 </div></div>
 
 <div id="confirm-modal" class="modal" style="z-index:20001;">
@@ -209,25 +206,25 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div style="background:rgba(212,175,55,.15);padding:20px;"><h3 style="color:var(--gold);"><i class="fas fa-crown"></i> Confirmar</h3></div>
 <div style="padding:30px 20px;" id="confirm-message"></div>
 <div style="display:flex;gap:15px;justify-content:center;margin-top:20px;">
-<button class="btn btn-sec" onclick="confirmResposta(false)" style="width:auto;padding:10px 30px;">Não</button>
-<button class="btn" onclick="confirmResposta(true)" style="width:auto;padding:10px 30px;">Sim</button>
+<button class="btn btn-sec" onclick="confirmResposta(false)" style="width:auto;padding:10px 30px;" data-i18n="no">Não</button>
+<button class="btn" onclick="confirmResposta(true)" style="width:auto;padding:10px 30px;" data-i18n="yes">Sim</button>
 </div></div></div>
 
 <div id="modal-suspender" class="modal"><div class="modal-content" style="max-width:500px;">
 <button class="modal-close" onclick="closeModal('modal-suspender')"><i class="fas fa-times"></i></button>
-<h3>Suspender Artista</h3>
+<h3 data-i18n="admin_suspend">Suspender Artista</h3>
 <input type="hidden" id="susp-artist-id">
 <p id="susp-artist-nome" style="color:var(--gray);margin-bottom:15px;"></p>
-<label>Duração (dias)</label>
+<label data-i18n="suspend_days">Duração (dias)</label>
 <select id="susp-dias"><option value="1">1 dia</option><option value="3">3 dias</option><option value="7">7 dias</option><option value="14">14 dias</option><option value="30" selected>30 dias</option><option value="90">90 dias</option><option value="0">Permanente</option></select>
-<label>Motivo</label>
+<label data-i18n="suspend_reason">Motivo</label>
 <textarea id="susp-motivo" rows="2" placeholder="Motivo da suspensão"></textarea>
-<button class="btn btn-danger" onclick="confirmarSuspensao()">Suspender</button>
+<button class="btn btn-danger" onclick="confirmarSuspensao()" data-i18n="admin_suspend_confirm">Suspender</button>
 </div></div>
 
 <div id="modal-oficial" class="modal"><div class="modal-content" style="max-width:600px;">
 <button class="modal-close" onclick="closeModal('modal-oficial')"><i class="fas fa-times"></i></button>
-<h3>Atribuir como Perfil Oficial</h3>
+<h3 data-i18n="admin_official">Atribuir como Perfil Oficial</h3>
 <input type="hidden" id="oficial-artist-id">
 <p id="oficial-artist-nome" style="color:var(--gray);margin-bottom:10px;"></p>
 <p style="color:#ccc;font-size:.85rem;margin-bottom:15px;">Ao marcar como oficial, TODAS as músicas lançadas por artistas com o mesmo nome serão direcionadas para este perfil.</p>
@@ -252,14 +249,27 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <button class="btn btn-success" onclick="confirmarMudarPlano()">Aplicar Plano</button>
 </div></div>
 
+<!-- NOVO: Modal Nova Senha (para reset pelo link do email) -->
+<div id="modal-nova-senha" class="modal"><div class="modal-content" style="max-width:500px;">
+<button class="modal-close" onclick="closeModal('modal-nova-senha')"><i class="fas fa-times"></i></button>
+<h3>Criar Nova Senha</h3>
+<p style="color:var(--gray);font-size:.9rem;margin-bottom:15px;">Defina a sua nova senha de acesso à MAM Distribuidora.</p>
+<label>Nova Senha</label>
+<div style="position:relative;"><input type="password" id="nova-senha-1" placeholder="Mínimo 6 caracteres"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);cursor:pointer;" onclick="togglePassword('nova-senha-1')"><i class="fas fa-eye"></i></button></div>
+<label>Confirmar Nova Senha</label>
+<div style="position:relative;"><input type="password" id="nova-senha-2" placeholder="Repita a senha"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);cursor:pointer;" onclick="togglePassword('nova-senha-2')"><i class="fas fa-eye"></i></button></div>
+<input type="hidden" id="nova-senha-oob">
+<button class="btn" onclick="confirmarNovaSenha()">Guardar Nova Senha</button>
+</div></div>
+
 <div id="modal-video-player" class="modal"><div class="modal-content" style="max-width:900px;padding:20px;">
-<button class="modal-close" onclick="closeModal('modal-video-player')" style="z-index:10;background:#000;"><i class="fas fa-times"></i></button>
-<div id="video-player-body" class="video-embed-wrap"></div>
+<button class="modal-close" onclick="closeModal('modal-video-player')"><i class="fas fa-times"></i></button>
+<div id="video-player-body" style="width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;"></div>
 </div></div>
 
 <header>
 <div class="logo"><img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg"><span class="logo-text">MAM DISTRIBUIDORA</span></div>
-<p style="color:var(--gray);font-size:.75rem;">O Império da Música em Angola | Distribuição para 150+ Plataformas</p>
+<p style="color:var(--gray);font-size:.75rem;" data-i18n="subtitle">O Império da Música em Angola | Distribuição para 150+ Plataformas</p>
 <div class="search-bar-container">
 <input type="text" id="global-search" class="search-bar" placeholder="Pesquisar artista pelo nome...">
 <button class="search-btn" onclick="pesquisarArtistaGlobal()"><i class="fas fa-search"></i></button>
@@ -267,19 +277,19 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 </header>
 
 <nav>
-<button class="nav-btn active" onclick="showSection('home',this)"><i class="fas fa-home"></i> Início</button>
-<button class="nav-btn" onclick="showSection('planos',this)"><i class="fas fa-gem"></i> Planos</button>
-<button class="nav-btn" id="nav-artistas" style="display:none;" onclick="showSection('artistas',this)"><i class="fas fa-users"></i> Artistas</button>
-<button class="nav-btn" id="nav-lancar" style="display:none;" onclick="showSection('lancar',this)"><i class="fas fa-upload"></i> Lançar</button>
-<button class="nav-btn" id="nav-minhas-musicas" style="display:none;" onclick="showSection('minhas-musicas',this)"><i class="fas fa-music"></i> Minhas Músicas</button>
-<button class="nav-btn" id="nav-carteira" style="display:none;" onclick="showSection('carteira',this)"><i class="fas fa-wallet"></i> Carteira</button>
-<button class="nav-btn" id="nav-perfil" style="display:none;" onclick="showSection('perfil',this)"><i class="fas fa-user"></i> Perfil</button>
-<button class="nav-btn" id="nav-mensagens" style="display:none;" onclick="showSection('mensagens',this)"><i class="fas fa-comments"></i> Mensagens</button>
-<button class="nav-btn" id="nav-config" style="display:none;" onclick="openModal('modal-settings')"><i class="fas fa-cog"></i> Definições</button>
+<button class="nav-btn active" onclick="showSection('home',this)"><i class="fas fa-home"></i> <span data-i18n="nav_home">Início</span></button>
+<button class="nav-btn" onclick="showSection('planos',this)"><i class="fas fa-gem"></i> <span data-i18n="nav_plans">Planos</span></button>
+<button class="nav-btn" id="nav-artistas" style="display:none;" onclick="showSection('artistas',this)"><i class="fas fa-users"></i> <span data-i18n="nav_artists">Artistas</span></button>
+<button class="nav-btn" id="nav-lancar" style="display:none;" onclick="showSection('lancar',this)"><i class="fas fa-upload"></i> <span data-i18n="nav_release">Lançar</span></button>
+<button class="nav-btn" id="nav-minhas-musicas" style="display:none;" onclick="showSection('minhas-musicas',this)"><i class="fas fa-music"></i> <span data-i18n="nav_my_music">Minhas Músicas</span></button>
+<button class="nav-btn" id="nav-carteira" style="display:none;" onclick="showSection('carteira',this)"><i class="fas fa-wallet"></i> <span data-i18n="nav_wallet">Carteira</span></button>
+<button class="nav-btn" id="nav-perfil" style="display:none;" onclick="showSection('perfil',this)"><i class="fas fa-user"></i> <span data-i18n="nav_profile">Perfil</span></button>
+<button class="nav-btn" id="nav-mensagens" style="display:none;" onclick="showSection('mensagens',this)"><i class="fas fa-comments"></i> <span data-i18n="nav_messages">Mensagens</span></button>
+<button class="nav-btn" id="nav-config" style="display:none;" onclick="openModal('modal-settings')"><i class="fas fa-cog"></i> <span data-i18n="nav_settings">Definições</span></button>
 <button class="nav-btn" id="nav-notifications" style="display:none;position:relative;" onclick="toggleNotifications()"><i class="fas fa-bell"></i><span id="notif-badge" class="badge" style="display:none;">0</span></button>
 <button class="nav-btn" id="btn-admin-global" style="display:none;" onclick="showSection('admin',this)"><i class="fas fa-shield-alt"></i> ADMIN</button>
-<button class="nav-btn" id="nav-login" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-<button class="nav-btn" id="nav-logout" style="display:none;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+<button class="nav-btn" id="nav-login" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> <span data-i18n="nav_login">Entrar</span></button>
+<button class="nav-btn" id="nav-logout" style="display:none;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Sair</span></button>
 </nav>
 
 <div class="container">
@@ -290,30 +300,30 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="carousel" id="carousel">
 <div class="carousel-slide s1 active">
 <div>
-<h2>🎵 O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
-<p>Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.</p>
-<button class="btn" onclick="openModal('modal-registro')">COMEÇAR AGORA</button>
+<h2 data-i18n="adv1_title">🎵 O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
+<p data-i18n="adv1_desc">Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv1_btn">COMEÇAR AGORA</button>
 </div>
 </div>
 <div class="carousel-slide s2">
 <div>
-<h2>💰 100% DOS ROYALTIES SÃO SEUS</h2>
-<p>Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.</p>
-<button class="btn" onclick="openModal('modal-registro')">CRIAR CONTA GRÁTIS</button>
+<h2 data-i18n="adv2_title">💰 100% DOS ROYALTIES SÃO SEUS</h2>
+<p data-i18n="adv2_desc">Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv2_btn">CRIAR CONTA GRÁTIS</button>
 </div>
 </div>
 <div class="carousel-slide s3">
 <div>
-<h2>🌍 CHEGUE AO MUNDO INTEIRO</h2>
-<p>A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.</p>
-<button class="btn" onclick="openModal('modal-registro')">DISTRIBUIR AGORA</button>
+<h2 data-i18n="adv3_title">🌍 CHEGUE AO MUNDO INTEIRO</h2>
+<p data-i18n="adv3_desc">A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv3_btn">DISTRIBUIR AGORA</button>
 </div>
 </div>
 <div class="carousel-slide s4">
 <div>
-<h2>🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3</h2>
-<p>Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.</p>
-<button class="btn" onclick="openModal('modal-registro')">SABER MAIS</button>
+<h2 data-i18n="adv4_title">🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3</h2>
+<p data-i18n="adv4_desc">Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.</p>
+<button class="btn" onclick="openModal('modal-registro')" data-i18n="adv4_btn">SABER MAIS</button>
 </div>
 </div>
 <div class="carousel-dots" id="carousel-dots">
@@ -324,7 +334,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 </div>
 </div>
 
-<!-- VÍDEO YOUTUBE DO CANAL REAL -->
+<!-- VÍDEO YOUTUBE DO CANAL REAL (CORRIGIDO) -->
 <div class="video-section">
 <h3><i class="fab fa-youtube" style="color:#dc3545;"></i> Últimos Lançamentos do Canal MAM Distribuidora</h3>
 <div class="channel-cta">
@@ -338,7 +348,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="video-grid" id="video-grid">
 <div class="video-item" onclick="abrirVideoCanal()">
 <div class="video-thumb" style="background-image:url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg')"><div class="play-icon"><i class="fas fa-play-circle"></i></div></div>
-<div class="video-info"><h4>▶ Ver últimos vídeos do canal</h4><small>MAM Distribuidora • YouTube Oficial</small></div>
+<div class="video-info"><h4>▶ Ver vídeos no YouTube</h4><small>MAM Distribuidora • Canal Oficial</small></div>
 </div>
 <div class="video-item" onclick="abrirVideoPlaylist()">
 <div class="video-thumb" style="background-image:url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg')"><div class="play-icon"><i class="fas fa-play-circle"></i></div></div>
@@ -349,56 +359,56 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 
 <div id="modal-login" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button>
-<h3>ENTRAR</h3>
-<label>Email</label>
+<h3 data-i18n="login_title">ENTRAR</h3>
+<label data-i18n="lbl_email">Email</label>
 <input type="email" id="login-email" placeholder="exemplo@email.com">
-<label>Senha</label>
+<label data-i18n="lbl_password">Senha</label>
 <div style="position:relative;"><input type="password" id="login-pass" placeholder="A sua senha"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);cursor:pointer;" onclick="togglePassword('login-pass')"><i class="fas fa-eye"></i></button></div>
-<button class="btn" onclick="handleLogin()">Entrar</button>
-<p style="text-align:center;margin-top:15px;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-esqueci-senha');">Esqueci a senha</a></p>
-<p style="text-align:center;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-registro');">Criar conta grátis</a></p>
+<button class="btn" onclick="handleLogin()" data-i18n="btn_login">Entrar</button>
+<p style="text-align:center;margin-top:15px;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-esqueci-senha');" data-i18n="forgot_pass">Esqueci a senha</a></p>
+<p style="text-align:center;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-registro');" data-i18n="create_account">Criar conta grátis</a></p>
 </div></div>
 
 <div id="modal-registro" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('modal-registro')"><i class="fas fa-times"></i></button>
-<h3>CRIAR CONTA</h3>
-<label><i class="fas fa-user"></i> Nome Completo *</label>
+<h3 data-i18n="register_title">CRIAR CONTA</h3>
+<label><i class="fas fa-user"></i> <span data-i18n="lbl_fullname">Nome Completo</span> *</label>
 <input type="text" id="reg-nome" placeholder="Ex: João Silva Santos">
-<label><i class="fas fa-envelope"></i> Email *</label>
+<label><i class="fas fa-envelope"></i> <span data-i18n="lbl_email">Email</span> *</label>
 <input type="email" id="reg-email" placeholder="exemplo@email.com">
-<p class="help-text">Será enviado um email de confirmação. Só poderá entrar após confirmar.</p>
-<label><i class="fas fa-calendar-alt"></i> Data de Nascimento *</label>
+<p class="help-text" data-i18n="email_help">Será enviado um email de confirmação. Só poderá entrar após confirmar.</p>
+<label><i class="fas fa-calendar-alt"></i> <span data-i18n="lbl_birth">Data de Nascimento</span> *</label>
 <input type="date" id="reg-data-nascimento" max="2010-12-31">
-<label><i class="fas fa-phone"></i> Telefone *</label>
+<label><i class="fas fa-phone"></i> <span data-i18n="lbl_phone">Telefone</span> *</label>
 <div class="phone-group">
 <select id="reg-phone-code"></select>
 <input type="tel" id="reg-telefone" placeholder="937881307">
 </div>
-<p class="help-text">Escolha o código do país e escreva apenas o número</p>
-<label><i class="fas fa-lock"></i> Senha *</label>
+<p class="help-text" data-i18n="phone_help">Escolha o código do país e escreva apenas o número</p>
+<label><i class="fas fa-lock"></i> <span data-i18n="lbl_password">Senha</span> *</label>
 <div style="position:relative;"><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);" onclick="togglePassword('reg-pass')"><i class="fas fa-eye"></i></button></div>
-<label><i class="fas fa-lock"></i> Confirmar Senha *</label>
+<label><i class="fas fa-lock"></i> <span data-i18n="lbl_confirm_password">Confirmar Senha</span> *</label>
 <div style="position:relative;"><input type="password" id="reg-pass-confirm" placeholder="Repita a senha"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);" onclick="togglePassword('reg-pass-confirm')"><i class="fas fa-eye"></i></button></div>
-<button class="btn" onclick="handleRegister()">Criar Conta</button>
+<button class="btn" onclick="handleRegister()" data-i18n="btn_register">Criar Conta</button>
 </div></div>
 
 <div id="modal-esqueci-senha" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('modal-esqueci-senha')"><i class="fas fa-times"></i></button>
-<h3>Recuperar Senha</h3>
-<label>Email</label>
+<h3 data-i18n="recover_title">Recuperar Senha</h3>
+<label data-i18n="lbl_email">Email</label>
 <input type="email" id="reset-email" placeholder="O seu email">
-<p class="help-text">Enviaremos um link para o seu email. Ao clicar, será redirecionado para criar uma nova senha.</p>
-<button class="btn" onclick="resetPassword()">Enviar Link</button>
+<p class="help-text" data-i18n="recover_help">Enviaremos um link para o seu email. Ao clicar, será redirecionado para criar uma nova senha.</p>
+<button class="btn" onclick="resetPassword()" data-i18n="btn_send_link">Enviar Link</button>
 </div></div>
 
 <div class="card" style="text-align:center;padding:50px 20px;">
-<h2 style="color:var(--gold);font-size:2rem;">O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
-<p style="color:var(--gray);max-width:700px;margin:0 auto 30px;">Distribua a sua música para 150+ plataformas globais.</p>
-<div><button class="btn" style="width:auto;padding:15px 40px;" onclick="openModal('modal-registro')">CRIAR CONTA GRÁTIS</button><button class="btn btn-sec" style="width:auto;margin-left:15px;" onclick="openModal('modal-login')">ENTRAR</button></div>
+<h2 style="color:var(--gold);font-size:2rem;" data-i18n="welcome_title">O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
+<p style="color:var(--gray);max-width:700px;margin:0 auto 30px;" data-i18n="welcome_desc">Distribua a sua música para 150+ plataformas globais.</p>
+<div><button class="btn" style="width:auto;padding:15px 40px;" onclick="openModal('modal-registro')" data-i18n="btn_create_free">CRIAR CONTA GRÁTIS</button><button class="btn btn-sec" style="width:auto;margin-left:15px;" onclick="openModal('modal-login')" data-i18n="btn_login">ENTRAR</button></div>
 <div class="info-grid">
-<div class="info-card"><i class="fas fa-globe"></i><h3>150+ PLATAFORMAS</h3><p>Spotify, Apple, TikTok...</p></div>
-<div class="info-card"><i class="fas fa-coins"></i><h3>100% ROYALTIES</h3><p>Você fica com tudo.</p></div>
-<div class="info-card"><i class="fas fa-shield-alt"></i><h3>DDEX ERN 4.3</h3><p>Padrão internacional.</p></div>
+<div class="info-card"><i class="fas fa-globe"></i><h3 data-i18n="feat_platforms">150+ PLATAFORMAS</h3><p data-i18n="feat_platforms_desc">Spotify, Apple, TikTok...</p></div>
+<div class="info-card"><i class="fas fa-coins"></i><h3 data-i18n="feat_royalties">100% ROYALTIES</h3><p data-i18n="feat_royalties_desc">Você fica com tudo.</p></div>
+<div class="info-card"><i class="fas fa-shield-alt"></i><h3 data-i18n="feat_ddex">DDEX ERN 4.3</h3><p data-i18n="feat_ddex_desc">Padrão internacional.</p></div>
 </div></div>
 </section>
 
@@ -410,26 +420,26 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="carousel" id="carousel-in">
 <div class="carousel-slide s1 active">
 <div>
-<h2>🎵 O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
-<p>Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.</p>
+<h2 data-i18n="adv1_title">🎵 O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
+<p data-i18n="adv1_desc">Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.</p>
 </div>
 </div>
 <div class="carousel-slide s2">
 <div>
-<h2>💰 100% DOS ROYALTIES SÃO SEUS</h2>
-<p>Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.</p>
+<h2 data-i18n="adv2_title">💰 100% DOS ROYALTIES SÃO SEUS</h2>
+<p data-i18n="adv2_desc">Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.</p>
 </div>
 </div>
 <div class="carousel-slide s3">
 <div>
-<h2>🌍 CHEGUE AO MUNDO INTEIRO</h2>
-<p>A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.</p>
+<h2 data-i18n="adv3_title">🌍 CHEGUE AO MUNDO INTEIRO</h2>
+<p data-i18n="adv3_desc">A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.</p>
 </div>
 </div>
 <div class="carousel-slide s4">
 <div>
-<h2>🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3</h2>
-<p>Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.</p>
+<h2 data-i18n="adv4_title">🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3</h2>
+<p data-i18n="adv4_desc">Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.</p>
 </div>
 </div>
 <div class="carousel-dots" id="carousel-dots-in">
@@ -454,7 +464,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="video-grid">
 <div class="video-item" onclick="abrirVideoCanal()">
 <div class="video-thumb" style="background-image:url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg')"><div class="play-icon"><i class="fas fa-play-circle"></i></div></div>
-<div class="video-info"><h4>▶ Ver últimos vídeos do canal</h4><small>MAM Distribuidora • YouTube Oficial</small></div>
+<div class="video-info"><h4>▶ Ver vídeos no YouTube</h4><small>MAM Distribuidora • Canal Oficial</small></div>
 </div>
 <div class="video-item" onclick="abrirVideoPlaylist()">
 <div class="video-thumb" style="background-image:url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg')"><div class="play-icon"><i class="fas fa-play-circle"></i></div></div>
@@ -466,70 +476,70 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="card">
 <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
 <img id="home-user-photo" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);">
-<div><h3>Olá, <span id="user-display-name"></span>!</h3><p><span id="user-display-country"></span></p></div>
+<div><h3><span data-i18n="hello">Olá</span>, <span id="user-display-name"></span>!</h3><p><span id="user-display-country"></span></p></div>
 <span id="user-display-plan" class="status-pill status-active"></span>
 <span id="admin-pro-max-indicator" style="display:none;" class="admin-pro-max-badge">ADMIN</span>
 </div></div>
 <div class="stat-grid">
-<div class="stat-box"><h4 id="stat-saldo">0 Kz</h4><p>Saldo</p></div>
-<div class="stat-box"><h4 id="stat-artistas-count">0</h4><p>Artistas</p></div>
-<div class="stat-box"><h4 id="stat-musicas-count">0</h4><p>Músicas</p></div>
-<div class="stat-box"><h4 id="stat-total-streams">0</h4><p>Total Streams</p></div>
+<div class="stat-box"><h4 id="stat-saldo">0 Kz</h4><p data-i18n="stat_balance">Saldo</p></div>
+<div class="stat-box"><h4 id="stat-artistas-count">0</h4><p data-i18n="stat_artists">Artistas</p></div>
+<div class="stat-box"><h4 id="stat-musicas-count">0</h4><p data-i18n="stat_songs">Músicas</p></div>
+<div class="stat-box"><h4 id="stat-total-streams">0</h4><p data-i18n="stat_streams">Total Streams</p></div>
 </div>
-<div class="card"><h3><i class="fas fa-rss"></i> Feed Global de Lançamentos</h3><div id="feed-container" class="grid"></div></div>
+<div class="card"><h3><i class="fas fa-rss"></i> <span data-i18n="feed_title">Feed Global de Lançamentos</span></h3><div id="feed-container" class="grid"></div></div>
 </section>
 
 <section id="planos" class="section">
-<div class="card"><h3>Planos</h3>
+<div class="card"><h3 data-i18n="plans_title">Planos</h3>
 <div class="plans-grid">
-<div class="plan-card" onclick="selectPlan('free')"><div class="plan-name">FREE</div><div class="plan-price">0 Kz</div><ul class="plan-features"><li>1 Artista</li><li>3 lançamentos/mês</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('free')">Começar</button></div>
-<div class="plan-card featured" onclick="selectPlan('basico')"><div class="plan-name">BÁSICO</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>5 Artistas</li><li>Ilimitado</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('basico')">Assinar</button></div>
-<div class="plan-card" onclick="selectPlan('premium')"><div class="plan-name">PREMIUM</div><div class="plan-price">25.000 Kz</div><ul class="plan-features"><li>Ilimitado</li><li>Selo</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('premium')">Premium</button></div>
+<div class="plan-card" onclick="selectPlan('free')"><div class="plan-name">FREE</div><div class="plan-price">0 Kz</div><ul class="plan-features"><li>1 Artista</li><li>3 lançamentos/mês</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('free')" data-i18n="btn_start">Começar</button></div>
+<div class="plan-card featured" onclick="selectPlan('basico')"><div class="plan-name">BÁSICO</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>5 Artistas</li><li>Ilimitado</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('basico')" data-i18n="btn_subscribe">Assinar</button></div>
+<div class="plan-card" onclick="selectPlan('premium')"><div class="plan-name">PREMIUM</div><div class="plan-price">25.000 Kz</div><ul class="plan-features"><li>Ilimitado</li><li>Selo</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('premium')" data-i18n="btn_premium">Premium</button></div>
 </div></div></section>
 
 <section id="artistas" class="section">
 <div class="card">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-<h3>Meus Artistas</h3>
-<button class="btn btn-small" onclick="openAddArtistModal()">+ Novo Artista</button>
+<h3 data-i18n="my_artists">Meus Artistas</h3>
+<button class="btn btn-small" onclick="openAddArtistModal()" data-i18n="btn_new_artist">+ Novo Artista</button>
 </div>
 <div id="artistas-container" class="item-list"></div>
 </div></section>
 
 <section id="lancar" class="section">
 <div class="card">
-<h3>Lançar Música (DDEX ERN 4.3)</h3>
+<h3 data-i18n="release_title">Lançar Música (DDEX ERN 4.3)</h3>
 <form id="form-lancamento" onsubmit="return false;">
-<label>Título da Música *</label><input type="text" id="music-titulo" placeholder="Ex: Minha Música">
-<label>Artista *</label><select id="music-artista-select"><option value="">-- Escolha --</option></select>
+<label data-i18n="lbl_track">Título da Música *</label><input type="text" id="music-titulo" placeholder="Ex: Minha Música">
+<label data-i18n="lbl_select_artist">Artista *</label><select id="music-artista-select"><option value="">-- Escolha --</option></select>
 <div class="form-row">
-<div><label>Género Principal *</label><select id="music-estilo"><option value="">-- Escolha --</option></select></div>
-<div><label>Sub-Género *</label><select id="music-sub-estilo"><option value="">-- Escolha --</option></select></div>
+<div><label data-i18n="lbl_genre">Género Principal *</label><select id="music-estilo"><option value="">-- Escolha --</option></select></div>
+<div><label data-i18n="lbl_subgenre">Sub-Género *</label><select id="music-sub-estilo"><option value="">-- Escolha --</option></select></div>
 </div>
 <div class="form-row">
-<div><label>Data de lançamento</label><input type="date" id="music-data"></div>
-<div><label>Idioma da música *</label><select id="music-idioma"><option value="Português">Português</option><option value="Inglês">Inglês</option><option value="Espanhol">Espanhol</option><option value="Francês">Francês</option><option value="Outro">Outro</option></select></div>
+<div><label data-i18n="lbl_release_date">Data de lançamento</label><input type="date" id="music-data"></div>
+<div><label data-i18n="lbl_language">Idioma da música *</label><select id="music-idioma"><option value="Português">Português</option><option value="Inglês">Inglês</option><option value="Espanhol">Espanhol</option><option value="Francês">Francês</option><option value="Outro">Outro</option></select></div>
 </div>
 <div class="form-row">
-<div><label>ISRC (Auto-gerado)</label><input type="text" id="music-isrc" readonly style="font-family:monospace;"></div>
-<div><label>UPC (Auto-gerado)</label><input type="text" id="music-upc" readonly style="font-family:monospace;"></div>
+<div><label data-i18n="lbl_isrc">ISRC (Auto-gerado)</label><input type="text" id="music-isrc" readonly style="font-family:monospace;"></div>
+<div><label data-i18n="lbl_upc">UPC (Auto-gerado)</label><input type="text" id="music-upc" readonly style="font-family:monospace;"></div>
 </div>
 <div class="form-row">
-<div><label>Compositores *</label><input type="text" id="music-compositores"></div>
-<div><label>Produtor</label><input type="text" id="music-produtor"></div>
+<div><label data-i18n="lbl_composers">Compositores *</label><input type="text" id="music-compositores"></div>
+<div><label data-i18n="lbl_producer">Produtor</label><input type="text" id="music-produtor"></div>
 </div>
 <div class="form-row">
-<div><label>Colaboradores (feat.)</label><input type="text" id="music-colaboradores"></div>
-<div><label>Conteúdo explícito?</label><select id="music-explicit"><option value="Não">Não</option><option value="Sim">Sim</option></select></div>
+<div><label data-i18n="lbl_collab">Colaboradores (feat.)</label><input type="text" id="music-colaboradores"></div>
+<div><label data-i18n="lbl_explicit">Conteúdo explícito?</label><select id="music-explicit"><option value="Não">Não</option><option value="Sim">Sim</option></select></div>
 </div>
 <div class="form-row">
-<div><label>℗ Copyright</label><input type="text" id="music-pline" placeholder="℗ 2025 MAM"></div>
-<div><label>© Copyright</label><input type="text" id="music-cline" placeholder="© 2025 MAM"></div>
+<div><label data-i18n="lbl_pline">℗ Copyright</label><input type="text" id="music-pline" placeholder="℗ 2025 MAM"></div>
+<div><label data-i18n="lbl_cline">© Copyright</label><input type="text" id="music-cline" placeholder="© 2025 MAM"></div>
 </div>
 
-<label style="margin-top:15px;">Capa da Música *</label>
+<label style="margin-top:15px;" data-i18n="lbl_cover">Capa da Música *</label>
 <div class="platform-req">
-<h4>🎨 Exigências de todas as plataformas digitais (Spotify, Apple, TikTok, Instagram, YouTube, Amazon, Deezer, Tidal):</h4>
+<h4>🎨 Exigências de todos as plataformas digitais (Spotify, Apple, TikTok, Instagram, YouTube, Amazon, Deezer, Tidal):</h4>
 <ul>
 <li><strong>Formato:</strong> JPG ou PNG (não aceita WebP, GIF, BMP)</li>
 <li><strong>Dimensão mínima:</strong> 1400 x 1400 pixels</li>
@@ -537,15 +547,16 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <li><strong>Proporção:</strong> 1:1 (exatamente quadrada)</li>
 <li><strong>Tamanho máximo:</strong> 20 MB</li>
 <li><strong>Espaço de cor:</strong> RGB (não CMYK)</li>
+<li><strong>Resolução:</strong> 72 DPI ou superior</li>
 <li><strong>Proibido:</strong> Logotipos de redes sociais, preços, links, marcas de água, texto promocional</li>
 </ul>
 </div>
 <input type="hidden" id="music-capa-url">
 <input type="file" id="music-capa-file" accept="image/jpeg,image/png" style="display:none;">
-<button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa</button>
+<button type="button" class="btn btn-sec" id="upload-capa-btn" data-i18n="btn_select_cover">Selecionar Capa</button>
 <div id="capa-preview" style="display:none;margin-top:15px;text-align:center;"><img id="capa-preview-img" style="width:150px;height:150px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);"><p id="capa-status" style="color:var(--success);margin-top:10px;font-size:.85rem;"></p></div>
 
-<label style="margin-top:15px;">Áudio (WAV) *</label>
+<label style="margin-top:15px;" data-i18n="lbl_audio">Áudio (WAV) *</label>
 <div class="platform-req">
 <h4>🎧 Exigências de todas as plataformas digitais:</h4>
 <ul>
@@ -561,34 +572,34 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 </div>
 <input type="hidden" id="music-audio-url">
 <input type="file" id="music-audio-file" accept=".wav,audio/wav" style="display:none;">
-<button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio WAV</button>
+<button type="button" class="btn btn-sec" id="upload-audio-btn" data-i18n="btn_select_audio">Selecionar Áudio WAV</button>
 <div id="audio-preview" style="display:none;margin-top:15px;"><p id="audio-status" style="color:var(--success);font-size:.85rem;"></p></div>
 
-<div class="ddex-info"><p><i class="fas fa-share-alt"></i> Sistema gera pacote DDEX ERN 4.3 conforme padrão internacional e converte WAV para os formatos exigidos por cada plataforma (MP3, AAC, FLAC, etc.).</p></div>
-<button type="button" class="btn" id="btnEnviarLancamento">Enviar para Distribuição</button>
+<div class="ddex-info"><p><i class="fas fa-share-alt"></i> <span data-i18n="ddex_info">Sistema gera pacote DDEX ERN 4.3 conforme padrão internacional e converte WAV para os formatos exigidos por cada plataforma (MP3, AAC, FLAC, etc.).</span></p></div>
+<button type="button" class="btn" id="btnEnviarLancamento" data-i18n="btn_submit">Enviar para Distribuição</button>
 </form></div></section>
 
 <section id="minhas-musicas" class="section">
-<div class="card"><h3>Minhas Músicas</h3><div id="minhas-musicas-container" class="grid"></div></div></section>
+<div class="card"><h3 data-i18n="my_music">Minhas Músicas</h3><div id="minhas-musicas-container" class="grid"></div></div></section>
 
 <section id="carteira" class="section">
-<div class="card"><h3>Carteira</h3>
+<div class="card"><h3 data-i18n="wallet_title">Carteira</h3>
 <div class="form-row">
-<div><label>Moeda</label><select id="currency-select" onchange="updateWalletDisplay()"></select></div>
-<div><label>Taxa</label><input type="text" id="currency-rate" readonly></div>
+<div><label data-i18n="lbl_currency">Moeda</label><select id="currency-select" onchange="updateWalletDisplay()"></select></div>
+<div><label data-i18n="lbl_rate">Taxa</label><input type="text" id="currency-rate" readonly></div>
 </div>
 <div class="stat-grid">
-<div class="stat-box"><h4 id="carteira-saldo">0 Kz</h4><p>Saldo</p></div>
-<div class="stat-box"><h4 id="carteira-ganhos-mes">0 Kz</h4><p>Ganhos do mês</p></div>
-<div class="stat-box"><h4 id="carteira-ganhos-total">0 Kz</h4><p>Ganhos totais</p></div>
+<div class="stat-box"><h4 id="carteira-saldo">0 Kz</h4><p data-i18n="stat_balance">Saldo</p></div>
+<div class="stat-box"><h4 id="carteira-ganhos-mes">0 Kz</h4><p data-i18n="wallet_month">Ganhos do mês</p></div>
+<div class="stat-box"><h4 id="carteira-ganhos-total">0 Kz</h4><p data-i18n="wallet_total">Ganhos totais</p></div>
 </div>
-<div class="ddex-info"><p><i class="fas fa-info-circle"></i> Saque mínimo: 10.000 Kz.</p></div>
-<button class="btn" onclick="openSaqueModal()">Levantar Ganhos</button>
+<div class="ddex-info"><p><i class="fas fa-info-circle"></i> <span data-i18n="withdraw_min_info">Saque mínimo: 10.000 Kz.</span></p></div>
+<button class="btn" onclick="openSaqueModal()" data-i18n="btn_withdraw">Levantar Ganhos</button>
 <div id="historico-saques" class="item-list" style="margin-top:20px;"></div>
 </div></section>
 
 <section id="perfil" class="section">
-<div class="card"><h3>Meu Perfil</h3>
+<div class="card"><h3 data-i18n="profile_title">Meu Perfil</h3>
 <div style="text-align:center;">
 <img id="perfil-foto" style="width:120px;height:120px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;">
 <h2 id="perfil-nome-exibicao" style="color:var(--gold);margin-top:10px;"></h2>
@@ -598,33 +609,33 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <p id="perfil-telefone-exibicao" style="color:var(--gray);"></p>
 <p id="perfil-plano-exibicao" style="color:var(--gold);"></p>
 <p id="perfil-role-exibicao" style="color:var(--gold);"></p>
-<button class="btn btn-sec" style="width:auto;margin-top:15px;" onclick="openModal('modal-settings')">Editar Perfil</button>
+<button class="btn btn-sec" style="width:auto;margin-top:15px;" onclick="openModal('modal-settings')" data-i18n="btn_edit_profile">Editar Perfil</button>
 </div>
-<div style="margin-top:30px;"><h4 style="color:var(--gold);">Meus Lançamentos</h4><div id="perfil-lancamentos" class="grid"></div></div>
+<div style="margin-top:30px;"><h4 style="color:var(--gold);" data-i18n="my_releases">Meus Lançamentos</h4><div id="perfil-lancamentos" class="grid"></div></div>
 </div></section>
 
 <section id="mensagens" class="section">
-<div class="card"><h3>Mensagens com a MAM</h3>
-<div id="chat-user-box" class="chat-box"><p style="color:var(--gray);text-align:center;">A carregar...</p></div>
+<div class="card"><h3 data-i18n="messages_title">Mensagens com a MAM</h3>
+<div id="chat-user-box" class="chat-box"><p style="color:var(--gray);text-align:center;" data-i18n="loading_msgs">A carregar...</p></div>
 <textarea id="chat-user-input" rows="3" placeholder="Escreva a sua mensagem..."></textarea>
-<button class="btn" onclick="enviarMensagemUser()">Enviar</button>
+<button class="btn" onclick="enviarMensagemUser()" data-i18n="btn_send">Enviar</button>
 </div></section>
 
 <section id="admin" class="section">
 <div class="card">
-<h3>Administração</h3>
+<h3 data-i18n="admin_title">Administração</h3>
 <div style="margin-bottom:15px;">
-<button class="admin-tab-btn active" data-tab="releases" onclick="adminTab('releases',this)">Lançamentos</button>
-<button class="admin-tab-btn" data-tab="artists" onclick="adminTab('artists',this)">Artistas</button>
-<button class="admin-tab-btn" data-tab="users" onclick="adminTab('users',this)">Utilizadores</button>
-<button class="admin-tab-btn" data-tab="withdrawals" onclick="adminTab('withdrawals',this)">Saques</button>
-<button class="admin-tab-btn" data-tab="royalties" onclick="adminTab('royalties',this)">Royalties</button>
-<button class="admin-tab-btn" data-tab="messages" onclick="adminTab('messages',this)">Mensagens</button>
-<button class="admin-tab-btn" data-tab="verifications" onclick="adminTab('verifications',this)">Verificações</button>
-<button class="admin-tab-btn" data-tab="streams" onclick="adminTab('streams',this)">Streams</button>
-<button class="admin-tab-btn" data-tab="manual" onclick="adminTab('manual',this)">Manual PDF</button>
+<button class="admin-tab-btn active" data-tab="releases" onclick="adminTab('releases',this)" data-i18n="admin_releases">Lançamentos</button>
+<button class="admin-tab-btn" data-tab="artists" onclick="adminTab('artists',this)" data-i18n="admin_artists">Artistas</button>
+<button class="admin-tab-btn" data-tab="users" onclick="adminTab('users',this)" data-i18n="admin_users">Utilizadores</button>
+<button class="admin-tab-btn" data-tab="withdrawals" onclick="adminTab('withdrawals',this)" data-i18n="admin_withdrawals">Saques</button>
+<button class="admin-tab-btn" data-tab="royalties" onclick="adminTab('royalties',this)" data-i18n="admin_royalties">Royalties</button>
+<button class="admin-tab-btn" data-tab="messages" onclick="adminTab('messages',this)" data-i18n="admin_messages">Mensagens</button>
+<button class="admin-tab-btn" data-tab="verifications" onclick="adminTab('verifications',this)" data-i18n="admin_verifications">Verificações</button>
+<button class="admin-tab-btn" data-tab="streams" onclick="adminTab('streams',this)" data-i18n="admin_streams">Streams</button>
+<button class="admin-tab-btn" data-tab="manual" onclick="adminTab('manual',this)" data-i18n="admin_manual">Manual PDF</button>
 </div>
-<div id="admin-content"><p>Selecione uma opção.</p></div>
+<div id="admin-content"><p data-i18n="admin_select">Selecione uma opção.</p></div>
 </div></section>
 
 </div>
@@ -634,62 +645,62 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 
 <footer>
 <div class="footer-links">
-<a onclick="showFooterContent('sobre')">Sobre</a>
-<a onclick="showFooterContent('sobre-nos')">Sobre Nós</a>
-<a onclick="showFooterContent('privacidade')">Privacidade</a>
-<a onclick="showFooterContent('termos')">Termos</a>
-<a onclick="showFooterContent('suporte')">Suporte</a>
+<a onclick="showFooterContent('sobre')" data-i18n="footer_about">Sobre</a>
+<a onclick="showFooterContent('sobre-nos')" data-i18n="footer_aboutus">Sobre Nós</a>
+<a onclick="showFooterContent('privacidade')" data-i18n="footer_privacy">Privacidade</a>
+<a onclick="showFooterContent('termos')" data-i18n="footer_terms">Termos</a>
+<a onclick="showFooterContent('suporte')" data-i18n="footer_support">Suporte</a>
 </div>
-<p>MAM Distribuidora © 2025 | Fundado por Matias Arsénio Manuel</p>
+<p>MAM Distribuidora © 2025 | <span data-i18n="footer_founder">Fundado por Matias Arsénio Manuel</span></p>
 </footer>
 
 <div id="modal-settings" class="modal"><div class="modal-content" style="max-width:700px;">
 <button class="modal-close" onclick="closeModal('modal-settings')"><i class="fas fa-times"></i></button>
-<h3>Definições</h3>
+<h3 data-i18n="settings_title">Definições</h3>
 <div style="margin-bottom:20px;">
-<button class="btn btn-small" onclick="mostrarTab('perfil')">Perfil</button>
-<button class="btn btn-small btn-sec" onclick="mostrarTab('senha')">Senha</button>
-<button class="btn btn-small btn-sec" onclick="mostrarTab('idioma')">🌐 Idioma</button>
-<button class="btn btn-small btn-danger" onclick="mostrarTab('eliminar')">Eliminar</button>
+<button class="btn btn-small" onclick="mostrarTab('perfil')" data-i18n="tab_profile">Perfil</button>
+<button class="btn btn-small btn-sec" onclick="mostrarTab('senha')" data-i18n="tab_password">Senha</button>
+<button class="btn btn-small btn-sec" onclick="mostrarTab('idioma')" data-i18n="tab_language">🌐 Idioma</button>
+<button class="btn btn-small btn-danger" onclick="mostrarTab('eliminar')" data-i18n="tab_delete">Eliminar</button>
 </div>
 <div id="settings-tab-perfil">
 <div class="profile-upload" id="settings-profile-upload"><img id="settings-foto-preview" class="profile-img" src="https://via.placeholder.com/120"><div class="upload-overlay"><i class="fas fa-camera"></i></div></div>
-<label>Nome Completo</label><input type="text" id="settings-nome">
-<label>Data de Nascimento</label><input type="date" id="settings-data-nascimento">
-<label>Telefone</label>
+<label data-i18n="lbl_fullname">Nome Completo</label><input type="text" id="settings-nome">
+<label data-i18n="lbl_birth">Data de Nascimento</label><input type="date" id="settings-data-nascimento">
+<label data-i18n="lbl_phone">Telefone</label>
 <div class="phone-group">
 <select id="settings-phone-code"></select>
 <input type="tel" id="settings-telefone" placeholder="937881307">
 </div>
-<label>País</label><select id="settings-pais"></select>
-<button class="btn" onclick="salvarConfiguracoesPerfil()">Guardar</button>
+<label data-i18n="lbl_country">País</label><select id="settings-pais"></select>
+<button class="btn" onclick="salvarConfiguracoesPerfil()" data-i18n="btn_save">Guardar</button>
 </div>
 <div id="settings-tab-senha" style="display:none;">
-<label>Senha atual</label><input type="password" id="settings-senha-atual">
-<label>Nova senha</label><input type="password" id="settings-senha-nova">
-<label>Confirmar</label><input type="password" id="settings-senha-confirm">
-<button class="btn" onclick="alterarSenha()">Alterar</button>
+<label data-i18n="lbl_current_pass">Senha atual</label><input type="password" id="settings-senha-atual">
+<label data-i18n="lbl_new_pass">Nova senha</label><input type="password" id="settings-senha-nova">
+<label data-i18n="lbl_confirm_password">Confirmar</label><input type="password" id="settings-senha-confirm">
+<button class="btn" onclick="alterarSenha()" data-i18n="btn_change_pass">Alterar</button>
 </div>
 <div id="settings-tab-idioma" style="display:none;">
-<label>🌐 Escolha o Idioma do Site</label>
+<label data-i18n="lbl_language_choose">🌐 Escolha o Idioma do Site</label>
 <select id="settings-idioma" onchange="mudarIdioma()">
 <option value="pt">🇵🇹 Português</option>
 <option value="en">🇬🇧 English</option>
 <option value="es">🇪🇸 Español</option>
 <option value="fr">🇫🇷 Français</option>
 </select>
-<p class="help-text">O idioma será aplicado em todo o site imediatamente</p>
-<button class="btn" onclick="mudarIdioma()">Aplicar Idioma</button>
+<p class="help-text" data-i18n="lang_help">O idioma será aplicado em todo o site imediatamente</p>
+<button class="btn" onclick="mudarIdioma()" data-i18n="btn_apply_lang">Aplicar Idioma</button>
 </div>
 <div id="settings-tab-eliminar" style="display:none;">
-<p style="color:var(--danger);">Ação irreversível.</p>
-<button class="btn btn-danger" onclick="confirmarEliminarConta()">Eliminar Conta</button>
+<p style="color:var(--danger);" data-i18n="delete_warning">Ação irreversível.</p>
+<button class="btn btn-danger" onclick="confirmarEliminarConta()" data-i18n="btn_delete_account">Eliminar Conta</button>
 </div>
 </div></div>
 
 <div id="notif-dropdown" class="notif-dropdown">
 <div style="display:flex;justify-content:space-between;border-bottom:1px solid #333;padding-bottom:5px;margin-bottom:10px;">
-<span style="color:var(--gold);font-weight:bold;">Notificações</span>
+<span style="color:var(--gold);font-weight:bold;" data-i18n="notifications">Notificações</span>
 <button style="background:none;border:none;color:var(--gray);cursor:pointer;" onclick="fecharNotificacoes()"><i class="fas fa-times"></i></button>
 </div>
 <div id="notif-list"></div>
@@ -707,35 +718,35 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 
 <div id="modal-add-saldo" class="modal"><div class="modal-content" style="max-width:500px;">
 <button class="modal-close" onclick="closeModal('modal-add-saldo')"><i class="fas fa-times"></i></button>
-<h3>Adicionar Saldo</h3>
+<h3 data-i18n="admin_add_balance">Adicionar Saldo</h3>
 <input type="hidden" id="saldo-user-id">
 <p id="saldo-user-nome" style="color:var(--gray);margin-bottom:15px;"></p>
-<label>Valor (Kz)</label>
+<label data-i18n="lbl_amount">Valor (Kz)</label>
 <input type="number" id="saldo-valor" placeholder="Ex: 5000" min="1">
-<label>Motivo (opcional)</label>
+<label data-i18n="lbl_reason">Motivo (opcional)</label>
 <input type="text" id="saldo-motivo" placeholder="Ex: Bónus">
-<button class="btn btn-success" onclick="confirmarAddSaldo()">Adicionar Saldo</button>
+<button class="btn btn-success" onclick="confirmarAddSaldo()" data-i18n="btn_add_balance">Adicionar Saldo</button>
 </div></div>
 
 <div id="modal-verif-detalhe" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('modal-verif-detalhe')"><i class="fas fa-times"></i></button>
-<h3>Verificação</h3>
+<h3 data-i18n="admin_verifications">Verificação</h3>
 <div id="verif-detalhe-body"></div>
 </div></div>
 
 <div id="modal-stream-detalhe" class="modal"><div class="modal-content" style="max-width:700px;">
 <button class="modal-close" onclick="closeModal('modal-stream-detalhe')"><i class="fas fa-times"></i></button>
-<h3>Streams</h3>
+<h3 data-i18n="admin_streams">Streams</h3>
 <div id="stream-detalhe-body"></div>
 </div></div>
 
 <div id="saqueModal" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('saqueModal')"><i class="fas fa-times"></i></button>
-<h3>Solicitar Saque</h3>
-<div class="ddex-info"><p><i class="fas fa-info-circle"></i> Saque mínimo: 10.000 Kz.</p></div>
-<label>Valor (Kz)</label><input type="number" id="saque-valor" min="10000">
-<label>Nome Completo (titular da conta)</label><input type="text" id="saque-nome" placeholder="Ex: João Silva Santos">
-<label>Método / Banco</label>
+<h3 data-i18n="withdraw_title">Solicitar Saque</h3>
+<div class="ddex-info"><p><i class="fas fa-info-circle"></i> <span data-i18n="withdraw_min_info">Saque mínimo: 10.000 Kz.</span></p></div>
+<label data-i18n="lbl_amount">Valor (Kz)</label><input type="number" id="saque-valor" min="10000">
+<label data-i18n="lbl_fullname">Nome Completo (titular da conta)</label><input type="text" id="saque-nome" placeholder="Ex: João Silva Santos">
+<label data-i18n="lbl_method">Método / Banco</label>
 <select id="saque-metodo">
 <option value="">-- Escolha --</option>
 <option value="bfa">BFA - Banco de Fomento Angola</option>
@@ -748,67 +759,67 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <option value="paypal">PayPal</option>
 <option value="payoneer">Payoneer</option>
 </select>
-<label>IBAN / Número de Conta</label>
+<label data-i18n="lbl_iban">IBAN / Número de Conta</label>
 <input type="text" id="saque-conta" placeholder="AO06 0000 0000 0000 0000 0">
-<p class="help-text">⚠️ Verifique bem o IBAN. Transferências para contas erradas não podem ser revertidas.</p>
-<button class="btn" onclick="solicitarSaque()">Solicitar</button>
+<p class="help-text" data-i18n="withdraw_help">⚠️ Verifique bem o IBAN. Transferências para contas erradas não podem ser revertidas.</p>
+<button class="btn" onclick="solicitarSaque()" data-i18n="btn_request">Solicitar</button>
 </div></div>
 
 <div id="planPurchaseModal" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('planPurchaseModal')"><i class="fas fa-times"></i></button>
-<h3>Finalizar Compra</h3>
+<h3 data-i18n="plan_purchase">Finalizar Compra</h3>
 <div id="plan-details"></div>
 <div class="payment-methods">
-<div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i>Carteira</div>
-<div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i>Transferência</div>
+<div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i><span data-i18n="lbl_wallet">Carteira</span></div>
+<div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i><span data-i18n="lbl_transfer">Transferência</span></div>
 </div>
-<button id="pay-with-wallet-btn" class="btn" style="display:none;" onclick="payWithWallet()">Pagar com Carteira</button>
+<button id="pay-with-wallet-btn" class="btn" style="display:none;" onclick="payWithWallet()" data-i18n="btn_pay_wallet">Pagar com Carteira</button>
 <div id="bank-info" style="display:none;">
 <p><strong>BFA - Banco de Fomento Angola</strong></p>
 <p>Titular: Matias Arsénio Manuel</p>
 <p>IBAN: 0006 0000 86316866301 52</p>
 <p>Multicaixa: +244937881307</p>
-<button class="btn btn-sec" onclick="sendToWhatsApp()">Enviar Comprovativo</button>
+<button class="btn btn-sec" onclick="sendToWhatsApp()" data-i18n="btn_send_proof">Enviar Comprovativo</button>
 </div>
-<button class="btn" onclick="closeModal('planPurchaseModal')">Fechar</button>
+<button class="btn" onclick="closeModal('planPurchaseModal')" data-i18n="btn_close">Fechar</button>
 </div></div>
 
 <div id="addArtistModal" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
-<h3>Adicionar Artista</h3>
+<h3 data-i18n="add_artist_title">Adicionar Artista</h3>
 <div style="text-align:center;margin-bottom:20px;">
 <img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width:100px;height:100px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;">
-<br><button type="button" class="btn btn-small btn-sec" id="upload-artist-photo-btn">Escolher Foto</button>
+<br><button type="button" class="btn btn-small btn-sec" id="upload-artist-photo-btn" data-i18n="btn_choose_photo">Escolher Foto</button>
 </div>
-<label>Nome Artístico *</label><input type="text" id="artist-name">
-<label>Estilo Musical Principal *</label>
+<label data-i18n="lbl_stage_name">Nome Artístico *</label><input type="text" id="artist-name">
+<label data-i18n="lbl_music_style">Estilo Musical Principal *</label>
 <select id="artist-style" style="border:2px solid var(--gold);background:#1a1400;color:var(--gold);font-weight:bold;"><option value="">-- Clique para escolher --</option></select>
-<p class="help-text">Mais de 300 géneros musicais</p>
-<label>Redes Sociais</label>
+<p class="help-text" data-i18n="style_help">Mais de 300 géneros musicais</p>
+<label data-i18n="lbl_social">Redes Sociais</label>
 <input type="url" id="artist-spotify" placeholder="Spotify">
 <input type="url" id="artist-apple" placeholder="Apple Music">
 <input type="url" id="artist-instagram" placeholder="Instagram">
 <input type="url" id="artist-tiktok" placeholder="TikTok">
 <input type="url" id="artist-facebook" placeholder="Facebook">
-<label>Biografia</label><textarea id="artist-bio" rows="3"></textarea>
-<button class="btn" id="btnSaveArtist">Salvar</button>
+<label data-i18n="lbl_bio">Biografia</label><textarea id="artist-bio" rows="3"></textarea>
+<button class="btn" id="btnSaveArtist" data-i18n="btn_save_artist">Salvar</button>
 </div></div>
 
 <div id="editArtistModal" class="modal"><div class="modal-content">
 <button class="modal-close" onclick="closeModal('editArtistModal')"><i class="fas fa-times"></i></button>
-<h3>Editar Artista</h3>
+<h3 data-i18n="edit_artist_title">Editar Artista</h3>
 <input type="hidden" id="edit-artist-id">
-<div style="text-align:center;"><img id="edit-artist-photo-preview" style="width:100px;height:100px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;"><br><button class="btn btn-small" id="edit-upload-artist-photo-btn">Nova Foto</button></div>
-<label>Nome *</label><input type="text" id="edit-artist-name">
-<label>Estilo *</label><select id="edit-artist-style" style="border:2px solid var(--gold);background:#1a1400;color:var(--gold);font-weight:bold;"><option value="">-- Escolha --</option></select>
-<label>Redes Sociais</label>
+<div style="text-align:center;"><img id="edit-artist-photo-preview" style="width:100px;height:100px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;"><br><button class="btn btn-small" id="edit-upload-artist-photo-btn" data-i18n="btn_new_photo">Nova Foto</button></div>
+<label data-i18n="lbl_stage_name">Nome *</label><input type="text" id="edit-artist-name">
+<label data-i18n="lbl_music_style">Estilo *</label><select id="edit-artist-style" style="border:2px solid var(--gold);background:#1a1400;color:var(--gold);font-weight:bold;"><option value="">-- Escolha --</option></select>
+<label data-i18n="lbl_social">Redes Sociais</label>
 <input type="url" id="edit-artist-spotify" placeholder="Spotify">
 <input type="url" id="edit-artist-apple" placeholder="Apple Music">
 <input type="url" id="edit-artist-instagram" placeholder="Instagram">
 <input type="url" id="edit-artist-tiktok" placeholder="TikTok">
 <input type="url" id="edit-artist-facebook" placeholder="Facebook">
-<label>Biografia</label><textarea id="edit-artist-bio" rows="3"></textarea>
-<button class="btn" id="btnUpdateArtist">Atualizar</button>
+<label data-i18n="lbl_bio">Biografia</label><textarea id="edit-artist-bio" rows="3"></textarea>
+<button class="btn" id="btnUpdateArtist" data-i18n="btn_update">Atualizar</button>
 </div></div>
 
 <div id="genericModal" class="modal"><div class="modal-content" style="max-width:750px;">
@@ -820,8 +831,211 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <script>
 // ==================== ID DO CANAL YOUTUBE ====================
 const YOUTUBE_CHANNEL_ID='UCtmOydXeJe9XMwcv4GtNyJQ';
-// Para embed de uploads, o YouTube usa UU + os últimos 22 caracteres do ID (sem o "C" inicial)
-const YOUTUBE_UPLOADS_ID='UU'+YOUTUBE_CHANNEL_ID.substring(2);
+const YOUTUBE_CHANNEL_HANDLE='MAMDistribuidora-k8k';
+
+// ==================== TRADUÇÕES ====================
+const translations = {
+    pt: {
+        subtitle:"O Império da Música em Angola | Distribuição para 150+ Plataformas",
+        nav_home:"Início",nav_plans:"Planos",nav_artists:"Artistas",nav_release:"Lançar",nav_my_music:"Minhas Músicas",nav_wallet:"Carteira",nav_profile:"Perfil",nav_messages:"Mensagens",nav_settings:"Definições",nav_login:"Entrar",nav_logout:"Sair",
+        login_title:"ENTRAR",lbl_email:"Email",lbl_password:"Senha",btn_login:"Entrar",forgot_pass:"Esqueci a senha",create_account:"Criar conta grátis",
+        register_title:"CRIAR CONTA",lbl_fullname:"Nome Completo",lbl_birth:"Data de Nascimento",lbl_phone:"Telefone",
+        email_help:"Será enviado um email de confirmação. Só poderá entrar após confirmar.",
+        phone_help:"Escolha o código do país e escreva apenas o número",
+        recover_help:"Enviaremos um link para o seu email. Ao clicar, será redirecionado para criar uma nova senha.",
+        lbl_confirm_password:"Confirmar Senha",btn_register:"Criar Conta",
+        recover_title:"Recuperar Senha",btn_send_link:"Enviar Link",
+        welcome_title:"O IMPÉRIO DA MÚSICA EM ANGOLA",welcome_desc:"Distribua a sua música para 150+ plataformas globais.",btn_create_free:"CRIAR CONTA GRÁTIS",
+        feat_platforms:"150+ PLATAFORMAS",feat_platforms_desc:"Spotify, Apple, TikTok...",feat_royalties:"100% ROYALTIES",feat_royalties_desc:"Você fica com tudo.",feat_ddex:"DDEX ERN 4.3",feat_ddex_desc:"Padrão internacional.",
+        hello:"Olá",stat_balance:"Saldo",stat_artists:"Artistas",stat_songs:"Músicas",stat_streams:"Total Streams",feed_title:"Feed Global de Lançamentos",
+        plans_title:"Planos",btn_start:"Começar",btn_subscribe:"Assinar",btn_premium:"Premium",
+        my_artists:"Meus Artistas",btn_new_artist:"+ Novo Artista",
+        release_title:"Lançar Música (DDEX ERN 4.3)",lbl_track:"Título da Música *",lbl_select_artist:"Artista *",lbl_genre:"Género Principal *",lbl_subgenre:"Sub-Género *",
+        lbl_release_date:"Data de lançamento",lbl_language:"Idioma da música *",lbl_isrc:"ISRC (Auto-gerado)",lbl_upc:"UPC (Auto-gerado)",
+        lbl_composers:"Compositores *",lbl_producer:"Produtor",lbl_collab:"Colaboradores (feat.)",lbl_explicit:"Conteúdo explícito?",
+        lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
+        lbl_cover:"Capa da Música *",btn_select_cover:"Selecionar Capa",lbl_audio:"Áudio (WAV) *",btn_select_audio:"Selecionar Áudio WAV",
+        ddex_info:"Sistema gera pacote DDEX ERN 4.3 conforme padrão internacional.",btn_submit:"Enviar para Distribuição",
+        my_music:"Minhas Músicas",wallet_title:"Carteira",lbl_currency:"Moeda",lbl_rate:"Taxa",wallet_month:"Ganhos do mês",wallet_total:"Ganhos totais",
+        withdraw_min_info:"Saque mínimo: 10.000 Kz.",btn_withdraw:"Levantar Ganhos",
+        withdraw_help:"⚠️ Verifique bem o IBAN. Transferências para contas erradas não podem ser revertidas.",
+        profile_title:"Meu Perfil",btn_edit_profile:"Editar Perfil",my_releases:"Meus Lançamentos",
+        messages_title:"Mensagens com a MAM",loading_msgs:"A carregar...",btn_send:"Enviar",
+        admin_title:"Administração",admin_releases:"Lançamentos",admin_artists:"Artistas",admin_users:"Utilizadores",admin_withdrawals:"Saques",admin_royalties:"Royalties",admin_messages:"Mensagens",admin_verifications:"Verificações",admin_streams:"Streams",admin_manual:"Manual PDF",admin_select:"Selecione uma opção.",
+        admin_suspend:"Suspender Artista",suspend_days:"Duração (dias)",suspend_reason:"Motivo",admin_suspend_confirm:"Suspender",
+        admin_official:"Atribuir como Perfil Oficial",admin_official_confirm:"Marcar como Oficial",
+        footer_about:"Sobre",footer_aboutus:"Sobre Nós",footer_privacy:"Privacidade",footer_terms:"Termos",footer_support:"Suporte",footer_founder:"Fundado por Matias Arsénio Manuel",
+        settings_title:"Definições",tab_profile:"Perfil",tab_password:"Senha",tab_language:"🌐 Idioma",tab_delete:"Eliminar",
+        lbl_country:"País",btn_save:"Guardar",lbl_current_pass:"Senha atual",lbl_new_pass:"Nova senha",btn_change_pass:"Alterar",
+        lbl_language_choose:"🌐 Escolha o Idioma do Site",lang_help:"O idioma será aplicado em todo o site imediatamente",btn_apply_lang:"Aplicar Idioma",
+        delete_warning:"Ação irreversível.",btn_delete_account:"Eliminar Conta",
+        notifications:"Notificações",admin_add_balance:"Adicionar Saldo",lbl_amount:"Valor (Kz)",lbl_reason:"Motivo (opcional)",btn_add_balance:"Adicionar Saldo",
+        withdraw_title:"Solicitar Saque",lbl_method:"Método / Banco",lbl_iban:"IBAN / Número de Conta",btn_request:"Solicitar",
+        plan_purchase:"Finalizar Compra",lbl_wallet:"Carteira",lbl_transfer:"Transferência",btn_pay_wallet:"Pagar com Carteira",btn_send_proof:"Enviar Comprovativo",btn_close:"Fechar",
+        add_artist_title:"Adicionar Artista",btn_choose_photo:"Escolher Foto",lbl_stage_name:"Nome Artístico *",lbl_music_style:"Estilo Musical Principal *",
+        style_help:"Mais de 300 géneros musicais",lbl_social:"Redes Sociais",lbl_bio:"Biografia",btn_save_artist:"Salvar",
+        edit_artist_title:"Editar Artista",btn_new_photo:"Nova Foto",btn_update:"Atualizar",
+        adv1_title:"🎵 O IMPÉRIO DA MÚSICA EM ANGOLA",adv1_desc:"Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.",adv1_btn:"COMEÇAR AGORA",
+        adv2_title:"💰 100% DOS ROYALTIES SÃO SEUS",adv2_desc:"Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.",adv2_btn:"CRIAR CONTA GRÁTIS",
+        adv3_title:"🌍 CHEGUE AO MUNDO INTEIRO",adv3_desc:"A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.",adv3_btn:"DISTRIBUIR AGORA",
+        adv4_title:"🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3",adv4_desc:"Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.",adv4_btn:"SABER MAIS",
+        yes:"Sim",no:"Não",understood:"Entendi"
+    },
+    en: {
+        subtitle:"The Empire of Music in Angola | Distribution to 150+ Platforms",
+        nav_home:"Home",nav_plans:"Plans",nav_artists:"Artists",nav_release:"Release",nav_my_music:"My Music",nav_wallet:"Wallet",nav_profile:"Profile",nav_messages:"Messages",nav_settings:"Settings",nav_login:"Login",nav_logout:"Logout",
+        login_title:"LOGIN",lbl_email:"Email",lbl_password:"Password",btn_login:"Login",forgot_pass:"Forgot password",create_account:"Create free account",
+        register_title:"CREATE ACCOUNT",lbl_fullname:"Full Name",lbl_birth:"Date of Birth",lbl_phone:"Phone",
+        email_help:"A confirmation email will be sent. You can only login after confirming.",
+        phone_help:"Choose country code and enter only the number",
+        recover_help:"We will send a link to your email. Clicking it will redirect to create a new password.",
+        lbl_confirm_password:"Confirm Password",btn_register:"Create Account",
+        recover_title:"Recover Password",btn_send_link:"Send Link",
+        welcome_title:"THE EMPIRE OF MUSIC IN ANGOLA",welcome_desc:"Distribute your music to 150+ global platforms.",btn_create_free:"CREATE FREE ACCOUNT",
+        feat_platforms:"150+ PLATFORMS",feat_platforms_desc:"Spotify, Apple, TikTok...",feat_royalties:"100% ROYALTIES",feat_royalties_desc:"You keep everything.",feat_ddex:"DDEX ERN 4.3",feat_ddex_desc:"International standard.",
+        hello:"Hello",stat_balance:"Balance",stat_artists:"Artists",stat_songs:"Songs",stat_streams:"Total Streams",feed_title:"Global Release Feed",
+        plans_title:"Plans",btn_start:"Start",btn_subscribe:"Subscribe",btn_premium:"Premium",
+        my_artists:"My Artists",btn_new_artist:"+ New Artist",
+        release_title:"Release Music (DDEX ERN 4.3)",lbl_track:"Track Title *",lbl_select_artist:"Artist *",lbl_genre:"Main Genre *",lbl_subgenre:"Sub-Genre *",
+        lbl_release_date:"Release Date",lbl_language:"Language *",lbl_isrc:"ISRC (Auto)",lbl_upc:"UPC (Auto)",
+        lbl_composers:"Composers *",lbl_producer:"Producer",lbl_collab:"Collaborators (feat.)",lbl_explicit:"Explicit content?",
+        lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
+        lbl_cover:"Cover Art *",btn_select_cover:"Select Cover",lbl_audio:"Audio (WAV) *",btn_select_audio:"Select WAV Audio",
+        ddex_info:"System generates DDEX ERN 4.3 package.",btn_submit:"Send for Distribution",
+        my_music:"My Music",wallet_title:"Wallet",lbl_currency:"Currency",lbl_rate:"Rate",wallet_month:"Month earnings",wallet_total:"Total earnings",
+        withdraw_min_info:"Minimum withdrawal: 10,000 Kz.",btn_withdraw:"Withdraw",
+        withdraw_help:"⚠️ Verify the IBAN carefully. Transfers to wrong accounts cannot be reversed.",
+        profile_title:"My Profile",btn_edit_profile:"Edit Profile",my_releases:"My Releases",
+        messages_title:"Messages with MAM",loading_msgs:"Loading...",btn_send:"Send",
+        admin_title:"Administration",admin_releases:"Releases",admin_artists:"Artists",admin_users:"Users",admin_withdrawals:"Withdrawals",admin_royalties:"Royalties",admin_messages:"Messages",admin_verifications:"Verifications",admin_streams:"Streams",admin_manual:"PDF Manual",admin_select:"Select an option.",
+        admin_suspend:"Suspend Artist",suspend_days:"Duration (days)",suspend_reason:"Reason",admin_suspend_confirm:"Suspend",
+        admin_official:"Assign as Official Profile",admin_official_confirm:"Mark as Official",
+        footer_about:"About",footer_aboutus:"About Us",footer_privacy:"Privacy",footer_terms:"Terms",footer_support:"Support",footer_founder:"Founded by Matias Arsénio Manuel",
+        settings_title:"Settings",tab_profile:"Profile",tab_password:"Password",tab_language:"🌐 Language",tab_delete:"Delete",
+        lbl_country:"Country",btn_save:"Save",lbl_current_pass:"Current password",lbl_new_pass:"New password",btn_change_pass:"Change",
+        lbl_language_choose:"🌐 Choose Site Language",lang_help:"Language will be applied throughout the site immediately",btn_apply_lang:"Apply Language",
+        delete_warning:"Irreversible action.",btn_delete_account:"Delete Account",
+        notifications:"Notifications",admin_add_balance:"Add Balance",lbl_amount:"Amount (Kz)",lbl_reason:"Reason (optional)",btn_add_balance:"Add Balance",
+        withdraw_title:"Request Withdrawal",lbl_method:"Method / Bank",lbl_iban:"IBAN / Account Number",btn_request:"Request",
+        plan_purchase:"Complete Purchase",lbl_wallet:"Wallet",lbl_transfer:"Transfer",btn_pay_wallet:"Pay with Wallet",btn_send_proof:"Send Proof",btn_close:"Close",
+        add_artist_title:"Add Artist",btn_choose_photo:"Choose Photo",lbl_stage_name:"Stage Name *",lbl_music_style:"Main Music Style *",
+        style_help:"Over 300 music genres",lbl_social:"Social Media",lbl_bio:"Biography",btn_save_artist:"Save",
+        edit_artist_title:"Edit Artist",btn_new_photo:"New Photo",btn_update:"Update",
+        adv1_title:"🎵 THE EMPIRE OF MUSIC IN ANGOLA",adv1_desc:"Distribute your music to over 150 digital platforms: Spotify, Apple Music, TikTok, Instagram, YouTube and more.",adv1_btn:"START NOW",
+        adv2_title:"💰 100% OF ROYALTIES ARE YOURS",adv2_desc:"Unlike other distributors, MAM gives you all earnings. No hidden fees, no abusive commissions.",adv2_btn:"CREATE FREE ACCOUNT",
+        adv3_title:"🌍 REACH THE ENTIRE WORLD",adv3_desc:"Your music on 150+ global platforms. Reach millions of listeners in Africa, Europe, America and Asia.",adv3_btn:"DISTRIBUTE NOW",
+        adv4_title:"🚀 PROFESSIONAL DDEX ERN 4.3 STANDARD",adv4_desc:"We use the same standard as major labels. ISRC, UPC, DDEX — all generated automatically.",adv4_btn:"LEARN MORE",
+        yes:"Yes",no:"No",understood:"Understood"
+    },
+    es: {
+        subtitle:"El Imperio de la Música en Angola | Distribución a 150+ Plataformas",
+        nav_home:"Inicio",nav_plans:"Planes",nav_artists:"Artistas",nav_release:"Lanzar",nav_my_music:"Mis Canciones",nav_wallet:"Cartera",nav_profile:"Perfil",nav_messages:"Mensajes",nav_settings:"Ajustes",nav_login:"Entrar",nav_logout:"Salir",
+        login_title:"ENTRAR",lbl_email:"Email",lbl_password:"Contraseña",btn_login:"Entrar",forgot_pass:"Olvidé mi contraseña",create_account:"Crear cuenta gratis",
+        register_title:"CREAR CUENTA",lbl_fullname:"Nombre Completo",lbl_birth:"Fecha de Nacimiento",lbl_phone:"Teléfono",
+        email_help:"Se enviará un email de confirmación. Solo podrá entrar después de confirmar.",
+        phone_help:"Elija el código del país y escriba solo el número",
+        recover_help:"Enviaremos un enlace a su email. Al hacer clic, será redirigido para crear una nueva contraseña.",
+        lbl_confirm_password:"Confirmar Contraseña",btn_register:"Crear Cuenta",
+        recover_title:"Recuperar Contraseña",btn_send_link:"Enviar Enlace",
+        welcome_title:"EL IMPERIO DE LA MÚSICA EN ANGOLA",welcome_desc:"Distribuya su música a más de 150 plataformas.",btn_create_free:"CREAR CUENTA GRATIS",
+        feat_platforms:"150+ PLATAFORMAS",feat_platforms_desc:"Spotify, Apple, TikTok...",feat_royalties:"100% REGALÍAS",feat_royalties_desc:"Te quedas con todo.",feat_ddex:"DDEX ERN 4.3",feat_ddex_desc:"Estándar internacional.",
+        hello:"Hola",stat_balance:"Saldo",stat_artists:"Artistas",stat_songs:"Canciones",stat_streams:"Total Streams",feed_title:"Feed Global",
+        plans_title:"Planes",btn_start:"Comenzar",btn_subscribe:"Suscribir",btn_premium:"Premium",
+        my_artists:"Mis Artistas",btn_new_artist:"+ Nuevo Artista",
+        release_title:"Lanzar Música (DDEX ERN 4.3)",lbl_track:"Título *",lbl_select_artist:"Artista *",lbl_genre:"Género Principal *",lbl_subgenre:"Sub-Género *",
+        lbl_release_date:"Fecha de lanzamiento",lbl_language:"Idioma *",lbl_isrc:"ISRC (Auto)",lbl_upc:"UPC (Auto)",
+        lbl_composers:"Compositores *",lbl_producer:"Productor",lbl_collab:"Colaboradores (feat.)",lbl_explicit:"¿Contenido explícito?",
+        lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
+        lbl_cover:"Portada *",btn_select_cover:"Seleccionar Portada",lbl_audio:"Audio (WAV) *",btn_select_audio:"Seleccionar Audio WAV",
+        ddex_info:"El sistema genera paquete DDEX ERN 4.3.",btn_submit:"Enviar a Distribución",
+        my_music:"Mis Canciones",wallet_title:"Cartera",lbl_currency:"Moneda",lbl_rate:"Tipo",wallet_month:"Ganancias del mes",wallet_total:"Ganancias totales",
+        withdraw_min_info:"Retiro mínimo: 10.000 Kz.",btn_withdraw:"Retirar",
+        withdraw_help:"⚠️ Verifique bien el IBAN.",profile_title:"Mi Perfil",btn_edit_profile:"Editar Perfil",my_releases:"Mis Lanzamientos",
+        messages_title:"Mensajes con MAM",loading_msgs:"Cargando...",btn_send:"Enviar",
+        admin_title:"Administración",admin_releases:"Lanzamientos",admin_artists:"Artistas",admin_users:"Usuarios",admin_withdrawals:"Retiros",admin_royalties:"Regalías",admin_messages:"Mensajes",admin_verifications:"Verificaciones",admin_streams:"Streams",admin_manual:"Manual PDF",admin_select:"Seleccione una opción.",
+        admin_suspend:"Suspender Artista",suspend_days:"Duración (días)",suspend_reason:"Motivo",admin_suspend_confirm:"Suspender",
+        admin_official:"Asignar como Perfil Oficial",admin_official_confirm:"Marcar como Oficial",
+        footer_about:"Acerca",footer_aboutus:"Sobre Nosotros",footer_privacy:"Privacidad",footer_terms:"Términos",footer_support:"Soporte",footer_founder:"Fundado por Matias Arsénio Manuel",
+        settings_title:"Ajustes",tab_profile:"Perfil",tab_password:"Contraseña",tab_language:"🌐 Idioma",tab_delete:"Eliminar",
+        lbl_country:"País",btn_save:"Guardar",lbl_current_pass:"Contraseña actual",lbl_new_pass:"Nueva contraseña",btn_change_pass:"Cambiar",
+        lbl_language_choose:"🌐 Elija el Idioma",lang_help:"Se aplicará inmediatamente",btn_apply_lang:"Aplicar",
+        delete_warning:"Acción irreversible.",btn_delete_account:"Eliminar Cuenta",
+        notifications:"Notificaciones",admin_add_balance:"Añadir Saldo",lbl_amount:"Cantidad (Kz)",lbl_reason:"Razón",btn_add_balance:"Añadir Saldo",
+        withdraw_title:"Solicitar Retiro",lbl_method:"Método / Banco",lbl_iban:"IBAN / Cuenta",btn_request:"Solicitar",
+        plan_purchase:"Completar Compra",lbl_wallet:"Cartera",lbl_transfer:"Transferencia",btn_pay_wallet:"Pagar con Cartera",btn_send_proof:"Enviar Comprobante",btn_close:"Cerrar",
+        add_artist_title:"Añadir Artista",btn_choose_photo:"Elegir Foto",lbl_stage_name:"Nombre Artístico *",lbl_music_style:"Estilo Musical *",
+        style_help:"Más de 300 géneros musicales",lbl_social:"Redes Sociales",lbl_bio:"Biografía",btn_save_artist:"Guardar",
+        edit_artist_title:"Editar Artista",btn_new_photo:"Nueva Foto",btn_update:"Actualizar",
+        adv1_title:"🎵 EL IMPERIO DE LA MÚSICA EN ANGOLA",adv1_desc:"Distribuya su música a más de 150 plataformas digitales.",adv1_btn:"COMENZAR AHORA",
+        adv2_title:"💰 100% DE REGALÍAS SON SUYAS",adv2_desc:"A diferencia de otras distribuidoras, MAM le da todas las ganancias.",adv2_btn:"CREAR CUENTA GRATIS",
+        adv3_title:"🌍 LLEGUE AL MUNDO ENTERO",adv3_desc:"Su música en 150+ plataformas globales.",adv3_btn:"DISTRIBUIR AHORA",
+        adv4_title:"🚀 ESTÁNDAR PROFESIONAL DDEX ERN 4.3",adv4_desc:"Usamos el mismo estándar que los grandes sellos.",adv4_btn:"SABER MÁS",
+        yes:"Sí",no:"No",understood:"Entendido"
+    },
+    fr: {
+        subtitle:"L'Empire de la Musique en Angola | Distribution vers 150+ Plateformes",
+        nav_home:"Accueil",nav_plans:"Forfaits",nav_artists:"Artistes",nav_release:"Publier",nav_my_music:"Mes Musiques",nav_wallet:"Portefeuille",nav_profile:"Profil",nav_messages:"Messages",nav_settings:"Paramètres",nav_login:"Connexion",nav_logout:"Déconnexion",
+        login_title:"CONNEXION",lbl_email:"Email",lbl_password:"Mot de passe",btn_login:"Connexion",forgot_pass:"Mot de passe oublié",create_account:"Créer un compte",
+        register_title:"CRÉER UN COMPTE",lbl_fullname:"Nom Complet",lbl_birth:"Date de Naissance",lbl_phone:"Téléphone",
+        email_help:"Un email de confirmation sera envoyé.",phone_help:"Choisissez le code pays et entrez le numéro",
+        recover_help:"Nous enverrons un lien à votre email.",
+        lbl_confirm_password:"Confirmer le Mot de Passe",btn_register:"Créer le Compte",
+        recover_title:"Récupérer Mot de Passe",btn_send_link:"Envoyer le Lien",
+        welcome_title:"L'EMPIRE DE LA MUSIQUE EN ANGOLA",welcome_desc:"Distribuez votre musique à 150+ plateformes.",btn_create_free:"CRÉER UN COMPTE",
+        feat_platforms:"150+ PLATEFORMES",feat_platforms_desc:"Spotify, Apple, TikTok...",feat_royalties:"100% REDEVANCES",feat_royalties_desc:"Vous gardez tout.",feat_ddex:"DDEX ERN 4.3",feat_ddex_desc:"Standard international.",
+        hello:"Bonjour",stat_balance:"Solde",stat_artists:"Artistes",stat_songs:"Chansons",stat_streams:"Total Streams",feed_title:"Fil Global",
+        plans_title:"Forfaits",btn_start:"Commencer",btn_subscribe:"S'abonner",btn_premium:"Premium",
+        my_artists:"Mes Artistes",btn_new_artist:"+ Nouvel Artiste",
+        release_title:"Publier Musique (DDEX ERN 4.3)",lbl_track:"Titre *",lbl_select_artist:"Artiste *",lbl_genre:"Genre Principal *",lbl_subgenre:"Sous-Genre *",
+        lbl_release_date:"Date de sortie",lbl_language:"Langue *",lbl_isrc:"ISRC (Auto)",lbl_upc:"UPC (Auto)",
+        lbl_composers:"Compositeurs *",lbl_producer:"Producteur",lbl_collab:"Collaborateurs (feat.)",lbl_explicit:"Contenu explicite?",
+        lbl_pline:"℗ Copyright",lbl_cline:"© Copyright",
+        lbl_cover:"Pochette *",btn_select_cover:"Choisir Pochette",lbl_audio:"Audio (WAV) *",btn_select_audio:"Choisir Audio WAV",
+        ddex_info:"Le système génère un paquet DDEX ERN 4.3.",btn_submit:"Envoyer pour Distribution",
+        my_music:"Mes Musiques",wallet_title:"Portefeuille",lbl_currency:"Devise",lbl_rate:"Taux",wallet_month:"Gains du mois",wallet_total:"Gains totaux",
+        withdraw_min_info:"Retrait minimum: 10 000 Kz.",btn_withdraw:"Retirer",
+        withdraw_help:"⚠️ Vérifiez bien l'IBAN.",profile_title:"Mon Profil",btn_edit_profile:"Modifier Profil",my_releases:"Mes Sorties",
+        messages_title:"Messages avec MAM",loading_msgs:"Chargement...",btn_send:"Envoyer",
+        admin_title:"Administration",admin_releases:"Sorties",admin_artists:"Artistes",admin_users:"Utilisateurs",admin_withdrawals:"Retraits",admin_royalties:"Redevances",admin_messages:"Messages",admin_verifications:"Vérifications",admin_streams:"Streams",admin_manual:"Manuel PDF",admin_select:"Sélectionnez une option.",
+        admin_suspend:"Suspendre Artiste",suspend_days:"Durée (jours)",suspend_reason:"Raison",admin_suspend_confirm:"Suspendre",
+        admin_official:"Attribuer comme Profil Officiel",admin_official_confirm:"Marquer comme Officiel",
+        footer_about:"À propos",footer_aboutus:"À Propos",footer_privacy:"Confidentialité",footer_terms:"Conditions",footer_support:"Support",footer_founder:"Fondé par Matias Arsénio Manuel",
+        settings_title:"Paramètres",tab_profile:"Profil",tab_password:"Mot de passe",tab_language:"🌐 Langue",tab_delete:"Supprimer",
+        lbl_country:"Pays",btn_save:"Enregistrer",lbl_current_pass:"Mot de passe actuel",lbl_new_pass:"Nouveau mot de passe",btn_change_pass:"Changer",
+        lbl_language_choose:"🌐 Choisissez la Langue",lang_help:"Será appliqué immédiatement",btn_apply_lang:"Appliquer",
+        delete_warning:"Action irréversible.",btn_delete_account:"Supprimer Compte",
+        notifications:"Notifications",admin_add_balance:"Ajouter Solde",lbl_amount:"Montant (Kz)",lbl_reason:"Raison",btn_add_balance:"Ajouter",
+        withdraw_title:"Demander Retrait",lbl_method:"Méthode / Banque",lbl_iban:"IBAN / Compte",btn_request:"Demander",
+        plan_purchase:"Finaliser l'Achat",lbl_wallet:"Portefeuille",lbl_transfer:"Virement",btn_pay_wallet:"Payer",btn_send_proof:"Envoyer Preuve",btn_close:"Fermer",
+        add_artist_title:"Ajouter Artiste",btn_choose_photo:"Choisir Photo",lbl_stage_name:"Nom de Scène *",lbl_music_style:"Style Musical *",
+        style_help:"Plus de 300 genres musicaux",lbl_social:"Réseaux Sociaux",lbl_bio:"Biographie",btn_save_artist:"Enregistrer",
+        edit_artist_title:"Modifier Artiste",btn_new_photo:"Nouvelle Photo",btn_update:"Mettre à jour",
+        adv1_title:"🎵 L'EMPIRE DE LA MUSIQUE EN ANGOLA",adv1_desc:"Distribuez votre musique à plus de 150 plateformes numériques.",adv1_btn:"COMMENCER",
+        adv2_title:"💰 100% DES REDEVANCES SONT À VOUS",adv2_desc:"MAM vous donne tous les gains.",adv2_btn:"CRÉER UN COMPTE",
+        adv3_title:"🌍 ATTEIGNEZ LE MONDE ENTIER",adv3_desc:"Votre musique sur 150+ plateformes mondiales.",adv3_btn:"DISTRIBUER",
+        adv4_title:"🚀 STANDARD PROFESSIONNEL DDEX ERN 4.3",adv4_desc:"Nous utilisons le standard des grandes maisons de disques.",adv4_btn:"EN SAVOIR PLUS",
+        yes:"Oui",no:"Non",understood:"Compris"
+    }
+};
+let currentLang=localStorage.getItem('mam_lang')||'pt';
+function aplicarIdioma(lang){
+    currentLang=lang;
+    const t=translations[lang]||translations.pt;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const k=el.getAttribute('data-i18n');
+        if(t[k]){
+            if(el.tagName==='INPUT'||el.tagName==='TEXTAREA')el.placeholder=t[k];
+            else if(el.tagName==='OPTION')el.text=t[k];
+            else el.innerText=t[k];
+        }
+    });
+    localStorage.setItem('mam_lang',lang);
+    document.documentElement.lang=lang;
+}
+function setLang(lang){aplicarIdioma(lang);closeLangMenu();}
+function mudarIdioma(){const lang=document.getElementById('settings-idioma').value;aplicarIdioma(lang);showAlert('✅ Idioma alterado');}
+function toggleLangMenu(){document.getElementById('lang-menu').classList.toggle('active');}
+function closeLangMenu(){document.getElementById('lang-menu').classList.remove('active');}
 
 // ==================== FIREBASE ====================
 const firebaseConfig = {
@@ -959,16 +1173,12 @@ function startCarousel(){
     },5000);
 }
 
-// ==================== VÍDEO YOUTUBE (CORRIGIDO) ====================
-// Abre o modal com embed dos uploads do canal (usando o ID real do canal)
+// ==================== VÍDEO (CORRIGIDO — ABRE DIRETAMENTE NO YOUTUBE) ====================
 window.abrirVideoCanal=function(){
-    const embedUrl=`https://www.youtube.com/embed/videoseries?list=${YOUTUBE_UPLOADS_ID}&rel=0&modestbranding=1`;
-    document.getElementById('video-player-body').innerHTML=`<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
-    openModal('modal-video-player');
+    window.open(`https://www.youtube.com/@${YOUTUBE_CHANNEL_HANDLE}/videos`,'_blank');
 };
-// Abre a página do canal no YouTube (nova aba) para ver a playlist completa
 window.abrirVideoPlaylist=function(){
-    window.open('https://www.youtube.com/@MAMDistribuidora-k8k/videos','_blank');
+    window.open(`https://www.youtube.com/@${YOUTUBE_CHANNEL_HANDLE}/playlists`,'_blank');
 };
 
 // ==================== ISRC/UPC ====================
@@ -1143,6 +1353,64 @@ async function resetPassword(){
     try{await auth.sendPasswordResetEmail(email);showAlert('✅ Email enviado! Verifique a caixa de entrada e clique no link para criar nova senha.');closeModal('modal-esqueci-senha');}
     catch(e){showAlert(e.message);}
 }
+
+// ==================== HANDLER DE LINKS DE EMAIL ====================
+// Deteta quando o utilizador chega ao site vindo de um link de confirmação
+// (?mode=verifyEmail) ou de recuperação de senha (?mode=resetPassword)
+async function handleEmailActionLinks(){
+    const params=new URLSearchParams(window.location.search);
+    const mode=params.get('mode');
+    const oobCode=params.get('oobCode');
+    if(!mode||!oobCode)return false;
+
+    if(mode==='verifyEmail'){
+        try{
+            await auth.applyActionCode(oobCode);
+            // Limpar URL
+            window.history.replaceState({},document.title,window.location.pathname);
+            showAlert('✅ <strong>Email confirmado com sucesso!</strong><br><br>A sua conta está ativa. Pode agora fazer login.');
+        }catch(e){
+            window.history.replaceState({},document.title,window.location.pathname);
+            showAlert('⚠️ <strong>Link de confirmação inválido ou expirado.</strong><br><br>Faça login para pedir um novo email de confirmação.');
+        }
+        return true;
+    }
+
+    if(mode==='resetPassword'){
+        try{
+            // Validar o código antes de mostrar o formulário
+            await auth.verifyPasswordResetCode(oobCode);
+            document.getElementById('nova-senha-oob').value=oobCode;
+            document.getElementById('nova-senha-1').value='';
+            document.getElementById('nova-senha-2').value='';
+            openModal('modal-nova-senha');
+            // Limpar URL
+            window.history.replaceState({},document.title,window.location.pathname);
+        }catch(e){
+            window.history.replaceState({},document.title,window.location.pathname);
+            showAlert('⚠️ <strong>Link de recuperação inválido ou expirado.</strong><br><br>Peça um novo email de recuperação.');
+        }
+        return true;
+    }
+
+    return false;
+}
+window.confirmarNovaSenha=async function(){
+    const oob=document.getElementById('nova-senha-oob').value;
+    const s1=document.getElementById('nova-senha-1').value;
+    const s2=document.getElementById('nova-senha-2').value;
+    if(!s1||!s2){showAlert('Preencha os dois campos.');return;}
+    if(s1!==s2){showAlert('As senhas não coincidem.');return;}
+    if(s1.length<6){showAlert('A senha deve ter pelo menos 6 caracteres.');return;}
+    showLoading(true);
+    try{
+        await auth.confirmPasswordReset(oob,s1);
+        showAlert('✅ <strong>Senha alterada com sucesso!</strong><br><br>Pode agora fazer login com a nova senha.');
+        closeModal('modal-nova-senha');
+        openModal('modal-login');
+    }catch(e){showAlert('Erro: '+e.message);}
+    finally{showLoading(false);}
+};
 
 // ==================== DEFINIÇÕES ====================
 function carregarDefinicoes(){
@@ -2081,23 +2349,268 @@ window.adminGerarManualPDF=async function(){
     doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text('Fundado por Matias Arsénio Manuel',pw/2,270,{align:'center'});
     doc.addPage();y=20;
     h1('1. INTRODUÇÃO');p('MAM Distribuidora: plataforma angolana de distribuição digital para 150+ plataformas.');
-    h1('2. REGISTO');p('Nome, email, data, telefone, senha. Confirmação por email obrigatória.');
-    h1('3. LANÇAMENTO');p('Capa: JPG/PNG min 1400x1400 px 1:1 máx 20MB. Áudio: WAV 44.1/48kHz 16/24-bit estéreo máx 500MB.');
-    h1('4. ISRC/UPC');p('ISRC: formato IFPI AOMAM25XXXXX. UPC: formato GS1 12 dígitos com check digit.');
-    h1('5. ADMIN');p('Verificar artistas, Atribuir como Oficial, Suspender com prazo, Mudar Plano de utilizadores.');
-    h1('6. SAQUES');p('Mínimo 10.000 Kz. Requer nome titular, banco e IBAN.');
+    h1('2. REGISTO');p('Nome, email, data, telefone (código país separado), senha. Confirmação por email obrigatória.');
+    h1('3. LANÇAMENTO');p('Capa: JPG/PNG min 1400x1400 px 1:1 máx 20MB. Áudio: WAV 44.1/48kHz 16/24-bit estéreo máx 500MB. DDEX ERN 4.3 gerado automaticamente.');
+    h1('4. ISRC/UPC');p('ISRC: formato IFPI AOMAM25XXXXX gerado sequencialmente. UPC: formato GS1 12 dígitos com check digit.');
+    h1('5. ADMIN');p('Verificar artistas, Atribuir como Oficial, Suspender com prazo, Mudar Plano de utilizadores, gerir saques e royalties.');
+    h1('6. SAQUES');p('Mínimo 10.000 Kz. Requer nome titular, banco e IBAN. Aprovação pelo admin.');
     h1('7. SUPORTE');p('Email: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307');
     doc.save('MAM_Manual.pdf');showAlert('✅ PDF gerado!');
 };
 
-// ==================== RODAPÉ PROFISSIONAL ====================
+// ==================== RODAPÉ (MANTIDO — APROVADO) ====================
 window.showFooterContent=function(t){
     const c={
-        'sobre':`<div class="legal-content"><h2>🏢 Sobre a MAM Distribuidora</h2><p>A <strong>MAM Distribuidora</strong> é uma empresa angolana dedicada à distribuição digital de música, fundada por <strong>Matias Arsénio Manuel</strong>.</p><h3>🎯 Missão</h3><p>Oferecer aos artistas independentes uma plataforma profissional para distribuir a sua música às maiores plataformas digitais.</p><h3>💎 Valores</h3><ul><li>Transparência</li><li>Qualidade Técnica</li><li>Compromisso</li><li>Inovação</li></ul></div>`,
-        'sobre-nos':`<div class="legal-content"><h2>👥 Sobre Nós</h2><p>Operamos a partir de Luanda com infraestrutura cloud global.</p><h3>🏆 Diferenciais</h3><ul><li>Interface em 4 idiomas</li><li>Carteira multi-moeda</li><li>ISRC e UPC automáticos</li><li>Padrão DDEX ERN 4.3</li></ul><h3>👤 Fundador</h3><div class="contact-box"><p><i class="fas fa-user"></i> <strong>Matias Arsénio Manuel</strong></p><p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p><p><i class="fab fa-whatsapp"></i> +244 937 881 307</p></div></div>`,
-        'privacidade':`<div class="legal-content"><h2>🔒 Política de Privacidade</h2><h3>Dados Recolhidos</h3><ul><li>Nome, email, telefone</li><li>Dados bancários para saques</li><li>Ficheiros de música</li></ul><h3>Segurança</h3><ul><li>Firebase SSL/TLS</li><li>Firestore com regras restritas</li><li>Cloudinary para ficheiros</li></ul><h3>Contacto</h3><div class="contact-box"><p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p></div></div>`,
-        'termos':`<div class="legal-content"><h2>📜 Termos de Uso</h2><h3>Requisitos</h3><ul><li>Maior de 18 anos</li><li>Ser titular dos direitos</li></ul><h3>Royalties</h3><p>Split: 55% artista / 15% MAM / 30% plataforma</p><h3>Saque</h3><p>Mínimo 10.000 Kz. Aprovação do admin.</p></div>`,
-        'suporte':`<div class="legal-content"><h2>💬 Suporte</h2><div class="contact-box"><p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p><p><i class="fab fa-whatsapp"></i> +244 937 881 307</p><p><i class="fab fa-youtube"></i> @MAMDistribuidora-k8k</p><p><i class="fas fa-clock"></i> Seg-Sex, 8h-17h (WAT)</p></div></div>`
+        'sobre': `<div class="legal-content">
+<h2>🏢 Sobre a MAM Distribuidora</h2>
+<p>A <strong>MAM Distribuidora</strong> é uma empresa angolana dedicada à distribuição digital de música, fundada por <strong>Matias Arsénio Manuel</strong>, com o objetivo de conectar artistas independentes africanos ao mercado musical global. Operamos com tecnologia de ponta e processos alinhados com os padrões internacionais da indústria fonográfica.</p>
+
+<h3>🎯 Missão</h3>
+<p>Oferecer aos artistas independentes uma plataforma profissional, transparente e acessível para distribuir a sua música às maiores plataformas digitais do mundo, garantindo retorno justo pelos seus direitos autorais.</p>
+
+<h3>👁️ Visão</h3>
+<p>Ser a distribuidora digital de referência da África Austral, reconhecida pela excelência técnica, integridade comercial e compromisso com o sucesso dos artistas que representamos.</p>
+
+<h3>💎 Valores</h3>
+<ul>
+<li><strong>Transparência</strong> — relatórios claros, splits auditáveis e sem taxas escondidas.</li>
+<li><strong>Qualidade Técnica</strong> — padrão DDEX ERN 4.3, ficheiros validados segundo especificações IFPI e GS1.</li>
+<li><strong>Compromisso</strong> — apoio contínuo ao artista antes, durante e após cada lançamento.</li>
+<li><strong>Inovação</strong> — infraestrutura cloud moderna, interface em 4 idiomas, carteira multi-moeda.</li>
+</ul>
+
+<h3>📊 Números</h3>
+<div class="stat-row">
+<div><strong>150+</strong><span>Plataformas</span></div>
+<div><strong>100%</strong><span>Royalties</span></div>
+<div><strong>24/7</strong><span>Suporte</span></div>
+</div>
+
+<div class="highlight-box">
+<strong>⚠️ Nota técnica:</strong> A MAM Distribuidora opera como agregadora tecnológica. A entrega efetiva dos conteúdos às plataformas (Spotify, Apple Music, TikTok, Deezer, Amazon Music, Tidal, etc.) é realizada através de contratos com distribuidores licenciados internacionalmente. Esta arquitetura garante conformidade total com os requisitos legais de cada plataforma.
+</div>
+</div>`,
+        'sobre-nos': `<div class="legal-content">
+<h2>👥 Sobre Nós</h2>
+<p>A <strong>MAM Distribuidora</strong> nasceu da visão de um jovem empreendedor angolano que decidiu transformar a forma como a música africana chega ao mundo. Operamos a partir de Luanda, com infraestrutura cloud global e uma equipa dedicada a servir artistas, produtores e selos independentes.</p>
+
+<h3>🏆 Diferenciais Competitivos</h3>
+<ul>
+<li><strong>Interface em 4 idiomas</strong> — Português, Inglês, Espanhol e Francês.</li>
+<li><strong>Carteira multi-moeda</strong> — 8 moedas internacionais (Kwanza, USD, EUR, BRL, GBP, ZAR, MZN, CVE).</li>
+<li><strong>ISRC e UPC automáticos</strong> — gerados sequencialmente segundo formatos IFPI e GS1.</li>
+<li><strong>Padrão DDEX ERN 4.3</strong> — o mesmo protocolo utilizado por Sony Music, Universal e Warner.</li>
+<li><strong>Splits transparentes</strong> — 55% artista / 15% MAM / 30% plataforma, com relatórios detalhados.</li>
+<li><strong>Suporte dedicado</strong> — por email e WhatsApp, em português, inglês e espanhol.</li>
+</ul>
+
+<h3>👤 Fundador</h3>
+<div class="contact-box">
+<p><i class="fas fa-user"></i> <strong>Matias Arsénio Manuel</strong></p>
+<p><i class="fas fa-map-marker-alt"></i> Luanda, Angola</p>
+<p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p>
+<p><i class="fab fa-whatsapp"></i> +244 937 881 307</p>
+</div>
+
+<h3>🌍 Cobertura Geográfica</h3>
+<p>Operamos em toda a África Austral e países lusófonos, com capacidade de entrega a artistas de qualquer parte do mundo. As nossas parcerias de distribuição cobrem os 5 continentes.</p>
+
+<h3>🤝 Parcerias</h3>
+<p>Se representa um selo discográfico, agregador internacional ou plataforma de streaming, contacte-nos para explorar colaborações que beneficiem os artistas africanos. Estamos abertos a acordos de distribuição, sincronização e licenciamento.</p>
+</div>`,
+        'privacidade': `<div class="legal-content">
+<h2>🔒 Política de Privacidade</h2>
+<p><em>Última atualização: 2025 | Versão 2.0</em></p>
+
+<p>A <strong>MAM Distribuidora</strong> compromete-se a proteger a privacidade e os dados pessoais dos seus utilizadores. Esta política descreve como recolhemos, usamos, armazenamos e protegemos a sua informação, em conformidade com as melhores práticas internacionais de proteção de dados.</p>
+
+<h3>1. Dados Recolhidos</h3>
+<ul>
+<li><strong>Identificação:</strong> nome completo, data de nascimento, país, foto de perfil;</li>
+<li><strong>Contacto:</strong> endereço de email, número de telefone;</li>
+<li><strong>Profissionais:</strong> nome artístico, estilo musical, biografia, redes sociais;</li>
+<li><strong>Financeiros:</strong> dados bancários para saques, histórico de royalties;</li>
+<li><strong>Conteúdo musical:</strong> ficheiros WAV, capas, metadados das músicas (ISRC, UPC, DDEX).</li>
+</ul>
+
+<h3>2. Finalidade do Tratamento</h3>
+<ul>
+<li>Autenticação e gestão de conta de utilizador;</li>
+<li>Distribuição de música para as 150+ plataformas parceiras;</li>
+<li>Cálculo, retenção e pagamento de royalties;</li>
+<li>Processamento de saques para as contas bancárias indicadas;</li>
+<li>Envio de notificações sobre lançamentos, royalties e saques;</li>
+<li>Cumprimento de obrigações legais e fiscais.</li>
+</ul>
+
+<h3>3. Partilha com Terceiros</h3>
+<p>Os seus dados <strong>nunca são vendidos</strong> a terceiros. Podem ser partilhados apenas com:</p>
+<ul>
+<li>Plataformas digitais (Spotify, Apple Music, TikTok, etc.) — apenas metadados necessários à distribuição;</li>
+<li>Processadores de pagamento — para efetuar saques;</li>
+<li>Autoridades legais — quando exigido por lei.</li>
+</ul>
+
+<h3>4. Medidas de Segurança</h3>
+<ul>
+<li>Autenticação Firebase com encriptação SSL/TLS em todas as comunicações;</li>
+<li>Armazenamento em Cloud Firestore com regras de acesso restritas;</li>
+<li>Ficheiros de áudio e capas guardados em Cloudinary com URLs assinadas;</li>
+<li>Palavras-passe encriptadas com algoritmo bcrypt e nunca acessíveis em texto simples;</li>
+<li>Confirmação de email obrigatória para ativação de conta.</li>
+</ul>
+
+<h3>5. Direitos do Utilizador</h3>
+<p>Pode, a qualquer momento, através do painel de perfil:</p>
+<ul>
+<li>Aceder a todos os dados pessoais que armazenamos sobre si;</li>
+<li>Corrigir informação incorreta em "Editar Perfil";</li>
+<li>Eliminar permanentemente a conta em "Definições > Eliminar Conta";</li>
+<li>Solicitar a portabilidade dos dados via email.</li>
+</ul>
+
+<h3>6. Retenção de Dados</h3>
+<p>Os dados são mantidos enquanto a conta estiver ativa. Ao eliminar a conta, todos os dados pessoais são apagados em até 30 dias, exceto registos fiscais que devam ser conservados por obrigação legal.</p>
+
+<h3>7. Contacto do Encarregado de Proteção de Dados</h3>
+<div class="contact-box">
+<p><i class="fas fa-envelope"></i> privacidade@mamdistribuidora.com</p>
+<p><i class="fas fa-envelope"></i> mamfilhos29@gmail.com</p>
+<p><i class="fab fa-whatsapp"></i> +244 937 881 307</p>
+</div>
+</div>`,
+        'termos': `<div class="legal-content">
+<h2>📜 Termos e Condições de Uso</h2>
+<p><em>Última atualização: 2025 | Versão 2.0</em></p>
+
+<p>Ao criar conta e utilizar a plataforma <strong>MAM Distribuidora</strong>, o utilizador declara ter lido, compreendido e aceite integralmente os presentes Termos e Condições.</p>
+
+<h3>1. Objeto do Serviço</h3>
+<p>A MAM Distribuidora presta serviços de distribuição digital de música para plataformas como Spotify, Apple Music, TikTok, Instagram, YouTube Music, Amazon Music, Deezer, Tidal, Boomplay e mais de 150 outras, através de acordos com agregadores licenciados internacionalmente.</p>
+
+<h3>2. Requisitos do Utilizador</h3>
+<ul>
+<li>Ser maior de 18 anos ou possuir autorização legal de representante;</li>
+<li>Fornecer informação verdadeira, exata e atualizada;</li>
+<li>Ser titular dos direitos das músicas distribuídas ou ter autorização escrita dos titulares;</li>
+<li>Manter as credenciais de acesso em segurança;</li>
+<li>Confirmar o endereço de email antes de aceder à conta.</li>
+</ul>
+
+<h3>3. Direitos de Autor e Propriedade Intelectual</h3>
+<p>O utilizador garante expressamente que:</p>
+<ul>
+<li>É o autor, compositor, intérprete ou titular legal dos direitos das músicas;</li>
+<li>As músicas não violam direitos de terceiros (copyright, marcas registadas, direitos de personalidade);</li>
+<li>Assume total responsabilidade civil e criminal por qualquer violação.</li>
+</ul>
+<p><strong>A MAM Distribuidora atua como intermediária técnica</strong> e não se responsabiliza por plágios, uso indevido ou reivindicações de terceiros, salvo quando notificada e comprovada violação.</p>
+
+<h3>4. Conteúdo Proibido</h3>
+<p>É estritamente proibido distribuir conteúdo que:</p>
+<ul>
+<li>Viole direitos de autor de terceiros;</li>
+<li>Contenha discurso de ódio, racismo, violência ou pornografia;</li>
+<li>Promova atividades ilegais;</li>
+<li>Contenha áudio com qualidade inferior aos padrões técnicos exigidos (WAV 44.1kHz mínimo);</li>
+<li>Use capas com marcas registadas, links, preços ou informação promocional.</li>
+</ul>
+
+<h3>5. Royalties e Split Financeiro</h3>
+<ul>
+<li>Os royalties são calculados com base em relatórios oficiais das plataformas;</li>
+<li>Split padrão: <strong>55% artista / 15% MAM Distribuidora / 30% plataformas digitais</strong>;</li>
+<li>O saque mínimo é de <strong>10.000 Kz (dez mil kwanzas)</strong>;</li>
+<li>Todo saque requer aprovação do administrador e é processado em até 15 dias úteis;</li>
+<li>É responsabilidade do utilizador fornecer dados bancários corretos (nome completo do titular, IBAN);</li>
+<li>A MAM não se responsabiliza por transferências para contas bancárias erradas indicadas pelo utilizador.</li>
+</ul>
+
+<h3>6. Suspensão e Eliminação de Conta</h3>
+<p>A MAM Distribuidora reserva-se o direito de suspender ou eliminar contas que violem os presentes termos, com ou sem aviso prévio, incluindo casos de:</p>
+<ul>
+<li>Distribuição de conteúdo protegido sem autorização;</li>
+<li>Fraude, manipulação de streams ou uso de bots;</li>
+<li>Múltiplos perfis de artista com o mesmo nome sem verificação;</li>
+<li>Comportamento abusivo com a equipa de suporte.</li>
+</ul>
+<p>Perfis de artista suspensos com prazo definido são automaticamente reativados após o término do período.</p>
+
+<h3>7. Limitação de Responsabilidade</h3>
+<p>A MAM Distribuidora não se responsabiliza por:</p>
+<ul>
+<li>Rejeição de músicas por parte das plataformas digitais;</li>
+<li>Atrasos na entrega causados por terceiros;</li>
+<li>Alterações unilaterais nas políticas das plataformas;</li>
+<li>Perdas indiretas resultantes do uso do serviço.</li>
+</ul>
+
+<h3>8. Propriedade Intelectual da Plataforma</h3>
+<p>A marca, logótipo, sistema, código-fonte e interface da MAM Distribuidora são propriedade exclusiva do fundador. É proibida a reprodução total ou parcial sem autorização escrita.</p>
+
+<h3>9. Modificações</h3>
+<p>Estes termos podem ser atualizados a qualquer momento. Notificaremos os utilizadores sobre alterações significativas por email ou notificação interna.</p>
+
+<h3>10. Lei Aplicável e Foro</h3>
+<p>Estes termos regem-se pelas leis da República de Angola. Quaisquer litígios serão resolvidos nos tribunais da comarca de Luanda, com expressa renúncia a qualquer outro foro.</p>
+</div>`,
+        'suporte': `<div class="legal-content">
+<h2>💬 Suporte ao Cliente</h2>
+<p>A equipa da MAM Distribuidora está disponível para o ajudar em todas as etapas da sua jornada musical. Seja para dúvidas técnicas, questões sobre royalties, problemas com lançamentos ou sugestões de melhoria, estamos aqui.</p>
+
+<h3>📞 Contactos Diretos</h3>
+<div class="contact-box">
+<p><i class="fas fa-envelope"></i> <strong>Email geral:</strong> <a href="mailto:mamfilhos29@gmail.com" style="color:var(--gold);">mamfilhos29@gmail.com</a></p>
+<p><i class="fas fa-envelope"></i> <strong>Suporte técnico:</strong> <a href="mailto:suporte@mamdistribuidora.com" style="color:var(--gold);">suporte@mamdistribuidora.com</a></p>
+<p><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://wa.me/244937881307" target="_blank" style="color:var(--gold);">+244 937 881 307</a></p>
+<p><i class="fab fa-youtube"></i> <strong>Canal YouTube:</strong> <a href="https://www.youtube.com/@MAMDistribuidora-k8k" target="_blank" style="color:var(--gold);">@MAMDistribuidora-k8k</a></p>
+<p><i class="fas fa-clock"></i> <strong>Horário de atendimento:</strong> Segunda a Sexta, 8h — 17h (WAT — Horário de Angola)</p>
+<p><i class="fas fa-map-marker-alt"></i> <strong>Localização:</strong> Luanda, Angola</p>
+</div>
+
+<h3>🎯 Áreas de Assistência</h3>
+<ul>
+<li><strong>Problemas técnicos</strong> — dificuldades de login, confirmação de email, uploads, erros na plataforma;</li>
+<li><strong>Lançamentos</strong> — dúvidas sobre requisitos de capa, áudio, ISRC, UPC, DDEX;</li>
+<li><strong>Royalties</strong> — esclarecimentos sobre cálculos, splits e pagamentos mensais;</li>
+<li><strong>Saques</strong> — problemas com levantamentos, dados bancários ou prazos de processamento;</li>
+<li><strong>Verificação de artistas</strong> — como reivindicar um perfil oficial;</li>
+<li><strong>Distribuição</strong> — informações sobre as 150+ plataformas disponíveis e prazos médios de entrega;</li>
+<li><strong>Parcerias comerciais</strong> — propostas de selos, agregadores e colaborações.</li>
+</ul>
+
+<h3>⏱️ Tempos de Resposta Garantidos</h3>
+<ul>
+<li><strong>WhatsApp:</strong> resposta em até 2 horas (dentro do horário útil);</li>
+<li><strong>Email:</strong> resposta em até 24 horas úteis;</li>
+<li><strong>Casos urgentes</strong> (conta suspensa indevidamente, pagamento em falta): prioridade máxima via WhatsApp.</li>
+</ul>
+
+<h3>📚 Recursos Antes de Contactar</h3>
+<p>Recomendamos consultar primeiro:</p>
+<ul>
+<li>O <strong>Manual PDF</strong> disponível no painel ADM > Manual PDF;</li>
+<li>As secções <strong>Termos</strong> e <strong>Privacidade</strong> deste site;</li>
+<li>As dicas técnicas no formulário "Lançar Música";</li>
+<li>O nosso canal YouTube para tutoriais em vídeo.</li>
+</ul>
+
+<h3>🚨 Suporte Prioritário</h3>
+<p>Para situações urgentes (música removida indevidamente, problemas de pagamento, conta suspensa sem justificação), envie mensagem via WhatsApp com o assunto <strong>[URGENTE]</strong> no início da mensagem. Estes casos são atendidos em até 1 hora durante o horário útil.</p>
+
+<h3>🌍 Idiomas de Suporte</h3>
+<p>Português, Inglês e Espanhol. Francês disponível por email.</p>
+
+<div class="highlight-box">
+<strong>💡 Dica profissional:</strong> Ao reportar um problema, inclua sempre:<br>
+• O email de registo da sua conta;<br>
+• Descrição clara e objetiva do problema;<br>
+• Capturas de ecrã (se aplicável);<br>
+• Título da música e ISRC (se for sobre um lançamento específico);<br>
+• Dispositivo e navegador utilizados.<br><br>
+Quanto mais detalhes fornecer, mais rápida será a resolução.
+</div>
+</div>`
     };
     document.getElementById('genericModalBody').innerHTML=c[t]||'';
     document.getElementById('genericModalTitle').innerText=t.toUpperCase();
@@ -2173,8 +2686,9 @@ window.loadMinhasMusicas=async function(){
     });
 };
 
-// ==================== SELECTS ====================
+// ==================== SELECTS (CORRIGIDO — CARREGADO LOGO NO INÍCIO) ====================
 function carregarSelects(){
+    // Preencher códigos de telefone
     ['reg-phone-code','settings-phone-code'].forEach(id=>{
         const sel=document.getElementById(id);
         if(sel){
@@ -2187,8 +2701,10 @@ function carregarSelects(){
             });
         }
     });
+    // País
     const ps=document.getElementById('settings-pais');
     if(ps)ps.innerHTML='<option value="Angola">🇦🇴 Angola</option><option value="Brasil">🇧🇷 Brasil</option><option value="Portugal">🇵🇹 Portugal</option><option value="EUA">🇺🇸 EUA</option><option value="Moçambique">🇲🇿 Moçambique</option><option value="Cabo Verde">🇨🇻 Cabo Verde</option>';
+    // Géneros musicais
     ['music-estilo','artist-style','edit-artist-style'].forEach(id=>{
         const sel=document.getElementById(id);
         if(sel){
@@ -2196,6 +2712,7 @@ function carregarSelects(){
             Object.keys(musicGenres).sort().forEach(g=>{const o=document.createElement('option');o.value=g;o.text=g;sel.appendChild(o);});
         }
     });
+    // Sub-géneros (lista completa)
     const allGenres=[];
     Object.keys(musicGenres).forEach(g=>{allGenres.push(g);musicGenres[g].forEach(s=>{if(!allGenres.includes(s))allGenres.push(s);});});
     allGenres.sort();
@@ -2206,7 +2723,8 @@ function carregarSelects(){
     }
     preencherSubGeneroCompleto();
     const estSel=document.getElementById('music-estilo');
-    if(estSel){
+    if(estSel && !estSel.dataset.listenerAttached){
+        estSel.dataset.listenerAttached='1';
         estSel.addEventListener('change',()=>{
             const g=estSel.value;
             const sub=document.getElementById('music-sub-estilo');
@@ -2218,6 +2736,7 @@ function carregarSelects(){
             } else { preencherSubGeneroCompleto(); }
         });
     }
+    // Artistas no select de lançamento (só se logado)
     const asel=document.getElementById('music-artista-select');
     if(asel&&currentUser){
         db.collection('artists').where('ownerId','==',currentUser.uid).get().then(snap=>{
@@ -2233,7 +2752,11 @@ function carregarSelects(){
 
 // ==================== INIT ====================
 aplicarIdioma(currentLang);
+carregarSelects();  // ← Corrigido: chamar logo no arranque (antes do login)
 startCarousel();
+
+// Processar possíveis links de email (verifyEmail / resetPassword)
+handleEmailActionLinks();
 
 auth.onAuthStateChanged(async user=>{
     if(user){
@@ -2259,7 +2782,7 @@ auth.onAuthStateChanged(async user=>{
     }
 });
 
-console.log('🚀 MAM Distribuidora v9.0 — YouTube channel ID real configurado');
+console.log('🚀 MAM Distribuidora v9.0 — Vídeo corrigido + Códigos telefone + Links email');
 </script>
 </body>
 </html>

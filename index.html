@@ -77,3 +77,70 @@ footer{background:#050505;border-top:1px solid #222;padding:20px;text-align:cent
 </div>
 <div id="modal-login" style="position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:10000;display:none;align-items:center;justify-content:center"><div class="card" style="max-width:400px;width:90%"><h3>Entrar / Criar</h3><label>Email</label><input id="l-email" type="email"><label>Senha</label><input id="l-pass" type="password"><button class="btn" onclick="login()">Entrar</button><button class="btn btn-sec" style="margin-top:8px" onclick="registrar()">Criar Conta</button><button class="btn btn-sec" style="margin-top:8px;background:#111" onclick="document.getElementById('modal-login').style.display='none'">Fechar</button></div></div>
 <footer><p>MAM v2 REAL © 2025 | Matias Arsenio Manuel</p></footer>
+<script>
+const firebaseConfig={apiKey:"AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",authDomain:"mam-distribuidora-6043f.firebaseapp.com",projectId:"mam-distribuidora-6043f",storageBucket:"mam-distribuidora-6043f.firebasestorage.app",messagingSenderId:"467923017917",appId:"1:467923017917:web:7361ecf8cff2cbfed197d4"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(); const db=firebase.firestore();
+const CLOUDINARY_CONFIG={cloudName:'dbjhwnhoq'};
+let currentUser=null;
+function showSec(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}}
+function showLoading(v){document.getElementById('loading-overlay').style.display=v?'flex':'none';}
+function showAlert(m){alert(m);}
+auth.onAuthStateChanged(u=>{currentUser=u;if(u){document.getElementById('btn-login').style.display='none';document.getElementById('btn-logout').style.display='block';}else{document.getElementById('btn-login').style.display='block';document.getElementById('btn-logout').style.display='none';}});
+
+async function login(){const e=document.getElementById('l-email').value,p=document.getElementById('l-pass').value;await auth.signInWithEmailAndPassword(e,p);document.getElementById('modal-login').style.display='none';}
+async function registrar(){const e=document.getElementById('l-email').value,p=document.getElementById('l-pass').value;await auth.createUserWithEmailAndPassword(e,p);document.getElementById('modal-login').style.display='none';showAlert("Conta criada!");}
+function logout(){auth.signOut();location.reload();}
+
+document.getElementById('m-titulo').addEventListener('focus',()=>{
+  if(!document.getElementById('m-isrc').value){
+    document.getElementById('m-isrc').value=`AO-MAM-${new Date().getFullYear().toString().slice(-2)}-${Math.floor(Math.random()*100000).toString().padStart(5,'0')}`;
+    document.getElementById('m-upc').value='19439'+Math.floor(Math.random()*100000000).toString().padStart(9,'0');
+  }
+});
+
+document.getElementById('m-capa-file').addEventListener('change',async e=>{
+  const file=e.target.files[0]; if(!file)return;
+  if(file.size>20*1024*1024){showAlert("Capa >20MB nao aceita");return;}
+  showLoading(true);
+  const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','mam_preset');
+  const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd});
+  const data=await res.json();
+  if(!data.secure_url)throw new Error(data.error?.message||'Crie preset mam_preset Unsigned');
+  document.getElementById('m-capa-url').value=data.secure_url;
+  document.getElementById('capa-img').src=data.secure_url;
+  document.getElementById('capa-prev').style.display='block';
+  document.getElementById('capa-ok').innerText=`✅ Capa OK ${data.width}x${data.height}`;
+  showLoading(false);
+});
+
+document.getElementById('m-audio-file').addEventListener('change',async e=>{
+  const file=e.target.files[0]; if(!file)return;
+  if(!file.name.toLowerCase().endsWith('.wav')){showAlert("So WAV!");return;}
+  document.getElementById('prog').style.display='block';
+  document.getElementById('prog-fill').style.width='30%';
+  const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','mam_preset'); fd.append('resource_type','video');
+  const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/video/upload`,{method:'POST',body:fd});
+  const data=await res.json();
+  document.getElementById('m-audio-url').value=data.secure_url;
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('tiktok-box').style.display='block';
+  document.getElementById('tiktok-audio').src=data.secure_url;
+});
+
+async function enviarMusica(){
+  const titulo=document.getElementById('m-titulo').value.trim();
+  const artista=document.getElementById('m-artista').value.trim();
+  const capa=document.getElementById('m-capa-url').value;
+  const audio=document.getElementById('m-audio-url').value;
+  if(!currentUser){showAlert("Faca login");return;}
+  if(!titulo||!artista||!capa||!audio){showAlert("Preencha titulo, artista, capa e audio WAV!");return;}
+  showLoading(true);
+  await db.collection('lancamentos').add({titulo,artista,isrc:document.getElementById('m-isrc').value,upc:document.getElementById('m-upc').value,capaUrl:capa,audioUrl:audio,status:'pendente',userId:currentUser.uid,email:currentUser.email,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  showLoading(false);
+  showAlert("✅ ENVIADO! Status PENDENTE - aprova no ADMIN em 24h");
+  showSec('minhas');
+}
+</script>
+</body>
+</html>

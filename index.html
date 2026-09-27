@@ -34,7 +34,7 @@ input,select,textarea{width:100%;padding:14px;background:#000;border:1px solid #
 .upload-progress{background:#0a0a0a;border:1px solid var(--gold);border-radius:8px;padding:15px;margin-top:15px;display:none}
 .upload-progress.active{display:block}
 .upload-progress-bar{width:100%;height:12px;background:#222;border-radius:6px;overflow:hidden}
-.upload-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#ff6b35);width:0%;transition:width .3s}
+.upload-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#ff6b35);width:0%;transition:width.3s}
 .tiktok-preview{background:linear-gradient(135deg,#000,#0a0a0a);border:2px solid #dc3545;border-radius:12px;padding:20px;margin-top:15px;display:none}
 .tiktok-preview.active{display:block}
 footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align:center;color:var(--gray);font-size:.8rem;margin-top:auto}
@@ -60,7 +60,40 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="container">
 <section id="home" class="section active">
 <div class="card"><h3>O IMPÉRIO DA MÚSICA EM ANGOLA</h3><p>Distribua para 150+ plataformas.</p></div>
-<div id="feed-container" class="grid"></div
+<div id="feed-container" class="grid"></div>
+</section>
+<section id="lancar" class="section">
+<div class="card">
+<h3>Lançar Música (DDEX ERN 4.3)</h3>
+<label>Título *</label><input type="text" id="music-titulo" placeholder="Ex: Minha Música">
+<label>Artista *</label><select id="music-artista-select"><option value="">-- Escolha --</option></select>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px"><div><label>ISRC</label><input type="text" id="music-isrc" readonly></div><div><label>UPC</label><input type="text" id="music-upc" readonly></div></div>
+<label style="margin-top:15px;">Capa *</label>
+<input type="hidden" id="music-capa-url">
+<input type="file" id="music-capa-file" accept="image/jpeg,image/png" style="display:none;">
+<button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa 1400x1400</button>
+<div id="capa-preview" style="display:none;margin-top:15px;text-align:center;"><img id="capa-preview-img" style="width:150px;height:150px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);"><p id="capa-status" style="color:#28a745;margin-top:10px;"></p></div>
+<label style="margin-top:15px;">Áudio WAV *</label>
+<input type="hidden" id="music-audio-url">
+<input type="file" id="music-audio-file" accept=".wav,audio/wav" style="display:none;">
+<button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio WAV</button>
+<div id="audio-upload-progress" class="upload-progress">
+<div style="display:flex;justify-content:space-between"><span>Carregando áudio...</span><span id="audio-upload-percent">0%</span></div>
+<div class="upload-progress-bar"><div id="audio-upload-fill" class="upload-progress-fill"></div></div>
+<div id="audio-upload-status" style="text-align:center;margin-top:8px;font-size:.75rem;color:var(--gray)">Preparando...</div>
+</div>
+<div id="tiktok-preview" class="tiktok-preview">
+<h4><i class="fab fa-tiktok"></i> Preview TikTok 1:00</h4>
+<p style="color:#bbb;font-size:.8rem;margin-bottom:10px;">Trecho de 1 minuto para TikTok/Reels</p>
+<audio id="tiktok-audio-player" controls style="width:100%"></audio>
+</div>
+<button type="button" class="btn" id="btnEnviarLancamento" style="margin-top:20px">Enviar para Distribuição</button>
+</div>
+</section>
+<section id="minhas-musicas" class="section"><div class="card"><h3>Minhas Músicas</h3><div id="minhas-musicas-container" class="grid"></div></div></section>
+</div>
+<div id="modal-login" class="modal"><div class="modal-content"><h3>ENTRAR</h3><label>Email</label><input type="email" id="login-email"><label>Senha</label><input type="password" id="login-pass"><button class="btn" onclick="handleLogin()">Entrar</button><button class="btn btn-sec" style="margin-top:10px" onclick="closeModal('modal-login')">Fechar</button></div></div>
+<footer><p>MAM Distribuidora © 2025 | Fundado por Matias Arsénio Manuel</p></footer>
 <script>
 const firebaseConfig = {apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",authDomain: "mam-distribuidora-6043f.firebaseapp.com",projectId: "mam-distribuidora-6043f",storageBucket: "mam-distribuidora-6043f.firebasestorage.app",messagingSenderId: "467923017917",appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"};
 firebase.initializeApp(firebaseConfig);
@@ -68,7 +101,6 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const CLOUDINARY_CONFIG = {cloudName:'dbjhwnhoq'};
 let currentUser=null;
-
 function showSection(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}}
 function showLoading(s){document.getElementById('loading-overlay').style.display=s?'flex':'none';}
 function showAlert(m){document.getElementById('alert-message').innerHTML=m;document.getElementById('custom-alert').style.display='flex';}
@@ -78,8 +110,6 @@ function closeModal(id){document.getElementById(id).classList.remove('active');}
 async function handleLogin(){const e=document.getElementById('login-email').value,p=document.getElementById('login-pass').value;showLoading(true);try{await auth.signInWithEmailAndPassword(e,p);closeModal('modal-login');showAlert('Entrou!');}catch(err){showAlert(err.message);}showLoading(false);}
 function handleLogout(){auth.signOut();location.reload();}
 auth.onAuthStateChanged(u=>{currentUser=u;if(u){document.getElementById('nav-login').style.display='none';document.getElementById('nav-logout').style.display='inline-block';}else{document.getElementById('nav-login').style.display='inline-block';document.getElementById('nav-logout').style.display='none';}});
-
-// ==== CORREÇÃO 1: UPLOAD REAL COM PROGRESSO ====
 document.getElementById('upload-capa-btn').onclick = async () => {
   const fileInput = document.getElementById('music-capa-file');
   fileInput.click();
@@ -104,8 +134,6 @@ document.getElementById('upload-capa-btn').onclick = async () => {
     }catch(err){showLoading(false);showAlert("ERRO CAPA: "+err.message);}
   }
 }
-
-// CORREÇÃO 2: AUDIO WAV REAL + PREVIEW TIKTOK 60s
 document.getElementById('upload-audio-btn').onclick = () => {
   document.getElementById('music-audio-file').click();
 }
@@ -118,7 +146,7 @@ document.getElementById('music-audio-file').onchange = async (e) => {
   document.getElementById('audio-upload-fill').style.width='20%';
   document.getElementById('audio-upload-percent').innerText='20%';
   document.getElementById('audio-upload-status').innerText='Enviando para Cloudinary...';
-  const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','mam_preset'); fd.append('resource_type','video');
+  const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','mam_preset');
   try{
     const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/video/upload`,{method:'POST',body:fd});
     const data=await res.json();
@@ -133,8 +161,6 @@ document.getElementById('music-audio-file').onchange = async (e) => {
     showAlert("✅ Áudio WAV carregado!");
   }catch(err){showAlert("ERRO ÁUDIO: "+err.message);document.getElementById('audio-upload-progress').classList.remove('active');}
 }
-
-// CORREÇÃO 3: GERA ISRC/UPC AUTOMATICO
 function gerarISRC(){ const ano=new Date().getFullYear().toString().slice(-2); const rand=Math.floor(Math.random()*100000).toString().padStart(5,'0'); return `AO-MAM-${ano}-${rand}`; }
 function gerarUPC(){ return '19439'+Math.floor(Math.random()*100000000).toString().padStart(8,'0'); }
 document.getElementById('music-titulo').addEventListener('focus', ()=>{
@@ -143,8 +169,6 @@ document.getElementById('music-titulo').addEventListener('focus', ()=>{
     document.getElementById('music-upc').value=gerarUPC();
   }
 });
-
-// CORREÇÃO 4: ENVIO REAL COM STATUS
 document.getElementById('btnEnviarLancamento').onclick = async () => {
   const titulo=document.getElementById('music-titulo').value.trim();
   const capa=document.getElementById('music-capa-url').value;
@@ -173,7 +197,7 @@ document.getElementById('btnEnviarLancamento').onclick = async () => {
     document.getElementById('capa-preview').style.display='none';
     document.getElementById('tiktok-preview').classList.remove('active');
     document.getElementById('audio-upload-progress').classList.remove('active');
-  }catch(err){showLoading(false);showAlert("Erro: "+err.message+" | Verifique Rules Firestore");}
+  }catch(err){showLoading(false);showAlert("Erro: "+err.message);}
 }
 </script>
 </body>

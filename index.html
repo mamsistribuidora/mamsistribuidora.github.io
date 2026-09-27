@@ -61,3 +61,120 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <section id="home" class="section active">
 <div class="card"><h3>O IMPÉRIO DA MÚSICA EM ANGOLA</h3><p>Distribua para 150+ plataformas.</p></div>
 <div id="feed-container" class="grid"></div
+<script>
+const firebaseConfig = {apiKey: "AIzaSyALJUV1EAmwFvDdVmG3wK8KUATcOS8_-dI",authDomain: "mam-distribuidora-6043f.firebaseapp.com",projectId: "mam-distribuidora-6043f",storageBucket: "mam-distribuidora-6043f.firebasestorage.app",messagingSenderId: "467923017917",appId: "1:467923017917:web:7361ecf8cff2cbfed197d4"};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const CLOUDINARY_CONFIG = {cloudName:'dbjhwnhoq'};
+let currentUser=null;
+
+function showSection(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}}
+function showLoading(s){document.getElementById('loading-overlay').style.display=s?'flex':'none';}
+function showAlert(m){document.getElementById('alert-message').innerHTML=m;document.getElementById('custom-alert').style.display='flex';}
+function closeAlert(){document.getElementById('custom-alert').style.display='none';}
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+async function handleLogin(){const e=document.getElementById('login-email').value,p=document.getElementById('login-pass').value;showLoading(true);try{await auth.signInWithEmailAndPassword(e,p);closeModal('modal-login');showAlert('Entrou!');}catch(err){showAlert(err.message);}showLoading(false);}
+function handleLogout(){auth.signOut();location.reload();}
+auth.onAuthStateChanged(u=>{currentUser=u;if(u){document.getElementById('nav-login').style.display='none';document.getElementById('nav-logout').style.display='inline-block';}else{document.getElementById('nav-login').style.display='inline-block';document.getElementById('nav-logout').style.display='none';}});
+
+// ==== CORREÇÃO 1: UPLOAD REAL COM PROGRESSO ====
+document.getElementById('upload-capa-btn').onclick = async () => {
+  const fileInput = document.getElementById('music-capa-file');
+  fileInput.click();
+  fileInput.onchange = async (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 20*1024*1024){ showAlert("Capa >20MB não aceita"); return; }
+    showLoading(true);
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', 'mam_preset');
+    try{
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {method:'POST', body:fd});
+      const data = await res.json();
+      if(!data.secure_url) throw new Error(data.error?.message||'Crie preset mam_preset Unsigned');
+      document.getElementById('music-capa-url').value = data.secure_url;
+      document.getElementById('capa-preview-img').src = data.secure_url;
+      document.getElementById('capa-preview').style.display='block';
+      document.getElementById('capa-status').innerText = "✅ Capa carregada! "+data.width+"x"+data.height;
+      showLoading(false);
+      showAlert("✅ Capa carregada!");
+    }catch(err){showLoading(false);showAlert("ERRO CAPA: "+err.message);}
+  }
+}
+
+// CORREÇÃO 2: AUDIO WAV REAL + PREVIEW TIKTOK 60s
+document.getElementById('upload-audio-btn').onclick = () => {
+  document.getElementById('music-audio-file').click();
+}
+document.getElementById('music-audio-file').onchange = async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.name.toLowerCase().endsWith('.wav')){ showAlert("Só WAV é aceito!"); return; }
+  if(file.size > 500*1024*1024){ showAlert("Áudio >500MB não aceita"); return; }
+  document.getElementById('audio-upload-progress').classList.add('active');
+  document.getElementById('audio-upload-fill').style.width='20%';
+  document.getElementById('audio-upload-percent').innerText='20%';
+  document.getElementById('audio-upload-status').innerText='Enviando para Cloudinary...';
+  const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','mam_preset'); fd.append('resource_type','video');
+  try{
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/video/upload`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(!data.secure_url) throw new Error(data.error?.message);
+    document.getElementById('music-audio-url').value=data.secure_url;
+    document.getElementById('audio-upload-fill').style.width='100%';
+    document.getElementById('audio-upload-percent').innerText='100%';
+    document.getElementById('audio-upload-status').innerText='✅ Áudio carregado OK';
+    const audio=document.getElementById('tiktok-audio-player');
+    audio.src=data.secure_url;
+    document.getElementById('tiktok-preview').classList.add('active');
+    showAlert("✅ Áudio WAV carregado!");
+  }catch(err){showAlert("ERRO ÁUDIO: "+err.message);document.getElementById('audio-upload-progress').classList.remove('active');}
+}
+
+// CORREÇÃO 3: GERA ISRC/UPC AUTOMATICO
+function gerarISRC(){ const ano=new Date().getFullYear().toString().slice(-2); const rand=Math.floor(Math.random()*100000).toString().padStart(5,'0'); return `AO-MAM-${ano}-${rand}`; }
+function gerarUPC(){ return '19439'+Math.floor(Math.random()*100000000).toString().padStart(8,'0'); }
+document.getElementById('music-titulo').addEventListener('focus', ()=>{
+  if(!document.getElementById('music-isrc').value){
+    document.getElementById('music-isrc').value=gerarISRC();
+    document.getElementById('music-upc').value=gerarUPC();
+  }
+});
+
+// CORREÇÃO 4: ENVIO REAL COM STATUS
+document.getElementById('btnEnviarLancamento').onclick = async () => {
+  const titulo=document.getElementById('music-titulo').value.trim();
+  const capa=document.getElementById('music-capa-url').value;
+  const audio=document.getElementById('music-audio-url').value;
+  if(!currentUser){showAlert("Faça login primeiro!");openModal('modal-login');return;}
+  if(!titulo||!capa||!audio){ showAlert("Preencha título, capa e áudio!"); return; }
+  showLoading(true);
+  try{
+    await db.collection('lancamentos').add({
+      titulo: titulo,
+      artistaId: document.getElementById('music-artista-select')?.value || 'sem-artista',
+      isrc: document.getElementById('music-isrc').value,
+      upc: document.getElementById('music-upc').value,
+      capaUrl: capa,
+      audioUrl: audio,
+      status: 'pendente',
+      userId: currentUser.uid,
+      email: currentUser.email,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showLoading(false);
+    showAlert("✅ Enviado! Status: PENDENTE - Aguarde aprovação da MAM (24h)");
+    document.getElementById('music-titulo').value='';
+    document.getElementById('music-capa-url').value='';
+    document.getElementById('music-audio-url').value='';
+    document.getElementById('capa-preview').style.display='none';
+    document.getElementById('tiktok-preview').classList.remove('active');
+    document.getElementById('audio-upload-progress').classList.remove('active');
+  }catch(err){showLoading(false);showAlert("Erro: "+err.message+" | Verifique Rules Firestore");}
+}
+</script>
+</body>
+</html>

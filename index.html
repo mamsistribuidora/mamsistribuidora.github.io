@@ -1430,89 +1430,80 @@ auth.onAuthStateChanged(async user=>{
 });
 
 console.log('🚀 MAM v13 — Upload com progresso + Preview TikTok 1:00 + DJ removido');
-    // ===== CORREÇÃO DO UPLOAD DE ÁUDIO WAV =====
-document.getElementById('upload-audio-btn')?.addEventListener('click', ()=>{
-  document.getElementById('music-audio-file').click();
-});
+// CORREÇÃO DEFINITIVA DO ÁUDIO - SEM ERRO DE STYLE
+(function(){
+  const btnAudio = document.getElementById('upload-audio-btn');
+  const inputAudio = document.getElementById('music-audio-file');
+  const btnCapa = document.getElementById('upload-capa-btn');
+  const inputCapa = document.getElementById('music-capa-file');
 
-document.getElementById('upload-capa-btn')?.addEventListener('click', ()=>{
-  document.getElementById('music-capa-file').click();
-});
-
-// CAPA
-document.getElementById('music-capa-file')?.addEventListener('change', async (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  document.getElementById('capa-preview').style.display='block';
-  document.getElementById('capa-preview-img').src = URL.createObjectURL(file);
-  document.getElementById('capa-status').textContent = 'Enviando capa...';
-
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {method:'POST', body:fd});
-  const data = await res.json();
-  document.getElementById('music-capa-url').value = data.secure_url;
-  document.getElementById('capa-status').textContent = '✅ Capa carregada!';
-});
-
-// ÁUDIO WAV
-document.getElementById('music-audio-file')?.addEventListener('change', async (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  if(!file.name.toLowerCase().endsWith('.wav')){
-    return showAlert('❌ Só é permitido WAV. Seu arquivo é: ' + file.name);
+  if(btnAudio && inputAudio){
+    btnAudio.onclick = () => inputAudio.click();
+  }
+  if(btnCapa && inputCapa){
+    btnCapa.onclick = () => inputCapa.click();
   }
 
-  const progress = document.getElementById('audio-upload-progress');
-  const fill = document.getElementById('audio-upload-fill');
-  const percent = document.getElementById('audio-upload-percent');
-  const status = document.getElementById('audio-upload-status');
-
-  progress.classList.add('active');
-  status.textContent = 'Enviando ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
-
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
-
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/video/upload`);
-
-  xhr.upload.onprogress = (ev)=>{
-    if(ev.lengthComputable){
-      const pct = Math.round(ev.loaded/ev.total*100);
-      fill.style.width = pct + '%';
-      percent.textContent = pct + '%';
-    }
-  };
-
-  xhr.onload = ()=>{
-    const data = JSON.parse(xhr.responseText);
-    if(data.secure_url){
-      document.getElementById('music-audio-url').value = data.secure_url;
-      status.textContent = '✅ Áudio carregado! Pronto para enviar.';
-      percent.textContent = '100%';
-      fill.style.width = '100%';
-
-      // Preview TikTok
-      const preview = document.getElementById('tiktok-preview');
-      if(preview){
-        preview.classList.add('active');
-        document.getElementById('tiktok-audio-player').src = data.secure_url;
+  // Quando escolher áudio
+  if(inputAudio){
+    inputAudio.onchange = async (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      if(!file.name.toLowerCase().endsWith('.wav')){
+        showAlert('O arquivo tem que ser.WAV');
+        return;
       }
-      showAlert('✅ Áudio WAV carregado com sucesso!');
-    } else {
-      status.textContent = '❌ Erro: ' + (data.error?.message || 'Falha no upload');
-    }
-  };
 
-  xhr.onerror = ()=>{
-    status.textContent = '❌ Erro de conexão. Verifique a internet.';
-  };
+      const progress = document.getElementById('audio-upload-progress');
+      const fill = document.getElementById('audio-upload-fill');
+      const percent = document.getElementById('audio-upload-percent');
+      const status = document.getElementById('audio-upload-status');
+      const urlField = document.getElementById('music-audio-url');
 
-  xhr.send(fd);
-});
+      if(progress) progress.classList.add('active');
+      if(progress) progress.style.display = 'block';
+      if(status) status.textContent = 'Enviando...';
+
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', 'mam_preset');
+
+      try{
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.cloudinary.com/v1_1/dbjhwnhoq/video/upload');
+        xhr.upload.onprogress = (ev)=>{
+          if(ev.lengthComputable && fill && percent){
+            const pct = Math.round(ev.loaded/ev.total*100);
+            fill.style.width = pct + '%';
+            percent.textContent = pct + '%';
+          }
+        };
+        xhr.onload = ()=>{
+          try{
+            const data = JSON.parse(xhr.responseText);
+            if(data.secure_url && urlField){
+              urlField.value = data.secure_url;
+              if(status) status.textContent = '✅ Áudio carregado!';
+              showAlert('✅ Áudio carregado com sucesso!');
+            } else {
+              if(status) status.textContent = 'Erro no Cloudinary';
+              showAlert('Erro: ' + (data.error?.message || 'falha upload'));
+            }
+          }catch(err){
+            showAlert('Erro ao ler resposta');
+          }
+        };
+        xhr.onerror = ()=>{
+          if(status) status.textContent = 'Erro de internet';
+          showAlert('Erro de conexão');
+        };
+        xhr.send(fd);
+      }catch(err){
+        showAlert('Erro: ' + err.message);
+      }
+    };
+  }
+})();
 </script>
 </body>
 </html>

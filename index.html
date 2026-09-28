@@ -975,7 +975,7 @@ async function renderFeed(){
     const cont=document.getElementById('feed-container');
     if(!cont) return;
     cont.innerHTML='';
-    const feed=await db.collection('releases').limit(100).get();
+    const feed=await db.collection('releases').where('status','==','aprovada').limit(100).get();
     let rel=[];
     feed.forEach(d=>rel.push({id:d.id,...d.data()}));
     rel.sort((a,b)=>{
@@ -988,6 +988,7 @@ async function renderFeed(){
       return;
     }
     for(const r of rel){
+      if(r.status==='rejeitada' || r.status==='rejeitado') continue;
       let artName=r.artista,artId=r.artistaId;
       if(r.artistaId){
         try{
@@ -1002,8 +1003,7 @@ async function renderFeed(){
           }
         }catch(e){}
       }
-      const podeApagar = (currentUser && (r.userId===currentUser.uid || currentUser.email==="mamfilhos29@gmail.com"));
-      cont.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${artId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${artId}')"><i class="fas fa-user-music"></i> ${artName}</div><div class="music-meta">${r.estilo||''}<br>📅 ${r.dataLancamento||''}</div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button>${podeApagar?`<button onclick="if(confirm('Apagar esta música?')){db.collection('releases').doc('${r.id}').delete().then(()=>renderFeed())}" style="background:#ff4444;color:white;">Apagar</button>`:''}</div></div>`;
+      cont.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${artId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${artId}')"><i class="fas fa-user-music"></i> ${artName}</div><div class="music-meta">${r.estilo||''}<br>📅 ${r.dataLancamento||''}</div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button></div></div>`;
     }
   }catch(e){console.error('renderFeed:',e);}
 }

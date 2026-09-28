@@ -975,7 +975,7 @@ async function renderFeed(){
     const cont=document.getElementById('feed-container');
     if(!cont) return;
     cont.innerHTML='';
-    const feed=await db.collection('releases').where('status','==','aprovada').limit(100).get();
+    const feed=await db.collection('releases').where('status','==','aprovado').limit(100).get();
     let rel=[];
     feed.forEach(d=>rel.push({id:d.id,...d.data()}));
     rel.sort((a,b)=>{
@@ -988,7 +988,6 @@ async function renderFeed(){
       return;
     }
     for(const r of rel){
-      if(r.status==='rejeitada' || r.status==='rejeitado') continue;
       let artName=r.artista,artId=r.artistaId;
       if(r.artistaId){
         try{

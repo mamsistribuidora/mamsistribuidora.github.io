@@ -942,9 +942,71 @@ function carregarDefinicoes(){if(!userData)return;document.getElementById('setti
 window.salvarConfiguracoesPerfil=async function(){const nome=document.getElementById('settings-nome').value.trim();const dn=document.getElementById('settings-data-nascimento').value;const pc=document.getElementById('settings-phone-code').value;const tel=document.getElementById('settings-telefone').value.trim();const pais=document.getElementById('settings-pais').value;const foto=document.getElementById('settings-foto-preview').src;if(!nome){showAlert('Nome obrigatório.');return;}showLoading(true);try{await db.collection('users').doc(currentUser.uid).update({nome,dataNascimento:dn,telefoneCodigo:pc,telefoneNumero:tel,telefone:pc+' '+tel,pais,fotoPerfil:foto});userData={...userData,nome,dataNascimento:dn,telefoneCodigo:pc,telefoneNumero:tel,telefone:pc+' '+tel,pais,fotoPerfil:foto};showAlert('Perfil atualizado!');loadHome();loadPerfil();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.alterarSenha=async function(){const a=document.getElementById('settings-senha-atual').value,n=document.getElementById('settings-senha-nova').value,c=document.getElementById('settings-senha-confirm').value;if(!a||!n||!c){showAlert('Preencha todos.');return;}if(n!==c){showAlert('Não coincidem.');return;}if(n.length<6){showAlert('Mínimo 6 caracteres.');return;}showLoading(true);try{const cred=firebase.auth.EmailAuthProvider.credential(currentUser.email,a);await currentUser.reauthenticateWithCredential(cred);await currentUser.updatePassword(n);showAlert('Senha alterada!');}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.confirmarEliminarConta=function(){confirmAction('Eliminar permanentemente?',async r=>{if(r){showLoading(true);try{const rel=await db.collection('releases').where('userId','==',currentUser.uid).get();for(const d of rel.docs)await d.ref.delete();const art=await db.collection('artists').where('ownerId','==',currentUser.uid).get();for(const d of art.docs)await d.ref.delete();await db.collection('users').doc(currentUser.uid).delete();await currentUser.delete();handleLogout();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}}});};
-
-async function loadHome(){if(!currentUser)return;try{const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists)userData=doc.data();document.getElementById('user-display-name').innerText=userData.nome;let plano=(userData.plano||'free').toUpperCase();if(currentUser.email==="mamfilhos29@gmail.com"){plano="PREMIUM";document.getElementById('admin-pro-max-indicator').style.display='inline-block';}else document.getElementById('admin-pro-max-indicator').style.display='none';document.getElementById('user-display-plan').innerHTML=`PLANO ${plano}`;document.getElementById('user-display-country').innerHTML=`<i class="fas fa-globe"></i> ${userData.pais||'Angola'}`;document.getElementById('home-user-photo').src=userData.fotoPerfil||'https://via.placeholder.com/80';const artistas=await db.collection('artists').where('ownerId','==',currentUser.uid).get();const musicas=await db.collection('releases').where('userId','==',currentUser.uid).get();document.getElementById('stat-artistas-count').innerText=artistas.size;document.getElementById('stat-musicas-count').innerText=musicas.size;document.getElementById('stat-saldo').innerHTML=formatMoney(userData.saldo||0);let totalStreams=0;musicas.forEach(d=>totalStreams+=(d.data().streams||0));document.getElementById('stat-total-streams').innerText=totalStreams.toLocaleString();await renderFeed();}catch(e){console.error(e);}}
-async function renderFeed(){try{const feed=await db.collection('releases').limit(100).get();let rel=[];feed.forEach(d=>rel.push({id:d.id,...d.data()}));rel.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});const cont=document.getElementById('feed-container');cont.innerHTML='';if(rel.length===0){cont.innerHTML='<p style="color:var(--gray);">Ainda não há músicas.</p>';return;}for(const r of rel){let artName=r.artista,artId=r.artistaId;if(r.artistaId){try{const ad=await db.collection('artists').doc(r.artistaId).get();if(ad.exists){const a=ad.data();if(a.suspenso&&(!a.suspensoAte||a.suspensoAte.toDate()>new Date())&&currentUser.email!=='mamfilhos29@gmail.com')continue;if(a.officialArtistId){const off=await db.collection('artists').doc(a.officialArtistId).get();if(off.exists){artName=off.data().nome;artId=a.officialArtistId;}}}}catch(e){}}cont.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${artId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${artId}')"><i class="fas fa-user-music"></i> ${artName}</div><div class="music-meta">${r.estilo||''}<br>📅 ${r.dataLancamento||''}</div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button></div></div>`;}}catch(e){console.error('renderFeed:',e);}}
+async function loadHome(){
+  if(!currentUser) return;
+  if(window.carregandoHome) return;
+  window.carregandoHome = true;
+  try{
+    const doc=await db.collection('users').doc(currentUser.uid).get();
+    if(doc.exists) userData=doc.data();
+    document.getElementById('user-display-name').innerText=userData.nome;
+    let plano=(userData.plano||'free').toUpperCase();
+    if(currentUser.email==="mamfilhos29@gmail.com"){
+      plano="PREMIUM";
+      document.getElementById('admin-pro-max-indicator').style.display='inline-block';
+    }else document.getElementById('admin-pro-max-indicator').style.display='none';
+    document.getElementById('user-display-plan').innerHTML=`PLANO ${plano}`;
+    document.getElementById('user-display-country').innerHTML=`<i class="fas fa-globe"></i> ${userData.pais||'Angola'}`;
+    document.getElementById('home-user-photo').src=userData.fotoPerfil||'https://via.placeholder.com/80';
+    const artistas=await db.collection('artists').where('ownerId','==',currentUser.uid).get();
+    const musicas=await db.collection('releases').where('userId','==',currentUser.uid).get();
+    document.getElementById('stat-artistas-count').innerText=artistas.size;
+    document.getElementById('stat-musicas-count').innerText=musicas.size;
+    document.getElementById('stat-saldo').innerHTML=formatMoney(userData.saldo||0);
+    let totalStreams=0;
+    musicas.forEach(d=>totalStreams+=(d.data().streams||0));
+    document.getElementById('stat-total-streams').innerText=totalStreams.toLocaleString();
+    await renderFeed();
+  }catch(e){console.error(e);}
+  window.carregandoHome = false;
+}
+async function renderFeed(){
+  try{
+    const cont=document.getElementById('feed-container');
+    if(!cont) return;
+    cont.innerHTML='';
+    const feed=await db.collection('releases').limit(100).get();
+    let rel=[];
+    feed.forEach(d=>rel.push({id:d.id,...d.data()}));
+    rel.sort((a,b)=>{
+      const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;
+      const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;
+      return tb-ta;
+    });
+    if(rel.length===0){
+      cont.innerHTML='<p style="color:var(--gray);">Ainda não há músicas.</p>';
+      return;
+    }
+    for(const r of rel){
+      let artName=r.artista,artId=r.artistaId;
+      if(r.artistaId){
+        try{
+          const ad=await db.collection('artists').doc(r.artistaId).get();
+          if(ad.exists){
+            const a=ad.data();
+            if(a.suspenso&&(!a.suspensoAte||a.suspensoAte.toDate()>new Date())&&currentUser.email!=='mamfilhos29@gmail.com') continue;
+            if(a.officialArtistId){
+              const off=await db.collection('artists').doc(a.officialArtistId).get();
+              if(off.exists){artName=off.data().nome;artId=a.officialArtistId;}
+            }
+          }
+        }catch(e){}
+      }
+      const podeApagar = (currentUser && (r.userId===currentUser.uid || currentUser.email==="mamfilhos29@gmail.com"));
+      cont.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${artId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${artId}')"><i class="fas fa-user-music"></i> ${artName}</div><div class="music-meta">${r.estilo||''}<br>📅 ${r.dataLancamento||''}</div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button>${podeApagar?`<button onclick="if(confirm('Apagar esta música?')){db.collection('releases').doc('${r.id}').delete().then(()=>renderFeed())}" style="background:#ff4444;color:white;">Apagar</button>`:''}</div></div>`;
+    }
+  }catch(e){console.error('renderFeed:',e);}
+}
 window.partilharMusica=async function(id){try{const doc=await db.collection('releases').doc(id).get();if(!doc.exists)return;const r=doc.data();const url=window.location.origin+'?musica='+id;const txt=`🎵 Ouve "${r.titulo}" de ${r.artista} na MAM Distribuidora`;if(navigator.share){try{await navigator.share({title:r.titulo,text:txt,url});}catch(e){}}else{try{await navigator.clipboard.writeText(url);showAlert('✅ Link copiado!');}catch(e){prompt('Copie o link:',url);}}}catch(e){showAlert('Erro: '+e.message);}};
 window.baixarMusicaMP3=async function(id){showLoading(true);document.getElementById('loading-text').innerText='A preparar MP3...';try{const doc=await db.collection('releases').doc(id).get();if(!doc.exists){showAlert('Música não encontrada.');return;}const r=doc.data();const audioResp=await fetch(r.audioUrl);const audioBuf=await audioResp.arrayBuffer();const audioCtx=new (window.AudioContext||window.webkitAudioContext)();const decoded=await audioCtx.decodeAudioData(audioBuf);const mp3enc=new lamejs.Mp3Encoder(decoded.numberOfChannels>=2?2:1,decoded.sampleRate,192);const left=decoded.getChannelData(0);const right=decoded.numberOfChannels>1?decoded.getChannelData(1):left;const blk=1152;const data=[];for(let i=0;i<decoded.length;i+=blk){const l=left.subarray(i,i+blk),rr=right.subarray(i,i+blk);const l16=new Int16Array(l.length),r16=new Int16Array(rr.length);for(let j=0;j<l.length;j++){l16[j]=Math.max(-1,Math.min(1,l[j]))*0x7FFF;r16[j]=Math.max(-1,Math.min(1,rr[j]))*0x7FFF;}const b=mp3enc.encodeBuffer(l16,r16);if(b.length>0)data.push(new Int8Array(b));}const fl=mp3enc.flush();if(fl.length>0)data.push(new Int8Array(fl));const blob=new Blob(data,{type:'audio/mpeg'});const withID3=await addID3(blob,r);const url=URL.createObjectURL(withID3);const a=document.createElement('a');a.href=url;a.download=`${r.titulo} - ${r.artista}.mp3`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);showAlert('✅ Download concluído!');}catch(e){console.error(e);showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 async function addID3(mp3Blob,r){try{const mp3Buf=await mp3Blob.arrayBuffer();const frames=[];const tf=(id,text)=>{const t=new TextEncoder().encode(text);const s=1+t.length;const f=new Uint8Array(10+s);f.set(new TextEncoder().encode(id),0);f[4]=(s>>24)&0xff;f[5]=(s>>16)&0xff;f[6]=(s>>8)&0xff;f[7]=s&0xff;f[10]=0x03;f.set(t,11);return f;};frames.push(tf('TIT2',r.titulo||''));frames.push(tf('TPE1',r.artista||''));frames.push(tf('TALB',r.titulo||''));frames.push(tf('TCON',r.estilo||''));if(r.coverUrl){try{const cov=await fetch(r.coverUrl);const covBuf=await cov.arrayBuffer();const covBytes=new Uint8Array(covBuf);const mime=r.coverUrl.match(/\.(jpg|jpeg|png)/i)?.[1]||'jpeg';const mimeStr=mime==='png'?'image/png':'image/jpeg';const dB=new TextEncoder().encode('Cover');const s=1+dB.length+1+mimeStr.length+1+covBytes.length;const f=new Uint8Array(10+s);f.set(new TextEncoder().encode('APIC'),0);f[4]=(s>>24)&0xff;f[5]=(s>>16)&0xff;f[6]=(s>>8)&0xff;f[7]=s&0xff;let p=10;f[p++]=0;f.set(dB,p);p+=dB.length;f[p++]=0;for(let i=0;i<mimeStr.length;i++)f[p++]=mimeStr.charCodeAt(i);f[p++]=0;f.set(covBytes,p);frames.push(f);}catch(e){}}const total=frames.reduce((a,b)=>a+b.length,0);const h=new Uint8Array(10);h[0]=0x49;h[1]=0x44;h[2]=0x33;h[3]=3;h[6]=(total>>21)&0x7f;h[7]=(total>>14)&0x7f;h[8]=(total>>7)&0x7f;h[9]=total&0x7f;const result=new Uint8Array(10+total+mp3Buf.byteLength);result.set(h,0);let off=10;frames.forEach(f=>{result.set(f,off);off+=f.length;});result.set(new Uint8Array(mp3Buf),off);return new Blob([result],{type:'audio/mpeg'});}catch(e){return mp3Blob;}}

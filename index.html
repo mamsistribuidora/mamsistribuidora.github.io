@@ -83,6 +83,9 @@ audio{width:100%;margin-top:10px;border-radius:8px}
 .music-actions{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
 .music-actions button{padding:6px 10px;font-size:.7rem;border-radius:6px;border:1px solid var(--gold);background:#222;color:var(--gold);cursor:pointer}
 .music-actions button:hover{background:var(--gold);color:#000}
+.stats-inline{display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:.7rem;color:var(--gray);flex-wrap:wrap}
+.stats-inline span{display:inline-flex;align-items:center;gap:4px}
+.stats-inline i{color:var(--gold)}
 .plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin:20px 0}
 .plan-card{background:var(--card);border:2px solid #333;padding:30px;border-radius:12px;text-align:center;cursor:pointer}
 .plan-card.featured{border-color:var(--gold)}
@@ -192,6 +195,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 .tiktok-preview h4{color:#dc3545;font-size:.95rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .tiktok-preview .tiktok-badge{background:#dc3545;color:#fff;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:bold}
 .tiktok-preview p{color:#bbb;font-size:.8rem;margin-bottom:10px;line-height:1.5}
+.upload-status-line{font-size:.85rem;margin-top:10px;color:var(--success)}
 @media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}.legal-content .stat-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -479,7 +483,6 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <input type="file" id="music-audio-file" accept=".wav,audio/wav" style="display:none;">
 <button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio WAV</button>
 
-<!-- BARRA DE PROGRESSO DO UPLOAD -->
 <div id="audio-upload-progress" class="upload-progress">
 <div class="upload-progress-label">
 <span><i class="fas fa-cloud-upload-alt"></i> A carregar áudio...</span>
@@ -489,7 +492,6 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div id="audio-upload-status" class="upload-progress-status">Preparando ficheiro...</div>
 </div>
 
-<!-- PREVIEW TIKTOK DE 1 MINUTO -->
 <div id="tiktok-preview" class="tiktok-preview">
 <h4><i class="fab fa-tiktok"></i> Preview TikTok <span class="tiktok-badge">1:00 MIN</span></h4>
 <p>Este é o trecho de 1 minuto que será usado como preview no TikTok e Instagram Reels. Toque para ouvir.</p>
@@ -768,7 +770,6 @@ const CLOUDINARY_CONFIG = {cloudName:'dbjhwnhoq', uploadPreset:'mam_preset'};
 const PHONE_CODES = [{code:"+244",name:"🇦🇴 Angola"},{code:"+55",name:"🇧🇷 Brasil"},{code:"+351",name:"🇵🇹 Portugal"},{code:"+1",name:"🇺🇸 EUA"},{code:"+44",name:"🇬🇧 Reino Unido"},{code:"+33",name:"🇫🇷 França"},{code:"+34",name:"🇪🇸 Espanha"},{code:"+27",name:"🇿🇦 África do Sul"},{code:"+258",name:"🇲🇿 Moçambique"},{code:"+238",name:"🇨🇻 Cabo Verde"},{code:"+239",name:"🇸🇹 São Tomé"},{code:"+240",name:"🇬🇶 Guiné Eq."},{code:"+245",name:"🇬🇼 Guiné-Bissau"},{code:"+49",name:"🇩🇪 Alemanha"},{code:"+39",name:"🇮🇹 Itália"},{code:"+31",name:"🇳🇱 Holanda"},{code:"+32",name:"🇧🇪 Bélgica"},{code:"+41",name:"🇨🇭 Suíça"},{code:"+48",name:"🇵🇱 Polónia"},{code:"+30",name:"🇬🇷 Grécia"},{code:"+81",name:"🇯🇵 Japão"},{code:"+86",name:"🇨🇳 China"},{code:"+91",name:"🇮🇳 Índia"},{code:"+61",name:"🇦🇺 Austrália"},{code:"+234",name:"🇳🇬 Nigéria"},{code:"+254",name:"🇰🇪 Quénia"},{code:"+233",name:"🇬🇭 Gana"},{code:"+7",name:"🇷🇺 Rússia"},{code:"+52",name:"🇲🇽 México"},{code:"+54",name:"🇦🇷 Argentina"},{code:"+56",name:"🇨🇱 Chile"},{code:"+57",name:"🇨🇴 Colômbia"},{code:"+51",name:"🇵🇪 Peru"},{code:"+58",name:"🇻🇪 Venezuela"},{code:"+593",name:"🇪🇨 Equador"},{code:"+20",name:"🇪🇬 Egito"},{code:"+212",name:"🇲🇦 Marrocos"},{code:"+216",name:"🇹🇳 Tunísia"},{code:"+213",name:"🇩🇿 Argélia"},{code:"+971",name:"🇦🇪 EAU"},{code:"+966",name:"🇸🇦 Arábia Saudita"},{code:"+90",name:"🇹🇷 Turquia"},{code:"+972",name:"🇮🇱 Israel"},{code:"+82",name:"🇰🇷 Coreia Sul"},{code:"+65",name:"🇸🇬 Singapura"},{code:"+60",name:"🇲🇾 Malásia"},{code:"+66",name:"🇹🇭 Tailândia"},{code:"+62",name:"🇮🇩 Indonésia"},{code:"+63",name:"🇵🇭 Filipinas"},{code:"+64",name:"🇳🇿 Nova Zelândia"}];
 const CURRENCIES = {'AOA':{name:'Kwanza Angolano',symbol:'Kz',rateToKz:1},'USD':{name:'Dólar Americano',symbol:'$',rateToKz:912},'EUR':{name:'Euro',symbol:'€',rateToKz:990},'BRL':{name:'Real Brasileiro',symbol:'R$',rateToKz:165},'GBP':{name:'Libra',symbol:'£',rateToKz:1150},'ZAR':{name:'Rand',symbol:'R',rateToKz:50},'MZN':{name:'Metical',symbol:'MT',rateToKz:14},'CVE':{name:'Escudo CV',symbol:'$',rateToKz:9}};
 
-// ✅ DJ REMOVIDO — categorias mantidas: Electronic, House, Techno, Trance (sem DJ)
 const musicGenres = {
 "Afrobeat":["Afrobeat Clássico","Afrofusion","Afropop","Highlife","Afro Soul"],
 "Afrohouse":["Afrohouse","Afro Tech","Deep Afro"],
@@ -849,6 +850,7 @@ function showSection(id,btn){
     else if(id==='carteira')loadWallet();
     else if(id==='perfil')loadPerfil();
     else if(id==='mensagens')loadUserChat();
+    else if(id==='admin')adminTab('releases',document.querySelector('.admin-tab-btn.active'));
 }
 
 aplicarIdioma(currentLang);
@@ -1002,12 +1004,12 @@ async function renderFeed(){
           }
         }catch(e){}
       }
-      cont.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${artId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${artId}')"><i class="fas fa-user-music"></i> ${artName}</div><div class="music-meta">${r.estilo||''}<br>📅 ${r.dataLancamento||''}</div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button></div></div>`;
+      cont.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${artId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${artId}')"><i class="fas fa-user-music"></i> ${artName}</div><div class="music-meta">${r.estilo||''}<br>📅 ${r.dataLancamento||''}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()} ouvintes</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} downloads</span></div><audio controls src="${r.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button></div></div>`;
     }
   }catch(e){console.error('renderFeed:',e);}
 }
 window.partilharMusica=async function(id){try{const doc=await db.collection('releases').doc(id).get();if(!doc.exists)return;const r=doc.data();const url=window.location.origin+'?musica='+id;const txt=`🎵 Ouve "${r.titulo}" de ${r.artista} na MAM Distribuidora`;if(navigator.share){try{await navigator.share({title:r.titulo,text:txt,url});}catch(e){}}else{try{await navigator.clipboard.writeText(url);showAlert('✅ Link copiado!');}catch(e){prompt('Copie o link:',url);}}}catch(e){showAlert('Erro: '+e.message);}};
-window.baixarMusicaMP3=async function(id){showLoading(true);document.getElementById('loading-text').innerText='A preparar MP3...';try{const doc=await db.collection('releases').doc(id).get();if(!doc.exists){showAlert('Música não encontrada.');return;}const r=doc.data();const audioResp=await fetch(r.audioUrl);const audioBuf=await audioResp.arrayBuffer();const audioCtx=new (window.AudioContext||window.webkitAudioContext)();const decoded=await audioCtx.decodeAudioData(audioBuf);const mp3enc=new lamejs.Mp3Encoder(decoded.numberOfChannels>=2?2:1,decoded.sampleRate,192);const left=decoded.getChannelData(0);const right=decoded.numberOfChannels>1?decoded.getChannelData(1):left;const blk=1152;const data=[];for(let i=0;i<decoded.length;i+=blk){const l=left.subarray(i,i+blk),rr=right.subarray(i,i+blk);const l16=new Int16Array(l.length),r16=new Int16Array(rr.length);for(let j=0;j<l.length;j++){l16[j]=Math.max(-1,Math.min(1,l[j]))*0x7FFF;r16[j]=Math.max(-1,Math.min(1,rr[j]))*0x7FFF;}const b=mp3enc.encodeBuffer(l16,r16);if(b.length>0)data.push(new Int8Array(b));}const fl=mp3enc.flush();if(fl.length>0)data.push(new Int8Array(fl));const blob=new Blob(data,{type:'audio/mpeg'});const withID3=await addID3(blob,r);const url=URL.createObjectURL(withID3);const a=document.createElement('a');a.href=url;a.download=`${r.titulo} - ${r.artista}.mp3`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);showAlert('✅ Download concluído!');}catch(e){console.error(e);showAlert('Erro: '+e.message);}finally{showLoading(false);}};
+window.baixarMusicaMP3=async function(id){showLoading(true);document.getElementById('loading-text').innerText='A preparar MP3...';try{const doc=await db.collection('releases').doc(id).get();if(!doc.exists){showAlert('Música não encontrada.');return;}const r=doc.data();try{await db.collection('releases').doc(id).update({downloads:firebase.firestore.FieldValue.increment(1)});}catch(e){console.warn('Erro downloads:',e);}const audioResp=await fetch(r.audioUrl);const audioBuf=await audioResp.arrayBuffer();const audioCtx=new (window.AudioContext||window.webkitAudioContext)();const decoded=await audioCtx.decodeAudioData(audioBuf);const mp3enc=new lamejs.Mp3Encoder(decoded.numberOfChannels>=2?2:1,decoded.sampleRate,192);const left=decoded.getChannelData(0);const right=decoded.numberOfChannels>1?decoded.getChannelData(1):left;const blk=1152;const data=[];for(let i=0;i<decoded.length;i+=blk){const l=left.subarray(i,i+blk),rr=right.subarray(i,i+blk);const l16=new Int16Array(l.length),r16=new Int16Array(rr.length);for(let j=0;j<l.length;j++){l16[j]=Math.max(-1,Math.min(1,l[j]))*0x7FFF;r16[j]=Math.max(-1,Math.min(1,rr[j]))*0x7FFF;}const b=mp3enc.encodeBuffer(l16,r16);if(b.length>0)data.push(new Int8Array(b));}const fl=mp3enc.flush();if(fl.length>0)data.push(new Int8Array(fl));const blob=new Blob(data,{type:'audio/mpeg'});const withID3=await addID3(blob,r);const url=URL.createObjectURL(withID3);const a=document.createElement('a');a.href=url;a.download=`${r.titulo} - ${r.artista}.mp3`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);showAlert('✅ Download concluído!');}catch(e){console.error(e);showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 async function addID3(mp3Blob,r){try{const mp3Buf=await mp3Blob.arrayBuffer();const frames=[];const tf=(id,text)=>{const t=new TextEncoder().encode(text);const s=1+t.length;const f=new Uint8Array(10+s);f.set(new TextEncoder().encode(id),0);f[4]=(s>>24)&0xff;f[5]=(s>>16)&0xff;f[6]=(s>>8)&0xff;f[7]=s&0xff;f[10]=0x03;f.set(t,11);return f;};frames.push(tf('TIT2',r.titulo||''));frames.push(tf('TPE1',r.artista||''));frames.push(tf('TALB',r.titulo||''));frames.push(tf('TCON',r.estilo||''));if(r.coverUrl){try{const cov=await fetch(r.coverUrl);const covBuf=await cov.arrayBuffer();const covBytes=new Uint8Array(covBuf);const mime=r.coverUrl.match(/\.(jpg|jpeg|png)/i)?.[1]||'jpeg';const mimeStr=mime==='png'?'image/png':'image/jpeg';const dB=new TextEncoder().encode('Cover');const s=1+dB.length+1+mimeStr.length+1+covBytes.length;const f=new Uint8Array(10+s);f.set(new TextEncoder().encode('APIC'),0);f[4]=(s>>24)&0xff;f[5]=(s>>16)&0xff;f[6]=(s>>8)&0xff;f[7]=s&0xff;let p=10;f[p++]=0;f.set(dB,p);p+=dB.length;f[p++]=0;for(let i=0;i<mimeStr.length;i++)f[p++]=mimeStr.charCodeAt(i);f[p++]=0;f.set(covBytes,p);frames.push(f);}catch(e){}}const total=frames.reduce((a,b)=>a+b.length,0);const h=new Uint8Array(10);h[0]=0x49;h[1]=0x44;h[2]=0x33;h[3]=3;h[6]=(total>>21)&0x7f;h[7]=(total>>14)&0x7f;h[8]=(total>>7)&0x7f;h[9]=total&0x7f;const result=new Uint8Array(10+total+mp3Buf.byteLength);result.set(h,0);let off=10;frames.forEach(f=>{result.set(f,off);off+=f.length;});result.set(new Uint8Array(mp3Buf),off);return new Blob([result],{type:'audio/mpeg'});}catch(e){return mp3Blob;}}
 
 window.loadArtistas=async function(){if(!currentUser)return;const container=document.getElementById('artistas-container');container.innerHTML='<p style="color:var(--gray);">A carregar...</p>';let artistas=[];try{const snap=await db.collection('artists').where('ownerId','==',currentUser.uid).get();snap.forEach(d=>artistas.push({id:d.id,...d.data()}));}catch(e){}if(artistas.length===0){try{const all=await db.collection('artists').get();all.forEach(d=>{const a=d.data();if(a.ownerId===currentUser.uid)artistas.push({id:d.id,...a});});}catch(e){}}if(artistas.length===0){container.innerHTML='<p style="color:var(--gray);">Nenhum artista.</p>';return;}artistas.sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));container.innerHTML='';artistas.forEach(a=>{container.innerHTML+=`<div class="list-item"><img src="${a.foto||'https://via.placeholder.com/60'}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;"><div class="list-info"><h4>${a.nome} ${a.seloVerificado?'<span class="selo-badge">✓</span>':''} ${a.isOfficial?'<span class="oficial-badge">OFICIAL</span>':''}</h4><p style="color:var(--gray);font-size:.8rem;">${a.estilo||'Sem estilo'}</p></div><div class="list-actions"><button class="btn btn-small btn-sec" onclick="editarArtista('${a.id}')">Editar</button><button class="btn btn-small btn-danger" onclick="eliminarArtista('${a.id}')">Eliminar</button></div></div>`;});};
@@ -1044,16 +1046,21 @@ window.abrirPerfilArtista=async function(id){
         window.scrollTo({top:0,behavior:'smooth'});
     }catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}
 };
-async function exibirResultadoPesquisa(art){const cont=document.getElementById('resultado-artista-container');let mus=[];try{const s=await db.collection('releases').where('artistaId','==',art.id).get();s.forEach(d=>mus.push({id:d.id,...d.data()}));}catch(e){}let soc='';if(art.spotify)soc+=`<a href="${art.spotify}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-spotify"></i></a>`;if(art.apple)soc+=`<a href="${art.apple}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-apple"></i></a>`;if(art.instagram)soc+=`<a href="${art.instagram}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-instagram"></i></a>`;if(art.tiktok)soc+=`<a href="${art.tiktok}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-tiktok"></i></a>`;if(art.facebook)soc+=`<a href="${art.facebook}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-facebook"></i></a>`;let mh='';if(mus.length>0){mh='<h4 style="color:var(--gold);margin-top:30px;">Músicas</h4><div class="grid">';mus.forEach(m=>{mh+=`<div class="music-card"><div class="stream-badge">${(m.streams||0).toLocaleString()} <i class="fas fa-headphones"></i></div><img src="${m.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title">${m.titulo}</div><div class="music-meta">${m.estilo||''}<br>📅 ${m.dataLancamento||''}</div><audio controls src="${m.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${m.id}')"><i class="fas fa-share-alt"></i></button><button onclick="baixarMusicaMP3('${m.id}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});mh+='</div>';}else mh='<p style="color:var(--gray);margin-top:20px;">Sem músicas.</p>';cont.innerHTML=`<div class="artist-profile-card"><img src="${art.foto||'https://via.placeholder.com/120'}" class="artist-avatar-lg"><div style="font-size:1.8rem;color:var(--gold);margin:10px 0 5px;">${art.nome} ${art.seloVerificado?'<span class="selo-badge">✓</span>':''} ${art.isOfficial?'<span class="oficial-badge">OFICIAL</span>':''}</div><div style="color:var(--gray);">${art.estilo||''}</div>${art.bio?`<div style="color:var(--gray);max-width:600px;margin:15px auto;">${art.bio}</div>`:''}<div style="margin-top:10px;">${soc}</div></div>${mh}`;}
+async function exibirResultadoPesquisa(art){const cont=document.getElementById('resultado-artista-container');let mus=[];try{const s=await db.collection('releases').where('artistaId','==',art.id).get();s.forEach(d=>mus.push({id:d.id,...d.data()}));}catch(e){}let soc='';if(art.spotify)soc+=`<a href="${art.spotify}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-spotify"></i></a>`;if(art.apple)soc+=`<a href="${art.apple}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-apple"></i></a>`;if(art.instagram)soc+=`<a href="${art.instagram}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-instagram"></i></a>`;if(art.tiktok)soc+=`<a href="${art.tiktok}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-tiktok"></i></a>`;if(art.facebook)soc+=`<a href="${art.facebook}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-facebook"></i></a>`;let mh='';if(mus.length>0){mh='<h4 style="color:var(--gold);margin-top:30px;">Músicas</h4><div class="grid">';mus.forEach(m=>{mh+=`<div class="music-card"><div class="stream-badge">${(m.streams||0).toLocaleString()} <i class="fas fa-headphones"></i></div><img src="${m.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title">${m.titulo}</div><div class="music-meta">${m.estilo||''}<br>📅 ${m.dataLancamento||''}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(m.streams||0).toLocaleString()} ouvintes</span><span><i class="fas fa-download"></i> ${(m.downloads||0).toLocaleString()} downloads</span></div><audio controls src="${m.audioUrl}"></audio><div class="music-actions"><button onclick="partilharMusica('${m.id}')"><i class="fas fa-share-alt"></i></button><button onclick="baixarMusicaMP3('${m.id}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});mh+='</div>';}else mh='<p style="color:var(--gray);margin-top:20px;">Sem músicas.</p>';cont.innerHTML=`<div class="artist-profile-card"><img src="${art.foto||'https://via.placeholder.com/120'}" class="artist-avatar-lg"><div style="font-size:1.8rem;color:var(--gold);margin:10px 0 5px;">${art.nome} ${art.seloVerificado?'<span class="selo-badge">✓</span>':''} ${art.isOfficial?'<span class="oficial-badge">OFICIAL</span>':''}</div><div style="color:var(--gray);">${art.estilo||''}</div>${art.bio?`<div style="color:var(--gray);max-width:600px;margin:15px auto;">${art.bio}</div>`:''}<div style="margin-top:10px;">${soc}</div></div>${mh}`;}
 
 function validarCapa(f,cb){const e=[],ok=['image/jpeg','image/jpg','image/png'];if(!ok.includes(f.type))e.push('Use JPG/PNG.');if(f.size>20*1024*1024)e.push('Máx 20MB.');if(e.length){cb(e);return;}const i=new Image(),u=URL.createObjectURL(f);i.onload=()=>{URL.revokeObjectURL(u);if(i.width<1400||i.height<1400)e.push(`Mín 1400x1400. Sua: ${i.width}x${i.height}.`);if(Math.abs(i.width-i.height)>10)e.push('Deve ser quadrada.');cb(e,i.width,i.height);};i.onerror=()=>{URL.revokeObjectURL(u);cb(['Imagem inválida.']);};i.src=u;}
 function validarAudio(f,cb){const e=[],ext=f.name.toLowerCase().split('.').pop();if(ext!=='wav')e.push('Apenas WAV.');if(f.size>500*1024*1024)e.push('Máx 500MB.');cb(e);}
 
 // ==================== UPLOADS ====================
+let uploadInitDone=false;
 function initUpload(){
+    if(uploadInitDone) return;
+    uploadInitDone=true;
+
     const cb=document.getElementById('upload-capa-btn'),cf=document.getElementById('music-capa-file');
     cb?.addEventListener('click',()=>cf.click());
     cf?.addEventListener('change',(e)=>{const f=e.target.files[0];if(!f)return;validarCapa(f,(erros,w,h)=>{if(erros.length){showAlert('❌ '+erros.join('<br>• '));return;}pendingCoverFile=f;const r=new FileReader();r.onload=ev=>{document.getElementById('capa-preview-img').src=ev.target.result;document.getElementById('capa-preview').style.display='block';document.getElementById('capa-status').innerHTML=`✅ Validada (${w}x${h})`;};r.readAsDataURL(f);const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.secure_url){document.getElementById('music-capa-url').value=d.secure_url;document.getElementById('capa-status').innerHTML='✅ Enviada!';}});});});
+
     const ab=document.getElementById('upload-audio-btn'),af=document.getElementById('music-audio-file');
     ab?.addEventListener('click',()=>af.click());
     af?.addEventListener('change',(e)=>{
@@ -1061,8 +1068,17 @@ function initUpload(){
         validarAudio(f,(erros)=>{
             if(erros.length){showAlert('❌ '+erros.join('<br>• '));return;}
             pendingAudioFile=f;
-            document.getElementById('audio-preview').style.display='block';
-            document.getElementById('audio-status').innerHTML=`✅ Validado (${(f.size/1024/1024).toFixed(2)}MB) — a enviar...`;
+
+            let statusLine=document.getElementById('audio-status');
+            if(!statusLine){
+                statusLine=document.createElement('p');
+                statusLine.id='audio-status';
+                statusLine.className='upload-status-line';
+                const anchor=document.getElementById('audio-upload-progress');
+                if(anchor&&anchor.parentElement) anchor.parentElement.insertBefore(statusLine,anchor);
+            }
+            statusLine.innerHTML=`✅ Validado (${(f.size/1024/1024).toFixed(2)}MB) — a enviar...`;
+
             const progDiv=document.getElementById('audio-upload-progress');
             const fill=document.getElementById('audio-upload-fill');
             const pct=document.getElementById('audio-upload-percent');
@@ -1072,7 +1088,7 @@ function initUpload(){
             const fd=new FormData();
             fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);
             const xhr=new XMLHttpRequest();
-            xhr.open('POST',`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/raw/upload`);
+            xhr.open('POST',`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/video/upload`);
             xhr.upload.onprogress=(ev)=>{
                 if(ev.lengthComputable){
                     const p=Math.round((ev.loaded/ev.total)*100);
@@ -1082,29 +1098,31 @@ function initUpload(){
             };
             xhr.onload=()=>{
                 if(xhr.status>=200&&xhr.status<300){
-                    const d=JSON.parse(xhr.responseText);
-                    if(d.secure_url){
-                        document.getElementById('music-audio-url').value=d.secure_url;
-                        document.getElementById('audio-status').innerHTML='✅ Áudio enviado com sucesso!';
-                        fill.style.width='100%';pct.innerText='100%';
-                        st.innerHTML='<span style="color:var(--success);">✅ Upload concluído!</span>';
-                        gerarPreviewTikTok(f);
-                        setTimeout(()=>progDiv.classList.remove('active'),2000);
-                    }
-                } else {
-                    st.innerHTML='<span style="color:var(--danger);">❌ Erro no upload</span>';
-                }
+                    try{
+                        const d=JSON.parse(xhr.responseText);
+                        if(d.secure_url){
+                            document.getElementById('music-audio-url').value=d.secure_url;
+                            statusLine.innerHTML='✅ Áudio enviado com sucesso!';
+                            fill.style.width='100%';pct.innerText='100%';
+                            st.innerHTML='<span style="color:var(--success);">✅ Upload concluído!</span>';
+                            gerarPreviewTikTok(f);
+                            setTimeout(()=>progDiv.classList.remove('active'),2000);
+                        } else {
+                            st.innerHTML='<span style="color:var(--danger);">❌ Cloudinary: '+(d.error?.message||'erro')+'</span>';
+                        }
+                    }catch(err){ st.innerHTML='<span style="color:var(--danger);">❌ Resposta inválida</span>'; }
+                } else { st.innerHTML='<span style="color:var(--danger);">❌ Erro HTTP '+xhr.status+'</span>'; }
             };
             xhr.onerror=()=>{st.innerHTML='<span style="color:var(--danger);">❌ Erro de rede</span>';};
             xhr.send(fd);
         });
     });
+
     document.getElementById('settings-profile-upload')?.addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=(e)=>{const f=e.target.files[0];if(!f)return;const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.secure_url)document.getElementById('settings-foto-preview').src=d.secure_url;});};i.click();});
     document.getElementById('upload-artist-photo-btn')?.addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=(e)=>{const f=e.target.files[0];if(!f)return;const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.secure_url){document.getElementById('artist-photo-preview').src=d.secure_url;pendingArtistPhotoUrl=d.secure_url;}});};i.click();});
     document.getElementById('edit-upload-artist-photo-btn')?.addEventListener('click',()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=(e)=>{const f=e.target.files[0];if(!f)return;const fd=new FormData();fd.append('file',f);fd.append('upload_preset',CLOUDINARY_CONFIG.uploadPreset);fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.secure_url){document.getElementById('edit-artist-photo-preview').src=d.secure_url;pendingEditArtistPhotoUrl=d.secure_url;}});};i.click();});
 }
 
-// ✅ Gerar preview TikTok de 1 minuto (trecho central)
 async function gerarPreviewTikTok(file){
     try{
         const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
@@ -1167,7 +1185,7 @@ function bufferParaWav(buffer){
     return new Blob([bufferArray],{type:'audio/wav'});
 }
 
-document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){const titulo=document.getElementById('music-titulo').value.trim();const aid=document.getElementById('music-artista-select').value;const est=document.getElementById('music-estilo').value;const sub=document.getElementById('music-sub-estilo').value;const cov=document.getElementById('music-capa-url').value;const aud=document.getElementById('music-audio-url').value;if(!titulo||!aid||!est||!sub){showAlert('Preencha todos os campos *');return;}if(!cov){showAlert('❌ Capa obrigatória.');return;}if(!aud){showAlert('❌ Áudio obrigatório. Selecione o WAV e aguarde o upload concluir.');return;}showLoading(true);try{const isrc=await getNextISRC(),upc=await getNextUPC();document.getElementById('music-isrc').value=isrc;document.getElementById('music-upc').value=upc;const ad=await db.collection('artists').doc(aid).get();if(!ad.exists){showAlert('Artista inválido.');return;}const anome=ad.data().nome;const rd={userId:currentUser.uid,artistaId:aid,artista:anome,titulo,estilo:est+' / '+sub,isrc,upc,idioma:document.getElementById('music-idioma').value||'Português',compositores:document.getElementById('music-compositores').value||'',produtor:document.getElementById('music-produtor').value||'',colaboradores:document.getElementById('music-colaboradores').value||'',explicit:document.getElementById('music-explicit').value||'Não',pline:document.getElementById('music-pline').value||'℗ 2025 MAM',cline:document.getElementById('music-cline').value||'© 2025 MAM',dataLancamento:document.getElementById('music-data').value||new Date().toISOString().split('T')[0],coverUrl:cov,audioUrl:aud,status:'pendente_plataformas',streams:0,createdAt:new Date(),distribuido:false};rd.ddexXml=gerarDDEX(rd,{nome:anome});const ref=await db.collection('releases').add(rd);const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Novo lançamento',`${anome} lançou "${titulo}".`));await enviarNotificacao(currentUser.uid,'Lançamento submetido',`"${titulo}" enviada. ISRC: ${isrc} | UPC: ${upc}`);showAlert(`✅ Lançamento submetido!<br>ISRC: ${isrc}<br>UPC: ${upc}`);document.getElementById('form-lancamento').reset();document.getElementById('capa-preview').style.display='none';document.getElementById('audio-preview').style.display='none';document.getElementById('audio-upload-progress').classList.remove('active');document.getElementById('tiktok-preview').classList.remove('active');pendingCoverFile=null;pendingAudioFile=null;loadMinhasMusicas();loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
+document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){const titulo=document.getElementById('music-titulo').value.trim();const aid=document.getElementById('music-artista-select').value;const est=document.getElementById('music-estilo').value;const sub=document.getElementById('music-sub-estilo').value;const cov=document.getElementById('music-capa-url').value;const aud=document.getElementById('music-audio-url').value;if(!titulo||!aid||!est||!sub){showAlert('Preencha todos os campos *');return;}if(!cov){showAlert('❌ Capa obrigatória.');return;}if(!aud){showAlert('❌ Áudio obrigatório. Selecione o WAV e aguarde o upload concluir.');return;}showLoading(true);try{const isrc=await getNextISRC(),upc=await getNextUPC();document.getElementById('music-isrc').value=isrc;document.getElementById('music-upc').value=upc;const ad=await db.collection('artists').doc(aid).get();if(!ad.exists){showAlert('Artista inválido.');return;}const anome=ad.data().nome;const rd={userId:currentUser.uid,artistaId:aid,artista:anome,titulo,estilo:est+' / '+sub,isrc,upc,idioma:document.getElementById('music-idioma').value||'Português',compositores:document.getElementById('music-compositores').value||'',produtor:document.getElementById('music-produtor').value||'',colaboradores:document.getElementById('music-colaboradores').value||'',explicit:document.getElementById('music-explicit').value||'Não',pline:document.getElementById('music-pline').value||'℗ 2025 MAM',cline:document.getElementById('music-cline').value||'© 2025 MAM',dataLancamento:document.getElementById('music-data').value||new Date().toISOString().split('T')[0],coverUrl:cov,audioUrl:aud,status:'pendente_plataformas',streams:0,downloads:0,createdAt:new Date(),distribuido:false};rd.ddexXml=gerarDDEX(rd,{nome:anome});const ref=await db.collection('releases').add(rd);const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Novo lançamento',`${anome} lançou "${titulo}".`));await enviarNotificacao(currentUser.uid,'Lançamento submetido',`"${titulo}" enviada. ISRC: ${isrc} | UPC: ${upc}`);showAlert(`✅ Lançamento submetido!<br>ISRC: ${isrc}<br>UPC: ${upc}`);document.getElementById('form-lancamento').reset();document.getElementById('capa-preview').style.display='none';document.getElementById('audio-upload-progress').classList.remove('active');document.getElementById('tiktok-preview').classList.remove('active');pendingCoverFile=null;pendingAudioFile=null;loadMinhasMusicas();loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
 
 window.solicitarSaque=async function(){const v=parseFloat(document.getElementById('saque-valor').value);const nome=document.getElementById('saque-nome').value.trim();const m=document.getElementById('saque-metodo').value;const c=document.getElementById('saque-conta').value.trim();if(!v||v<=0){showAlert('Valor inválido.');return;}if(v<10000){showAlert('❌ Saque mínimo: 10.000 Kz.');return;}if(!nome){showAlert('Nome completo obrigatório.');return;}if(!m){showAlert('Método/Banco obrigatório.');return;}if(!c){showAlert('IBAN/Conta obrigatório.');return;}if(v>(userData.saldo||0)){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('withdrawals').add({userId:currentUser.uid,userNome:userData.nome,userEmail:userData.email,titularNome:nome,valor:v,moeda:'AOA',metodo:m,conta:c,status:'aguardando_aprovacao',createdAt:new Date()});const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Saque pendente',`${userData.nome}: ${v.toLocaleString()} Kz via ${m}.`));await enviarNotificacao(currentUser.uid,'Saque solicitado',`O seu saque de ${v.toLocaleString()} Kz aguarda aprovação.`);await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v)});showAlert(`✅ Saque solicitado!<br>Titular: ${nome}<br>Banco: ${m}<br>Valor: ${v.toLocaleString()} Kz<br><br>Aguarda aprovação.`);closeModal('saqueModal');loadWallet();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.openSaqueModal=function(){document.getElementById('saque-valor').value='';document.getElementById('saque-nome').value=userData.nome||'';document.getElementById('saque-metodo').value='';document.getElementById('saque-conta').value='';openModal('saqueModal');};
@@ -1184,17 +1202,31 @@ function isAdmin(){return currentUser&&(currentUser.email==='mamfilhos29@gmail.c
 function isSuperAdmin(){return currentUser&&currentUser.email==='mamfilhos29@gmail.com';}
 
 window.adminTab=async function(tab,btn){document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');const box=document.getElementById('admin-content');box.innerHTML='<p style="color:var(--gray);">A carregar...</p>';if(!isAdmin()){box.innerHTML='<p style="color:var(--danger);">Acesso restrito.</p>';return;}try{if(tab==='releases')await renderAdminReleases();else if(tab==='artists')await renderAdminArtists();else if(tab==='users')await renderAdminUsers();else if(tab==='withdrawals')await renderAdminWithdrawals();else if(tab==='royalties')await renderAdminRoyalties();else if(tab==='messages')await renderAdminMessages();else if(tab==='verifications')await renderAdminVerifications();else if(tab==='streams')await renderAdminStreams();else if(tab==='manual')await adminGerarManualPDF();}catch(e){console.error(e);box.innerHTML=`<p style="color:var(--danger);">❌ Erro: ${e.message}</p>`;}};
-let cont = document.getElementById('admin-lancamentos') || document.getElementById('admin-releases-list') || document.getElementById('lista-lancamentos');
-if(!cont){
-  cont = document.createElement('div');
-  cont.id = 'admin-lancamentos';
-  document.querySelector('#ADMINISTRAÇÃO')?.parentElement?.appendChild(cont) || document.body.appendChild(cont);
+
+// ✅ FUNÇÃO QUE FALTAVA — RENDER ADMIN LANÇAMENTOS
+async function renderAdminReleases(){
+  const box=document.getElementById('admin-content');
+  try{
+    const snap=await db.collection('releases').get();
+    let h=`<h4>Lançamentos (${snap.size})</h4>`;
+    if(snap.empty){h+='<p style="color:var(--gray);">Nenhum lançamento submetido.</p>';box.innerHTML=h;return;}
+    const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));
+    arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});
+    const pend=arr.filter(r=>r.status==='pendente_plataformas'||r.status==='pendente').length;
+    h+=`<div style="margin-bottom:15px;padding:12px;background:rgba(255,193,7,.1);border-left:3px solid var(--warn);border-radius:6px;"><strong>⏳ ${pend} pendente(s)</strong> | <strong>📀 ${arr.length} total</strong></div>`;
+    h+='<div class="item-list">';
+    arr.forEach(r=>{
+      const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';
+      h+=`<div class="list-item"><img src="${r.coverUrl||'https://via.placeholder.com/60'}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;"><div class="list-info"><h4>${r.titulo||'Sem título'}</h4><p style="color:var(--gray);font-size:.8rem;"><i class="fas fa-user-music"></i> ${r.artista||'-'} | ${r.estilo||'-'} | 📅 ${r.dataLancamento||'-'}</p><p style="font-size:.7rem;color:#666;">ISRC: ${r.isrc||'-'} | UPC: ${r.upc||'-'}<br><span class="stats-inline" style="justify-content:flex-start;"><span><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()} ouvintes</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} downloads</span></span> <span class="status-pill ${st}">${r.status||'pendente'}</span></p></div><div class="list-actions"><audio controls src="${r.audioUrl}" style="width:180px;"></audio><button class="btn btn-small btn-info" onclick="verDDEX('${r.id}')">DDEX</button><button class="btn btn-small btn-sec" onclick="descarregarDDEX('${r.id}')"><i class="fas fa-download"></i></button>${r.status!=='aprovado'?`<button class="btn btn-small btn-success" onclick="adminAprovarLancamento('${r.id}')">✅ Aprovar</button>`:''}${r.status!=='rejeitado'?`<button class="btn btn-small btn-danger" onclick="adminRejeitarLancamento('${r.id}')">❌ Rejeitar</button>`:''}</div></div>`;
+    });
+    h+='</div>';
+    box.innerHTML=h;
+  }catch(e){console.error('renderAdminReleases:',e);box.innerHTML=`<p style="color:var(--danger);">❌ Erro: ${e.message}</p>`;}
 }
-cont.innerHTML = h;
-window.adminAprovarLancamento=async function(id){if(!isAdmin())return;await db.collection('releases').doc(id).update({status:'aprovado'});renderAdminReleases();}
-window.adminRejeitarLancamento=async function(id){if(!isAdmin())return;await db.collection('releases').doc(id).update({status:'rejeitado'});renderAdminReleases();}
-window.verDDEX=async function(id){const doc=await db.collection('releases').doc(id).get();if(!doc.exists)return;const r=doc.data();let d='<h4>DDEX - '+r.titulo+'</h4><pre>'+JSON.stringify(r,null,2)+'</pre>';document.getElementById('admin-ddex-container').innerHTML=d;}
-window.descarregarDDEX=async function(id){const doc=await db.collection('releases').doc(id).get();const r=doc.data();const blob=new Blob([JSON.stringify(r,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='DDEX-'+r.titulo+'.json';a.click();}
+window.adminAprovarLancamento=async function(id){if(!isAdmin())return;await db.collection('releases').doc(id).update({status:'aprovado'});renderAdminReleases();};
+window.adminRejeitarLancamento=async function(id){if(!isAdmin())return;await db.collection('releases').doc(id).update({status:'rejeitado'});renderAdminReleases();};
+window.verDDEX=async function(id){const doc=await db.collection('releases').doc(id).get();if(!doc.exists)return;const r=doc.data();const box=document.getElementById('admin-content');const d='<h4>DDEX - '+r.titulo+'</h4><pre style="background:#050505;padding:15px;border-radius:8px;color:#0f0;font-family:monospace;font-size:.7rem;max-height:400px;overflow:auto;white-space:pre-wrap;">'+(r.ddexXml||JSON.stringify(r,null,2))+'</pre><button class="btn btn-small btn-sec" style="margin-top:10px;" onclick="adminTab(\'releases\',document.querySelector(\'.admin-tab-btn.active\'))">← Voltar</button>';box.innerHTML=d;};
+window.descarregarDDEX=async function(id){const doc=await db.collection('releases').doc(id).get();const r=doc.data();const blob=new Blob([r.ddexXml||JSON.stringify(r,null,2)],{type:'application/xml'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='DDEX-'+r.titulo+'.xml';a.click();};
 async function renderAdminArtists(){const snap=await db.collection('artists').get();let h=`<h4>Artistas (${snap.size})</h4>`;if(snap.empty)h+='<p>Nenhum artista.</p>';else{const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>(b.isOfficial?1:0)-(a.isOfficial?1:0)||(a.nome||'').localeCompare(b.nome||''));h+='<div class="item-list">';arr.forEach(a=>{const meu=a.ownerId===currentUser.uid;const suspAtivo=a.suspenso&&(!a.suspensoAte||a.suspensoAte.toDate()>new Date());h+=`<div class="list-item"><img src="${a.foto||'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:50%;"><div style="flex:1;min-width:220px;"><strong>${a.nome}</strong> (${a.estilo||''})${a.isOfficial?' <span class="oficial-badge">OFICIAL</span>':''}${meu?' <span class="selo-badge">Meu</span>':''}<br><small>ownerId: ${a.ownerId||'?'}</small><br>${suspAtivo?'<span class="status-suspended">Suspenso até '+a.suspensoAte.toDate().toLocaleDateString()+'</span>':'<span class="status-active">Ativo</span>'}</div><div style="display:flex;gap:5px;flex-wrap:wrap;"><button class="btn btn-small btn-success" onclick="abrirVerificar('${a.id}')">✓ Verificar</button><button class="btn btn-small" style="background:linear-gradient(135deg,#d4af37,#ff6b35);color:#000;" onclick="abrirOficial('${a.id}')">⭐ Oficial</button><button class="btn btn-small btn-sec" onclick="abrirSuspender('${a.id}')">⏸️ Suspender</button>${isSuperAdmin()?`<button class="btn btn-small btn-danger" onclick="adminEliminarArtista('${a.id}')">Eliminar</button>`:''}</div></div>`;});h+='</div>';}document.getElementById('admin-content').innerHTML=h;}
 
 window.abrirVerificar=async function(id){if(!isAdmin())return;const doc=await db.collection('artists').doc(id).get();if(!doc.exists)return;const a=doc.data();confirmAction(`Marcar <strong>${a.nome}</strong> como verificado?`,async r=>{if(r){await db.collection('artists').doc(id).update({seloVerificado:!a.seloVerificado});showAlert(a.seloVerificado?'Selo removido.':'✅ Verificado!');adminTab('artists',document.querySelector('.admin-tab-btn.active'));}});};
@@ -1224,11 +1256,12 @@ window.verDetalheVerif=async function(id){const doc=await db.collection('verific
 window.aprovarVerif=async function(id,aid){if(!isAdmin())return;confirmAction('Aprovar?',async r=>{if(r){await db.collection('verifications').doc(id).update({status:'aprovado',aprovadoEm:new Date()});await db.collection('artists').doc(aid).update({verificationStatus:'aprovado'});const v=await db.collection('verifications').doc(id).get();await enviarNotificacao(v.data().userId,'✅ Verificação aprovada',`O artista "${v.data().artistName}" foi verificado!`);showAlert('Aprovado.');adminTab('verifications',document.querySelector('.admin-tab-btn.active'));}});};
 window.rejeitarVerif=async function(id,aid){if(!isAdmin())return;confirmAction('Rejeitar?',async r=>{if(r){await db.collection('verifications').doc(id).update({status:'rejeitado',rejeitadoEm:new Date()});await db.collection('artists').doc(aid).update({verificationStatus:'rejeitado'});const v=await db.collection('verifications').doc(id).get();await enviarNotificacao(v.data().userId,'❌ Rejeitada',`A verificação foi rejeitada.`);adminTab('verifications',document.querySelector('.admin-tab-btn.active'));}});};
 
-async function renderAdminStreams(){const snap=await db.collection('releases').get();let h=`<h4>Estatísticas de Streams</h4>`;if(snap.empty)h+='<p>Sem músicas.</p>';else{let total=0;const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.forEach(r=>{total+=(r.streams||0);});arr.sort((a,b)=>(b.streams||0)-(a.streams||0));h+=`<div class="stat-grid"><div class="stat-box"><h4>${total.toLocaleString()}</h4><p>Total Global</p></div><div class="stat-box"><h4>${arr.length}</h4><p>Músicas</p></div><div class="stat-box"><h4>${arr.length?(total/arr.length).toFixed(0):0}</h4><p>Média</p></div></div>`;h+='<div class="item-list">';arr.forEach(r=>{h+=`<div class="list-item"><img src="${r.coverUrl||'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:50%;"><div style="flex:1;"><strong>${r.titulo}</strong> - ${r.artista}<br><small>${r.estilo||''} | ${r.status}</small></div><div style="text-align:right;min-width:100px;"><strong style="color:var(--gold);font-size:1.4rem;">${(r.streams||0).toLocaleString()}</strong><br><small>streams</small></div><button class="btn btn-small btn-info" onclick="addStreams('${r.id}')">+</button></div>`;});h+='</div>';}document.getElementById('admin-content').innerHTML=h;}
+async function renderAdminStreams(){const snap=await db.collection('releases').get();let h=`<h4>Estatísticas de Streams</h4>`;if(snap.empty)h+='<p>Sem músicas.</p>';else{let total=0,totalDown=0;const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.forEach(r=>{total+=(r.streams||0);totalDown+=(r.downloads||0);});arr.sort((a,b)=>(b.streams||0)-(a.streams||0));h+=`<div class="stat-grid"><div class="stat-box"><h4>${total.toLocaleString()}</h4><p>Total Streams</p></div><div class="stat-box"><h4>${totalDown.toLocaleString()}</h4><p>Total Downloads</p></div><div class="stat-box"><h4>${arr.length}</h4><p>Músicas</p></div></div>`;h+='<div class="item-list">';arr.forEach(r=>{h+=`<div class="list-item"><img src="${r.coverUrl||'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:50%;"><div style="flex:1;"><strong>${r.titulo}</strong> - ${r.artista}<br><small>${r.estilo||''} | ${r.status}</small><div class="stats-inline" style="justify-content:flex-start;margin-top:6px;"><span><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()}</span></div></div><div style="text-align:right;min-width:100px;"><strong style="color:var(--gold);font-size:1.4rem;">${(r.streams||0).toLocaleString()}</strong><br><small>streams</small></div><button class="btn btn-small btn-info" onclick="addStreams('${r.id}')">+</button></div>`;});h+='</div>';}document.getElementById('admin-content').innerHTML=h;}
+window.addStreams=async function(id){if(!isAdmin())return;const doc=await db.collection('releases').doc(id).get();if(!doc.exists)return;const r=doc.data();const atual=r.streams||0;const novo=prompt('Adicionar quantos streams?',100);if(novo===null)return;const n=parseInt(novo);if(isNaN(n)||n<=0)return;await db.collection('releases').doc(id).update({streams:atual+n});showAlert(`✅ ${n} streams adicionados!`);renderAdminStreams();};
 
 window.adminGerarManualPDF=async function(){if(!isAdmin())return;const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});const pw=210,m=15;let y=20;const h1=t=>{if(y+15>280){doc.addPage();y=20;}doc.setFontSize(18);doc.setTextColor(212,175,55);doc.text(t,m,y);y+=10;};const p=t=>{if(y+8>280){doc.addPage();y=20;}doc.setFontSize(10);doc.setTextColor(60,60,60);const l=doc.splitTextToSize(t,pw-m*2);doc.text(l,m,y);y+=l.length*5+3;};doc.setFillColor(0,0,0);doc.rect(0,0,pw,297,'F');doc.setTextColor(212,175,55);doc.setFontSize(32);doc.text('MAM DISTRIBUIDORA',pw/2,120,{align:'center'});doc.setFontSize(16);doc.text('Manual de Instrução',pw/2,135,{align:'center'});doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text('Fundado por Matias Arsénio Manuel',pw/2,270,{align:'center'});doc.addPage();y=20;h1('1. INTRODUÇÃO');p('MAM Distribuidora: plataforma angolana de distribuição digital para 150+ plataformas.');h1('2. REGISTO');p('Nome, email, data, telefone, senha. Confirmação por email obrigatória.');h1('3. LANÇAMENTO');p('Capa: JPG/PNG min 1400x1400 px 1:1 máx 20MB. Áudio: WAV 44.1/48kHz 16/24-bit estéreo máx 500MB.');h1('4. ISRC/UPC');p('ISRC: formato IFPI AOMAM25XXXXX. UPC: formato GS1 12 dígitos com check digit.');h1('5. ADMIN');p('Verificar artistas, Atribuir como Oficial, Suspender com prazo, Mudar Plano de utilizadores.');h1('6. SAQUES');p('Mínimo 10.000 Kz. Requer nome titular, banco e IBAN.');h1('7. SUPORTE');p('Email: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307');doc.save('MAM_Manual.pdf');showAlert('✅ PDF gerado!');};
 
-// ==================== RODAPÉ PROFISSIONAL (INALTERADO) ====================
+// ==================== RODAPÉ PROFISSIONAL ====================
 window.showFooterContent=function(t){
     const c={
         'sobre': `<div class="legal-content">
@@ -1455,17 +1488,22 @@ Quanto mais detalhes fornecer, mais rápida será a resolução.
 window.loadWallet=async function(){if(!currentUser)return;const doc=await db.collection('users').doc(currentUser.uid).get();userData=doc.data();const sel=document.getElementById('currency-select');if(sel.options.length===0){Object.keys(CURRENCIES).forEach(code=>{const o=document.createElement('option');o.value=code;o.text=`${code} - ${CURRENCIES[code].name}`;if(code===currentCurrency)o.selected=true;sel.appendChild(o);});}const c=CURRENCIES[currentCurrency]||CURRENCIES['AOA'];document.getElementById('carteira-saldo').innerHTML=formatMoney(userData.saldo||0);document.getElementById('carteira-ganhos-mes').innerHTML=formatMoney(userData.ganhosMes||0);document.getElementById('carteira-ganhos-total').innerHTML=formatMoney(userData.ganhosTotal||0);document.getElementById('currency-rate').value=`1 Kz = ${(1/c.rateToKz).toFixed(6)} ${c.symbol}`;const snap=await db.collection('withdrawals').where('userId','==',currentUser.uid).get();const cn=document.getElementById('historico-saques');cn.innerHTML='';if(snap.empty)cn.innerHTML='<p style="color:var(--gray);">Nenhum saque.</p>';else{const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(s=>{const st=s.status==='pago'?'status-active':(s.status==='aguardando_aprovacao'||s.status==='pendente')?'status-pending':'status-suspended';cn.innerHTML+=`<div class="list-item"><div style="flex:1;"><strong>${(s.valor||0).toLocaleString()} Kz</strong> - ${s.metodo}<br><small>Titular: ${s.titularNome||'-'}<br>Status: <span class="status-pill ${st}">${s.status}</span></small></div></div>`;});}};
 window.updateWalletDisplay=function(){currentCurrency=document.getElementById('currency-select').value;localStorage.setItem('mam_currency',currentCurrency);loadWallet();loadHome();};
 
-async function loadPerfil(){if(!currentUser)return;const doc=await db.collection('users').doc(currentUser.uid).get();userData=doc.data();document.getElementById('perfil-foto').src=userData.fotoPerfil||'https://via.placeholder.com/120';document.getElementById('perfil-nome-exibicao').innerText=userData.nome;document.getElementById('perfil-email-exibicao').innerText=userData.email;document.getElementById('perfil-pais-exibicao').innerHTML=`<i class="fas fa-globe"></i> ${userData.pais||'-'}`;document.getElementById('perfil-data-nascimento-exibicao').innerHTML=`<i class="fas fa-calendar"></i> ${userData.dataNascimento||'-'}`;document.getElementById('perfil-telefone-exibicao').innerHTML=`<i class="fas fa-phone"></i> ${userData.telefone||'-'}`;document.getElementById('perfil-plano-exibicao').innerHTML=`Plano: ${(userData.plano||'free').toUpperCase()}`;document.getElementById('perfil-role-exibicao').innerHTML=userData.role==='admin'?'👑 Admin':(userData.role==='admin_adjunto'?'🛡️ Adjunto':'');const snap=await db.collection('releases').where('userId','==',currentUser.uid).get();const c=document.getElementById('perfil-lancamentos');c.innerHTML='';if(snap.empty)c.innerHTML='<p style="color:var(--gray);">Sem lançamentos.</p>';else{const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(r=>{const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';c.innerHTML+=`<div class="music-card"><div class="stream-badge">${(r.streams||0).toLocaleString()} <i class="fas fa-headphones"></i></div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artista}</div><audio controls src="${r.audioUrl}"></audio><p style="font-size:.7rem;color:var(--gray);">ISRC: ${r.isrc||'-'}<br>UPC: ${r.upc||'-'}<br><span class="status-pill ${st}">${r.status}</span></p><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i></button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});}}
-window.loadMinhasMusicas=async function(){if(!currentUser)return;const snap=await db.collection('releases').where('userId','==',currentUser.uid).get();const c=document.getElementById('minhas-musicas-container');c.innerHTML='';if(snap.empty){c.innerHTML='<p style="color:var(--gray);">Sem músicas.</p>';return;}const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(r=>{const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';c.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${r.artistaId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${r.artistaId}')"><i class="fas fa-user-music"></i> ${r.artista}</div><div class="music-meta">Género: ${r.estilo||'-'}<br>📅 ${r.dataLancamento||'-'}<br>ISRC: ${r.isrc||'-'}<br>UPC: ${r.upc||'-'}</div><audio controls src="${r.audioUrl}"></audio><p style="font-size:.7rem;color:var(--gray);margin-top:8px;"><span class="status-pill ${st}">${r.status}</span></p><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button></div></div>`;});};
+async function loadPerfil(){if(!currentUser)return;const doc=await db.collection('users').doc(currentUser.uid).get();userData=doc.data();document.getElementById('perfil-foto').src=userData.fotoPerfil||'https://via.placeholder.com/120';document.getElementById('perfil-nome-exibicao').innerText=userData.nome;document.getElementById('perfil-email-exibicao').innerText=userData.email;document.getElementById('perfil-pais-exibicao').innerHTML=`<i class="fas fa-globe"></i> ${userData.pais||'-'}`;document.getElementById('perfil-data-nascimento-exibicao').innerHTML=`<i class="fas fa-calendar"></i> ${userData.dataNascimento||'-'}`;document.getElementById('perfil-telefone-exibicao').innerHTML=`<i class="fas fa-phone"></i> ${userData.telefone||'-'}`;document.getElementById('perfil-plano-exibicao').innerHTML=`Plano: ${(userData.plano||'free').toUpperCase()}`;document.getElementById('perfil-role-exibicao').innerHTML=userData.role==='admin'?'👑 Admin':(userData.role==='admin_adjunto'?'🛡️ Adjunto':'');const snap=await db.collection('releases').where('userId','==',currentUser.uid).get();const c=document.getElementById('perfil-lancamentos');c.innerHTML='';if(snap.empty)c.innerHTML='<p style="color:var(--gray);">Sem lançamentos.</p>';else{const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(r=>{const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';c.innerHTML+=`<div class="music-card"><div class="stream-badge">${(r.streams||0).toLocaleString()} <i class="fas fa-headphones"></i></div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artista}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()} ouvintes</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} downloads</span></div><audio controls src="${r.audioUrl}"></audio><p style="font-size:.7rem;color:var(--gray);">ISRC: ${r.isrc||'-'}<br>UPC: ${r.upc||'-'}<br><span class="status-pill ${st}">${r.status}</span></p><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i></button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});}}
+window.loadMinhasMusicas=async function(){if(!currentUser)return;const snap=await db.collection('releases').where('userId','==',currentUser.uid).get();const c=document.getElementById('minhas-musicas-container');c.innerHTML='';if(snap.empty){c.innerHTML='<p style="color:var(--gray);">Sem músicas.</p>';return;}const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(r=>{const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';c.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${r.artistaId}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${r.artistaId}')"><i class="fas fa-user-music"></i> ${r.artista}</div><div class="music-meta">Género: ${r.estilo||'-'}<br>📅 ${r.dataLancamento||'-'}<br>ISRC: ${r.isrc||'-'}<br>UPC: ${r.upc||'-'}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()} ouvintes</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} downloads</span></div><audio controls src="${r.audioUrl}"></audio><p style="font-size:.7rem;color:var(--gray);margin-top:8px;"><span class="status-pill ${st}">${r.status}</span></p><div class="music-actions"><button onclick="partilharMusica('${r.id}')"><i class="fas fa-share-alt"></i> Partilhar</button><button onclick="baixarMusicaMP3('${r.id}')"><i class="fas fa-download"></i> Download MP3</button></div></div>`;});};
 
+let selectsCarregados=false;
 function carregarSelects(){
-    ['reg-phone-code','settings-phone-code'].forEach(id=>{const sel=document.getElementById(id);if(sel){sel.innerHTML='';PHONE_CODES.forEach(c=>{const o=document.createElement('option');o.value=c.code;o.text=c.name+' ('+c.code+')';if(c.code==='+244')o.selected=true;sel.appendChild(o);});}});
-    const ps=document.getElementById('settings-pais');if(ps)ps.innerHTML='<option value="Angola">🇦🇴 Angola</option><option value="Brasil">🇧🇷 Brasil</option><option value="Portugal">🇵🇹 Portugal</option><option value="EUA">🇺🇸 EUA</option><option value="Moçambique">🇲🇿 Moçambique</option><option value="Cabo Verde">🇨🇻 Cabo Verde</option>';
-    ['music-estilo','artist-style','edit-artist-style'].forEach(id=>{const sel=document.getElementById(id);if(sel){sel.innerHTML='<option value="">-- Clique para escolher --</option>';Object.keys(musicGenres).sort().forEach(g=>{const o=document.createElement('option');o.value=g;o.text=g;sel.appendChild(o);});}});
+    ['reg-phone-code','settings-phone-code'].forEach(id=>{const sel=document.getElementById(id);if(sel && sel.options.length===0){PHONE_CODES.forEach(c=>{const o=document.createElement('option');o.value=c.code;o.text=c.name+' ('+c.code+')';if(c.code==='+244')o.selected=true;sel.appendChild(o);});}});
+    const ps=document.getElementById('settings-pais');if(ps && ps.options.length===0)ps.innerHTML='<option value="Angola">🇦🇴 Angola</option><option value="Brasil">🇧🇷 Brasil</option><option value="Portugal">🇵🇹 Portugal</option><option value="EUA">🇺🇸 EUA</option><option value="Moçambique">🇲🇿 Moçambique</option><option value="Cabo Verde">🇨🇻 Cabo Verde</option>';
+    ['music-estilo','artist-style','edit-artist-style'].forEach(id=>{const sel=document.getElementById(id);if(sel && sel.options.length<=1){Object.keys(musicGenres).sort().forEach(g=>{const o=document.createElement('option');o.value=g;o.text=g;sel.appendChild(o);});}});
     const allGenres=[];Object.keys(musicGenres).forEach(g=>{allGenres.push(g);musicGenres[g].forEach(s=>{if(!allGenres.includes(s))allGenres.push(s);});});allGenres.sort();
     function preencherSubGeneroCompleto(){const sub=document.getElementById('music-sub-estilo');if(!sub)return;sub.innerHTML='<option value="">-- Escolha (lista completa) --</option>';allGenres.forEach(x=>{const o=document.createElement('option');o.value=x;o.text=x;sub.appendChild(o);});}
     preencherSubGeneroCompleto();
-    const estSel=document.getElementById('music-estilo');if(estSel){estSel.addEventListener('change',()=>{const g=estSel.value;const sub=document.getElementById('music-sub-estilo');sub.innerHTML='<option value="">-- Escolha --</option>';if(g&&musicGenres[g]){musicGenres[g].forEach(x=>{const o=document.createElement('option');o.value=x;o.text='↳ '+x;sub.appendChild(o);});const opt=document.createElement('option');opt.disabled=true;opt.text='─── Outros géneros ───';sub.appendChild(opt);allGenres.forEach(x=>{if(!musicGenres[g].includes(x)){const o=document.createElement('option');o.value=x;o.text=x;sub.appendChild(o);}});}else{preencherSubGeneroCompleto();}});}
+    const estSel=document.getElementById('music-estilo');
+    if(estSel && !estSel.dataset.bound){
+        estSel.dataset.bound='1';
+        estSel.addEventListener('change',()=>{const g=estSel.value;const sub=document.getElementById('music-sub-estilo');sub.innerHTML='<option value="">-- Escolha --</option>';if(g&&musicGenres[g]){musicGenres[g].forEach(x=>{const o=document.createElement('option');o.value=x;o.text='↳ '+x;sub.appendChild(o);});const opt=document.createElement('option');opt.disabled=true;opt.text='─── Outros géneros ───';sub.appendChild(opt);allGenres.forEach(x=>{if(!musicGenres[g].includes(x)){const o=document.createElement('option');o.value=x;o.text=x;sub.appendChild(o);}});}else{preencherSubGeneroCompleto();}});
+    }
     const asel=document.getElementById('music-artista-select');if(asel&&currentUser){db.collection('artists').where('ownerId','==',currentUser.uid).get().then(snap=>{asel.innerHTML='<option value="">-- Escolha --</option>';snap.forEach(d=>{const o=document.createElement('option');o.value=d.id;o.text=d.data().nome;asel.appendChild(o);});}).catch(async()=>{const all=await db.collection('artists').get();asel.innerHTML='<option value="">-- Escolha --</option>';all.forEach(d=>{const a=d.data();if(a.ownerId===currentUser.uid){const o=document.createElement('option');o.value=d.id;o.text=a.nome;asel.appendChild(o);}});});}
 }
 
@@ -1493,81 +1531,7 @@ auth.onAuthStateChanged(async user=>{
     }
 });
 
-console.log('🚀 MAM v13 — Upload com progresso + Preview TikTok 1:00 + DJ removido');
-// CORREÇÃO DEFINITIVA DO ÁUDIO - SEM ERRO DE STYLE
-(function(){
-  const btnAudio = document.getElementById('upload-audio-btn');
-  const inputAudio = document.getElementById('music-audio-file');
-  const btnCapa = document.getElementById('upload-capa-btn');
-  const inputCapa = document.getElementById('music-capa-file');
-
-  if(btnAudio && inputAudio){
-    btnAudio.onclick = () => inputAudio.click();
-  }
-  if(btnCapa && inputCapa){
-    btnCapa.onclick = () => inputCapa.click();
-  }
-
-  // Quando escolher áudio
-  if(inputAudio){
-    inputAudio.onchange = async (e)=>{
-      const file = e.target.files[0];
-      if(!file) return;
-      if(!file.name.toLowerCase().endsWith('.wav')){
-        showAlert('O arquivo tem que ser.WAV');
-        return;
-      }
-
-      const progress = document.getElementById('audio-upload-progress');
-      const fill = document.getElementById('audio-upload-fill');
-      const percent = document.getElementById('audio-upload-percent');
-      const status = document.getElementById('audio-upload-status');
-      const urlField = document.getElementById('music-audio-url');
-
-      if(progress) progress.classList.add('active');
-      if(progress) progress.style.display = 'block';
-      if(status) status.textContent = 'Enviando...';
-
-      const fd = new FormData();
-      fd.append('file', file);
-      fd.append('upload_preset', 'mam_preset');
-
-      try{
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.cloudinary.com/v1_1/dbjhwnhoq/video/upload');
-        xhr.upload.onprogress = (ev)=>{
-          if(ev.lengthComputable && fill && percent){
-            const pct = Math.round(ev.loaded/ev.total*100);
-            fill.style.width = pct + '%';
-            percent.textContent = pct + '%';
-          }
-        };
-        xhr.onload = ()=>{
-          try{
-            const data = JSON.parse(xhr.responseText);
-            if(data.secure_url && urlField){
-              urlField.value = data.secure_url;
-              if(status) status.textContent = '✅ Áudio carregado!';
-              showAlert('✅ Áudio carregado com sucesso!');
-            } else {
-              if(status) status.textContent = 'Erro no Cloudinary';
-              showAlert('Erro: ' + (data.error?.message || 'falha upload'));
-            }
-          }catch(err){
-            showAlert('Erro ao ler resposta');
-          }
-        };
-        xhr.onerror = ()=>{
-          if(status) status.textContent = 'Erro de internet';
-          showAlert('Erro de conexão');
-        };
-        xhr.send(fd);
-      }catch(err){
-        showAlert('Erro: ' + err.message);
-      }
-    };
-  }
-})();
+console.log('🚀 MAM v14 — Correções: renderAdminReleases + downloads + adminTab auto');
 </script>
 </body>
 </html>

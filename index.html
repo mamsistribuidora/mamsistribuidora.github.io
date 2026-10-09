@@ -287,3 +287,458 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <button class="nav-btn" id="nav-login" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Entrar</button>
 <button class="nav-btn" id="nav-logout" style="display:none;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
 </nav>
+
+<div class="container">
+<section id="resultado-pesquisa" class="section"><div class="card" id="resultado-artista-container"></div></section>
+</div>
+
+<div class="container">
+
+<section id="auth-screen" class="section active">
+<div class="carousel" id="carousel">
+<div class="carousel-slide s1 active"><div><h2>🎵 O IMPÉRIO DA MÚSICA EM ANGOLA</h2><p>Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.</p><button class="btn" onclick="openModal('modal-registro')">COMEÇAR AGORA</button></div></div>
+<div class="carousel-slide s2"><div><h2>💰 100% DOS ROYALTIES SÃO SEUS</h2><p>Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.</p><button class="btn" onclick="openModal('modal-registro')">CRIAR CONTA GRÁTIS</button></div></div>
+<div class="carousel-slide s3"><div><h2>🌍 CHEGUE AO MUNDO INTEIRO</h2><p>A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.</p><button class="btn" onclick="openModal('modal-registro')">DISTRIBUIR AGORA</button></div></div>
+<div class="carousel-slide s4"><div><h2>🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3</h2><p>Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.</p><button class="btn" onclick="openModal('modal-registro')">SABER MAIS</button></div></div>
+<div class="carousel-dots" id="carousel-dots"><span class="active" onclick="goToSlide(0)"></span><span onclick="goToSlide(1)"></span><span onclick="goToSlide(2)"></span><span onclick="goToSlide(3)"></span></div>
+</div>
+
+<div class="video-section">
+<h3><i class="fab fa-youtube" style="color:#dc3545;"></i> Últimos Lançamentos do Canal MAM Distribuidora</h3>
+<div class="channel-cta">
+<i class="fab fa-youtube"></i>
+<div style="flex:1;text-align:left;"><strong style="display:block;font-size:1rem;">Canal Oficial MAM Distribuidora</strong><small>Subscreva e acompanhe os novos lançamentos dos nossos artistas</small></div>
+<a href="https://www.youtube.com/@MAMDistribuidora-k8k?sub_confirmation=1" target="_blank" class="btn-red"><i class="fab fa-youtube"></i> SUBSCREVER</a>
+</div>
+<div class="video-grid">
+<a href="https://www.youtube.com/@MAMDistribuidora-k8k/videos" target="_blank" class="video-item" style="text-decoration:none;color:inherit;display:block;">
+<div class="video-thumb" style="background-image:url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg')"><div class="play-icon"><i class="fas fa-play-circle"></i></div></div>
+<div class="video-info"><h4>▶ Ver vídeos no YouTube</h4><small>MAM Distribuidora • YouTube Oficial</small></div>
+</a>
+</div>
+</div>
+
+<div id="modal-login" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button>
+<h3>ENTRAR</h3>
+<label>Email</label><input type="email" id="login-email" placeholder="exemplo@email.com">
+<label>Senha</label>
+<div style="position:relative;"><input type="password" id="login-pass" placeholder="A sua senha"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);cursor:pointer;" onclick="togglePassword('login-pass')"><i class="fas fa-eye"></i></button></div>
+<button class="btn" onclick="handleLogin()">Entrar</button>
+<p style="text-align:center;margin-top:15px;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-esqueci-senha');">Esqueci a senha</a></p>
+<p style="text-align:center;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-registro');">Criar conta grátis</a></p>
+</div></div>
+
+<div id="modal-registro" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal-registro')"><i class="fas fa-times"></i></button>
+<h3>CRIAR CONTA</h3>
+<label><i class="fas fa-user"></i> Nome Completo *</label><input type="text" id="reg-nome" placeholder="Ex: João Silva Santos">
+<label><i class="fas fa-envelope"></i> Email *</label><input type="email" id="reg-email" placeholder="exemplo@email.com">
+<p class="help-text">Será enviado um email de confirmação. Só poderá entrar após confirmar.</p>
+<label><i class="fas fa-calendar-alt"></i> Data de Nascimento *</label><input type="date" id="reg-data-nascimento" max="2010-12-31">
+<label><i class="fas fa-phone"></i> Telefone *</label>
+<div class="phone-group"><select id="reg-phone-code"></select><input type="tel" id="reg-telefone" placeholder="937881307"></div>
+<p class="help-text">Escolha o código do país e escreva apenas o número</p>
+<label><i class="fas fa-lock"></i> Senha *</label>
+<div style="position:relative;"><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);" onclick="togglePassword('reg-pass')"><i class="fas fa-eye"></i></button></div>
+<label><i class="fas fa-lock"></i> Confirmar Senha *</label>
+<div style="position:relative;"><input type="password" id="reg-pass-confirm" placeholder="Repita a senha"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);" onclick="togglePassword('reg-pass-confirm')"><i class="fas fa-eye"></i></button></div>
+<button class="btn" onclick="handleRegister()">Criar Conta</button>
+<div class="registro-aviso"><p>Já tens uma conta na MAM?</p><a onclick="closeModal('modal-registro');openModal('modal-login');">Entrar agora →</a></div>
+</div></div>
+
+<div id="modal-esqueci-senha" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal-esqueci-senha')"><i class="fas fa-times"></i></button>
+<h3>Recuperar Senha</h3>
+<label>Email</label><input type="email" id="reset-email" placeholder="O seu email">
+<p class="help-text">Enviaremos um link para o seu email. Ao clicar, será redirecionado para criar uma nova senha.</p>
+<button class="btn" onclick="resetPassword()">Enviar Link</button>
+</div></div>
+
+<div class="card" style="text-align:center;padding:50px 20px;">
+<h2 style="color:var(--gold);font-size:2rem;">O IMPÉRIO DA MÚSICA EM ANGOLA</h2>
+<p style="color:var(--gray);max-width:700px;margin:0 auto 30px;">Distribua a sua música para 150+ plataformas globais.</p>
+<div><button class="btn" style="width:auto;padding:15px 40px;" onclick="openModal('modal-registro')">CRIAR CONTA GRÁTIS</button><button class="btn btn-sec" style="width:auto;margin-left:15px;" onclick="openModal('modal-login')">ENTRAR</button></div>
+<div class="info-grid">
+<div class="info-card"><i class="fas fa-globe"></i><h3>150+ PLATAFORMAS</h3><p>Spotify, Apple, TikTok...</p></div>
+<div class="info-card"><i class="fas fa-coins"></i><h3>100% ROYALTIES</h3><p>Você fica com tudo.</p></div>
+<div class="info-card"><i class="fas fa-shield-alt"></i><h3>DDEX ERN 4.3</h3><p>Padrão internacional.</p></div>
+</div></div>
+</section>
+
+<div id="main-app" style="display:none;">
+
+<section id="home" class="section">
+<div class="carousel" id="carousel-in">
+<div class="carousel-slide s1 active"><div><h2>🎵 O IMPÉRIO DA MÚSICA EM ANGOLA</h2><p>Distribua a sua música para mais de 150 plataformas digitais: Spotify, Apple Music, TikTok, Instagram, YouTube e muito mais.</p></div></div>
+<div class="carousel-slide s2"><div><h2>💰 100% DOS ROYALTIES SÃO SEUS</h2><p>Ao contrário de outras distribuidoras, a MAM dá-lhe todos os ganhos. Sem taxas escondidas, sem comissões abusivas.</p></div></div>
+<div class="carousel-slide s3"><div><h2>🌍 CHEGUE AO MUNDO INTEIRO</h2><p>A sua música em 150+ plataformas globais. Alcance milhões de ouvintes em África, Europa, América e Ásia.</p></div></div>
+<div class="carousel-slide s4"><div><h2>🚀 PADRÃO PROFISSIONAL DDEX ERN 4.3</h2><p>Usamos o mesmo padrão das grandes gravadoras. ISRC, UPC, DDEX — tudo gerado automaticamente.</p></div></div>
+<div class="carousel-dots" id="carousel-dots-in"><span class="active" onclick="goToSlideIn(0)"></span><span onclick="goToSlideIn(1)"></span><span onclick="goToSlideIn(2)"></span><span onclick="goToSlideIn(3)"></span></div>
+</div>
+
+<div class="video-section">
+<h3><i class="fab fa-youtube" style="color:#dc3545;"></i> Últimos Lançamentos do Canal MAM Distribuidora</h3>
+<div class="channel-cta">
+<i class="fab fa-youtube"></i>
+<div style="flex:1;text-align:left;"><strong style="display:block;font-size:1rem;">Canal Oficial MAM Distribuidora</strong><small>Subscreva e acompanhe os novos lançamentos</small></div>
+<a href="https://www.youtube.com/@MAMDistribuidora-k8k?sub_confirmation=1" target="_blank" class="btn-red"><i class="fab fa-youtube"></i> SUBSCREVER</a>
+</div>
+<div class="video-grid">
+<a href="https://www.youtube.com/@MAMDistribuidora-k8k/videos" target="_blank" class="video-item" style="text-decoration:none;color:inherit;display:block;">
+<div class="video-thumb" style="background-image:url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663450024747/AtrAfygFawvBQRGl.jpg')"><div class="play-icon"><i class="fas fa-play-circle"></i></div></div>
+<div class="video-info"><h4>▶ Ver vídeos no YouTube</h4><small>MAM Distribuidora • YouTube Oficial</small></div>
+</a>
+</div>
+</div>
+
+<div class="card">
+<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+<img id="home-user-photo" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);">
+<div><h3>Olá, <span id="user-display-name"></span>!</h3><p><span id="user-display-country"></span></p></div>
+<span id="user-display-plan" class="status-pill status-active"></span>
+<span id="admin-pro-max-indicator" style="display:none;" class="admin-pro-max-badge">ADMIN</span>
+</div></div>
+<div class="stat-grid">
+<div class="stat-box"><h4 id="stat-saldo">0 Kz</h4><p>Saldo</p></div>
+<div class="stat-box"><h4 id="stat-artistas-count">0</h4><p>Artistas</p></div>
+<div class="stat-box"><h4 id="stat-musicas-count">0</h4><p>Músicas</p></div>
+<div class="stat-box"><h4 id="stat-total-streams">0</h4><p>Total Streams</p></div>
+<div class="stat-box"><h4 id="stat-total-downloads">0</h4><p>Total Downloads</p></div>
+</div>
+<div class="card"><h3><i class="fas fa-rss"></i> Feed Global de Lançamentos</h3><div id="feed-container" class="grid"></div></div>
+</section>
+
+<section id="planos" class="section">
+<div class="card"><h3>Planos</h3>
+<div class="plans-grid">
+<div class="plan-card" onclick="selectPlan('free')"><div class="plan-name">FREE</div><div class="plan-price">0 Kz</div><ul class="plan-features"><li>1 Artista</li><li>3 lançamentos/mês</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('free')">Começar</button></div>
+<div class="plan-card featured" onclick="selectPlan('basico')"><div class="plan-name">BÁSICO</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>5 Artistas</li><li>Ilimitado</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('basico')">Assinar</button></div>
+<div class="plan-card" onclick="selectPlan('premium')"><div class="plan-name">PREMIUM</div><div class="plan-price">25.000 Kz</div><ul class="plan-features"><li>Ilimitado</li><li>Selo</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('premium')">Premium</button></div>
+</div></div></section>
+
+<section id="artistas" class="section">
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+<h3>Meus Artistas</h3>
+<button class="btn btn-small" onclick="openAddArtistModal()">+ Novo Artista</button>
+</div>
+<div id="artistas-container" class="item-list"></div>
+</div></section>
+
+<section id="lancar" class="section">
+<div class="card">
+<h3>Lançar Música (DDEX ERN 4.3)</h3>
+<form id="form-lancamento" onsubmit="return false;">
+<label>Título da Música *</label><input type="text" id="music-titulo" placeholder="Ex: Minha Música">
+<label>Artista *</label><select id="music-artista-select"><option value="">-- Escolha --</option></select>
+<div class="form-row">
+<div><label>Género Principal *</label><select id="music-estilo"><option value="">-- Escolha --</option></select></div>
+<div><label>Sub-Género *</label><select id="music-sub-estilo"><option value="">-- Escolha --</option></select></div>
+</div>
+<div class="form-row">
+<div><label>Data de lançamento</label><input type="date" id="music-data"></div>
+<div><label>Idioma da música *</label><select id="music-idioma"><option value="Português">Português</option><option value="Inglês">Inglês</option><option value="Espanhol">Espanhol</option><option value="Francês">Francês</option><option value="Outro">Outro</option></select></div>
+</div>
+<div class="form-row">
+<div><label>ISRC (Auto-gerado)</label><input type="text" id="music-isrc" readonly style="font-family:monospace;"></div>
+<div><label>UPC (Auto-gerado)</label><input type="text" id="music-upc" readonly style="font-family:monospace;"></div>
+</div>
+<div class="form-row">
+<div><label>Compositores *</label><input type="text" id="music-compositores"></div>
+<div><label>Produtor</label><input type="text" id="music-produtor"></div>
+</div>
+<div class="form-row">
+<div><label>Colaboradores (feat.)</label><input type="text" id="music-colaboradores"></div>
+<div><label>Conteúdo explícito?</label><select id="music-explicit"><option value="Não">Não</option><option value="Sim">Sim</option></select></div>
+</div>
+<div class="form-row">
+<div><label>℗ Copyright</label><input type="text" id="music-pline" placeholder="℗ 2025 MAM"></div>
+<div><label>© Copyright</label><input type="text" id="music-cline" placeholder="© 2025 MAM"></div>
+</div>
+<label style="margin-top:15px;">Capa da Música *</label>
+<div class="platform-req"><h4>🎨 Exigências de todas as plataformas digitais:</h4><ul>
+<li><strong>Formato:</strong> JPG ou PNG</li>
+<li><strong>Dimensão mínima:</strong> 1400 x 1400 pixels</li>
+<li><strong>Proporção:</strong> 1:1 (quadrada)</li>
+<li><strong>Tamanho máximo:</strong> 20 MB</li>
+</ul></div>
+<input type="hidden" id="music-capa-url">
+<input type="file" id="music-capa-file" accept="image/jpeg,image/png" style="display:none;">
+<button type="button" class="btn btn-sec" id="upload-capa-btn">Selecionar Capa</button>
+<div id="capa-preview" style="display:none;margin-top:15px;text-align:center;"><img id="capa-preview-img" style="width:150px;height:150px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);"><p id="capa-status" style="color:var(--success);margin-top:10px;font-size:.85rem;"></p></div>
+
+<label style="margin-top:15px;">Áudio (WAV) *</label>
+<div class="platform-req"><h4>🎧 Exigências de todas as plataformas digitais:</h4><ul>
+<li><strong>Formato obrigatório:</strong> WAV</li>
+<li><strong>NÃO aceites:</strong> MP3, M4A, FLAC</li>
+<li><strong>Taxa:</strong> 44.1 kHz ou 48 kHz</li>
+<li><strong>Profundidade:</strong> 16-bit ou 24-bit</li>
+<li><strong>Canais:</strong> Estéreo</li>
+<li><strong>Tamanho máximo:</strong> 500 MB</li>
+</ul></div>
+<input type="hidden" id="music-audio-url">
+<input type="file" id="music-audio-file" accept=".wav,audio/wav" style="display:none;">
+<button type="button" class="btn btn-sec" id="upload-audio-btn">Selecionar Áudio WAV</button>
+
+<div id="audio-upload-progress" class="upload-progress">
+<div class="upload-progress-label">
+<span><i class="fas fa-cloud-upload-alt"></i> A carregar áudio...</span>
+<span id="audio-upload-percent">0%</span>
+</div>
+<div class="upload-progress-bar"><div id="audio-upload-fill" class="upload-progress-fill"></div></div>
+<div id="audio-upload-status" class="upload-progress-status">Preparando ficheiro...</div>
+</div>
+
+<div id="tiktok-preview" class="tiktok-preview">
+<h4><i class="fab fa-tiktok"></i> Preview TikTok <span class="tiktok-badge">1:00 MIN</span></h4>
+<p>Este é o trecho de 1 minuto que será usado como preview no TikTok e Instagram Reels. Toque para ouvir.</p>
+<audio id="tiktok-audio-player" controls></audio>
+<p style="font-size:.75rem;color:var(--gray);margin-top:8px;"><i class="fas fa-info-circle"></i> O trecho completo da música será distribuído nas 150+ plataformas.</p>
+</div>
+
+<div class="ddex-info"><p><i class="fas fa-share-alt"></i> Sistema gera pacote DDEX ERN 4.3 conforme padrão internacional.</p></div>
+<button type="button" class="btn" id="btnEnviarLancamento">Enviar para Distribuição</button>
+</form></div></section>
+
+<section id="minhas-musicas" class="section">
+<div class="card"><h3>Minhas Músicas</h3><div id="minhas-musicas-container" class="grid"></div></div></section>
+
+<section id="carteira" class="section">
+<div class="card"><h3>Carteira</h3>
+<div class="form-row">
+<div><label>Moeda</label><select id="currency-select" onchange="updateWalletDisplay()"></select></div>
+<div><label>Taxa</label><input type="text" id="currency-rate" readonly></div>
+</div>
+<div class="stat-grid">
+<div class="stat-box"><h4 id="carteira-saldo">0 Kz</h4><p>Saldo</p></div>
+<div class="stat-box"><h4 id="carteira-ganhos-mes">0 Kz</h4><p>Ganhos do mês</p></div>
+<div class="stat-box"><h4 id="carteira-ganhos-total">0 Kz</h4><p>Ganhos totais</p></div>
+</div>
+<div class="ddex-info"><p><i class="fas fa-info-circle"></i> Saque mínimo: 10.000 Kz.</p></div>
+<button class="btn" onclick="openSaqueModal()">Levantar Ganhos</button>
+<div id="historico-saques" class="item-list" style="margin-top:20px;"></div>
+</div></section>
+
+<section id="perfil" class="section">
+<div class="card"><h3>Meu Perfil</h3>
+<div style="text-align:center;">
+<img id="perfil-foto" style="width:120px;height:120px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;">
+<h2 id="perfil-nome-exibicao" style="color:var(--gold);margin-top:10px;"></h2>
+<p id="perfil-email-exibicao" style="color:var(--gray);"></p>
+<p id="perfil-pais-exibicao" style="color:var(--gray);"></p>
+<p id="perfil-data-nascimento-exibicao" style="color:var(--gray);"></p>
+<p id="perfil-telefone-exibicao" style="color:var(--gray);"></p>
+<p id="perfil-plano-exibicao" style="color:var(--gold);"></p>
+<p id="perfil-role-exibicao" style="color:var(--gold);"></p>
+<button class="btn btn-sec" style="width:auto;margin-top:15px;" onclick="openModal('modal-settings')">Editar Perfil</button>
+</div>
+<div style="margin-top:30px;"><h4 style="color:var(--gold);">Meus Lançamentos</h4><div id="perfil-lancamentos" class="grid"></div></div>
+</div></section>
+
+<section id="mensagens" class="section">
+<div class="card"><h3>Mensagens com a MAM</h3>
+<div id="chat-user-box" class="chat-box"><p style="color:var(--gray);text-align:center;">A carregar...</p></div>
+<textarea id="chat-user-input" rows="3" placeholder="Escreva a sua mensagem..."></textarea>
+<button class="btn" onclick="enviarMensagemUser()">Enviar</button>
+</div></section>
+
+<section id="admin" class="section">
+<div class="card">
+<h3>Administração</h3>
+<div style="margin-bottom:15px;">
+<button class="admin-tab-btn active" data-tab="releases" onclick="adminTab('releases',this)">Lançamentos</button>
+<button class="admin-tab-btn" data-tab="artists" onclick="adminTab('artists',this)">Artistas</button>
+<button class="admin-tab-btn" data-tab="users" onclick="adminTab('users',this)">Utilizadores</button>
+<button class="admin-tab-btn" data-tab="withdrawals" onclick="adminTab('withdrawals',this)">Saques</button>
+<button class="admin-tab-btn" data-tab="royalties" onclick="adminTab('royalties',this)">Royalties</button>
+<button class="admin-tab-btn" data-tab="messages" onclick="adminTab('messages',this)">Mensagens</button>
+<button class="admin-tab-btn" data-tab="verifications" onclick="adminTab('verifications',this)">Verificações</button>
+<button class="admin-tab-btn" data-tab="streams" onclick="adminTab('streams',this)">Streams</button>
+<button class="admin-tab-btn" data-tab="manual" onclick="adminTab('manual',this)">Manual PDF</button>
+</div>
+<div id="admin-content"><p>Selecione uma opção.</p></div>
+</div></section>
+
+</div>
+</div>
+
+<footer>
+<div class="footer-links">
+<a onclick="showFooterContent('sobre')">Sobre</a>
+<a onclick="showFooterContent('sobre-nos')">Sobre Nós</a>
+<a onclick="showFooterContent('privacidade')">Privacidade</a>
+<a onclick="showFooterContent('termos')">Termos</a>
+<a onclick="showFooterContent('suporte')">Suporte</a>
+</div>
+<p>MAM Distribuidora © 2025 | Fundado por Matias Arsénio Manuel</p>
+</footer>
+
+<div id="modal-settings" class="modal"><div class="modal-content" style="max-width:700px;">
+<button class="modal-close" onclick="closeModal('modal-settings')"><i class="fas fa-times"></i></button>
+<h3>Definições</h3>
+<div style="margin-bottom:20px;">
+<button class="btn btn-small" onclick="mostrarTab('perfil')">Perfil</button>
+<button class="btn btn-small btn-sec" onclick="mostrarTab('senha')">Senha</button>
+<button class="btn btn-small btn-sec" onclick="mostrarTab('idioma')">🌐 Idioma</button>
+<button class="btn btn-small btn-danger" onclick="mostrarTab('eliminar')">Eliminar</button>
+</div>
+<div id="settings-tab-perfil">
+<div class="profile-upload" id="settings-profile-upload"><img id="settings-foto-preview" class="profile-img" src="https://via.placeholder.com/120"><div class="upload-overlay"><i class="fas fa-camera"></i></div></div>
+<label>Nome Completo</label><input type="text" id="settings-nome">
+<label>Data de Nascimento</label><input type="date" id="settings-data-nascimento">
+<label>Telefone</label>
+<div class="phone-group"><select id="settings-phone-code"></select><input type="tel" id="settings-telefone" placeholder="937881307"></div>
+<label>País</label><select id="settings-pais"></select>
+<button class="btn" onclick="salvarConfiguracoesPerfil()">Guardar</button>
+</div>
+<div id="settings-tab-senha" style="display:none;">
+<label>Senha atual</label><input type="password" id="settings-senha-atual">
+<label>Nova senha</label><input type="password" id="settings-senha-nova">
+<label>Confirmar</label><input type="password" id="settings-senha-confirm">
+<button class="btn" onclick="alterarSenha()">Alterar</button>
+</div>
+<div id="settings-tab-idioma" style="display:none;">
+<label>🌐 Escolha o Idioma do Site</label>
+<select id="settings-idioma" onchange="mudarIdioma()">
+<option value="pt">🇵🇹 Português</option>
+<option value="en">🇬🇧 English</option>
+<option value="es">🇪🇸 Español</option>
+<option value="fr">🇫🇷 Français</option>
+</select>
+<p class="help-text">O idioma será aplicado em todo o site imediatamente</p>
+<button class="btn" onclick="mudarIdioma()">Aplicar Idioma</button>
+</div>
+<div id="settings-tab-eliminar" style="display:none;">
+<p style="color:var(--danger);">Ação irreversível.</p>
+<button class="btn btn-danger" onclick="confirmarEliminarConta()">Eliminar Conta</button>
+</div>
+</div></div>
+
+<div id="notif-dropdown" class="notif-dropdown">
+<div style="display:flex;justify-content:space-between;border-bottom:1px solid #333;padding-bottom:5px;margin-bottom:10px;">
+<span style="color:var(--gold);font-weight:bold;">Notificações</span>
+<button style="background:none;border:none;color:var(--gray);cursor:pointer;" onclick="fecharNotificacoes()"><i class="fas fa-times"></i></button>
+</div>
+<div id="notif-list"></div>
+</div>
+
+<div id="modal-mensagem" class="modal"><div class="modal-content" style="max-width:700px;">
+<button class="modal-close" onclick="closeModal('modal-mensagem')"><i class="fas fa-times"></i></button>
+<h3 id="msg-modal-title">Chat</h3>
+<input type="hidden" id="mensagem-user-id">
+<p id="mensagem-user-nome" style="color:var(--gray);font-size:.85rem;margin-bottom:10px;"></p>
+<div id="admin-chat-box" class="chat-box"><p style="color:var(--gray);text-align:center;">A carregar...</p></div>
+<textarea id="mensagem-texto" rows="3" placeholder="Resposta..."></textarea>
+<button class="btn" onclick="enviarRespostaAdmin()"><i class="fas fa-paper-plane"></i> Responder</button>
+</div></div>
+
+<div id="modal-add-saldo" class="modal"><div class="modal-content" style="max-width:500px;">
+<button class="modal-close" onclick="closeModal('modal-add-saldo')"><i class="fas fa-times"></i></button>
+<h3>Adicionar Saldo</h3>
+<input type="hidden" id="saldo-user-id">
+<p id="saldo-user-nome" style="color:var(--gray);margin-bottom:15px;"></p>
+<label>Valor (Kz)</label><input type="number" id="saldo-valor" placeholder="Ex: 5000" min="1">
+<label>Motivo (opcional)</label><input type="text" id="saldo-motivo" placeholder="Ex: Bónus">
+<button class="btn btn-success" onclick="confirmarAddSaldo()">Adicionar Saldo</button>
+</div></div>
+
+<div id="modal-verif-detalhe" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal-verif-detalhe')"><i class="fas fa-times"></i></button>
+<h3>Verificação</h3>
+<div id="verif-detalhe-body"></div>
+</div></div>
+
+<div id="modal-stream-detalhe" class="modal"><div class="modal-content" style="max-width:700px;">
+<button class="modal-close" onclick="closeModal('modal-stream-detalhe')"><i class="fas fa-times"></i></button>
+<h3>Streams</h3>
+<div id="stream-detalhe-body"></div>
+</div></div>
+
+<div id="saqueModal" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('saqueModal')"><i class="fas fa-times"></i></button>
+<h3>Solicitar Saque</h3>
+<div class="ddex-info"><p><i class="fas fa-info-circle"></i> Saque mínimo: 10.000 Kz.</p></div>
+<label>Valor (Kz)</label><input type="number" id="saque-valor" min="10000">
+<label>Nome Completo (titular da conta)</label><input type="text" id="saque-nome" placeholder="Ex: João Silva Santos">
+<label>Método / Banco</label>
+<select id="saque-metodo">
+<option value="">-- Escolha --</option>
+<option value="bfa">BFA - Banco de Fomento Angola</option>
+<option value="bai">BAI - Banco Angolano de Investimentos</option>
+<option value="bic">BIC - Banco BIC</option>
+<option value="millennium">Millennium Atlântico</option>
+<option value="sol">Banco Sol</option>
+<option value="standard">Standard Bank</option>
+<option value="multicaixa">Multicaixa Express</option>
+<option value="paypal">PayPal</option>
+<option value="payoneer">Payoneer</option>
+</select>
+<label>IBAN / Número de Conta</label>
+<input type="text" id="saque-conta" placeholder="AO06 0000 0000 0000 0000 0">
+<p class="help-text">⚠️ Verifique bem o IBAN. Transferências para contas erradas não podem ser revertidas.</p>
+<button class="btn" onclick="solicitarSaque()">Solicitar</button>
+</div></div>
+
+<div id="planPurchaseModal" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('planPurchaseModal')"><i class="fas fa-times"></i></button>
+<h3>Finalizar Compra</h3>
+<div id="plan-details"></div>
+<div class="payment-methods">
+<div class="payment-method" onclick="selectPaymentMethod('wallet')"><i class="fas fa-wallet"></i>Carteira</div>
+<div class="payment-method" onclick="selectPaymentMethod('transfer')"><i class="fas fa-university"></i>Transferência</div>
+</div>
+<button id="pay-with-wallet-btn" class="btn" style="display:none;" onclick="payWithWallet()">Pagar com Carteira</button>
+<div id="bank-info" style="display:none;">
+<p><strong>BFA - Banco de Fomento Angola</strong></p>
+<p>Titular: Matias Arsénio Manuel</p>
+<p>IBAN: 0006 0000 86316866301 52</p>
+<p>Multicaixa: +244937881307</p>
+<button class="btn btn-sec" onclick="sendToWhatsApp()">Enviar Comprovativo</button>
+</div>
+<button class="btn" onclick="closeModal('planPurchaseModal')">Fechar</button>
+</div></div>
+
+<div id="addArtistModal" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('addArtistModal')"><i class="fas fa-times"></i></button>
+<h3>Adicionar Artista</h3>
+<div style="text-align:center;margin-bottom:20px;">
+<img id="artist-photo-preview" src="https://via.placeholder.com/100" style="width:100px;height:100px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;">
+<br><button type="button" class="btn btn-small btn-sec" id="upload-artist-photo-btn">Escolher Foto</button>
+</div>
+<label>Nome Artístico *</label><input type="text" id="artist-name">
+<label>Estilo Musical Principal *</label>
+<select id="artist-style" style="border:2px solid var(--gold);background:#1a1400;color:var(--gold);font-weight:bold;"><option value="">-- Clique para escolher --</option></select>
+<p class="help-text">Mais de 300 géneros musicais</p>
+<label>Redes Sociais</label>
+<input type="url" id="artist-spotify" placeholder="Spotify">
+<input type="url" id="artist-apple" placeholder="Apple Music">
+<input type="url" id="artist-instagram" placeholder="Instagram">
+<input type="url" id="artist-tiktok" placeholder="TikTok">
+<input type="url" id="artist-facebook" placeholder="Facebook">
+<label>Biografia</label><textarea id="artist-bio" rows="3"></textarea>
+<button class="btn" id="btnSaveArtist">Salvar</button>
+</div></div>
+
+<div id="editArtistModal" class="modal"><div class="modal-content">
+<button class="modal-close" onclick="closeModal('editArtistModal')"><i class="fas fa-times"></i></button>
+<h3>Editar Artista</h3>
+<input type="hidden" id="edit-artist-id">
+<div style="text-align:center;"><img id="edit-artist-photo-preview" style="width:100px;height:100px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;"><br><button class="btn btn-small" id="edit-upload-artist-photo-btn">Nova Foto</button></div>
+<label>Nome *</label><input type="text" id="edit-artist-name">
+<label>Estilo *</label><select id="edit-artist-style" style="border:2px solid var(--gold);background:#1a1400;color:var(--gold);font-weight:bold;"><option value="">-- Escolha --</option></select>
+<label>Redes Sociais</label>
+<input type="url" id="edit-artist-spotify" placeholder="Spotify">
+<input type="url" id="edit-artist-apple" placeholder="Apple Music">
+<input type="url" id="edit-artist-instagram" placeholder="Instagram">
+<input type="url" id="edit-artist-tiktok" placeholder="TikTok">
+<input type="url" id="edit-artist-facebook" placeholder="Facebook">
+<label>Biografia</label><textarea id="edit-artist-bio" rows="3"></textarea>
+<button class="btn" id="btnUpdateArtist">Atualizar</button>
+</div></div>
+
+<div id="genericModal" class="modal"><div class="modal-content" style="max-width:750px;">
+<button class="modal-close" onclick="closeModal('genericModal')"><i class="fas fa-times"></i></button>
+<h3 id="genericModalTitle">Info</h3>
+<div id="genericModalBody"></div>
+</div></div>

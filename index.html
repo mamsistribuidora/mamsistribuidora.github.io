@@ -197,6 +197,10 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 .tiktok-preview p{color:#bbb;font-size:.8rem;margin-bottom:10px;line-height:1.5}
 .upload-status-line{font-size:.85rem;margin-top:10px;color:var(--success)}
 @media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}.legal-content .stat-row{grid-template-columns:1fr}}
+/* CSS ADICIONADO PARA A LISTA DE PERFIS */
+.platform-selector-row {display:flex; align-items:center; gap:15px; margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:12px;}
+.platform-selector-row img, .platform-selector-row i {width:35px; font-size:2.2rem; text-align:center;}
+.platform-selector-row select {margin-bottom:0; flex:1; padding:12px; background:#0a0a0a;}
 </style>
 </head>
 <body>
@@ -434,6 +438,43 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <form id="form-lancamento" onsubmit="return false;">
 <label data-i18n="song_title">Título da Música</label><input type="text" id="music-titulo" placeholder="Ex: Minha Música">
 <label data-i18n="artist">Artista</label><select id="music-artista-select"><option value="">-- Escolha --</option></select>
+
+<!-- NOVO BLOCO: VERIFICAÇÃO DE PERFIL NAS LOJAS (SPOTIFY, APPLE, DEEZER) -->
+<div id="platform-profile-verify" style="display:none; background:rgba(212,175,55,.05); border:1px solid rgba(212,175,55,.3); padding:15px; border-radius:8px; margin-bottom:15px; text-align:left;">
+    <h4 style="color:var(--gold); font-size:.95rem; margin-bottom:10px;">Encontramos os seguintes perfis nas lojas:</h4>
+    <p style="color:var(--gray); font-size:.8rem; margin-bottom:15px; line-height:1.4;">
+        Confirme ou negue sua identidade selecionando uma das opções abaixo. Se nenhuma corresponder ao seu perfil, selecione "Não é meu perfil" e um NOVO PERFIL DE ARTISTA será gerado automaticamente.
+    </p>
+
+    <!-- SPOTIFY -->
+    <div class="platform-selector-row">
+        <i class="fab fa-spotify" style="color:#1DB954;"></i>
+        <select id="profile-spotify" style="border-color:#1DB954;">
+            <option value="">Selecione seu perfil</option>
+            <option value="novo" style="color:var(--warn);">Não é meu perfil / Criar novo perfil</option>
+        </select>
+    </div>
+
+    <!-- APPLE MUSIC -->
+    <div class="platform-selector-row">
+        <i class="fab fa-apple" style="color:#fff;"></i>
+        <select id="profile-apple" style="border-color:#fff;">
+            <option value="">Selecione seu perfil</option>
+            <option value="novo" style="color:var(--warn);">Não é meu perfil / Criar novo perfil</option>
+        </select>
+    </div>
+
+    <!-- DEEZER -->
+    <div class="platform-selector-row" style="border-bottom:none; padding-bottom:0;">
+        <i class="fas fa-chart-bar" style="color:#ff6600;"></i> <!-- Deezer Icon approximation -->
+        <select id="profile-deezer" style="border-color:#ff6600;">
+            <option value="">Selecione seu perfil</option>
+            <option value="novo" style="color:var(--warn);">Não é meu perfil / Criar novo perfil</option>
+        </select>
+    </div>
+</div>
+<!-- FIM DO NOVO BLOCO -->
+
 <div class="form-row">
 <div><label data-i18n="genre">Género Principal</label><select id="music-estilo"><option value="">-- Escolha --</option></select></div>
 <div><label data-i18n="subgenre">Sub-Género</label><select id="music-sub-estilo"><option value="">-- Escolha --</option></select></div>
@@ -744,7 +785,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <h3 data-i18n="edit_music">Editar Música</h3>
 <input type="hidden" id="edit-music-id">
 <div id="edit-music-locked" style="display:none;background:rgba(255,193,7,.1);border-left:3px solid var(--warn);padding:12px;border-radius:6px;margin-bottom:15px;">
-<p style="color:var(--warn);font-size:.85rem;" data-i18n="edit_locked">⚠️ Música aprovada — apenas alguns campos podem ser editados (título, capa, compositores, produtor, colaboradores, copyright). ISRC, UPC, género e áudio estão bloqueados pelas plataformas.</p>
+<p style="color:var(--warn);font-size:.85rem;" data-i18n="edit_locked">⚠️ Música aprovada — apenas alguns campos podem ser editados. ISRC, UPC, género e áudio estão bloqueados.</p>
 </div>
 <label data-i18n="song_title">Título da Música</label><input type="text" id="edit-music-titulo">
 <label data-i18n="genre">Género Principal</label><select id="edit-music-estilo"></select>
@@ -2049,6 +2090,75 @@ function carregarSelects(){
     }
 }
 
+// ==================== LÓGICA DE VERIFICAÇÃO DE PERFIL (SPOTIFY, APPLE, DEEZER) ====================
+document.addEventListener('DOMContentLoaded', () => {
+    const selectArtista = document.getElementById('music-artista-select');
+    const verifyBox = document.getElementById('platform-profile-verify');
+    
+    if (selectArtista && verifyBox) {
+        selectArtista.addEventListener('change', async function() {
+            const artistId = this.value;
+            
+            if (!artistId) {
+                verifyBox.style.display = 'none';
+                return;
+            }
+            
+            verifyBox.style.display = 'block';
+            
+            try {
+                const doc = await db.collection('artists').doc(artistId).get();
+                if (doc.exists) {
+                    const artistData = doc.data();
+                    const nomeArtista = artistData.nome || '';
+
+                    const resetSelect = (id) => {
+                        const sel = document.getElementById(id);
+                        sel.innerHTML = `
+                            <option value="">Selecione seu perfil</option>
+                            <option value="novo">Não é meu perfil / Criar novo perfil</option>
+                        `;
+                    };
+                    
+                    resetSelect('profile-spotify');
+                    resetSelect('profile-apple');
+                    resetSelect('profile-deezer');
+
+                    const addOption = (selectId, text, value) => {
+                        const sel = document.getElementById(selectId);
+                        const opt = document.createElement('option');
+                        opt.value = value;
+                        opt.text = text;
+                        sel.insertBefore(opt, sel.options[1]);
+                    };
+
+                    if (artistData.spotify) {
+                        addOption('profile-spotify', nomeArtista, artistData.spotify);
+                    }
+                    
+                    if (artistData.apple) {
+                        addOption('profile-apple', nomeArtista, artistData.apple);
+                    }
+                    
+                    ['profile-spotify', 'profile-apple', 'profile-deezer'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if(!el.dataset.bound) {
+                            el.dataset.bound = 'true';
+                            el.addEventListener('change', function() {
+                                if (this.value === 'novo') {
+                                    console.log('Utilizador escolheu criar novo perfil para ' + id);
+                                }
+                            });
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Erro ao carregar perfis do artista:", error);
+            }
+        });
+    }
+});
+
 document.addEventListener('DOMContentLoaded',()=>{carregarSelects();startCarousel();verificarLinkMusica();});
 
 auth.onAuthStateChanged(async user=>{
@@ -2075,7 +2185,7 @@ auth.onAuthStateChanged(async user=>{
     }
 });
 
-console.log('🚀 MAM v16 — Todos os botões ADM funcionais + Streams reais + Código telefónico + Sobre/Suporte profissional');
+console.log('🚀 MAM v17 — Seletor de Perfis de Loja Adicionado');
 </script>
 </body>
 </html>

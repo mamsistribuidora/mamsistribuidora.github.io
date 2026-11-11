@@ -48,6 +48,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none;bo
 .btn-success{background:var(--success);color:#fff}
 .btn-info{background:var(--info);color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px}
+.artist-feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px;margin-bottom:20px;}
+.artist-card-feed{text-align:center;cursor:pointer;padding:15px 10px;background:#111;border-radius:8px;border:1px solid #222;transition:all 0.3s;}
+.artist-card-feed:hover{border-color:var(--gold);transform:translateY(-3px);background:rgba(212,175,55,.05);}
+.artist-card-feed img{width:80px;height:80px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;margin-bottom:10px;}
+.artist-card-feed h4{color:var(--gold);font-size:.9rem;margin-bottom:4px;}
+.artist-card-feed p{color:var(--gray);font-size:.7rem;}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-bottom:20px}
 .stat-box{background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.3);padding:20px;border-radius:10px;text-align:center}
 .stat-box h4{color:var(--gold);font-size:1.8rem;margin-bottom:5px}
@@ -196,12 +202,10 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 .tiktok-preview .tiktok-badge{background:#dc3545;color:#fff;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:bold}
 .tiktok-preview p{color:#bbb;font-size:.8rem;margin-bottom:10px;line-height:1.5}
 .upload-status-line{font-size:.85rem;margin-top:10px;color:var(--success)}
-@media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}.legal-content .stat-row{grid-template-columns:1fr}}
-/* CSS ADICIONADO PARA A LISTA DE PERFIS */
+@media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.artist-feed-grid{grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}.legal-content .stat-row{grid-template-columns:1fr}}
 .platform-selector-row {display:flex; align-items:center; gap:15px; margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:12px;}
 .platform-selector-row img, .platform-selector-row i {width:35px; font-size:2.2rem; text-align:center;}
 .platform-selector-row select {margin-bottom:0; flex:1; padding:12px; background:#0a0a0a;}
-/* BLOCO DE APOIO */
 .support-block{background:rgba(212,175,55,.08);border:1px solid var(--gold);border-radius:12px;padding:20px;margin:20px 0;text-align:center}
 .support-block h3{color:var(--gold);margin-bottom:15px}
 .support-block p{color:#ccc;margin-bottom:10px;font-size:.9rem}
@@ -269,7 +273,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <select id="plano-novo">
 <option value="free">FREE (0 Kz)</option>
 <option value="basico">BÁSICO (10.000 Kz)</option>
-<option value="premium">PREMIUM (25.000 Kz)</option>
+<option value="premium">PREMIUM / LABEL (50.000 Kz)</option>
 </select>
 <label>Motivo / Observação</label>
 <input type="text" id="plano-motivo" placeholder="Ex: Comprou plano">
@@ -316,7 +320,6 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="carousel-dots" id="carousel-dots"><span class="active" onclick="goToSlide(0)"></span><span onclick="goToSlide(1)"></span><span onclick="goToSlide(2)"></span><span onclick="goToSlide(3)"></span></div>
 </div>
 
-<!-- BLOCO DE APOIO (FORA DA SESSÃO) -->
 <div class="support-block">
     <h3><i class="fas fa-heart" style="color:#dc3545;"></i> Apoie este Projeto</h3>
     <p>Ajude-nos a manter a plataforma gratuita e a apoiar artistas independentes.</p>
@@ -353,7 +356,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <label data-i18n="email">Email</label><input type="email" id="login-email" placeholder="exemplo@email.com">
 <label data-i18n="password">Senha</label>
 <div style="position:relative;"><input type="password" id="login-pass" placeholder="A sua senha"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);cursor:pointer;" onclick="togglePassword('login-pass')"><i class="fas fa-eye"></i></button></div>
-<button class="btn" onclick="handleLogin()" data-i18n="login_title">Entrar</button>
+<button class="btn" id="btn-login-action" onclick="handleLogin()" data-i18n="login_title">Entrar</button>
 <p style="text-align:center;margin-top:15px;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-esqueci-senha');" data-i18n="forgot_pass">Esqueci a senha</a></p>
 <p style="text-align:center;"><a href="#" style="color:var(--gold);" onclick="closeModal('modal-login');openModal('modal-registro');" data-i18n="create_free">Criar conta grátis</a></p>
 </div></div>
@@ -372,7 +375,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div style="position:relative;"><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);" onclick="togglePassword('reg-pass')"><i class="fas fa-eye"></i></button></div>
 <label><i class="fas fa-lock"></i> <span data-i18n="confirm_pass">Confirmar Senha</span> *</label>
 <div style="position:relative;"><input type="password" id="reg-pass-confirm" placeholder="Repita a senha"><button type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gold);" onclick="togglePassword('reg-pass-confirm')"><i class="fas fa-eye"></i></button></div>
-<button class="btn" onclick="handleRegister()" data-i18n="create_account">Criar Conta</button>
+<button class="btn" id="btn-register-action" onclick="handleRegister()" data-i18n="create_account">Criar Conta</button>
 <div class="registro-aviso"><p data-i18n="have_account">Já tens uma conta na MAM?</p><a onclick="closeModal('modal-registro');openModal('modal-login');" data-i18n="login_now">Entrar agora →</a></div>
 </div></div>
 
@@ -406,7 +409,6 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="carousel-dots" id="carousel-dots-in"><span class="active" onclick="goToSlideIn(0)"></span><span onclick="goToSlideIn(1)"></span><span onclick="goToSlideIn(2)"></span><span onclick="goToSlideIn(3)"></span></div>
 </div>
 
-<!-- BLOCO DE APOIO (DENTRO DA SESSÃO) -->
 <div class="support-block">
     <h3><i class="fas fa-heart" style="color:#dc3545;"></i> Apoie este Projeto</h3>
     <p>Ajude-nos a manter a plataforma gratuita e a apoiar artistas independentes.</p>
@@ -450,15 +452,48 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="stat-box"><h4 id="stat-musicas-count">0</h4><p data-i18n="musicas">Músicas</p></div>
 <div class="stat-box"><h4 id="stat-total-streams">0</h4><p data-i18n="total_streams">Total Streams</p></div>
 </div>
+
+<div class="card">
+<h3><i class="fas fa-users"></i> Nossos Artistas</h3>
+<div id="artists-feed-container" class="artist-feed-grid"></div>
+</div>
+
 <div class="card"><h3><i class="fas fa-rss"></i> <span data-i18n="feed_title">Feed Global de Lançamentos</span></h3><div id="feed-container" class="grid"></div></div>
 </section>
 
 <section id="planos" class="section">
-<div class="card"><h3 data-i18n="plans_title">Planos</h3>
+<div class="card"><h3 data-i18n="plans_title">Planos Profissionais</h3>
 <div class="plans-grid">
-<div class="plan-card" onclick="selectPlan('free')"><div class="plan-name">FREE</div><div class="plan-price">0 Kz</div><ul class="plan-features"><li>1 Artista</li><li>3 lançamentos/mês</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('free')" data-i18n="start">Começar</button></div>
-<div class="plan-card featured" onclick="selectPlan('basico')"><div class="plan-name">BÁSICO</div><div class="plan-price">10.000 Kz</div><ul class="plan-features"><li>5 Artistas</li><li>Ilimitado</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('basico')" data-i18n="subscribe">Assinar</button></div>
-<div class="plan-card" onclick="selectPlan('premium')"><div class="plan-name">PREMIUM</div><div class="plan-price">25.000 Kz</div><ul class="plan-features"><li>Ilimitado</li><li>Selo</li></ul><button class="btn" onclick="event.stopPropagation();selectPlan('premium')">Premium</button></div>
+<div class="plan-card" onclick="selectPlan('free')">
+    <div class="plan-name">FREE</div>
+    <div class="plan-price">0 Kz</div>
+    <ul class="plan-features">
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Artista Independente</li>
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Apenas 1 Artista</li>
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Benefícios Limitados</li>
+    </ul>
+    <button class="btn" onclick="event.stopPropagation();selectPlan('free')" data-i18n="start">Começar</button>
+</div>
+<div class="plan-card featured" onclick="selectPlan('basico')">
+    <div class="plan-name">BÁSICO</div>
+    <div class="plan-price">10.000 Kz</div>
+    <ul class="plan-features">
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Até 8 Artistas</li>
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Benefícios Melhores</li>
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Recursos Avançados</li>
+    </ul>
+    <button class="btn" onclick="event.stopPropagation();selectPlan('basico')" data-i18n="subscribe">Assinar</button>
+</div>
+<div class="plan-card" onclick="selectPlan('premium')">
+    <div class="plan-name">PREMIUM / LABEL</div>
+    <div class="plan-price">50.000 Kz</div>
+    <ul class="plan-features">
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Artistas Ilimitados</li>
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Muito Benéfico</li>
+        <li><i class="fas fa-check" style="color:var(--gold);"></i> Suporte Prioritário</li>
+    </ul>
+    <button class="btn" onclick="event.stopPropagation();selectPlan('premium')">Premium</button>
+</div>
 </div></div></section>
 
 <section id="artistas" class="section">
@@ -477,40 +512,31 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <label data-i18n="song_title">Título da Música</label><input type="text" id="music-titulo" placeholder="Ex: Minha Música">
 <label data-i18n="artist">Artista</label><select id="music-artista-select"><option value="">-- Escolha --</option></select>
 
-<!-- BLOCO DE VERIFICAÇÃO DE PERFIL NAS LOJAS (SPOTIFY, APPLE, DEEZER) -->
 <div id="platform-profile-verify" style="display:none; background:rgba(212,175,55,.05); border:1px solid rgba(212,175,55,.3); padding:15px; border-radius:8px; margin-bottom:15px; text-align:left;">
     <h4 style="color:var(--gold); font-size:.95rem; margin-bottom:10px;">Encontramos os seguintes perfis nas lojas:</h4>
     <p style="color:var(--gray); font-size:.8rem; margin-bottom:15px; line-height:1.4;">
         Confirme ou negue sua identidade selecionando uma das opções abaixo. Se nenhuma corresponder ao seu perfil, selecione "Não é meu perfil" e um NOVO PERFIL DE ARTISTA será gerado automaticamente.
     </p>
-
-    <!-- SPOTIFY (Link) -->
     <div class="platform-selector-row">
         <i class="fab fa-spotify" style="color:#1DB954;"></i>
         <div style="flex:1;">
             <input type="url" id="profile-spotify" placeholder="Cole o link do seu perfil (ex: open.spotify.com/artist/...)" style="margin-bottom:5px; border-color:#1DB954;">
-            <small style="color:var(--gray); font-size:.7rem; display:block; margin-bottom:10px;">Ou selecione "Criar novo perfil"</small>
             <select id="profile-spotify-select" style="margin-bottom:0; border-color:#1DB954;">
                 <option value="">-- Selecione ou cole o link acima --</option>
                 <option value="novo">Não é meu perfil / Criar novo perfil</option>
             </select>
         </div>
     </div>
-
-    <!-- APPLE MUSIC (Link) -->
     <div class="platform-selector-row">
         <i class="fab fa-apple" style="color:#fff;"></i>
         <div style="flex:1;">
             <input type="url" id="profile-apple" placeholder="Cole o link do seu perfil (ex: music.apple.com/artist/...)" style="margin-bottom:5px; border-color:#fff;">
-            <small style="color:var(--gray); font-size:.7rem; display:block; margin-bottom:10px;">Ou selecione "Criar novo perfil"</small>
             <select id="profile-apple-select" style="margin-bottom:0; border-color:#fff;">
                 <option value="">-- Selecione ou cole o link acima --</option>
                 <option value="novo">Não é meu perfil / Criar novo perfil</option>
             </select>
         </div>
     </div>
-
-    <!-- DEEZER (Pesquisa Real) -->
     <div class="platform-selector-row" style="border-bottom:none; padding-bottom:0;">
         <i class="fas fa-chart-bar" style="color:#ff6600;"></i>
         <div style="flex:1;">
@@ -1233,7 +1259,6 @@ function goToSlide(n){const slides=document.querySelectorAll('#carousel .carouse
 function goToSlideIn(n){const slides=document.querySelectorAll('#carousel-in .carousel-slide');const dots=document.querySelectorAll('#carousel-dots-in span');if(slides.length===0)return;slides.forEach(s=>s.classList.remove('active'));dots.forEach(d=>d.classList.remove('active'));carouselIndexIn=n%slides.length;slides[carouselIndexIn].classList.add('active');dots[carouselIndexIn].classList.add('active');}
 function startCarousel(){if(carouselTimer)clearInterval(carouselTimer);carouselTimer=setInterval(()=>{goToSlide(carouselIndex+1);goToSlideIn(carouselIndexIn+1);},5000);}
 
-// ==================== ISRC/UPC ====================
 async function getNextISRC(){const ano=new Date().getFullYear().toString().slice(-2);try{const r=await db.runTransaction(async t=>{const ref=db.collection('isrc_counter').doc('global');const d=await t.get(ref);if(!d.exists){t.set(ref,{counter:1});return 1;}const n=(d.data().counter||0)+1;t.update(ref,{counter:n});return n;});return `AOMAM${ano}${String(r).padStart(5,'0')}`;}catch(e){return `AOMAM${ano}${String(Date.now()).slice(-5)}`;}}
 function calcUPC(c){let s=0;for(let i=0;i<11;i++){const d=parseInt(c[i]);s+=(i%2===0)?d*3:d;}return c+((10-(s%10))%10);}
 async function getNextUPC(){try{const r=await db.runTransaction(async t=>{const ref=db.collection('upc_counter').doc('global');const d=await t.get(ref);if(!d.exists){t.set(ref,{counter:1});return 1;}const n=(d.data().counter||0)+1;t.update(ref,{counter:n});return n;});const prefixo='789';const timestamp=String(Date.now()).slice(-4);const seq=String(r).padStart(4,'0');const base=prefixo+timestamp+seq;return calcUPC(base.slice(0,11));}catch(e){const base=('789'+String(Date.now()).slice(-8)).slice(0,11);return calcUPC(base);}}
@@ -1249,7 +1274,13 @@ window.fecharNotificacoes=function(){document.getElementById('notif-dropdown').s
 window.marcarNotificacaoLida=async function(id){try{await db.collection('notifications').doc(id).update({lida:true});}catch(e){}};
 async function enviarNotificacao(uid,t,m){try{await db.collection('notifications').add({userId:uid,titulo:t,mensagem:m,lida:false,createdAt:new Date()});}catch(e){}}
 
+// ==================== LOGIN E REGISTO RÁPIDOS ====================
 async function handleRegister(){
+    if(window.isRegistering) return;
+    window.isRegistering = true;
+    const btn = document.getElementById('btn-register-action');
+    if(btn) btn.innerText = 'A criar conta...';
+
     const nome=document.getElementById('reg-nome').value.trim();
     const email=document.getElementById('reg-email').value.trim();
     const dn=document.getElementById('reg-data-nascimento').value;
@@ -1257,9 +1288,20 @@ async function handleRegister(){
     const tel=document.getElementById('reg-telefone').value.trim();
     const pass=document.getElementById('reg-pass').value;
     const conf=document.getElementById('reg-pass-confirm').value;
-    if(!nome||!email||!tel||!pass||!dn){showAlert('Preencha todos os campos obrigatórios.');return;}
-    if(pass!==conf){showAlert('As senhas não coincidem.');return;}
-    if(pass.length<6){showAlert('A senha deve ter pelo menos 6 caracteres.');return;}
+
+    if(!nome||!email||!tel||!pass||!dn){
+        showAlert('Preencha todos os campos obrigatórios.');
+        window.isRegistering=false; if(btn) btn.innerText='Criar Conta'; return;
+    }
+    if(pass!==conf){
+        showAlert('As senhas não coincidem.');
+        window.isRegistering=false; if(btn) btn.innerText='Criar Conta'; return;
+    }
+    if(pass.length<6){
+        showAlert('A senha deve ter pelo menos 6 caracteres.');
+        window.isRegistering=false; if(btn) btn.innerText='Criar Conta'; return;
+    }
+
     showLoading(true);
     try{
         const cred=await auth.createUserWithEmailAndPassword(email,pass);
@@ -1271,19 +1313,34 @@ async function handleRegister(){
         showAlert(`📧 <strong>Conta criada!</strong><br><br>Foi enviado um email de confirmação para <strong>${email}</strong>.<br><br>Verifique a caixa de entrada e a pasta de spam. Clique no link para ativar.<br><br>Só poderá entrar depois de confirmar.`);
         closeModal('modal-registro');
     }catch(e){showAlert('Erro: '+e.message);}
-    finally{showLoading(false);}
+    finally{
+        showLoading(false);
+        window.isRegistering=false;
+        if(btn) btn.innerText='Criar Conta';
+    }
 }
+
 async function handleLogin(){
+    if(window.isLoggingIn) return;
+    window.isLoggingIn = true;
+    const btn = document.getElementById('btn-login-action');
+    if(btn) btn.innerText = 'A entrar...';
+
     const email=document.getElementById('login-email').value.trim();
     const pass=document.getElementById('login-pass').value;
-    if(!email||!pass){showAlert('Preencha email e senha.');return;}
+    
+    if(!email||!pass){
+        showAlert('Preencha email e senha.');
+        window.isLoggingIn=false; if(btn) btn.innerText='Entrar'; return;
+    }
+
     showLoading(true);
     try{
         const cred=await auth.signInWithEmailAndPassword(email,pass);
         if(!cred.user.emailVerified && cred.user.email!=='mamfilhos29@gmail.com'){
             await auth.signOut();
             showAlert(`⚠️ <strong>Email não confirmado</strong><br><br>Verifique a caixa de entrada e clique no link.<br><br><a href="#" style="color:var(--gold);" onclick="reenviarVerificacao('${email}','${pass}')">Reenviar email</a>`);
-            return;
+            window.isLoggingIn=false; if(btn) btn.innerText='Entrar'; return;
         }
         currentUser=cred.user;
         const doc=await db.collection('users').doc(currentUser.uid).get();
@@ -1291,8 +1348,13 @@ async function handleLogin(){
         if(userData && !userData.emailVerificado){await db.collection('users').doc(currentUser.uid).update({emailVerificado:true});userData.emailVerificado=true;}
         await setupUI();
     }catch(e){showAlert('Erro: '+e.message);}
-    finally{showLoading(false);}
+    finally{
+        showLoading(false);
+        window.isLoggingIn=false;
+        if(btn) btn.innerText='Entrar';
+    }
 }
+
 window.reenviarVerificacao=async function(email,pass){try{showLoading(true);const cred=await auth.signInWithEmailAndPassword(email,pass);await cred.user.sendEmailVerification();await auth.signOut();showAlert('✅ Email reenviado! Verifique a caixa de entrada.');}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 async function setupUI(){
     document.getElementById('auth-screen').style.display='none';
@@ -1319,6 +1381,7 @@ window.salvarConfiguracoesPerfil=async function(){const nome=document.getElement
 window.alterarSenha=async function(){const a=document.getElementById('settings-senha-atual').value,n=document.getElementById('settings-senha-nova').value,c=document.getElementById('settings-senha-confirm').value;if(!a||!n||!c){showAlert('Preencha todos.');return;}if(n!==c){showAlert('Não coincidem.');return;}if(n.length<6){showAlert('Mínimo 6 caracteres.');return;}showLoading(true);try{const cred=firebase.auth.EmailAuthProvider.credential(currentUser.email,a);await currentUser.reauthenticateWithCredential(cred);await currentUser.updatePassword(n);showAlert('Senha alterada!');}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.confirmarEliminarConta=function(){confirmAction('Eliminar permanentemente?',async r=>{if(r){showLoading(true);try{const rel=await db.collection('releases').where('userId','==',currentUser.uid).get();for(const d of rel.docs)await d.ref.delete();const art=await db.collection('artists').where('ownerId','==',currentUser.uid).get();for(const d of art.docs)await d.ref.delete();await db.collection('users').doc(currentUser.uid).delete();await currentUser.delete();handleLogout();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}}});};
 
+// ==================== HOME E FEED DE ARTISTAS ====================
 async function loadHome(){
   if(!currentUser) return;
   if(window.carregandoHome) return;
@@ -1343,12 +1406,51 @@ async function loadHome(){
     let totalStreams=0;
     musicas.forEach(d=>totalStreams+=(d.data().streams||0));
     document.getElementById('stat-total-streams').innerText=totalStreams.toLocaleString();
+    
+    await renderArtistsFeed();
     await renderFeed();
+
   }catch(e){console.error(e);}
   window.carregandoHome = false;
 }
 
-// ==================== RENDER FEED ====================
+async function renderArtistsFeed() {
+    try {
+        const container = document.getElementById('artists-feed-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        const snap = await db.collection('artists').limit(20).get();
+        if (snap.empty) {
+            container.innerHTML = '<p style="color:var(--gray); font-size:.85rem;">Nenhum artista registado ainda.</p>';
+            return;
+        }
+
+        let artists = [];
+        snap.forEach(d => {
+            const a = d.data();
+            if (!a.suspenso) artists.push({id: d.id, ...a});
+        });
+
+        artists.forEach(a => {
+            const safeId = String(a.id).replace(/'/g, "\\'");
+            const foto = a.foto || 'https://via.placeholder.com/80';
+            const nome = a.nome || 'Artista';
+            const estilo = a.estilo || 'Diverso';
+            
+            container.innerHTML += `
+                <div class="artist-card-feed" onclick="abrirPerfilArtista('${safeId}')">
+                    <img src="${foto}" alt="${nome}">
+                    <h4>${nome}</h4>
+                    <p>${estilo}</p>
+                </div>
+            `;
+        });
+    } catch(e) {
+        console.error("Erro ao carregar feed de artistas:", e);
+    }
+}
+
 async function renderFeed(){
   try{
     const cont=document.getElementById('feed-container');
@@ -1402,7 +1504,6 @@ async function renderFeed(){
   }catch(e){console.error('renderFeed:',e);}
 }
 
-// ==================== REGISTAR OUVINTE (incrementa apenas ouvintes) ====================
 const ouvintesRegistados=new Set();
 window.registarOuvinte=async function(id){
   if(!id||ouvintesRegistados.has(id))return;
@@ -1413,7 +1514,6 @@ window.registarOuvinte=async function(id){
   }catch(e){console.warn('Erro ouvinte:',e);}
 };
 
-// ==================== PARTILHA com link curto + meta tags dinâmicas ====================
 window.partilharMusica=async function(id){
   try{
     const doc=await db.collection('releases').doc(id).get();
@@ -1466,6 +1566,7 @@ function verificarLinkMusica(){
 window.baixarMusicaMP3=async function(id){showLoading(true);document.getElementById('loading-text').innerText='A preparar MP3...';try{const doc=await db.collection('releases').doc(id).get();if(!doc.exists){showAlert('Música não encontrada.');return;}const r=doc.data();try{await db.collection('releases').doc(id).update({downloads:firebase.firestore.FieldValue.increment(1)});}catch(e){console.warn('Erro downloads:',e);}const audioResp=await fetch(r.audioUrl);const audioBuf=await audioResp.arrayBuffer();const audioCtx=new (window.AudioContext||window.webkitAudioContext)();const decoded=await audioCtx.decodeAudioData(audioBuf);const mp3enc=new lamejs.Mp3Encoder(decoded.numberOfChannels>=2?2:1,decoded.sampleRate,192);const left=decoded.getChannelData(0);const right=decoded.numberOfChannels>1?decoded.getChannelData(1):left;const blk=1152;const data=[];for(let i=0;i<decoded.length;i+=blk){const l=left.subarray(i,i+blk),rr=right.subarray(i,i+blk);const l16=new Int16Array(l.length),r16=new Int16Array(rr.length);for(let j=0;j<l.length;j++){l16[j]=Math.max(-1,Math.min(1,l[j]))*0x7FFF;r16[j]=Math.max(-1,Math.min(1,rr[j]))*0x7FFF;}const b=mp3enc.encodeBuffer(l16,r16);if(b.length>0)data.push(new Int8Array(b));}const fl=mp3enc.flush();if(fl.length>0)data.push(new Int8Array(fl));const blob=new Blob(data,{type:'audio/mpeg'});const withID3=await addID3(blob,r);const url=URL.createObjectURL(withID3);const a=document.createElement('a');a.href=url;a.download=`${r.titulo} - ${r.artista}.mp3`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);showAlert('✅ Download concluído!');}catch(e){console.error(e);showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 async function addID3(mp3Blob,r){try{const mp3Buf=await mp3Blob.arrayBuffer();const frames=[];const tf=(id,text)=>{const t=new TextEncoder().encode(text);const s=1+t.length;const f=new Uint8Array(10+s);f.set(new TextEncoder().encode(id),0);f[4]=(s>>24)&0xff;f[5]=(s>>16)&0xff;f[6]=(s>>8)&0xff;f[7]=s&0xff;f[10]=0x03;f.set(t,11);return f;};frames.push(tf('TIT2',r.titulo||''));frames.push(tf('TPE1',r.artista||''));frames.push(tf('TALB',r.titulo||''));frames.push(tf('TCON',r.estilo||''));if(r.coverUrl){try{const cov=await fetch(r.coverUrl);const covBuf=await cov.arrayBuffer();const covBytes=new Uint8Array(covBuf);const mime=r.coverUrl.match(/\.(jpg|jpeg|png)/i)?.[1]||'jpeg';const mimeStr=mime==='png'?'image/png':'image/jpeg';const dB=new TextEncoder().encode('Cover');const s=1+dB.length+1+mimeStr.length+1+covBytes.length;const f=new Uint8Array(10+s);f.set(new TextEncoder().encode('APIC'),0);f[4]=(s>>24)&0xff;f[5]=(s>>16)&0xff;f[6]=(s>>8)&0xff;f[7]=s&0xff;let p=10;f[p++]=0;f.set(dB,p);p+=dB.length;f[p++]=0;for(let i=0;i<mimeStr.length;i++)f[p++]=mimeStr.charCodeAt(i);f[p++]=0;f.set(covBytes,p);frames.push(f);}catch(e){}}const total=frames.reduce((a,b)=>a+b.length,0);const h=new Uint8Array(10);h[0]=0x49;h[1]=0x44;h[2]=0x33;h[3]=3;h[6]=(total>>21)&0x7f;h[7]=(total>>14)&0x7f;h[8]=(total>>7)&0x7f;h[9]=total&0x7f;const result=new Uint8Array(10+total+mp3Buf.byteLength);result.set(h,0);let off=10;frames.forEach(f=>{result.set(f,off);off+=f.length;});result.set(new Uint8Array(mp3Buf),off);return new Blob([result],{type:'audio/mpeg'});}catch(e){return mp3Blob;}}
 
+// ==================== ARTISTAS, PERFIL E EDIÇÃO ====================
 window.loadArtistas=async function(){if(!currentUser)return;const container=document.getElementById('artistas-container');container.innerHTML='<p style="color:var(--gray);">A carregar...</p>';let artistas=[];try{const snap=await db.collection('artists').where('ownerId','==',currentUser.uid).get();snap.forEach(d=>artistas.push({id:d.id,...d.data()}));}catch(e){}if(artistas.length===0){try{const all=await db.collection('artists').get();all.forEach(d=>{const a=d.data();if(a.ownerId===currentUser.uid)artistas.push({id:d.id,...a});});}catch(e){}}if(artistas.length===0){container.innerHTML=`<p style="color:var(--gray);">${currentLang==='pt'?'Nenhum artista.':currentLang==='en'?'No artists.':currentLang==='es'?'Sin artistas.':'Aucun artiste.'}</p>`;return;}artistas.sort((a,b)=>(a.nome||'').localeCompare(b.nome||''));container.innerHTML='';artistas.forEach(a=>{const safeId=String(a.id).replace(/'/g,"\\'");container.innerHTML+=`<div class="list-item"><img src="${a.foto||'https://via.placeholder.com/60'}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;"><div class="list-info"><h4>${a.nome} ${a.seloVerificado?'<span class="selo-badge">✓</span>':''} ${a.isOfficial?'<span class="oficial-badge">OFICIAL</span>':''}</h4><p style="color:var(--gray);font-size:.8rem;">${a.estilo||'—'}</p></div><div class="list-actions"><button class="btn btn-small btn-sec" onclick="editarArtista('${safeId}')">${tr('edit')}</button><button class="btn btn-small btn-danger" onclick="eliminarArtista('${safeId}')">${tr('delete')}</button></div></div>`;});};
 window.openAddArtistModal=function(){document.getElementById('artist-name').value='';document.getElementById('artist-style').value='';['artist-spotify','artist-apple','artist-instagram','artist-tiktok','artist-facebook','artist-bio'].forEach(id=>document.getElementById(id).value='');document.getElementById('artist-photo-preview').src='https://via.placeholder.com/100';pendingArtistPhotoUrl=null;openModal('addArtistModal');};
 document.getElementById('btnSaveArtist')?.addEventListener('click',async function(){const nome=document.getElementById('artist-name').value.trim();const est=document.getElementById('artist-style').value;if(!nome||!est){showAlert('Nome e estilo obrigatórios.');return;}showLoading(true);try{await db.collection('artists').add({ownerId:currentUser.uid,nome,estilo:est,foto:pendingArtistPhotoUrl||null,spotify:document.getElementById('artist-spotify').value.trim()||null,apple:document.getElementById('artist-apple').value.trim()||null,instagram:document.getElementById('artist-instagram').value.trim()||null,tiktok:document.getElementById('artist-tiktok').value.trim()||null,facebook:document.getElementById('artist-facebook').value.trim()||null,bio:document.getElementById('artist-bio').value.trim()||null,seloVerificado:false,suspenso:false,isOfficial:false,createdAt:new Date()});showAlert('✅ Artista criado!');closeModal('addArtistModal');await loadArtistas();await loadHome();carregarSelects();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
@@ -1502,10 +1603,10 @@ window.abrirPerfilArtista=async function(id){
 };
 async function exibirResultadoPesquisa(art){const cont=document.getElementById('resultado-artista-container');let mus=[];try{const s=await db.collection('releases').where('artistaId','==',art.id).get();s.forEach(d=>mus.push({id:d.id,...d.data()}));}catch(e){}let soc='';if(art.spotify)soc+=`<a href="${art.spotify}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-spotify"></i></a>`;if(art.apple)soc+=`<a href="${art.apple}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-apple"></i></a>`;if(art.instagram)soc+=`<a href="${art.instagram}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-instagram"></i></a>`;if(art.tiktok)soc+=`<a href="${art.tiktok}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-tiktok"></i></a>`;if(art.facebook)soc+=`<a href="${art.facebook}" target="_blank" style="color:var(--gold);margin-right:10px;"><i class="fab fa-facebook"></i></a>`;let mh='';if(mus.length>0){mh=`<h4 style="color:var(--gold);margin-top:30px;">${tr('songs')}</h4><div class="grid">`;mus.forEach(m=>{const safeId=String(m.id).replace(/'/g,"\\'");mh+=`<div class="music-card"><div class="stream-badge">${(m.streams||0).toLocaleString()} <i class="fas fa-headphones"></i></div><img src="${m.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title">${m.titulo}</div><div class="music-meta">${m.estilo||''}<br>📅 ${m.dataLancamento||''}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(m.ouvintes||0).toLocaleString()} ${tr('listeners')}</span><span><i class="fas fa-download"></i> ${(m.downloads||0).toLocaleString()} ${tr('downloads')}</span></div><audio controls src="${m.audioUrl}" onplay="registarOuvinte('${safeId}')"></audio><div class="music-actions"><button onclick="partilharMusica('${safeId}')"><i class="fas fa-share-alt"></i></button><button onclick="baixarMusicaMP3('${safeId}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});mh+='</div>';}else mh=`<p style="color:var(--gray);margin-top:20px;">${currentLang==='pt'?'Sem músicas.':currentLang==='en'?'No songs.':currentLang==='es'?'Sin canciones.':'Pas de musique.'}</p>`;cont.innerHTML=`<div class="artist-profile-card"><img src="${art.foto||'https://via.placeholder.com/120'}" class="artist-avatar-lg"><div style="font-size:1.8rem;color:var(--gold);margin:10px 0 5px;">${art.nome} ${art.seloVerificado?'<span class="selo-badge">✓</span>':''} ${art.isOfficial?'<span class="oficial-badge">OFICIAL</span>':''}</div><div style="color:var(--gray);">${art.estilo||''}</div>${art.bio?`<div style="color:var(--gray);max-width:600px;margin:15px auto;">${art.bio}</div>`:''}<div style="margin-top:10px;">${soc}</div></div>${mh}`;}
 
+// ==================== UPLOADS ====================
 function validarCapa(f,cb){const e=[],ok=['image/jpeg','image/jpg','image/png'];if(!ok.includes(f.type))e.push('Use JPG/PNG.');if(f.size>20*1024*1024)e.push('Máx 20MB.');if(e.length){cb(e);return;}const i=new Image(),u=URL.createObjectURL(f);i.onload=()=>{URL.revokeObjectURL(u);if(i.width<1400||i.height<1400)e.push(`Mín 1400x1400. Sua: ${i.width}x${i.height}.`);if(Math.abs(i.width-i.height)>10)e.push('Deve ser quadrada.');cb(e,i.width,i.height);};i.onerror=()=>{URL.revokeObjectURL(u);cb(['Imagem inválida.']);};i.src=u;}
 function validarAudio(f,cb){const e=[],ext=f.name.toLowerCase().split('.').pop();if(ext!=='wav')e.push('Apenas WAV.');if(f.size>500*1024*1024)e.push('Máx 500MB.');cb(e);}
 
-// ==================== UPLOADS ====================
 let uploadInitDone=false;
 function initUpload(){
     if(uploadInitDone) return;
@@ -1659,13 +1760,13 @@ function bufferParaWav(buffer){
 
 document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){const titulo=document.getElementById('music-titulo').value.trim();const aid=document.getElementById('music-artista-select').value;const est=document.getElementById('music-estilo').value;const sub=document.getElementById('music-sub-estilo').value;const cov=document.getElementById('music-capa-url').value;const aud=document.getElementById('music-audio-url').value;if(!titulo||!aid||!est||!sub){showAlert('Preencha todos os campos *');return;}if(!cov){showAlert('❌ Capa obrigatória.');return;}if(!aud){showAlert('❌ Áudio obrigatório.');return;}showLoading(true);try{const isrc=await getNextISRC(),upc=await getNextUPC();document.getElementById('music-isrc').value=isrc;document.getElementById('music-upc').value=upc;const ad=await db.collection('artists').doc(aid).get();if(!ad.exists){showAlert('Artista inválido.');return;}const anome=ad.data().nome;const rd={userId:currentUser.uid,artistaId:aid,artista:anome,titulo,estilo:est+' / '+sub,isrc,upc,idioma:document.getElementById('music-idioma').value||'Português',compositores:document.getElementById('music-compositores').value||'',produtor:document.getElementById('music-produtor').value||'',colaboradores:document.getElementById('music-colaboradores').value||'',explicit:document.getElementById('music-explicit').value||'Não',pline:document.getElementById('music-pline').value||'℗ 2025 MAM',cline:document.getElementById('music-cline').value||'© 2025 MAM',dataLancamento:document.getElementById('music-data').value||new Date().toISOString().split('T')[0],coverUrl:cov,audioUrl:aud,status:'pendente_plataformas',streams:0,ouvintes:0,downloads:0,createdAt:new Date(),distribuido:false};rd.ddexXml=gerarDDEX(rd,{nome:anome});const ref=await db.collection('releases').add(rd);const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Novo lançamento',`${anome} lançou "${titulo}".`));await enviarNotificacao(currentUser.uid,'Lançamento submetido',`"${titulo}" enviada.`);showAlert(`✅ Lançamento submetido!<br>ISRC: ${isrc}<br>UPC: ${upc}`);document.getElementById('form-lancamento').reset();document.getElementById('capa-preview').style.display='none';document.getElementById('audio-upload-progress').classList.remove('active');document.getElementById('tiktok-preview').classList.remove('active');pendingCoverFile=null;pendingAudioFile=null;loadMinhasMusicas();loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
 
+// ==================== PLANOS, CARTEIRA, MENSAGENS, ADMIN ====================
+window.selectPlan=function(p){selectedPlan=p;const pr={free:0,basico:10000,premium:50000};document.getElementById('plan-details').innerHTML=`<p>${tr('nav_plans')}: <strong>${p.toUpperCase()}</strong></p><p>${tr('value_kz')}: ${pr[p]} Kz</p>`;document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='none';openModal('planPurchaseModal');};
+window.selectPaymentMethod=function(m){selectedPaymentMethod=m;if(m==='wallet'){document.getElementById('pay-with-wallet-btn').style.display='block';document.getElementById('bank-info').style.display='none';}else{document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='block';}};
+window.payWithWallet=async function(){if(!selectedPlan)return;const pr={free:0,basico:10000,premium:50000},v=pr[selectedPlan];if(v===0){await db.collection('users').doc(currentUser.uid).update({plano:selectedPlan});showAlert('FREE OK!');closeModal('planPurchaseModal');loadHome();return;}const ud=await db.collection('users').doc(currentUser.uid).get();if((ud.data().saldo||0)<v){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v),plano:selectedPlan});showAlert(`Plano ativado!`);closeModal('planPurchaseModal');loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
+window.sendToWhatsApp=function(){window.open('https://wa.me/244937881307','_blank');};
 window.solicitarSaque=async function(){const v=parseFloat(document.getElementById('saque-valor').value);const nome=document.getElementById('saque-nome').value.trim();const m=document.getElementById('saque-metodo').value;const c=document.getElementById('saque-conta').value.trim();if(!v||v<=0){showAlert('Valor inválido.');return;}if(v<10000){showAlert('❌ Saque mínimo: 10.000 Kz.');return;}if(!nome){showAlert('Nome completo obrigatório.');return;}if(!m){showAlert('Método/Banco obrigatório.');return;}if(!c){showAlert('IBAN/Conta obrigatório.');return;}if(v>(userData.saldo||0)){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('withdrawals').add({userId:currentUser.uid,userNome:userData.nome,userEmail:userData.email,titularNome:nome,valor:v,moeda:'AOA',metodo:m,conta:c,status:'aguardando_aprovacao',createdAt:new Date()});const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Saque pendente',`${userData.nome}: ${v.toLocaleString()} Kz via ${m}.`));await enviarNotificacao(currentUser.uid,'Saque solicitado',`O seu saque de ${v.toLocaleString()} Kz aguarda aprovação.`);await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v)});showAlert(`✅ Saque solicitado!`);closeModal('saqueModal');loadWallet();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.openSaqueModal=function(){document.getElementById('saque-valor').value='';document.getElementById('saque-nome').value=userData.nome||'';document.getElementById('saque-metodo').value='';document.getElementById('saque-conta').value='';openModal('saqueModal');};
-
-window.selectPlan=function(p){selectedPlan=p;const pr={free:0,basico:10000,premium:25000};document.getElementById('plan-details').innerHTML=`<p>${tr('nav_plans')}: <strong>${p.toUpperCase()}</strong></p><p>${tr('value_kz')}: ${pr[p]} Kz</p>`;document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='none';openModal('planPurchaseModal');};
-window.selectPaymentMethod=function(m){selectedPaymentMethod=m;if(m==='wallet'){document.getElementById('pay-with-wallet-btn').style.display='block';document.getElementById('bank-info').style.display='none';}else{document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='block';}};
-window.payWithWallet=async function(){if(!selectedPlan)return;const pr={free:0,basico:10000,premium:25000},v=pr[selectedPlan];if(v===0){await db.collection('users').doc(currentUser.uid).update({plano:selectedPlan});showAlert('FREE OK!');closeModal('planPurchaseModal');loadHome();return;}const ud=await db.collection('users').doc(currentUser.uid).get();if((ud.data().saldo||0)<v){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v),plano:selectedPlan});showAlert(`Plano ativado!`);closeModal('planPurchaseModal');loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
-window.sendToWhatsApp=function(){window.open('https://wa.me/244937881307','_blank');};
 
 window.loadUserChat=function(){if(!currentUser)return;if(chatUserUnsubscribe)chatUserUnsubscribe();chatUserUnsubscribe=db.collection('messages').where('userId','==',currentUser.uid).onSnapshot(snap=>{const box=document.getElementById('chat-user-box');if(!box)return;if(snap.empty){box.innerHTML='<p style="color:var(--gray);text-align:center;">—</p>';return;}const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return ta-tb;});box.innerHTML='';arr.forEach(m=>{const cls=m.from==='user'?'user':'admin';const who=m.from==='user'?'Eu':'MAM';box.innerHTML+=`<div class="chat-msg ${cls}"><div class="who">${who}</div>${m.texto}</div>`;});box.scrollTop=box.scrollHeight;},err=>console.warn(err));};
 window.enviarMensagemUser=async function(){const txt=document.getElementById('chat-user-input').value.trim();if(!txt){showAlert('Escreva uma mensagem.');return;}try{await db.collection('messages').add({userId:currentUser.uid,userName:userData.nome,userEmail:userData.email,from:'user',texto:txt,createdAt:new Date(),lida:false});const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Nova mensagem',`${userData.nome}: "${txt.substring(0,60)}"`));document.getElementById('chat-user-input').value='';}catch(e){showAlert('Erro: '+e.message);}};
@@ -1858,7 +1959,6 @@ window.applyStreams = async function(id, multiplier) {
 
 window.adminGerarManualPDF=async function(){if(!isAdmin())return;const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});const pw=210,m=15;let y=20;const h1=t=>{if(y+15>280){doc.addPage();y=20;}doc.setFontSize(18);doc.setTextColor(212,175,55);doc.text(t,m,y);y+=10;};const p=t=>{if(y+8>280){doc.addPage();y=20;}doc.setFontSize(10);doc.setTextColor(60,60,60);const l=doc.splitTextToSize(t,pw-m*2);doc.text(l,m,y);y+=l.length*5+3;};doc.setFillColor(0,0,0);doc.rect(0,0,pw,297,'F');doc.setTextColor(212,175,55);doc.setFontSize(32);doc.text('MAM DISTRIBUIDORA',pw/2,120,{align:'center'});doc.setFontSize(16);doc.text('Manual de Instrução',pw/2,135,{align:'center'});doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text('Fundado por Matias Arsénio Manuel',pw/2,270,{align:'center'});doc.addPage();y=20;h1('1. INTRODUÇÃO');p('MAM Distribuidora: plataforma angolana de distribuição digital para 150+ plataformas.');h1('2. REGISTO');p('Nome, email, data, telefone, senha. Confirmação por email obrigatória.');h1('3. LANÇAMENTO');p('Capa: JPG/PNG min 1400x1400 px 1:1 máx 20MB. Áudio: WAV 44.1/48kHz 16/24-bit estéreo máx 500MB.');h1('4. ISRC/UPC');p('ISRC: IFPI AOMAM25XXXXX. UPC: GS1 12 dígitos.');h1('5. ADMIN');p('Verificar artistas, Oficial, Suspender, Mudar Plano.');h1('6. SAQUES');p('Mínimo 10.000 Kz. Nome titular, banco e IBAN.');h1('7. SUPORTE');p('Email: mamfilhos29@gmail.com | WhatsApp: +244 937 881 307');doc.save('MAM_Manual.pdf');showAlert('✅ PDF!');};
 
-// ==================== RODAPÉ (INALTERADO) ====================
 window.showFooterContent=function(t){
     const c={
         'sobre': `<div class="legal-content">
@@ -2191,7 +2291,6 @@ function carregarSelects(){
     }
 }
 
-// ==================== LÓGICA DE VERIFICAÇÃO DE PERFIL (SPOTIFY, APPLE, DEEZER) ====================
 document.addEventListener('DOMContentLoaded', () => {
     const selectArtista = document.getElementById('music-artista-select');
     const verifyBox = document.getElementById('platform-profile-verify');
@@ -2199,12 +2298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectArtista && verifyBox) {
         selectArtista.addEventListener('change', async function() {
             const artistId = this.value;
-            
-            if (!artistId) {
-                verifyBox.style.display = 'none';
-                return;
-            }
-            
+            if (!artistId) { verifyBox.style.display = 'none'; return; }
             verifyBox.style.display = 'block';
             
             try {
@@ -2215,12 +2309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const resetSelect = (id) => {
                         const sel = document.getElementById(id);
-                        if(sel) {
-                            sel.innerHTML = `
-                                <option value="">Selecione seu perfil</option>
-                                <option value="novo">Não é meu perfil / Criar novo perfil</option>
-                            `;
-                        }
+                        if(sel) sel.innerHTML = `<option value="">Selecione seu perfil</option><option value="novo">Não é meu perfil / Criar novo perfil</option>`;
                     };
                     
                     resetSelect('profile-spotify-select');
@@ -2231,47 +2320,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         const sel = document.getElementById(selectId);
                         if(sel) {
                             const opt = document.createElement('option');
-                            opt.value = value;
-                            opt.text = text;
+                            opt.value = value; opt.text = text;
                             sel.insertBefore(opt, sel.options[1]);
                         }
                     };
 
-                    if (artistData.spotify) {
-                        addOption('profile-spotify-select', nomeArtista, artistData.spotify);
-                    }
-                    
-                    if (artistData.apple) {
-                        addOption('profile-apple-select', nomeArtista, artistData.apple);
-                    }
-                    
-                    ['profile-spotify-select', 'profile-apple-select', 'profile-deezer-select'].forEach(id => {
-                        const el = document.getElementById(id);
-                        if(el && !el.dataset.bound) {
-                            el.dataset.bound = 'true';
-                            el.addEventListener('change', function() {
-                                if (this.value === 'novo') {
-                                    console.log('Utilizador escolheu criar novo perfil para ' + id);
-                                }
-                            });
-                        }
-                    });
+                    if (artistData.spotify) addOption('profile-spotify-select', nomeArtista, artistData.spotify);
+                    if (artistData.apple) addOption('profile-apple-select', nomeArtista, artistData.apple);
                 }
-            } catch (error) {
-                console.error("Erro ao carregar perfis do artista:", error);
-            }
+            } catch (error) { console.error(error); }
         });
     }
 });
 
-// ==================== PESQUISA REAL NO DEEZER (API PÚBLICA) ====================
 window.pesquisarDeezer = async function() {
     const query = document.getElementById('profile-deezer-search').value.trim();
     const resultsDiv = document.getElementById('deezer-results');
-    if (!query) {
-        resultsDiv.style.display = 'none';
-        return;
-    }
+    if (!query) { resultsDiv.style.display = 'none'; return; }
     
     resultsDiv.style.display = 'block';
     resultsDiv.innerHTML = '<p style="color:var(--gray); font-size:.8rem; text-align:center; padding:10px;">A pesquisar no Deezer...</p>';
@@ -2292,10 +2357,6 @@ window.pesquisarDeezer = async function() {
                     const option = document.createElement('option');
                     option.value = artist.id;
                     option.text = `${artist.name} (Deezer)`;
-                    Array.from(select.options).forEach(opt => {
-                        if (opt.value !== '' && opt.value !== 'novo' && opt.value !== artist.id) {
-                        }
-                    });
                     select.appendChild(option);
                     select.value = artist.id;
                     resultsDiv.style.display = 'none';
@@ -2305,20 +2366,16 @@ window.pesquisarDeezer = async function() {
                 const img = document.createElement('img');
                 img.src = artist.picture_small || 'https://via.placeholder.com/30';
                 img.style.cssText = 'width:30px; height:30px; border-radius:50%;';
-                
                 const info = document.createElement('div');
                 info.style.cssText = 'flex:1;';
                 info.innerHTML = `<strong style="color:#fff; font-size:.85rem;">${artist.name}</strong><br><small style="color:var(--gray); font-size:.7rem;">ID: ${artist.id}</small>`;
                 
-                item.appendChild(img);
-                item.appendChild(info);
-                resultsDiv.appendChild(item);
+                item.appendChild(img); item.appendChild(info); resultsDiv.appendChild(item);
             });
         } else {
             resultsDiv.innerHTML = '<p style="color:var(--gray); font-size:.8rem; text-align:center; padding:10px;">Nenhum artista encontrado no Deezer.</p>';
         }
     } catch (error) {
-        console.error('Erro na pesquisa Deezer:', error);
         resultsDiv.innerHTML = '<p style="color:var(--danger); font-size:.8rem; text-align:center; padding:10px;">Erro ao pesquisar. Tente novamente.</p>';
     }
 };
@@ -2349,7 +2406,7 @@ auth.onAuthStateChanged(async user=>{
     }
 });
 
-console.log('🚀 MAM v20 — Ouvintes e Streams Separados + Gestão de Streams (+/-) no ADM');
+console.log('🚀 MAM v21 — Feed de Artistas + Planos + Login Rápido');
 </script>
 </body>
 </html>

@@ -47,12 +47,24 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none;bo
 .btn-success{background:var(--success);color:#fff}
 .btn-info{background:var(--info);color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px}
+
+/* CSS DO MOSAICO DE ARTISTAS */
 .artist-feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;margin-bottom:20px;}
 .artist-card-feed{text-align:center;cursor:pointer;padding:10px 5px;background:#111;border-radius:8px;border:1px solid #222;transition:all 0.3s;}
 .artist-card-feed:hover{border-color:var(--gold);transform:translateY(-2px);background:rgba(212,175,55,.05);}
 .artist-card-feed img{width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;margin-bottom:8px;}
 .artist-card-feed h4{color:var(--gold);font-size:.8rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .artist-card-feed p{color:var(--gray);font-size:.65rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* CSS DO MOSAICO DE MÚSICAS */
+.music-feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:20px;}
+.music-card-compact{text-align:center;cursor:pointer;padding:10px 5px;background:#111;border-radius:8px;border:1px solid #222;transition:all 0.3s;position:relative;}
+.music-card-compact:hover{border-color:var(--gold);transform:translateY(-2px);background:rgba(212,175,55,.05);}
+.music-card-compact img{width:80px;height:80px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;margin-bottom:8px;}
+.music-card-compact h4{color:var(--gold);font-size:.8rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.music-card-compact p{color:var(--gray);font-size:.65rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.music-card-compact .stream-badge{top:5px;right:5px;font-size:0.55rem;padding:2px 6px;}
+
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-bottom:20px}
 .stat-box{background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.3);padding:20px;border-radius:10px;text-align:center}
 .stat-box h4{color:var(--gold);font-size:1.8rem;margin-bottom:5px}
@@ -202,7 +214,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 .tiktok-preview .tiktok-badge{background:#dc3545;color:#fff;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:bold}
 .tiktok-preview p{color:#bbb;font-size:.8rem;margin-bottom:10px;line-height:1.5}
 .upload-status-line{font-size:.85rem;margin-top:10px;color:var(--success)}
-@media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.artist-feed-grid{grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}.legal-content .stat-row{grid-template-columns:1fr}}
+@media(max-width:768px){.container{padding:15px}.grid{grid-template-columns:1fr}.artist-feed-grid{grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));}.music-feed-grid{grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));}.form-row{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.carousel{height:auto;min-height:280px}.carousel-slide h2{font-size:1.3rem}.carousel-slide p{font-size:.85rem}.legal-content .stat-row{grid-template-columns:1fr}}
 .platform-selector-row {display:flex; align-items:center; gap:15px; margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:12px;}
 .platform-selector-row img, .platform-selector-row i {width:35px; font-size:2.2rem; text-align:center;}
 .platform-selector-row select {margin-bottom:0; flex:1; padding:12px; background:#0a0a0a;}
@@ -345,7 +357,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 
 <div class="card">
 <h3><i class="fas fa-rss"></i> Lançamentos</h3>
-<div id="feed-container-public" class="grid"></div>
+<div id="feed-container-public" class="music-feed-grid"></div>
 </div>
 
 <div class="video-section">
@@ -471,7 +483,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div id="artists-feed-container" class="artist-feed-grid"></div>
 </div>
 
-<div class="card"><h3><i class="fas fa-rss"></i> <span data-i18n="feed_title">Feed Global de Lançamentos</span></h3><div id="feed-container" class="grid"></div></div>
+<div class="card"><h3><i class="fas fa-rss"></i> <span data-i18n="feed_title">Feed Global de Lançamentos</span></h3><div id="feed-container" class="music-feed-grid"></div></div>
 </section>
 
 <section id="planos" class="section">
@@ -919,6 +931,36 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div id="genericModalBody"></div>
 </div></div>
 
+<!-- MODAL PARA A MÚSICA EM TAMANHO MAIOR -->
+<div id="modal-music-details" class="modal"><div class="modal-content" style="max-width:650px;">
+<button class="modal-close" onclick="closeModal('modal-music-details')"><i class="fas fa-times"></i></button>
+<div style="text-align:center;">
+    <img id="modal-music-cover" src="" style="width:200px;height:200px;border-radius:50%;border:4px solid var(--gold);object-fit:cover;margin-bottom:15px;">
+    <h2 id="modal-music-title" style="color:var(--gold);font-size:1.5rem;margin-bottom:5px;"></h2>
+    <p id="modal-music-artist" style="color:var(--gray);font-size:1.1rem;margin-bottom:10px;"></p>
+    <p id="modal-music-genre" style="color:var(--gray);font-size:.85rem;"></p>
+    <p style="color:var(--gray);font-size:.85rem;margin-bottom:10px;">📅 <span id="modal-music-date"></span></p>
+    
+    <div class="stats-inline" style="margin-bottom:15px; font-size:.9rem;">
+        <span><i class="fas fa-headphones"></i> <span id="modal-music-ouvintes"></span> ouvintes</span>
+        <span><i class="fas fa-download"></i> <span id="modal-music-downloads"></span> downloads</span>
+        <span><i class="fas fa-chart-line"></i> <span id="modal-music-streams"></span> streams</span>
+    </div>
+
+    <audio id="modal-music-audio" controls style="width:100%;margin-bottom:15px;"></audio>
+
+    <div style="background:#111;padding:15px;border-radius:8px;margin-bottom:15px;text-align:left;font-size:.8rem;color:#ccc;">
+        <p><strong>ISRC:</strong> <span id="modal-music-isrc"></span></p>
+        <p><strong>UPC:</strong> <span id="modal-music-upc"></span></p>
+    </div>
+
+    <div class="music-actions" style="justify-content:center;">
+        <button class="btn" style="width:auto;padding:10px 20px;" id="modal-btn-share"><i class="fas fa-share-alt"></i> Partilhar</button>
+        <button class="btn btn-sec" style="width:auto;padding:10px 20px;" id="modal-btn-download"><i class="fas fa-download"></i> Download MP3</button>
+    </div>
+</div>
+</div></div>
+
 <script>
 const translations = {
   pt: {
@@ -1336,21 +1378,11 @@ async function renderFeed(){
             }catch(e){}
           }
           const safeId = String(r.id).replace(/'/g,"\\'");
-          feedHTML+=`<div class="music-card">
+          feedHTML+=`<div class="music-card-compact" onclick="openMusicModal('${safeId}')">
             <div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div>
-            <img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover">
-            <div class="music-title" onclick="abrirPerfilArtista('${safeId}')">${r.titulo}</div>
-            <div class="music-artist" onclick="abrirPerfilArtista('${safeId}')"><i class="fas fa-user-music"></i> ${artName}</div>
-            <div class="music-meta">${r.estilo||''}<br>📅 ${r.dataLancamento||''}</div>
-            <div class="stats-inline">
-              <span><i class="fas fa-headphones"></i> ${(r.ouvintes||0).toLocaleString()} ${tr('listeners')}</span>
-              <span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} ${tr('downloads')}</span>
-            </div>
-            <audio controls src="${r.audioUrl}" onplay="registarOuvinte('${safeId}')"></audio>
-            <div class="music-actions">
-              <button onclick="partilharMusica('${safeId}')"><i class="fas fa-share-alt"></i> ${tr('share')}</button>
-              <button onclick="baixarMusicaMP3('${safeId}')"><i class="fas fa-download"></i> ${tr('download_mp3')}</button>
-            </div>
+            <img src="${r.coverUrl||'https://via.placeholder.com/140'}">
+            <h4 title="${r.titulo}">${r.titulo}</h4>
+            <p title="${artName}">${artName}</p>
           </div>`;
         }
     }
@@ -1359,6 +1391,44 @@ async function renderFeed(){
 
   }catch(e){console.error('renderFeed:',e);}
 }
+
+// ==================== ABRIR DETALHES DA MÚSICA EM TAMANHO MAIOR ====================
+window.openMusicModal = async function(id) {
+    showLoading(true);
+    try {
+        const doc = await db.collection('releases').doc(id).get();
+        if (!doc.exists) return;
+        const r = doc.data();
+        
+        document.getElementById('modal-music-cover').src = r.coverUrl || 'https://via.placeholder.com/200';
+        document.getElementById('modal-music-title').innerText = r.titulo;
+        document.getElementById('modal-music-artist').innerText = r.artista;
+        document.getElementById('modal-music-genre').innerText = r.estilo || 'Género';
+        document.getElementById('modal-music-date').innerText = r.dataLancamento || 'Data';
+        
+        document.getElementById('modal-music-ouvintes').innerText = (r.ouvintes || 0).toLocaleString();
+        document.getElementById('modal-music-downloads').innerText = (r.downloads || 0).toLocaleString();
+        document.getElementById('modal-music-streams').innerText = (r.streams || 0).toLocaleString();
+        
+        document.getElementById('modal-music-isrc').innerText = r.isrc || 'N/A';
+        document.getElementById('modal-music-upc').innerText = r.upc || 'N/A';
+        
+        const audio = document.getElementById('modal-music-audio');
+        audio.src = r.audioUrl;
+        audio.load();
+        audio.onplay = () => registarOuvinte(id);
+        
+        document.getElementById('modal-btn-download').onclick = () => baixarMusicaMP3(id);
+        document.getElementById('modal-btn-share').onclick = () => partilharMusica(id);
+
+        openModal('modal-music-details');
+    } catch(e) {
+        console.error(e);
+        showAlert('Erro ao carregar detalhes da música.');
+    } finally {
+        showLoading(false);
+    }
+};
 
 const ouvintesRegistados=new Set();
 window.registarOuvinte=async function(id){
@@ -2322,7 +2392,7 @@ auth.onAuthStateChanged(async user=>{
     }
 });
 
-console.log('🚀 MAM v23 — Logotipo Corrigido, Feed Público, Seguidores e Planos Profissionais');
+console.log('🚀 MAM v24 — Feed em Mosaico com Modal Detalhado');
 </script>
 </body>
 </html>

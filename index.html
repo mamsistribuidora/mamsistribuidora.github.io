@@ -48,7 +48,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none;bo
 .btn-info{background:var(--info);color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px}
 
-/* CSS DO MOSAICO DE ARTISTAS */
+/* MOSAICO DE ARTISTAS */
 .artist-feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;margin-bottom:20px;}
 .artist-card-feed{text-align:center;cursor:pointer;padding:10px 5px;background:#111;border-radius:8px;border:1px solid #222;transition:all 0.3s;}
 .artist-card-feed:hover{border-color:var(--gold);transform:translateY(-2px);background:rgba(212,175,55,.05);}
@@ -56,7 +56,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none;bo
 .artist-card-feed h4{color:var(--gold);font-size:.8rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .artist-card-feed p{color:var(--gray);font-size:.65rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-/* CSS DO MOSAICO DE MÚSICAS */
+/* MOSAICO DE MÚSICAS */
 .music-feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:20px;}
 .music-card-compact{text-align:center;cursor:pointer;padding:10px 5px;background:#111;border-radius:8px;border:1px solid #222;transition:all 0.3s;position:relative;}
 .music-card-compact:hover{border-color:var(--gold);transform:translateY(-2px);background:rgba(212,175,55,.05);}
@@ -255,7 +255,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 
 <div id="modal-suspender" class="modal"><div class="modal-content" style="max-width:500px;">
 <button class="modal-close" onclick="closeModal('modal-suspender')"><i class="fas fa-times"></i></button>
-<h3>Suspender Artista</h3>
+<h3>Suspender Artista/Utilizador</h3>
 <input type="hidden" id="susp-artist-id">
 <p id="susp-artist-nome" style="color:var(--gray);margin-bottom:15px;"></p>
 <label>Duração (dias)</label>
@@ -315,7 +315,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <button class="nav-btn" id="nav-mensagens" style="display:none;" onclick="showSection('mensagens',this)" data-i18n="nav_messages"><i class="fas fa-comments"></i> Mensagens</button>
 <button class="nav-btn" id="nav-config" style="display:none;" onclick="openModal('modal-settings')" data-i18n="nav_settings"><i class="fas fa-cog"></i> Definições</button>
 <button class="nav-btn" id="nav-notifications" style="display:none;position:relative;" onclick="toggleNotifications()"><i class="fas fa-bell"></i><span id="notif-badge" class="badge" style="display:none;">0</span></button>
-<button class="nav-btn" id="btn-admin-global" style="display:none;" onclick="showSection('admin',this)"><i class="fas fa-shield-alt"></i> ADMIN</button>
+<button class="nav-btn" id="btn-admin-global" style="display:none;" onclick="showSection('admin',this)"><i class="fas fa-shield-alt"></i> <span id="admin-btn-text">ADMIN</span></button>
 <button class="nav-btn" id="nav-login" onclick="openModal('modal-login')" data-i18n="nav_login"><i class="fas fa-sign-in-alt"></i> Entrar</button>
 <button class="nav-btn" id="nav-logout" style="display:none;" onclick="handleLogout()" data-i18n="nav_logout"><i class="fas fa-sign-out-alt"></i> Sair</button>
 </nav>
@@ -350,14 +350,15 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
     </a>
 </div>
 
-<div class="card">
-<h3><i class="fas fa-users"></i> Artistas</h3>
-<div id="artists-feed-public" class="artist-feed-grid"></div>
-</div>
-
+<!-- INVERTIDO: MÚSICAS PRIMEIRO, DEPOIS ARTISTAS (PUBLICO) -->
 <div class="card">
 <h3><i class="fas fa-rss"></i> Lançamentos</h3>
 <div id="feed-container-public" class="music-feed-grid"></div>
+</div>
+
+<div class="card">
+<h3><i class="fas fa-users"></i> Artistas</h3>
+<div id="artists-feed-public" class="artist-feed-grid"></div>
 </div>
 
 <div class="video-section">
@@ -478,12 +479,13 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <div class="stat-box"><h4 id="stat-total-streams">0</h4><p data-i18n="total_streams">Total Streams</p></div>
 </div>
 
+<!-- INVERTIDO: MÚSICAS PRIMEIRO, DEPOIS ARTISTAS (LOGADO) -->
+<div class="card"><h3><i class="fas fa-rss"></i> <span data-i18n="feed_title">Feed Global de Lançamentos</span></h3><div id="feed-container" class="music-feed-grid"></div></div>
+
 <div class="card">
 <h3><i class="fas fa-users"></i> Artistas</h3>
 <div id="artists-feed-container" class="artist-feed-grid"></div>
 </div>
-
-<div class="card"><h3><i class="fas fa-rss"></i> <span data-i18n="feed_title">Feed Global de Lançamentos</span></h3><div id="feed-container" class="music-feed-grid"></div></div>
 </section>
 
 <section id="planos" class="section">
@@ -704,7 +706,7 @@ footer{background:#050505;border-top:1px solid #222;padding:40px 20px;text-align
 <button class="admin-tab-btn" data-tab="users" onclick="adminTab('users',this)" data-i18n="tab_users">Utilizadores</button>
 <button class="admin-tab-btn" data-tab="withdrawals" onclick="adminTab('withdrawals',this)" data-i18n="tab_withdrawals">Saques</button>
 <button class="admin-tab-btn" data-tab="royalties" onclick="adminTab('royalties',this)">Royalties</button>
-<button class="admin-tab-btn" data-tab="messages" onclick="adminTab('messages',this)" data-i18n="tab_messages">Mensagens</button>
+<button class="admin-tab-btn" data-tab="messages" onclick="adminTab('messages',this)" data-i18n="tab_messages">Caixa de Entrada</button>
 <button class="admin-tab-btn" data-tab="verifications" onclick="adminTab('verifications',this)" data-i18n="tab_verifications">Verificações</button>
 <button class="admin-tab-btn" data-tab="streams" onclick="adminTab('streams',this)">Streams</button>
 <button class="admin-tab-btn" data-tab="manual" onclick="adminTab('manual',this)">Manual PDF</button>
@@ -1166,6 +1168,20 @@ window.toggleNotifications=function(){const d=document.getElementById('notif-dro
 window.fecharNotificacoes=function(){document.getElementById('notif-dropdown').style.display='none';};
 window.marcarNotificacaoLida=async function(id){try{await db.collection('notifications').doc(id).update({lida:true});}catch(e){}};
 async function enviarNotificacao(uid,t,m){try{await db.collection('notifications').add({userId:uid,titulo:t,mensagem:m,lida:false,createdAt:new Date()});}catch(e){}}
+async function notificarAdmins(titulo, mensagem, acao) {
+    try {
+        const admins = await db.collection('users').where('role', 'in', ['admin', 'admin_adjunto', 'suporte']).get();
+        admins.forEach(admin => {
+            db.collection('notifications').add({
+                userId: admin.id,
+                titulo: titulo,
+                mensagem: mensagem,
+                lida: false,
+                createdAt: new Date()
+            });
+        });
+    } catch(e) { console.warn(e); }
+}
 
 // ==================== LOGIN E REGISTO RÁPIDOS ====================
 async function handleRegister(){
@@ -1200,8 +1216,13 @@ async function handleRegister(){
         const cred=await auth.createUserWithEmailAndPassword(email,pass);
         await cred.user.sendEmailVerification();
         await db.collection('users').doc(cred.user.uid).set({nome,email,telefone:pc+' '+tel,telefoneCodigo:pc,telefoneNumero:tel,pais:"Angola",tipo:"artista",plano:"free",dataNascimento:dn,saldo:0,ganhosMes:0,ganhosTotal:0,fotoPerfil:null,role:'user',emailVerificado:false,createdAt:new Date()});
+        
         await db.collection('notifications').add({userId:cred.user.uid,titulo:'🎉 Bem-vindo à MAM Distribuidora!',mensagem:`Olá ${nome}! A sua conta foi criada. Confirme o email para ativar.`,lida:false,createdAt:new Date()});
         await db.collection('messages').add({userId:cred.user.uid,userName:nome,userEmail:email,from:'admin',adminName:'MAM Distribuidora',texto:`Bem-vindo(a) à MAM Distribuidora, ${nome}!`,createdAt:new Date(),lida:false});
+        
+        // Notificar todos os Admins sobre a nova conta
+        await notificarAdmins('Nova Conta Criada', `O utilizador ${nome} (${email}) registou-se.`);
+
         await auth.signOut();
         showAlert(`📧 <strong>Conta criada!</strong><br><br>Foi enviado um email de confirmação para <strong>${email}</strong>.<br><br>Verifique a caixa de entrada e a pasta de spam. Clique no link para ativar.<br><br>Só poderá entrar depois de confirmar.`);
         closeModal('modal-registro');
@@ -1256,8 +1277,22 @@ async function setupUI(){
     document.getElementById('nav-logout').style.display='inline-block';
     document.getElementById('lang-float').style.display='none';
     ['artistas','lancar','minhas-musicas','carteira','perfil','config','notifications','mensagens'].forEach(id=>{const e=document.getElementById('nav-'+id);if(e)e.style.display='inline-block';});
-    if(currentUser.email==="mamfilhos29@gmail.com"){document.getElementById('btn-admin-global').style.display='inline-block';await db.collection('users').doc(currentUser.uid).update({plano:'premium',role:'admin',emailVerificado:true});if(userData){userData.plano='premium';userData.role='admin';}}
-    else if(userData && (userData.role==='admin_adjunto'||userData.role==='admin')){document.getElementById('btn-admin-global').style.display='inline-block';}
+    
+    if(currentUser.email==="mamfilhos29@gmail.com"){
+        document.getElementById('btn-admin-global').style.display='inline-block';
+        document.getElementById('admin-btn-text').innerText='ADMIN GERAL';
+        await db.collection('users').doc(currentUser.uid).update({plano:'premium',role:'admin',emailVerificado:true});
+        if(userData){userData.plano='premium';userData.role='admin';}
+    }
+    else if(userData && userData.role==='admin_adjunto'){
+        document.getElementById('btn-admin-global').style.display='inline-block';
+        document.getElementById('admin-btn-text').innerText='ADM ADJUNTO';
+    }
+    else if(userData && userData.role==='suporte'){
+        document.getElementById('btn-admin-global').style.display='inline-block';
+        document.getElementById('admin-btn-text').innerText='SUPORTE MAM';
+    }
+    
     showSection('home',document.querySelector('.nav-btn.active'));
     await loadHome();
     carregarSelects();
@@ -1736,20 +1771,31 @@ function bufferParaWav(buffer){
     return new Blob([bufferArray],{type:'audio/wav'});
 }
 
-document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){const titulo=document.getElementById('music-titulo').value.trim();const aid=document.getElementById('music-artista-select').value;const est=document.getElementById('music-estilo').value;const sub=document.getElementById('music-sub-estilo').value;const cov=document.getElementById('music-capa-url').value;const aud=document.getElementById('music-audio-url').value;if(!titulo||!aid||!est||!sub){showAlert('Preencha todos os campos *');return;}if(!cov){showAlert('❌ Capa obrigatória.');return;}if(!aud){showAlert('❌ Áudio obrigatório.');return;}showLoading(true);try{const isrc=await getNextISRC(),upc=await getNextUPC();document.getElementById('music-isrc').value=isrc;document.getElementById('music-upc').value=upc;const ad=await db.collection('artists').doc(aid).get();if(!ad.exists){showAlert('Artista inválido.');return;}const anome=ad.data().nome;const rd={userId:currentUser.uid,artistaId:aid,artista:anome,titulo,estilo:est+' / '+sub,isrc,upc,idioma:document.getElementById('music-idioma').value||'Português',compositores:document.getElementById('music-compositores').value||'',produtor:document.getElementById('music-produtor').value||'',colaboradores:document.getElementById('music-colaboradores').value||'',explicit:document.getElementById('music-explicit').value||'Não',pline:document.getElementById('music-pline').value||'℗ 2025 MAM',cline:document.getElementById('music-cline').value||'© 2025 MAM',dataLancamento:document.getElementById('music-data').value||new Date().toISOString().split('T')[0],coverUrl:cov,audioUrl:aud,status:'pendente_plataformas',streams:0,ouvintes:0,downloads:0,createdAt:new Date(),distribuido:false};rd.ddexXml=gerarDDEX(rd,{nome:anome});const ref=await db.collection('releases').add(rd);const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Novo lançamento',`${anome} lançou "${titulo}".`));await enviarNotificacao(currentUser.uid,'Lançamento submetido',`"${titulo}" enviada.`);showAlert(`✅ Lançamento submetido!<br>ISRC: ${isrc}<br>UPC: ${upc}`);document.getElementById('form-lancamento').reset();document.getElementById('capa-preview').style.display='none';document.getElementById('audio-upload-progress').classList.remove('active');document.getElementById('tiktok-preview').classList.remove('active');pendingCoverFile=null;pendingAudioFile=null;loadMinhasMusicas();loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
+document.getElementById('btnEnviarLancamento')?.addEventListener('click',async function(){const titulo=document.getElementById('music-titulo').value.trim();const aid=document.getElementById('music-artista-select').value;const est=document.getElementById('music-estilo').value;const sub=document.getElementById('music-sub-estilo').value;const cov=document.getElementById('music-capa-url').value;const aud=document.getElementById('music-audio-url').value;if(!titulo||!aid||!est||!sub){showAlert('Preencha todos os campos *');return;}if(!cov){showAlert('❌ Capa obrigatória.');return;}if(!aud){showAlert('❌ Áudio obrigatório.');return;}showLoading(true);try{const isrc=await getNextISRC(),upc=await getNextUPC();document.getElementById('music-isrc').value=isrc;document.getElementById('music-upc').value=upc;const ad=await db.collection('artists').doc(aid).get();if(!ad.exists){showAlert('Artista inválido.');return;}const anome=ad.data().nome;const rd={userId:currentUser.uid,artistaId:aid,artista:anome,titulo,estilo:est+' / '+sub,isrc,upc,idioma:document.getElementById('music-idioma').value||'Português',compositores:document.getElementById('music-compositores').value||'',produtor:document.getElementById('music-produtor').value||'',colaboradores:document.getElementById('music-colaboradores').value||'',explicit:document.getElementById('music-explicit').value||'Não',pline:document.getElementById('music-pline').value||'℗ 2025 MAM',cline:document.getElementById('music-cline').value||'© 2025 MAM',dataLancamento:document.getElementById('music-data').value||new Date().toISOString().split('T')[0],coverUrl:cov,audioUrl:aud,status:'pendente_plataformas',streams:0,ouvintes:0,downloads:0,createdAt:new Date(),distribuido:false};rd.ddexXml=gerarDDEX(rd,{nome:anome});const ref=await db.collection('releases').add(rd);
+        // Notificar Admins sobre novo lançamento
+        await notificarAdmins('Novo Lançamento Submetido', `${anome} submeteu a música "${titulo}" para aprovação.`);
+        await enviarNotificacao(currentUser.uid,'Lançamento submetido',`"${titulo}" enviada e a aguardar aprovação.`);
+        showAlert(`✅ Lançamento submetido!<br>ISRC: ${isrc}<br>UPC: ${upc}`);document.getElementById('form-lancamento').reset();document.getElementById('capa-preview').style.display='none';document.getElementById('audio-upload-progress').classList.remove('active');document.getElementById('tiktok-preview').classList.remove('active');pendingCoverFile=null;pendingAudioFile=null;loadMinhasMusicas();loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}});
 
 // ==================== PLANOS, CARTEIRA, MENSAGENS, ADMIN ====================
 window.selectPlan=function(p){selectedPlan=p;const pr={free:0,basico:10000,premium:50000};document.getElementById('plan-details').innerHTML=`<p>${tr('nav_plans')}: <strong>${p.toUpperCase()}</strong></p><p>${tr('value_kz')}: ${pr[p]} Kz</p>`;document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='none';openModal('planPurchaseModal');};
 window.selectPaymentMethod=function(m){selectedPaymentMethod=m;if(m==='wallet'){document.getElementById('pay-with-wallet-btn').style.display='block';document.getElementById('bank-info').style.display='none';}else{document.getElementById('pay-with-wallet-btn').style.display='none';document.getElementById('bank-info').style.display='block';}};
 window.payWithWallet=async function(){if(!selectedPlan)return;const pr={free:0,basico:10000,premium:50000},v=pr[selectedPlan];if(v===0){await db.collection('users').doc(currentUser.uid).update({plano:selectedPlan});showAlert('FREE OK!');closeModal('planPurchaseModal');loadHome();return;}const ud=await db.collection('users').doc(currentUser.uid).get();if((ud.data().saldo||0)<v){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v),plano:selectedPlan});showAlert(`Plano ativado!`);closeModal('planPurchaseModal');loadHome();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.sendToWhatsApp=function(){window.open('https://wa.me/244937881307','_blank');};
-window.solicitarSaque=async function(){const v=parseFloat(document.getElementById('saque-valor').value);const nome=document.getElementById('saque-nome').value.trim();const m=document.getElementById('saque-metodo').value;const c=document.getElementById('saque-conta').value.trim();if(!v||v<=0){showAlert('Valor inválido.');return;}if(v<10000){showAlert('❌ Saque mínimo: 10.000 Kz.');return;}if(!nome){showAlert('Nome completo obrigatório.');return;}if(!m){showAlert('Método/Banco obrigatório.');return;}if(!c){showAlert('IBAN/Conta obrigatório.');return;}if(v>(userData.saldo||0)){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('withdrawals').add({userId:currentUser.uid,userNome:userData.nome,userEmail:userData.email,titularNome:nome,valor:v,moeda:'AOA',metodo:m,conta:c,status:'aguardando_aprovacao',createdAt:new Date()});const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Saque pendente',`${userData.nome}: ${v.toLocaleString()} Kz via ${m}.`));await enviarNotificacao(currentUser.uid,'Saque solicitado',`O seu saque de ${v.toLocaleString()} Kz aguarda aprovação.`);await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v)});showAlert(`✅ Saque solicitado!`);closeModal('saqueModal');loadWallet();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
+window.solicitarSaque=async function(){const v=parseFloat(document.getElementById('saque-valor').value);const nome=document.getElementById('saque-nome').value.trim();const m=document.getElementById('saque-metodo').value;const c=document.getElementById('saque-conta').value.trim();if(!v||v<=0){showAlert('Valor inválido.');return;}if(v<10000){showAlert('❌ Saque mínimo: 10.000 Kz.');return;}if(!nome){showAlert('Nome completo obrigatório.');return;}if(!m){showAlert('Método/Banco obrigatório.');return;}if(!c){showAlert('IBAN/Conta obrigatório.');return;}if(v>(userData.saldo||0)){showAlert('Saldo insuficiente.');return;}showLoading(true);try{await db.collection('withdrawals').add({userId:currentUser.uid,userNome:userData.nome,userEmail:userData.email,titularNome:nome,valor:v,moeda:'AOA',metodo:m,conta:c,status:'aguardando_aprovacao',createdAt:new Date()});
+        // Notificar Admins
+        await notificarAdmins('Pedido de Saque', `${userData.nome} solicitou um saque de ${v.toLocaleString()} Kz.`);
+        await enviarNotificacao(currentUser.uid,'Saque solicitado',`O seu saque de ${v.toLocaleString()} Kz aguarda aprovação.`);
+        await db.collection('users').doc(currentUser.uid).update({saldo:firebase.firestore.FieldValue.increment(-v)});showAlert(`✅ Saque solicitado!`);closeModal('saqueModal');loadWallet();}catch(e){showAlert('Erro: '+e.message);}finally{showLoading(false);}};
 window.openSaqueModal=function(){document.getElementById('saque-valor').value='';document.getElementById('saque-nome').value=userData.nome||'';document.getElementById('saque-metodo').value='';document.getElementById('saque-conta').value='';openModal('saqueModal');};
 
 window.loadUserChat=function(){if(!currentUser)return;if(chatUserUnsubscribe)chatUserUnsubscribe();chatUserUnsubscribe=db.collection('messages').where('userId','==',currentUser.uid).onSnapshot(snap=>{const box=document.getElementById('chat-user-box');if(!box)return;if(snap.empty){box.innerHTML='<p style="color:var(--gray);text-align:center;">—</p>';return;}const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return ta-tb;});box.innerHTML='';arr.forEach(m=>{const cls=m.from==='user'?'user':'admin';const who=m.from==='user'?'Eu':'MAM';box.innerHTML+=`<div class="chat-msg ${cls}"><div class="who">${who}</div>${m.texto}</div>`;});box.scrollTop=box.scrollHeight;},err=>console.warn(err));};
-window.enviarMensagemUser=async function(){const txt=document.getElementById('chat-user-input').value.trim();if(!txt){showAlert('Escreva uma mensagem.');return;}try{await db.collection('messages').add({userId:currentUser.uid,userName:userData.nome,userEmail:userData.email,from:'user',texto:txt,createdAt:new Date(),lida:false});const adm=await db.collection('users').where('role','in',['admin','admin_adjunto']).get();adm.forEach(d=>enviarNotificacao(d.id,'Nova mensagem',`${userData.nome}: "${txt.substring(0,60)}"`));document.getElementById('chat-user-input').value='';}catch(e){showAlert('Erro: '+e.message);}};
+window.enviarMensagemUser=async function(){const txt=document.getElementById('chat-user-input').value.trim();if(!txt){showAlert('Escreva uma mensagem.');return;}try{await db.collection('messages').add({userId:currentUser.uid,userName:userData.nome,userEmail:userData.email,from:'user',texto:txt,createdAt:new Date(),lida:false});
+        // Notificar Admins
+        await notificarAdmins('Nova Mensagem do Utilizador', `${userData.nome}: "${txt.substring(0,60)}"`);
+        document.getElementById('chat-user-input').value='';}catch(e){showAlert('Erro: '+e.message);}};
 
-function isAdmin(){return currentUser&&(currentUser.email==='mamfilhos29@gmail.com'||(userData&&(userData.role==='admin'||userData.role==='admin_adjunto')));}
+function isAdmin(){return currentUser&&(currentUser.email==='mamfilhos29@gmail.com'||(userData&&(userData.role==='admin'||userData.role==='admin_adjunto'||userData.role==='suporte')));}
 function isSuperAdmin(){return currentUser&&currentUser.email==='mamfilhos29@gmail.com';}
 
 window.adminTab=async function(tab,btn){
@@ -1874,7 +1920,40 @@ window.adminCancelarSaque=async function(id){if(!isAdmin())return;confirmAction(
 
 async function renderAdminRoyalties(){const snap=await db.collection('royalties').limit(200).get();let h=`<h4>Royalties (${snap.size})</h4>`;if(snap.empty)h+='<p>—</p>';else{let total=0,mam=0,art=0;const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.forEach(r=>{total+=r.valorBruto||0;mam+=r.comissaoMAM||0;art+=r.valorLiquido||0;});h+=`<div class="stat-grid"><div class="stat-box"><h4>${total.toFixed(0)} Kz</h4><p>Bruto</p></div><div class="stat-box"><h4>${mam.toFixed(0)} Kz</h4><p>MAM 15%</p></div><div class="stat-box"><h4>${art.toFixed(0)} Kz</h4><p>Artista 55%</p></div></div>`;h+='<div class="item-list">';arr.forEach(r=>{h+=`<div class="list-item"><div style="flex:1;"><strong>${r.plataforma||'?'}</strong> — ${(r.streams||0).toLocaleString()}<br><small>Bruto: ${(r.valorBruto||0).toFixed(2)} | MAM: ${(r.comissaoMAM||0).toFixed(2)} | Artista: ${(r.valorLiquido||0).toFixed(2)}</small></div></div>`;});h+='</div>';}document.getElementById('admin-content').innerHTML=h;}
 
-async function renderAdminMessages(){const snap=await db.collection('messages').get();const byUser={};snap.forEach(d=>{const m=d.data();if(!byUser[m.userId])byUser[m.userId]={userName:m.userName||'?',msgs:[],last:null};byUser[m.userId].msgs.push(m);const t=m.createdAt&&m.createdAt.toDate?m.createdAt.toDate().getTime():0;const tl=byUser[m.userId].last&&byUser[m.userId].last.createdAt&&byUser[m.userId].last.createdAt.toDate?byUser[m.userId].last.createdAt.toDate().getTime():0;if(!byUser[m.userId].last||t>tl)byUser[m.userId].last=m;});let h=`<h4>${tr('tab_messages')} (${Object.keys(byUser).length})</h4>`;if(Object.keys(byUser).length===0)h+='<p>—</p>';else{h+='<div class="item-list">';Object.keys(byUser).forEach(uid=>{const u=byUser[uid];h+=`<div class="list-item"><div style="flex:1;"><strong>${u.userName}</strong><br><small style="color:var(--gray);">${u.msgs.length} | ${(u.last?.texto||'').substring(0,50)}...</small></div><button class="btn btn-small" data-chat="${uid}">Chat</button></div>`;});h+='</div>';}const box=document.getElementById('admin-content');box.innerHTML=h;box.querySelectorAll('button[data-chat]').forEach(btn=>{btn.addEventListener('click',async()=>{const uid=btn.dataset.chat;const doc=await db.collection('users').doc(uid).get();const nome=doc.exists?(doc.data().nome||'U'):'U';adminAbrirChat(uid,nome);});});}
+async function renderAdminMessages(){
+    // Caixa de Entrada para Admins
+    const snap=await db.collection('messages').get();
+    const byUser={};
+    snap.forEach(d=>{
+        const m=d.data();
+        if(!byUser[m.userId]) byUser[m.userId]={userName:m.userName||'?',msgs:[],last:null};
+        byUser[m.userId].msgs.push(m);
+        const t=m.createdAt&&m.createdAt.toDate?m.createdAt.toDate().getTime():0;
+        const tl=byUser[m.userId].last&&byUser[m.userId].last.createdAt&&byUser[m.userId].last.createdAt.toDate?byUser[m.userId].last.createdAt.toDate().getTime():0;
+        if(!byUser[m.userId].last||t>tl) byUser[m.userId].last=m;
+    });
+    
+    let h=`<h4>${tr('tab_messages')} - Caixa de Entrada (${Object.keys(byUser).length})</h4>`;
+    if(Object.keys(byUser).length===0) h+='<p>—</p>';
+    else{
+        h+='<div class="item-list">';
+        Object.keys(byUser).forEach(uid=>{
+            const u=byUser[uid];
+            h+=`<div class="list-item"><div style="flex:1;"><strong>${u.userName}</strong><br><small style="color:var(--gray);">${u.msgs.length} | ${(u.last?.texto||'').substring(0,50)}...</small></div><button class="btn btn-small" data-chat="${uid}">Chat</button></div>`;
+        });
+        h+='</div>';
+    }
+    const box=document.getElementById('admin-content');
+    box.innerHTML=h;
+    box.querySelectorAll('button[data-chat]').forEach(btn=>{
+        btn.addEventListener('click',async()=>{
+            const uid=btn.dataset.chat;
+            const doc=await db.collection('users').doc(uid).get();
+            const nome=doc.exists?(doc.data().nome||'U'):'U';
+            adminAbrirChat(uid,nome);
+        });
+    });
+}
 window.adminAbrirChat=function(uid,nome){document.getElementById('mensagem-user-id').value=uid;document.getElementById('mensagem-user-nome').innerText='Com: '+nome;document.getElementById('msg-modal-title').innerText='Chat '+nome;openModal('modal-mensagem');if(chatAdminUnsubscribe)chatAdminUnsubscribe();chatAdminUnsubscribe=db.collection('messages').where('userId','==',uid).onSnapshot(snap=>{const box=document.getElementById('admin-chat-box');if(!box)return;if(snap.empty){box.innerHTML='<p style="color:var(--gray);text-align:center;">—</p>';return;}const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return ta-tb;});box.innerHTML='';arr.forEach(m=>{const cls=m.from==='user'?'user':'admin';const who=m.from==='user'?(m.userName||'User'):(m.adminName||'ADM');box.innerHTML+=`<div class="chat-msg ${cls}"><div class="who">${who}</div>${m.texto}</div>`;});box.scrollTop=box.scrollHeight;});};
 window.enviarRespostaAdmin=async function(){const uid=document.getElementById('mensagem-user-id').value;const txt=document.getElementById('mensagem-texto').value.trim();if(!txt||!uid)return;const meuNome=userData.nome||'Admin';await db.collection('messages').add({userId:uid,userName:'',userEmail:'',from:'admin',adminName:meuNome,texto:txt,createdAt:new Date(),lida:false});await enviarNotificacao(uid,'Resposta MAM',`"${txt.substring(0,50)}"`);document.getElementById('mensagem-texto').value='';};
 
@@ -2163,7 +2242,7 @@ Quanto mais detalhes fornecer, mais rápida será a resolução.
 window.loadWallet=async function(){if(!currentUser)return;const doc=await db.collection('users').doc(currentUser.uid).get();userData=doc.data();const sel=document.getElementById('currency-select');if(sel.options.length===0){Object.keys(CURRENCIES).forEach(code=>{const o=document.createElement('option');o.value=code;o.text=`${code} - ${CURRENCIES[code].name}`;if(code===currentCurrency)o.selected=true;sel.appendChild(o);});}const c=CURRENCIES[currentCurrency]||CURRENCIES['AOA'];document.getElementById('carteira-saldo').innerHTML=formatMoney(userData.saldo||0);document.getElementById('carteira-ganhos-mes').innerHTML=formatMoney(userData.ganhosMes||0);document.getElementById('carteira-ganhos-total').innerHTML=formatMoney(userData.ganhosTotal||0);document.getElementById('currency-rate').value=`1 Kz = ${(1/c.rateToKz).toFixed(6)} ${c.symbol}`;const snap=await db.collection('withdrawals').where('userId','==',currentUser.uid).get();const cn=document.getElementById('historico-saques');cn.innerHTML='';if(snap.empty)cn.innerHTML='<p style="color:var(--gray);">—</p>';else{const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(s=>{const st=s.status==='pago'?'status-active':(s.status==='aguardando_aprovacao'||s.status==='pendente')?'status-pending':'status-suspended';cn.innerHTML+=`<div class="list-item"><div style="flex:1;"><strong>${(s.valor||0).toLocaleString()} Kz</strong> - ${s.metodo}<br><small>${s.titularNome||'-'} | <span class="status-pill ${st}">${s.status}</span></small></div></div>`;});}};
 window.updateWalletDisplay=function(){currentCurrency=document.getElementById('currency-select').value;localStorage.setItem('mam_currency',currentCurrency);loadWallet();loadHome();};
 
-async function loadPerfil(){if(!currentUser)return;const doc=await db.collection('users').doc(currentUser.uid).get();userData=doc.data();document.getElementById('perfil-foto').src=userData.fotoPerfil||'https://via.placeholder.com/120';document.getElementById('perfil-nome-exibicao').innerText=userData.nome;document.getElementById('perfil-email-exibicao').innerText=userData.email;document.getElementById('perfil-pais-exibicao').innerHTML=`<i class="fas fa-globe"></i> ${userData.pais||'-'}`;document.getElementById('perfil-data-nascimento-exibicao').innerHTML=`<i class="fas fa-calendar"></i> ${userData.dataNascimento||'-'}`;document.getElementById('perfil-telefone-exibicao').innerHTML=`<i class="fas fa-phone"></i> ${userData.telefone||'-'}`;document.getElementById('perfil-plano-exibicao').innerHTML=`${tr('nav_plans')}: ${(userData.plano||'free').toUpperCase()}`;document.getElementById('perfil-role-exibicao').innerHTML=userData.role==='admin'?'👑 Admin':(userData.role==='admin_adjunto'?'🛡️ Adjunto':'');const snap=await db.collection('releases').where('userId','==',currentUser.uid).get();const c=document.getElementById('perfil-lancamentos');c.innerHTML='';if(snap.empty)c.innerHTML=`<p style="color:var(--gray);">—</p>`;else{const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(r=>{const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';const safeId=String(r.id).replace(/'/g,"\\'");c.innerHTML+=`<div class="music-card"><div class="stream-badge">${(r.streams||0).toLocaleString()} <i class="fas fa-headphones"></i></div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artista}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(r.ouvintes||0).toLocaleString()} ${tr('listeners')}</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} ${tr('downloads')}</span></div><audio controls src="${r.audioUrl}" onplay="registarOuvinte('${safeId}')"></audio><p style="font-size:.7rem;color:var(--gray);">ISRC: ${r.isrc||'-'}<br>UPC: ${r.upc||'-'}<br><span class="status-pill ${st}">${r.status}</span></p><div class="music-actions"><button onclick="partilharMusica('${safeId}')"><i class="fas fa-share-alt"></i></button><button onclick="baixarMusicaMP3('${safeId}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});}}
+async function loadPerfil(){if(!currentUser)return;const doc=await db.collection('users').doc(currentUser.uid).get();userData=doc.data();document.getElementById('perfil-foto').src=userData.fotoPerfil||'https://via.placeholder.com/120';document.getElementById('perfil-nome-exibicao').innerText=userData.nome;document.getElementById('perfil-email-exibicao').innerText=userData.email;document.getElementById('perfil-pais-exibicao').innerHTML=`<i class="fas fa-globe"></i> ${userData.pais||'-'}`;document.getElementById('perfil-data-nascimento-exibicao').innerHTML=`<i class="fas fa-calendar"></i> ${userData.dataNascimento||'-'}`;document.getElementById('perfil-telefone-exibicao').innerHTML=`<i class="fas fa-phone"></i> ${userData.telefone||'-'}`;document.getElementById('perfil-plano-exibicao').innerHTML=`${tr('nav_plans')}: ${(userData.plano||'free').toUpperCase()}`;document.getElementById('perfil-role-exibicao').innerHTML=userData.role==='admin'?'👑 Admin':(userData.role==='admin_adjunto'?'🛡️ Adjunto':(userData.role==='suporte'?'🎧 Suporte':''));const snap=await db.collection('releases').where('userId','==',currentUser.uid).get();const c=document.getElementById('perfil-lancamentos');c.innerHTML='';if(snap.empty)c.innerHTML=`<p style="color:var(--gray);">—</p>`;else{const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(r=>{const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';const safeId=String(r.id).replace(/'/g,"\\'");c.innerHTML+=`<div class="music-card"><div class="stream-badge">${(r.streams||0).toLocaleString()} <i class="fas fa-headphones"></i></div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title">${r.titulo}</div><div class="music-artist">${r.artista}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(r.ouvintes||0).toLocaleString()} ${tr('listeners')}</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} ${tr('downloads')}</span></div><audio controls src="${r.audioUrl}" onplay="registarOuvinte('${safeId}')"></audio><p style="font-size:.7rem;color:var(--gray);">ISRC: ${r.isrc||'-'}<br>UPC: ${r.upc||'-'}<br><span class="status-pill ${st}">${r.status}</span></p><div class="music-actions"><button onclick="partilharMusica('${safeId}')"><i class="fas fa-share-alt"></i></button><button onclick="baixarMusicaMP3('${safeId}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});}}
 window.loadMinhasMusicas=async function(){if(!currentUser)return;const snap=await db.collection('releases').where('userId','==',currentUser.uid).get();const c=document.getElementById('minhas-musicas-container');c.innerHTML='';if(snap.empty){c.innerHTML=`<p style="color:var(--gray);">—</p>`;return;}const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr.forEach(r=>{const st=r.status==='aprovado'?'status-active':r.status==='rejeitado'?'status-suspended':'status-pending';const safeId=String(r.id).replace(/'/g,"\\'");const safeAid=String(r.artistaId||'').replace(/'/g,"\\'");c.innerHTML+=`<div class="music-card"><div class="stream-badge"><i class="fas fa-headphones"></i> ${(r.streams||0).toLocaleString()}</div><img src="${r.coverUrl||'https://via.placeholder.com/140'}" class="music-cover"><div class="music-title" onclick="abrirPerfilArtista('${safeAid}')">${r.titulo}</div><div class="music-artist" onclick="abrirPerfilArtista('${safeAid}')"><i class="fas fa-user-music"></i> ${r.artista}</div><div class="music-meta">${r.estilo||'-'}<br>📅 ${r.dataLancamento||'-'}<br>ISRC: ${r.isrc||'-'}<br>UPC: ${r.upc||'-'}</div><div class="stats-inline"><span><i class="fas fa-headphones"></i> ${(r.ouvintes||0).toLocaleString()} ${tr('listeners')}</span><span><i class="fas fa-download"></i> ${(r.downloads||0).toLocaleString()} ${tr('downloads')}</span></div><audio controls src="${r.audioUrl}" onplay="registarOuvinte('${safeId}')"></audio><p style="font-size:.7rem;color:var(--gray);margin-top:8px;"><span class="status-pill ${st}">${r.status}</span></p><div class="music-actions"><button onclick="editarMusica('${safeId}')"><i class="fas fa-edit"></i> ${tr('edit')}</button><button onclick="partilharMusica('${safeId}')"><i class="fas fa-share-alt"></i> ${tr('share')}</button><button onclick="baixarMusicaMP3('${safeId}')"><i class="fas fa-download"></i> MP3</button></div></div>`;});};
 
 window.editarMusica=async function(id){
@@ -2392,7 +2471,7 @@ auth.onAuthStateChanged(async user=>{
     }
 });
 
-console.log('🚀 MAM v24 — Feed em Mosaico com Modal Detalhado');
+console.log('🚀 MAM v25 — Feed Invertido, RBAC ADM, Notificações e Caixa de Entrada');
 </script>
 </body>
 </html>
